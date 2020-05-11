@@ -1,0 +1,66 @@
+{
+  "name": "@obsidians/code-editor",
+  "version": "0.1.0",
+  "description": "Code Editor",
+  "author": "Phil <qft.gtr@gmail.com>",
+  "license": "MIT",
+  "source": "src/index.js",
+  "main": "main/index.js",
+  "browser": "dist/index.es.js",
+  "files": [
+    "dist",
+    "main"
+  ],
+  "scripts": {
+    "start": "rollup -c -w",
+    "build": "rollup -c",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "@obsidians/file-ops": "^0.1.0",
+    "@obsidians/ui-components": "^0.1.0",
+    "lodash": "^4.17.15",
+    "monaco-editor": "^0.20.0",
+    "path-parse": "^1.0.6",
+    "react-highlight": "^0.12.0",
+    "react-markdown": "^4.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-external-helpers": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-function-bind": "^7.7.4",
+    "@babel/preset-env": "^7.7.5",
+    "@babel/preset-react": "^7.7.4",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@rollup/plugin-url": "^4.0.2",
+    "@svgr/rollup": "^5.2.0",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^6.0.3",
+    "node-sass": "^4.13.1",
+    "rollup": "^2.0.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-peer-deps-external": "^2.2.2",
+    "rollup-plugin-postcss": "^2.3.0"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+exports.TerminalChannelManager = require('./TerminalChannelManager')

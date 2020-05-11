@@ -1,0 +1,38 @@
+.hover-block .hover-show {
+  display: none;
+}
+.hover-block .hover-hide {
+  display: block;
+}
+.hover-block:hover .hover-show {
+  display: block;
+}
+.hover-block:hover .hover-hide {
+  display: none;
+}
+
+.hover-flex .hover-show {
+  display: none;
+}
+.hover-flex .hover-hide {
+  display: flex;
+}
+.hover-flex:hover .hover-show {
+  display: flex;
+}
+.hover-flex:hover .hover-hide {
+  display: none;
+}
+
+.hover-inline .hover-show {
+  display: none;
+}
+.hover-inline .hover-hide {
+  display: inline-block;
+}
+.hover-inline:hover .hover-show {
+  display: inline-block;
+}
+.hover-inline:hover .hover-hide {
+  display: none;
+}

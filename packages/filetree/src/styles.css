@@ -1,0 +1,12 @@
+.filetree-item {
+  white-space: nowrap;
+  user-select: none;
+}
+.filetree-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 24px;
+  background-color: inherit;
+}

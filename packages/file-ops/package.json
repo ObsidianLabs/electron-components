@@ -1,0 +1,17 @@
+{
+  "name": "@obsidians/file-ops",
+  "version": "0.1.0",
+  "description": "File Operations",
+  "author": "Phil <qft.gtr@gmail.com>",
+  "license": "MIT",
+  "main": "src/index.js",
+  "dependencies": {
+    "filehound": "^1.17.4",
+    "fs-extra": "^8.1.0",
+    "lodash": "^4.17.15",
+    "trash": "^6.1.1"
+  },
+  "peerDependencies": {
+    "electron": "^7.0.0"
+  }
+}

@@ -1,0 +1,17 @@
+.markdown {
+  color: var(--color-text);
+
+  & strong {
+    color: var(--color-text);
+  }
+  & img {
+    display: block;
+    max-width: 100%;
+  }
+  & a {
+    color: var(--color-link);
+    & strong {
+      color: var(--color-link);
+    }
+  }
+}

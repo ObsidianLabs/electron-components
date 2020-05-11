@@ -1,0 +1,65 @@
+@import './theme.scss';
+@import './hover.scss';
+@import './scrollbar.scss';
+
+.p-relative {
+  position: relative !important;
+}
+.p-absolute {
+  position: absolute !important;
+}
+
+.flex-1 {
+  flex: 1 0 0;
+}
+
+.table.table-fixed {
+  table-layout: fixed;
+}
+
+.text-overflow-dots {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown-menu.dropdown-menu-sm {
+  font-size: 90%;
+  min-width: auto;
+  
+  & .dropdown-item {
+    padding: 0.2rem 0.75rem;
+  }
+  & .dropdown-divider {
+    margin: 0.2rem 0;
+  }
+}
+
+.btn-group>.btn:not(:first-child),
+.btn-group>.btn-group:not(:first-child) {
+  border-left: 1px solid var(--color-bg) !important;
+}
+
+.border-bottom-1 {
+  border-bottom: 1px solid var(--color-border);
+}
+.border-top-1 {
+  border-top: 1px solid var(--color-border);
+}
+.border-right-1 {
+  border-right: 1px solid var(--color-border);
+}
+.border-left-1 {
+  border-left: 1px solid var(--color-border);
+}
+
+pre.pre-box {
+  color: inherit;
+  padding: 0.75rem 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: var(--color-bg2);
+  border-radius: .4rem;
+  user-select: text;
+}
+
