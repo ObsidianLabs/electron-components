@@ -38,7 +38,7 @@ export default [
   null,
   { text: 'Open' },
   null,
-  { text: 'Show in Finder', onClick: showInFinder },
+  { text: 'Open Containing Folder', onClick: showInFinder },
   { text: 'Open in Terminal', onClick: openInTerminal },
   null,
   { text: 'Delete', onClick: deleteFile },
