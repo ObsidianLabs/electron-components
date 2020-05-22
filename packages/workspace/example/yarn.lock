@@ -1312,10 +1312,10 @@
     react-split-pane "^0.1.89"
     reactstrap "^8.4.1"
 
-"@obsidians/workspace@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@obsidians/workspace/-/workspace-0.1.0.tgz#4d5b521d7eef6effec6ca9193578ae4218322d28"
-  integrity sha512-expm208dgNOlkLGF9n97daPHHqXGTyregBe1sQTgN88E2MPEaaN/ID1wyg57y+wgMJxjILGqgb+6R6tbLfpiQg==
+"@obsidians/workspace@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@obsidians/workspace/-/workspace-0.1.1.tgz#363d45cf97a5f0265c94ba7d3b41b93e53b87040"
+  integrity sha512-C+RPXxjj043eIwQVgdYsijollKNuDgxFLfooomnBOklJnnOV3W4MsFYqff2gHJH221Mnfex2esd9k55IJ3h1Ig==
   dependencies:
     "@obsidians/code-editor" "^0.1.0"
     "@obsidians/file-ops" "^0.1.0"
