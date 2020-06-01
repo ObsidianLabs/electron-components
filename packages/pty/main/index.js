@@ -72,6 +72,7 @@ class Pty {
       // reject(new Error(signal))
       return this.promise.catch(e => true)
     }
+    return Promise.resolve()
   }
 }
 

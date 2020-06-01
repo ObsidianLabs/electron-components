@@ -1283,12 +1283,12 @@
   resolved "https://registry.yarnpkg.com/@nodelib%2ffs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@obsidians/ipc@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@obsidians/ipc/-/ipc-0.1.0.tgz#e021da3de8aa49093f3b5b0917d1db488932b090"
-  integrity sha512-v9lzCkAhBSlhsz52qdZeU7PVvBQSIr9hTeBpjj7/eUUBnnnQqbrC21s2OP2EguIJ/dxquUk8MPnCm4W1a8mk7Q==
+"@obsidians/ipc@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@obsidians/ipc/-/ipc-0.1.1.tgz#7f7d489c8742ce0e986c84865dbcbc65da846210"
+  integrity sha512-R4kVp4Gu8+Go3+uJ1RbB9QCTXzresT+XLQMRbrM1Ziv++T7agwyFGlEWHPyaLajHNwZyKNeaI3vdLQJwtqWeUQ==
   dependencies:
-    "@obsidians/pty" "^0.9.0"
+    "@obsidians/pty" "^0.9.1"
 
 "@obsidians/notification@^0.1.0":
   version "0.1.0"
@@ -1297,23 +1297,23 @@
   dependencies:
     react-notification-system "^0.3.0"
 
-"@obsidians/pty@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@obsidians/pty/-/pty-0.9.0.tgz#4c76c940f6960b7fc55e6c352b18f03581c38720"
-  integrity sha512-4OnJdTQT15ZGk2JrHP5MmdIMdoilK4u6ukH27CjalmqcrFUKw+eJ4ZFFySwHhMR2xhmimPD0TTEjiiwJJoywyw==
+"@obsidians/pty@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@obsidians/pty/-/pty-0.9.1.tgz#7b81185e6e27ac5cab8c2ed70f0f5138a478a100"
+  integrity sha512-NMzsojItiDED0x9juP/VEaWXW2EFsVI9HmgHTLwEYqrBvRNsc1XYTommXp5+MiQyigqI66CB9T0wZk5rGEhtRA==
   dependencies:
     default-shell "^1.0.1"
     electron-rebuild "^1.10.0"
     node-pty "^0.9.0"
 
-"@obsidians/terminal@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@obsidians/terminal/-/terminal-0.1.0.tgz#98dcd442d398a82f20f98d23e8d7ffe934afae70"
-  integrity sha512-sP3U8Ma2lW7ULQ2dPxAJ4tBshlL6lcphl/WO6E4OKBoMNDdYwSI0TejN2csk4tqgK0T0K8dFNB4oKOqPAlCzTA==
+"@obsidians/terminal@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@obsidians/terminal/-/terminal-0.1.1.tgz#24b1433cb0fd2682e5e577e8b11f378a51bde7be"
+  integrity sha512-AiEeLVLkI61cfObpqmGyL9y2lUmxfYvnrWshxKczBGOrNiSDCmjUDAhFFmjWoVZIakSGv6gt37WQC6K3SuQIbA==
   dependencies:
-    "@obsidians/ipc" "^0.1.0"
+    "@obsidians/ipc" "^0.1.1"
     "@obsidians/notification" "^0.1.0"
-    "@obsidians/pty" "^0.9.0"
+    "@obsidians/pty" "^0.9.1"
     "@obsidians/ui-components" "^0.1.0"
     chalk "^3.0.0"
     strip-ansi "^6.0.0"

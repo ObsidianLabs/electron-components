@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/workspace-example",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "MIT",
   "scripts": {
@@ -12,8 +12,8 @@
     "electron": "electron ."
   },
   "dependencies": {
-    "@obsidians/filetree": "^0.1.0",
-    "@obsidians/ipc": "^0.1.0",
+    "@obsidians/filetree": "^0.1.1",
+    "@obsidians/ipc": "^0.1.1",
     "@obsidians/workspace": "^0.1.1",
     "customize-cra": "^0.9.1",
     "fs-extra": "^8.1.0",

@@ -1,13 +1,13 @@
 {
   "name": "@obsidians/ipc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "IPC between electron main and renderer processes",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "MIT",
   "main": "main/index.js",
   "browser": "src/index.js",
   "dependencies": {
-    "@obsidians/pty": "^0.9.0"
+    "@obsidians/pty": "^0.9.1"
   },
   "peerDependencies": {
     "electron": "^7.0.0"

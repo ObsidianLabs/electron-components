@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/terminal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Terminal component for Electron apps",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "MIT",
@@ -17,9 +17,9 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ipc": "^0.1.0",
+    "@obsidians/ipc": "^0.1.1",
     "@obsidians/notification": "^0.1.0",
-    "@obsidians/pty": "^0.9.0",
+    "@obsidians/pty": "^0.9.1",
     "@obsidians/ui-components": "^0.1.0",
     "chalk": "^3.0.0",
     "strip-ansi": "^6.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/filetree",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "File Tree",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ipc": "^0.1.0",
+    "@obsidians/ipc": "^0.1.1",
     "@obsidians/ui-components": "^0.1.0",
     "filehound": "^1.17.4",
     "lodash": "^4.17.15",
