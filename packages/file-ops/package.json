@@ -12,6 +12,6 @@
     "trash": "^6.1.1"
   },
   "peerDependencies": {
-    "electron": "^7.0.0"
+    "electron": "^8.0.0"
   }
 }
