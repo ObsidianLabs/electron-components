@@ -6,11 +6,9 @@
   "license": "MIT",
   "main": "main/index.js",
   "scripts": {
-    "install": "electron-rebuild"
   },
   "dependencies": {
     "default-shell": "^1.0.1",
-    "electron-rebuild": "^1.10.0",
     "node-pty": "^0.9.0"
   },
   "peerDependencies": {
