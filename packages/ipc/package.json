@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/ipc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "IPC between electron main and renderer processes",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "MIT",
