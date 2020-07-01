@@ -6,7 +6,7 @@ import { FitAddon } from 'xterm-addon-fit'
 
 import chalk from 'chalk'
 
-import '@obsidians/ui-components'
+import { getColor } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 
 import 'xterm/css/xterm.css'
@@ -16,7 +16,6 @@ import './styles.css'
 
 import initTerminalChannel from './lib/initTerminalChannel'
 import colorCommand from './lib/colorCommand'
-import getColor from './lib/getColor'
 
 export default class Terminal extends PureComponent {
   constructor(props) {

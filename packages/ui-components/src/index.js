@@ -21,6 +21,8 @@ export { default as TableCardRow } from './Card/TableCardRow'
 
 export { default as Table } from './Table'
 
+export { default as getColor } from './getColor'
+
 export {
   Button,
   ButtonGroup,

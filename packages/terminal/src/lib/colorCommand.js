@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import getColor from './getColor'
+import { getColor } from '@obsidians/ui-components'
 
 chalk.enabled = true
 chalk.level = 2
@@ -10,7 +10,7 @@ const hex = value => {
 }
 
 export default function colorCommand (cmdString) {
-  const primaryColorRgb = getColor('--color-primary');
+  const primaryColorRgb = getColor('--color-primary')
   const rgb = primaryColorRgb.match(/\((\d+),\s*(\d+),\s*(\d+)\)/)
   const primaryColor = `#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`
 
