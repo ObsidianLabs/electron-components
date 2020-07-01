@@ -2,6 +2,7 @@ import pathParse from 'path-parse'
 
 import * as monaco from 'monaco-editor'
 import fileOps from '@obsidians/file-ops' 
+import notification from '@obsidians/notification'
 
 import MonacoEditorModelSession from './MonacoEditorModelSession'
 
@@ -90,7 +91,12 @@ class ModelSessionManager {
     if (!this.currentFilePath) {
       throw new Error('No current file open.')
     }
-    await this.saveFile(this.currentFilePath)
+    try {
+      await this.saveFile(this.currentFilePath)
+    } catch (e) {
+      console.warn(e)
+      notification.error('Save Failed', e.message)
+    }
   }
 
   async openNewFile (projectRoot = this.projectRoot) {
