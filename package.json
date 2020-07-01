@@ -2,7 +2,8 @@
   "name": "@obsidians/electron-components",
   "private": true,
   "scripts": {
-    "postinstall": "electron-rebuild"
+    "postinstall": "electron-rebuild",
+    "build": "node init.js"
   },
   "dependencies": {
     "keytar": "5.6.0",
