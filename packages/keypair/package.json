@@ -18,9 +18,11 @@
   },
   "dependencies": {
     "@obsidians/ipc": "^0.1.2",
+    "@obsidians/notification": "^0.1.0",
     "@obsidians/pty": "^0.9.1",
     "@obsidians/redux": "^0.1.0",
     "@obsidians/ui-components": "^0.1.0",
+    "immutable": "^4.0.0-rc.12",
     "keytar": "5.6.0"
   },
   "devDependencies": {
