@@ -12,7 +12,8 @@ export default async function () {
   const primaryColorRgb = getColor('--color-primary')
   const rgb = primaryColorRgb.match(/\((\d+),\s*(\d+),\s*(\d+)\)/)
   const hsl = convert.rgb.hsl(+rgb[1], +rgb[2], +rgb[3])
-  const primaryColor = convert.hsl.hex(hsl[0], 100, 75)
+  const primaryColor = convert.hsl.hex(hsl[0], hsl[1], hsl[2])
+  const lightPrimaryColor = convert.hsl.hex(hsl[0], 100, 75)
 
   monaco.editor.defineTheme('obsidians', {
     base: 'vs-dark', // can also be vs-dark or hc-black
@@ -29,21 +30,21 @@ export default async function () {
       // "input.border": "#AD7AFF",
       "menu.foreground": "#FFFFFF",
       "menu.background": "#252527",
-      "menu.selectionBackground": "#8F55EC",
+      "menu.selectionBackground": `#${primaryColor}`,
       "list.focusForeground": "#F9FAF4",
-      "list.focusBackground": "#8F55EC",
+      "list.focusBackground": `#${primaryColor}`,
       // "list.highlightForeground": "#F9FAF4",
     },
     rules: [
       { token: '', foreground: 'F9FAF4', background: '252527' },
-      { token: 'keyword', foreground: primaryColor },
-      // { token: 'keyword.eosio', foreground: primaryColor, fontStyle: 'bold' },
+      { token: 'keyword', foreground: lightPrimaryColor },
+      // { token: 'keyword.eosio', foreground: lightPrimaryColor, fontStyle: 'bold' },
       { token: 'keyword.operator', foreground: 'CCCCCC' },
       { token: 'type', foreground: '66D9EF', fontStyle: 'italic' },
       // { token: 'type.eosio', foreground: '66D9EF', fontStyle: 'bold' },
       { token: 'string', foreground: 'CE9178' },
       { token: 'constant', foreground: 'E6DB74' },
-      { token: 'function', foreground: primaryColor, fontStyle: 'italic' },
+      { token: 'function', foreground: lightPrimaryColor, fontStyle: 'italic' },
     ]
   })
 }
