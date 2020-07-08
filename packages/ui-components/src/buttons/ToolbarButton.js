@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 
 import {
   Button,
@@ -13,6 +14,7 @@ export default function ToolbarButton ({
   icon,
   tooltip = null,
   tooltipPlacement = 'bottom',
+  className,
   children,
   readonly,
 }) {
@@ -30,7 +32,7 @@ export default function ToolbarButton ({
         color={color}
         id={`toolbar-btn-${id}`}
         key={`toolbar-btn-${id}`}
-        className='rounded-0 border-0 flex-none px-2 w-5 flex-column align-items-center'
+        className={classnames('rounded-0 border-0 flex-none px-2 w-5 flex-column align-items-center', className)}
         onClick={onClick}
         disabled={readonly}
       >
