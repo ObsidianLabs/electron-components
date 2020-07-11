@@ -1,5 +1,6 @@
 {
   "name": "@obsidians/electron-components",
+  "license": "gpl-3.0",
   "private": true,
   "scripts": {
     "postinstall": "electron-rebuild",
