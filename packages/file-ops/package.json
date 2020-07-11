@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "File Operations",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "MIT",
+  "license": "gpl-3.0",
   "main": "src/index.js",
   "dependencies": {
     "filehound": "^1.17.4",
