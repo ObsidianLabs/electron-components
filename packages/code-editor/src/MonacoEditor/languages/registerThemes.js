@@ -37,14 +37,49 @@ export default async function () {
     },
     rules: [
       { token: '', foreground: 'F9FAF4', background: '252527' },
-      { token: 'keyword', foreground: lightPrimaryColor },
-      // { token: 'keyword.eosio', foreground: lightPrimaryColor, fontStyle: 'bold' },
-      { token: 'keyword.operator', foreground: 'CCCCCC' },
-      { token: 'type', foreground: '66D9EF', fontStyle: 'italic' },
-      // { token: 'type.eosio', foreground: '66D9EF', fontStyle: 'bold' },
+      { token: 'constant.language', foreground: '569CD6' },
+      { token: 'variable.language', foreground: '569CD6' },
+      { token: 'constant.numeric', foreground: 'B5CEA8' },
+      { token: 'variable.other.enummember', foreground: 'B5CEA8' },
+      { token: 'keyword.operator.plus.exponent', foreground: 'B5CEA8' },
+      { token: 'keyword.operator.minus.exponent', foreground: 'B5CEA8' },
+
+      { token: 'storage', foreground: '569CD6' },
+      { token: 'storage.type', foreground: '569CD6' },
+      { token: 'storage.modifier', foreground: '569CD6' },
+      { token: 'keyword.operator.noexcept', foreground: '569CD6' },
       { token: 'string', foreground: 'CE9178' },
-      { token: 'constant', foreground: 'E6DB74' },
+      { token: 'string.tag', foreground: 'CE9178' },
+      { token: 'string.value', foreground: 'CE9178' },
+      { token: 'string.regexp', foreground: 'D16969' },
+
+      { token: 'keyword', foreground: lightPrimaryColor },
+      { token: 'keyword.control', foreground: lightPrimaryColor },
+      { token: 'keyword.operator', foreground: 'D4D4D4' },
+      { token: 'keyword.operator.new', foreground: '569CD6' },
+      { token: 'keyword.operator.expression', foreground: '569CD6' },
+      { token: 'keyword.operator.cast', foreground: '569CD6' },
+      { token: 'keyword.operator.sizeof', foreground: '569CD6' },
+      { token: 'keyword.operator.alignof', foreground: '569CD6' },
+      { token: 'keyword.operator.typeid', foreground: '569CD6' },
+      { token: 'keyword.operator.alignas', foreground: '569CD6' },
+      { token: 'keyword.operator.instanceof', foreground: '569CD6' },
+      { token: 'keyword.operator.logical.python', foreground: '569CD6' },
+      { token: 'keyword.operator.wordlike', foreground: '569CD6' },
+      { token: 'keyword.other.unit', foreground: 'B5CEA8' },
+
+      { token: 'variable.language', foreground: '569CD6' },
+
+      { token: 'entity.name.function', foreground: 'DCDCAA' },
+      { token: 'support.function', foreground: 'DCDCAA' },
+
+      { token: 'variable', foreground: '9CDCFE' },
+      { token: 'support.variable', foreground: '9CDCFE' },
+      { token: 'variable.other.constant', foreground: '4FC1FF' },
+
+      { token: 'type', foreground: '66D9EF', fontStyle: 'italic' },
       { token: 'function', foreground: lightPrimaryColor, fontStyle: 'italic' },
+      // { token: 'type.eosio', foreground: '66D9EF', fontStyle: 'bold' },
     ]
   })
 }
