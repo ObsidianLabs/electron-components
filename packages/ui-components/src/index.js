@@ -11,6 +11,7 @@ export { default as DebouncedFormGroup } from './inputs/DebouncedFormGroup'
 export { default as Dropdown } from './inputs/Dropdown'
 export { default as MultiSelect } from './inputs/MultiSelect'
 
+export { default as IconButton } from './buttons/IconButton'
 export { default as DeleteButton } from './buttons/DeleteButton'
 export { default as ToolbarButton } from './buttons/ToolbarButton'
 export { default as ButtonOptions } from './buttons/ButtonOptions'

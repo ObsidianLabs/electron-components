@@ -71,7 +71,7 @@ export default class CreateKeypairModal extends PureComponent {
             <Badge pill color='info' className='ml-1'>Address</Badge>
           </div>
           <div className='col-10 pl-0'>
-            <small><code>{address}</code></small>
+            <code className='user-select small'>{address}</code>
           </div>
         </div>
         <div className='row align-items-center'>
@@ -79,7 +79,7 @@ export default class CreateKeypairModal extends PureComponent {
             <Badge pill color='success' className='ml-1'>{this.props.secretName}</Badge>
           </div>
           <div className='col-10 pl-0'>
-            <small><code>{secret}</code></small>
+            <code className='user-select small'>{secret}</code>
           </div>
         </div>
       </Modal>
