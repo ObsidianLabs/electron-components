@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Redux store",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "gpl-3.0",
+  "license": "GPL-3.0",
   "main": "src/index.js",
   "files": [
     "src"
