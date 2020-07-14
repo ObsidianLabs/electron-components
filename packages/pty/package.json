@@ -3,7 +3,7 @@
   "version": "0.9.1",
   "description": "Start a process in electron",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "MIT",
+  "license": "gpl-3.0",
   "main": "main/index.js",
   "scripts": {
   },
