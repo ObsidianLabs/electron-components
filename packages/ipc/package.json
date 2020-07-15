@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "description": "IPC between electron main and renderer processes",
   "author": "Phil <qft.gtr@gmail.com>",
-  "license": "gpl-3.0",
+  "license": "GPL-3.0",
   "main": "main/index.js",
   "browser": "src/index.js",
   "dependencies": {
