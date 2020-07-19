@@ -50,8 +50,10 @@ export default class BaseModal extends Component {
     )
   }
 
-  openModal () {
-    return this.setState({ isOpen: true })
+  async openModal () {
+    return new Promise(resolve => {
+      this.setState({ isOpen: true }, resolve)
+    })
   }
 
   async closeModal () {
