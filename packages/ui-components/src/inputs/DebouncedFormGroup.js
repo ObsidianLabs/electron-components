@@ -11,10 +11,10 @@ import DebouncedInput from './DebouncedInput'
 export default forwardRef(DebouncedFormGroup)
 
 function DebouncedFormGroup (props, ref) {
-  const { label, disabled, placeholder, inputType = 'input', onTextClick, ...otherProps } = props
+  const { label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, ...otherProps } = props
 
   return (
-    <FormGroup>
+    <FormGroup className={formGroupClassName}>
       <Label>{label}</Label>
       {
         inputType === 'input' &&

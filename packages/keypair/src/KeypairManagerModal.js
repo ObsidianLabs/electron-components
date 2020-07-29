@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 
 import {
   Modal,
-  Button,
+  IconButton,
   DeleteButton,
 } from '@obsidians/ui-components'
 
@@ -12,6 +12,7 @@ import keypairManager from './keypairManager'
 
 import CreateKeypairModal from './CreateKeypairModal'
 import ImportKeypairModal from './ImportKeypairModal'
+import RevealSecretModal from './RevealSecretModal'
 import KeypairNameModal from './KeypairNameModal'
 
 export default class KeypairManagerModal extends PureComponent {
@@ -21,6 +22,7 @@ export default class KeypairManagerModal extends PureComponent {
     this.modal = React.createRef()
     this.createKeypairModal = React.createRef()
     this.importKeypairModal = React.createRef()
+    this.revealSecretModal = React.createRef()
     this.keypairNameModal = React.createRef()
 
     this.state = {
@@ -74,6 +76,10 @@ export default class KeypairManagerModal extends PureComponent {
     this.refresh()
   }
 
+  revealSecret = keypair => {
+    this.revealSecretModal.current.openModal(keypair)
+  }
+
   renderKeypairTable = () => {
     if (this.state.loading) {
       return (
@@ -106,23 +112,36 @@ export default class KeypairManagerModal extends PureComponent {
 
   renderKeypairRow = keypair => {
     return (
-      <tr key={`key-${keypair.address}`} className='hover-inline-block'>
+      <tr key={`key-${keypair.address}`} className='hover-flex'>
         <td>
-          {keypair.name}
-          <Button
-            size='sm'
-            color='transparent'
-            className={'ml-2 text-muted'}
-            onClick={() => this.editName(keypair)}
-          >
-            <i className='fas fa-pencil-alt' />
-          </Button>
+          <div className='d-flex'>
+            {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
+            <IconButton
+              color='transparent'
+              className='ml-2 text-muted hover-show'
+              onClick={() => this.editName(keypair)}
+              icon='fas fa-pencil-alt'
+            />
+          </div>
         </td>
         <td>
-          <code style={{ fontSize: '13px' }}>{keypair.address}</code>
+          <div className='d-flex align-items-center'>
+            <code className='small'>{keypair.address}</code>
+            <span className='text-transparent'>.</span>
+            <DeleteButton
+              color='primary'
+              className='ml-1 hover-show'
+              icon='far fa-eye'
+              textConfirm={`Reveal ${this.props.secretName.toLowerCase()}`}
+              onConfirm={() => this.revealSecret(keypair)}
+            />
+          </div>
         </td>
         <td align='right'>
-          <DeleteButton onConfirm={() => this.deleteKey(keypair)} />
+          <DeleteButton
+            className='hover-show'
+            onConfirm={() => this.deleteKey(keypair)}
+          />
         </td>
       </tr>
     )
@@ -162,6 +181,7 @@ export default class KeypairManagerModal extends PureComponent {
         </Modal>
         <CreateKeypairModal ref={this.createKeypairModal} secretName={this.props.secretName} />
         <ImportKeypairModal ref={this.importKeypairModal} secretName={this.props.secretName} />
+        <RevealSecretModal ref={this.revealSecretModal} secretName={this.props.secretName}/>
         <KeypairNameModal ref={this.keypairNameModal} />
       </React.Fragment>
     )

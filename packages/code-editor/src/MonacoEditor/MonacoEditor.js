@@ -5,7 +5,6 @@ import * as monaco from 'monaco-editor'
 import throttle from 'lodash/throttle'
 
 import registerThemes from './languages/registerThemes'
-// import registerLanguages from './languages/registerLanguages'
 
 export default class MonacoEditor extends Component {
   static propTypes = {
@@ -47,8 +46,6 @@ export default class MonacoEditor extends Component {
   }
 
   createEditorWith (model) {
-    // registerLanguages()
-
     const monacoEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
       model,
       theme: this.props.theme || 'vs',

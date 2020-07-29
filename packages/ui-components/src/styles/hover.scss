@@ -12,16 +12,16 @@
 }
 
 .hover-flex .hover-show {
-  display: none;
+  display: none !important;
 }
 .hover-flex .hover-hide {
-  display: flex;
+  display: flex !important;
 }
 .hover-flex:hover .hover-show {
-  display: flex;
+  display: flex !important;
 }
 .hover-flex:hover .hover-hide {
-  display: none;
+  display: none !important;
 }
 
 .hover-inline .hover-show {

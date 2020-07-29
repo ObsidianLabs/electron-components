@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import {
-  Button,
   Tooltip,
 } from 'reactstrap'
+
+import IconButton from './IconButton'
 
 const deleteButtons = {}
 
@@ -50,43 +51,35 @@ export default class DeleteButton extends PureComponent {
 
   render () {
     const {
+      color = 'danger',
       textConfirm = 'Click again to delete',
-      style,
       icon = 'far fa-trash-alt',
       className = '',
     } = this.props
 
     if (this.state.confirming) {
       return (
-        <Button
-          size='sm'
-          color='danger'
-          key={`confirm-delete-${this.id}`}
+        <IconButton
+          color={color}
           id={`confirm-delete-${this.id}`}
-          color='danger'
           className={className}
-          style={style}
+          icon={icon}
           onClick={this.onConfirm}
         >
-          <i className={icon} />
           <Tooltip placement='top' isOpen target={`confirm-delete-${this.id}`}>
             <i className='fas fa-exclamation-circle' /> {textConfirm}
           </Tooltip>
-        </Button>
+        </IconButton>
       )
     } else {
       return (
-        <Button
-          size='sm'
+        <IconButton
           color='transparent'
-          className={classnames('text-muted', className)}
-          key={`confirm-delete-${this.id}`}
           id={`confirm-delete-${this.id}`}
-          style={style}
+          className={classnames('text-muted', className)}
+          icon={icon}
           onClick={this.showConfirm}
-        >
-          <i className={icon} />
-        </Button>
+        />
       )
     }
   }
