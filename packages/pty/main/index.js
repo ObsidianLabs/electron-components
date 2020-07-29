@@ -1,5 +1,7 @@
 const pty = require('node-pty')
 const defaultShell = require('default-shell')
+const stripAnsi = require('strip-ansi')
+const execa = require('execa')
 
 class Pty {
   constructor (ipcChannel) {
@@ -13,7 +15,7 @@ class Pty {
     // }
 
     let proc
-    this.promise = new Promise((resolve, reject) => {
+    this.promise = new Promise(async (resolve, reject) => {
       let switches
       let shell = defaultShell
       if (process.platform === 'win32') {
@@ -26,6 +28,20 @@ class Pty {
         shell = '/bin/bash'
         switches = ['--noprofile', '--norc', '-i', '-c', cmd]
       }
+
+      if (config.execa) {
+        try {
+          proc = execa(cmd, [], {
+            shell: true,
+            ...config,
+          })
+          const { code, stdout } = await proc;
+          resolve({ code, logs: stripAnsi(stdout) })
+        } catch (error) {
+          resolve({ code: error.code, logs: stripAnsi(error.stdout) })
+        }
+      }
+      
       proc = pty.spawn(shell, switches, {
         env: process.env,
         name: this.ipcChannel.channelName,
@@ -51,7 +67,7 @@ class Pty {
   
       proc.on('exit', code => {
         this.promise = null
-        resolve({ code, logs })
+        resolve({ code, logs: stripAnsi(logs) })
       })
     })
     
