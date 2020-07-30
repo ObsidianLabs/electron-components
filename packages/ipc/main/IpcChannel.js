@@ -50,6 +50,14 @@ class IpcChannel {
     return result
   }
 
+  async cp (command, config) {
+    if (!command.trim()) {
+      return
+    }
+    const result = await this.pty.cp(command.trim(), config)
+    return result
+  }
+
   async fetch (url) {
     return await new Promise((resolve, reject) => {
       const request = net.request(url)
