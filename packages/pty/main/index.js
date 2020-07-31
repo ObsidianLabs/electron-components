@@ -1,5 +1,7 @@
 const pty = require('node-pty')
 const defaultShell = require('default-shell')
+const stripAnsi = require('strip-ansi')
+const { spawn } = require('child_process')
 
 class Pty {
   constructor (ipcChannel) {
@@ -48,13 +50,41 @@ class Pty {
           }
         }
       })
-  
+
       proc.on('exit', code => {
         this.promise = null
         resolve({ code, logs })
       })
     })
     
+    this.promise.proc = proc
+    return this.promise
+  }
+
+  cp (cmd, config = {}) {
+    let proc
+    this.promise = new Promise(resolve => {
+
+      proc = spawn(cmd, [], {
+        shell: process.platform === 'win32' ? 'powershell.exe' : true,
+        ...config
+      })
+
+      let logs = ''
+      proc.stdout.on('data', data => {
+        logs += data
+      })
+
+      proc.stderr.on('data', () => {
+        resolve({ code: -1 })
+      });
+
+      proc.on('close', code => {
+        this.promise = null
+        resolve({ code, logs: stripAnsi(logs) })
+      })
+    })
+
     this.promise.proc = proc
     return this.promise
   }
