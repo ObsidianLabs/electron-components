@@ -17,7 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/ipc": "^0.1.1",
+    "@obsidians/ipc": "^0.1.2",
     "@obsidians/ui-components": "^0.1.0",
     "filehound": "^1.17.4",
     "lodash": "^4.17.15",
