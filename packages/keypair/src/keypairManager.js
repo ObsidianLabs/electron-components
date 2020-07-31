@@ -6,6 +6,11 @@ import { kp } from '@obsidians/sdk'
 class KeypairManager {
   constructor (build) {
     this.channel = new IpcChannel(`${build}-keypair`)
+    this.onKeypairUpdated = null
+  }
+
+  onUpdated (callback) {
+    this.onKeypairUpdated = callback
   }
 
   async loadAllKeypairs () {
@@ -20,16 +25,24 @@ class KeypairManager {
 
   async saveKeypair(name, keypair) {
     await this.channel.invoke('saveKeypair', keypair.address, keypair.secret)
-    this.updateKeypairName(keypair.address, name)
+    await this.updateKeypairName(keypair.address, name)
   }
 
-  updateKeypairName (address, name) {
+  async updateKeypairName (address, name) {
     redux.dispatch('UPDATE_KEYPAIR_NAME', { address, name })
+    if (this.onKeypairUpdated) {
+      const keypairs = await this.loadAllKeypairs()
+      this.onKeypairUpdated(keypairs)
+    }
   }
 
   async deleteKeypair(keypair) {
     await this.channel.invoke('deleteKeypair', keypair.address)
     redux.dispatch('REMOVE_KEYPAIR_NAME', { address: keypair.address })
+    if (this.onKeypairUpdated) {
+      const keypairs = await this.loadAllKeypairs()
+      this.onKeypairUpdated(keypairs)
+    }
   }
 
   async getSigner(address) {
