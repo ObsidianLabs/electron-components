@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import fileOps from '@obsidians/file-ops'
 
 import { Treebeard, decorators, theme } from 'react-treebeard'
 
@@ -131,7 +132,7 @@ export default class FileTree extends PureComponent {
       const node = nodes[i]
       if (node.path === path) {
         return node
-      } else if (node.children && (path.startsWith(`${node.path}/`) || path.startsWith(`${node.path}\\`))) {
+      } else if (node.children && path.startsWith(`${node.path}${fileOps.current.path.sep}`)) {
         node.toggled = true
         if (node.loading) {
           await this.loadDirectory(node)
