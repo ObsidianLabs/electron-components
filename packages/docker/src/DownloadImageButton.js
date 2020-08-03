@@ -8,10 +8,11 @@ import {
   UncontrolledButtonDropdown
 } from '@obsidians/ui-components'
 
-import { IpcChannel } from '@obsidians/ipc'
 import Terminal from '@obsidians/terminal'
 
-export default class DownloadImageModal extends PureComponent {
+import DockerImageChannel from './DockerImageChannel'
+
+export default class DownloadImageButton extends PureComponent {
   constructor (props) {
     super(props)
 
@@ -21,7 +22,10 @@ export default class DownloadImageModal extends PureComponent {
       downloadVersion: '',
     }
     this.modal = React.createRef()
-    this.channel = this.props.channel || new IpcChannel(`docker-image-${this.props.imageName}`)
+  }
+
+  get channel () {
+    return this.props.channel || new DockerImageChannel(this.props.imageName)
   }
 
   componentDidMount () {
@@ -32,7 +36,7 @@ export default class DownloadImageModal extends PureComponent {
     this.setState({ loading: true })
     let versions
     try {
-      versions = await this.channel.invoke('remoteVersions', 10)
+      versions = await this.channel.remoteVersions()
     } catch (e) {
       this.setState({ loading: false })
       console.warn(e)
@@ -75,7 +79,7 @@ export default class DownloadImageModal extends PureComponent {
   }
 
   render () {
-    const imageName = this.props.imageName
+    const imageName = this.channel.imageName
     const {
       installDropdownHeader = 'Available Versions',
       downloadingTitle = `Downloading ${imageName}`,

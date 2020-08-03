@@ -34,8 +34,8 @@ class DockerImageChannel extends IpcChannel {
   }
 
   async any () {
-    const { versions = [] } = await this.versions()
-    return !!versions.length
+    const versions = await this.versions()
+    return !!(versions && versions.length)
   }
 }
 
