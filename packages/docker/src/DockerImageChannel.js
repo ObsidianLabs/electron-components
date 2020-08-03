@@ -2,8 +2,11 @@ import { IpcChannel } from '@obsidians/ipc'
 
 export default class DockerImageChannel extends IpcChannel {
   constructor(imageName) {
-    super(`docker-image-${imageName}`)
-    this.imageName = imageName
+    super('docker-image', imageName)
+  }
+
+  get imageName () {
+    return this.uid
   }
 
   async installed () {

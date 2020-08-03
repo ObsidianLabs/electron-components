@@ -2,10 +2,13 @@ const { IpcChannel } = require('@obsidians/ipc')
 
 class DockerImageChannel extends IpcChannel {
   constructor (imageName, opts = {}) {
-    super(`docker-image-${imageName}`)
-    this.imageName = imageName
+    super('docker-image', imageName)
     this.filter = opts.filter || (() => true)
     this.sort = opts.sort
+  }
+
+  get imageName () {
+    return this.uid
   }
 
   async versions () {
