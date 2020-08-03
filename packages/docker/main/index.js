@@ -1,0 +1,1 @@
+exports.DockerImageChannel = require('./DockerImageChannel')
