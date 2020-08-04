@@ -1,5 +1,3 @@
-import pathParse from 'path-parse'
-
 import * as monaco from 'monaco-editor'
 import fileOps from '@obsidians/file-ops' 
 import notification from '@obsidians/notification'
@@ -56,7 +54,7 @@ class ModelSessionManager {
     if (modeTitle) {
       return modeTitle
     }
-    return tab.text || pathParse(tab.path).base
+    return tab.text || fileOps.current.path.basename(tab.path)
   }
 
   get currentFilePath () {
