@@ -12,7 +12,7 @@ class DockerImageChannel extends IpcChannel {
   }
 
   async versions () {
-    const { logs } = await this.pty.exec(`docker images ${this.imageName} --format "{{json . }}"`)
+    const { logs } = await this.pty.cp(`docker images ${this.imageName} --format "{{json . }}"`)
     let versions = logs.split('\n')
       .filter(Boolean)
       .map(JSON.parse)
