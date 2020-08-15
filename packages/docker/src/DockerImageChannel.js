@@ -3,6 +3,7 @@ import { IpcChannel } from '@obsidians/ipc'
 export default class DockerImageChannel extends IpcChannel {
   constructor(imageName) {
     super('docker-image', imageName)
+    this.eventTarget = new EventTarget()
   }
 
   get imageName () {
@@ -14,7 +15,15 @@ export default class DockerImageChannel extends IpcChannel {
   }
 
   async versions () {
-    return await this.invoke('versions')
+    const versions = await this.invoke('versions')
+    const event = new CustomEvent('versions', { detail: versions })
+    this.eventTarget.dispatchEvent(event)
+    return versions
+  }
+
+  onVersionsRefreshed (callback) {
+    const eventHandler = event => callback(event.detail)
+    this.eventTarget.addEventListener('versions', eventHandler)
   }
 
   async remoteVersions (size = 10) {

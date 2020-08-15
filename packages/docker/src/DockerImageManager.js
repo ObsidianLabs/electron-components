@@ -30,7 +30,8 @@ export default class DockerImageManager extends PureComponent {
   }
 
   componentDidMount () {
-    this.refreshVersions()
+    this.channel.onVersionsRefreshed(this.refreshVersions)
+    this.fetchVersions()
   }
 
   componentDidUpdate (prevProps) {
@@ -38,13 +39,16 @@ export default class DockerImageManager extends PureComponent {
       prevProps.channel !== this.props.channel ||
       prevProps.imageName !== this.props.imageName
     ) {
-      this.refreshVersions()
+      this.fetchVersions()
     }
   }
 
-  refreshVersions = async () => {
+  fetchVersions = () => {
     this.setState({ loading: true })
-    const versions = await this.channel.versions()
+    this.channel.versions()
+  }
+
+  refreshVersions = versions => {
     this.setState({
       installed: versions,
       loading: false,
@@ -55,7 +59,7 @@ export default class DockerImageManager extends PureComponent {
   deleteVersion = async version => {
     this.setState({ loading: true })
     await this.channel.delete(version)
-    await this.refreshVersions()
+    await this.fetchVersions()
   }
 
   renderTableBody = () => {
@@ -112,7 +116,7 @@ export default class DockerImageManager extends PureComponent {
             imageName={imageName}
             channel={this.channel}
             downloadingTitle={downloadingTitle}
-            onDownloaded={this.refreshVersions}
+            onDownloaded={this.fetchVersions}
           />
         }
       >
