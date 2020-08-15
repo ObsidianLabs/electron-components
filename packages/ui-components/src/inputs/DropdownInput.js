@@ -7,7 +7,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-} from '@obsidians/ui-components'
+} from 'reactstrap'
 
 export default class DropdownInput extends PureComponent {
   constructor (props) {
