@@ -27,6 +27,9 @@
   font-size: 90%;
   min-width: auto;
   
+  & .dropdown-header {
+    font-size: 75% !important;
+  }
   & .dropdown-item {
     padding: 0.2rem 0.75rem;
   }
