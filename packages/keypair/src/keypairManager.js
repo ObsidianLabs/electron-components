@@ -7,10 +7,12 @@ class KeypairManager {
   constructor (build) {
     this.channel = new IpcChannel(`${build}-keypair`)
     this.onKeypairUpdated = null
+    this.eventTarget = new EventTarget()
   }
 
   onUpdated (callback) {
-    this.onKeypairUpdated = callback
+    const eventHandler = event => callback(event.detail)
+    this.eventTarget.addEventListener('updated', eventHandler)
   }
 
   async loadAllKeypairs () {
@@ -23,29 +25,27 @@ class KeypairManager {
     return kp.newKeypair()
   }
 
-  async saveKeypair(name, keypair) {
+  async saveKeypair (name, keypair) {
     await this.channel.invoke('saveKeypair', keypair.address, keypair.secret)
     await this.updateKeypairName(keypair.address, name)
   }
 
   async updateKeypairName (address, name) {
     redux.dispatch('UPDATE_KEYPAIR_NAME', { address, name })
-    if (this.onKeypairUpdated) {
-      const keypairs = await this.loadAllKeypairs()
-      this.onKeypairUpdated(keypairs)
-    }
+    const keypairs = await this.loadAllKeypairs()
+    const event = new CustomEvent('updated', { detail: keypairs })
+    this.eventTarget.dispatchEvent(event)
   }
 
-  async deleteKeypair(keypair) {
+  async deleteKeypair (keypair) {
     await this.channel.invoke('deleteKeypair', keypair.address)
     redux.dispatch('REMOVE_KEYPAIR_NAME', { address: keypair.address })
-    if (this.onKeypairUpdated) {
-      const keypairs = await this.loadAllKeypairs()
-      this.onKeypairUpdated(keypairs)
-    }
+    const keypairs = await this.loadAllKeypairs()
+    const event = new CustomEvent('updated', { detail: keypairs })
+    this.eventTarget.dispatchEvent(event)
   }
 
-  async getSigner(address) {
+  async getSigner (address) {
     const secret = await this.channel.invoke('loadSecret', address)
     if (!secret) {
       throw new Error('No secret key for address: ' + address)
