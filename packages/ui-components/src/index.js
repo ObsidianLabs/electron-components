@@ -9,6 +9,7 @@ export { default as LoadingScreen } from './Screen/LoadingScreen'
 export { default as DebouncedInput } from './inputs/DebouncedInput'
 export { default as DebouncedFormGroup } from './inputs/DebouncedFormGroup'
 export { default as Dropdown } from './inputs/Dropdown'
+export { default as DropdownInput } from './inputs/DropdownInput'
 export { default as MultiSelect } from './inputs/MultiSelect'
 
 export { default as IconButton } from './buttons/IconButton'

@@ -1,7 +1,7 @@
 {
-  "name": "@obsidians/navbar",
+  "name": "@obsidians/docker",
   "version": "0.1.0",
-  "description": "Navbar",
+  "description": "Docker-related React components and IpcChannel",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
   "source": "src/index.js",
@@ -17,8 +17,9 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "react-contextmenu": "^2.13.0",
-    "reactstrap": "^8.4.1"
+    "@obsidians/ipc": "^0.1.1",
+    "@obsidians/terminal": "^0.1.1",
+    "@obsidians/ui-components": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -41,9 +42,7 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
+    "react-dom": "^16.0.0"
   },
   "eslintConfig": {
     "extends": "react-app"
