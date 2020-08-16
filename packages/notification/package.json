@@ -31,7 +31,6 @@
     "@svgr/rollup": "^5.2.0",
     "babel-eslint": "10.0.3",
     "cross-env": "^6.0.3",
-    "node-sass": "^4.13.1",
     "rollup": "^2.0.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
