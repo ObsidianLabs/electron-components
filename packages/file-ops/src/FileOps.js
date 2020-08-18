@@ -95,9 +95,9 @@ export default class FileOps {
 
   getDockerMountPath (mountPath) {
     if (process.env.OS_IS_WINDOWS) {
-      const { root, dir } = this.path.parse(mountPath)
+      const { root } = this.path.parse(mountPath)
       const pathRoot = root.split(':')[0].toLowerCase()
-      const pathWithoutRoot = dir.split(':').pop().split('\\').join('/')
+      const pathWithoutRoot = mountPath.split(':').pop().split('\\').join('/')
       return `/${pathRoot}${pathWithoutRoot}`
     }
     return mountPath
