@@ -1,4 +1,5 @@
 const keytar = require('keytar')
+const { randomBytes } = require('crypto')
 
 const { IpcChannel } = require('@obsidians/ipc')
 
@@ -21,8 +22,8 @@ class KeypairManager extends IpcChannel {
   }
 
   async newSecret () {
-    const { logs: secret } = await this.pty.exec('openssl rand -hex 32')
-    return `0x${secret.trim()}`
+    const privKey = randomBytes(32).toString('hex')
+    return `0x${privKey}`
   }
 
   async saveKeypair (address, secret) {
