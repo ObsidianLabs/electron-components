@@ -93,7 +93,7 @@ export default class FileOps {
     }
   }
 
-  async getDockerMountPath (mountPath) {
+  getDockerMountPath (mountPath) {
     if (process.env.OS_IS_WINDOWS) {
       const { root, dir } = this.path.parse(mountPath)
       const pathRoot = root.split(':')[0].toLowerCase()
