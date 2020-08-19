@@ -75,8 +75,8 @@ class Pty {
         logs += data
       })
 
-      proc.stderr.on('data', () => {
-        resolve({ code: -1 })
+      proc.stderr.on('data', data => {
+        resolve({ code: -1, logs: data.toString() })
       });
 
       proc.on('close', code => {
