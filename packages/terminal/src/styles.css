@@ -43,8 +43,8 @@
 
 .obsidians-terminal .xterm-form>.xterm-form-icon {
   color: var(--color-text);
-  width: 23.7px;
-  font-size: 10.4px;
+  width: 22px;
+  font-size: 9px;
   padding-top: 0.5px;
   padding-left: 9px;
   line-height: 16px;
@@ -64,7 +64,7 @@
   color: var(--color-text);
   font-family: 'Hack';
   /* font-size: 95.85%; */
-  font-size: 12.45px;
+  font-size: 11.64px;
   line-height: 16px;
   height: 16px;
 }
