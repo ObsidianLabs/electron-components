@@ -25,7 +25,7 @@ export default class Terminal extends PureComponent {
     this.termRef = React.createRef()
     this.inputRef = React.createRef()
 
-    this.terminalChannel = initTerminalChannel(this.props.logId)
+    this.terminalChannel = initTerminalChannel(this.props.logId, this.props.cwd)
     this.terminalChannel.onData(this.onIpcData)
   }
 
@@ -193,12 +193,19 @@ export default class Terminal extends PureComponent {
     return result
   }
 
+  execAsChildProcess = async (cmd, config) => {
+    const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
+    await this.terminalChannel.invoke('exec', cmd, mergedConfig)
+  }
+
   onInputSubmit = async (cmd, config) => {
     this.scrollToBottom()
 
     const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
-    this.writeToTerminal(`${chalk.bold.gray('>')} ${colorCommand(cmd)}\n\r`)
-    return await this.terminalChannel.invoke('exec', cmd, mergedConfig)
+    if (!process.env.OS_IS_WINDOWS) {
+      this.writeToTerminal(`${chalk.bold.gray('>')} ${colorCommand(cmd)}\n\r`)
+    }
+    return await this.terminalChannel.invoke('run', cmd, mergedConfig)
   }
 
   onLogReceived (message) {

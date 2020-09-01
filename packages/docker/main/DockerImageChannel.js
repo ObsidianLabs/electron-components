@@ -12,7 +12,7 @@ class DockerImageChannel extends IpcChannel {
   }
 
   async versions () {
-    const { logs } = await this.pty.cp(`docker images ${this.imageName} --format "{{json . }}"`)
+    const { logs } = await this.exec(`docker images ${this.imageName} --format "{{json . }}"`)
     let versions = logs.split('\n')
       .filter(Boolean)
       .map(JSON.parse)
@@ -24,7 +24,7 @@ class DockerImageChannel extends IpcChannel {
   }
 
   async deleteVersion (version) {
-    await this.pty.exec(`docker rmi ${this.imageName}:${version}`)
+    await this.exec(`docker rmi ${this.imageName}:${version}`)
   }
 
   async remoteVersions (size = 10) {

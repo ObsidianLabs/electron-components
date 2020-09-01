@@ -19,7 +19,6 @@ export default class RevealSecretModal extends PureComponent {
     this.setState({ address: keypair.address })
     try {
       const secret = await keypairManager.getSigner(keypair.address)
-      console.log(secret)
       this.setState({ secret })
     } catch (e) {}
     this.modal.current.openModal()

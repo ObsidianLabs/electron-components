@@ -6,7 +6,6 @@ export default class ElectronFileOps extends FileOps {
     const path = window.require('path')
     super(fs, path)
 
-    this.cp = window.require('child_process')
     this.electron = window.require('electron')
     this.trash = window.require('trash')
 
@@ -70,7 +69,7 @@ export default class ElectronFileOps extends FileOps {
   }
 
   openInTerminal (filePath) {
-    return this.cp.exec(`open -a Terminal "${filePath}"`)
+    return this.exec(`open -a Terminal "${filePath}"`)
     // exec(`start cmd @cmd /k pushd "${node.path}"`)
   }
 

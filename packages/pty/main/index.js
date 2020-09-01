@@ -1,106 +1,106 @@
 const pty = require('node-pty')
 const defaultShell = require('default-shell')
-const stripAnsi = require('strip-ansi')
-const { spawn } = require('child_process')
 
 class Pty {
-  constructor (ipcChannel) {
+  constructor (ipcChannel, cwd) {
     this.ipcChannel = ipcChannel
+    this.cwd = cwd
     this.promise = null
+    this.config = {}
   }
 
-  exec (cmd, config = {}) {
+  get proc () {
+    if (!this._proc) {
+      this._proc = this.createProc()
+    }
+    return this._proc
+  }
+
+  createProc () {
+    let switches
+    let shell = defaultShell
+    if (process.platform === 'win32') {
+      shell = 'powershell.exe'
+      switches = ['-NoLogo', '-NoProfile']
+    } else if (defaultShell.indexOf('zsh') > -1) {
+      switches = ['--no-globalrcs', '--no-rcs', '-i']
+    } else {
+      shell = '/bin/bash'
+      switches = ['--noprofile', '--norc', '-i']
+    }
+
+    const proc = pty.spawn(shell, switches, {
+      env: process.env,
+      name: this.ipcChannel.channelName,
+      cols: 87,
+      rows: 1,
+      useConpty: false,
+      cwd: this.cwd,
+    })
+
+    let logs = ''
+    proc.onData(data => {
+      const indexOfPs = data.indexOf(`PS ${this.cwd}>\u001b[0K`)
+      if (indexOfPs > -1) {
+        if (indexOfPs > 0) {
+          logs += data.slice(0, indexOfPs)
+          this.ipcChannel.send('data', data.slice(0, indexOfPs))
+        }
+        this.resolve && this.resolve({ logs })
+        return
+      }
+      logs += data
+      this.ipcChannel.send('data', data)
+      if (this.config.resolveOnFirstLog) {
+        this.resolve({ logs })
+      }
+      if (this.config.resolveOnLog) {
+        if (this.config.resolveOnLog.test(logs)) {
+          this.resolve({ logs })
+        }
+      }
+    })
+
+    // proc._agent._$onProcessExit(code => {
+    //   console.log('onProcessExit')
+    //   // console.log(code)
+    // })
+
+    proc.onExit(e => {
+      this.promise = null
+      this.resolve({ code: e.exitCode, logs })
+    })
+
+    return proc
+  }
+
+  run (cmd, config = {}) {
     // if (this.promise) {
     //   throw new Error('Pty is already running a process.')
     // }
+    this.config = config
 
-    let proc
     this.promise = new Promise((resolve, reject) => {
-      let switches
-      let shell = defaultShell
-      if (process.platform === 'win32') {
-        // switches = ['/c', ...cmd]
-        shell = 'powershell.exe'
-        switches = ['-NoLogo', '-NoProfile', '-Command', cmd]
-      } else if (defaultShell.indexOf('zsh') > -1) {
-        switches = ['--no-globalrcs', '--no-rcs', '-i', '-c', cmd]
-      } else {
-        shell = '/bin/bash'
-        switches = ['--noprofile', '--norc', '-i', '-c', cmd]
-      }
-      proc = pty.spawn(shell, switches, {
-        env: process.env,
-        name: this.ipcChannel.channelName,
-        cols: 87,
-        rows: 19,
-        experimentalUseConpty: false,
-        ...config,
-      })
-
-      let logs = ''
-      proc.on('data', data => {
-        logs += data
-        this.ipcChannel.send('data', data)
-        if (config.resolveOnFirstLog) {
-          resolve({ logs })
-        }
-        if (config.resolveOnLog) {
-          if (config.resolveOnLog.test(logs)) {
-            resolve({ logs })
-          }
-        }
-      })
-
-      proc.on('exit', code => {
-        this.promise = null
-        resolve({ code, logs })
-      })
+      this.resolve = resolve
+      this.reject = reject
+      this.proc.write(`${cmd}\r`)
     })
     
-    this.promise.proc = proc
-    return this.promise
-  }
-
-  cp (cmd, config = {}) {
-    let proc
-    this.promise = new Promise(resolve => {
-
-      proc = spawn(cmd, [], {
-        shell: process.platform === 'win32' ? 'powershell.exe' : true,
-        ...config
-      })
-
-      let logs = ''
-      proc.stdout.on('data', data => {
-        logs += data
-      })
-
-      proc.stderr.on('data', data => {
-        resolve({ code: -1, logs: data.toString() })
-      });
-
-      proc.on('close', code => {
-        this.promise = null
-        resolve({ code, logs: stripAnsi(logs) })
-      })
-    })
-
-    this.promise.proc = proc
     return this.promise
   }
 
   resize ({ cols, rows }) {
-    if (this.promise) {
-      this.promise.proc.resize(cols, rows)
+    if (this.proc) {
+      this.proc.resize(cols, rows)
     }
   }
 
   kill (signal) {
     if (this.promise) {
-      this.promise.proc.write(Uint8Array.from([0x03, 0x0d])) // send ctrl+c
+      this.proc.write(Uint8Array.from([0x03, 0x0d])) // send ctrl+c
       // this.proc.kill()
       // reject(new Error(signal))
-      return this.promise.catch(e => true)
+      // return this.promise.catch(e => true)
     }
     return Promise.resolve()
   }

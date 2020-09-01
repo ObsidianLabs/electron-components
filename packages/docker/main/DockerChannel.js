@@ -7,12 +7,12 @@ class DockerChannel extends IpcChannel {
   }
 
   async check () {
-    const result = await this.cp('docker info')
+    const result = await this.exec('docker info')
     return !result.code
   }
 
   async version () {
-    const result = await this.cp('docker -v')
+    const result = await this.exec('docker -v')
     if (result.code) {
       return ''
     }
@@ -21,21 +21,21 @@ class DockerChannel extends IpcChannel {
 
   async launch () {
     if (os.type() === 'Darwin') {
-      this.cp('open /Applications/Docker.app')
+      this.exec('open /Applications/Docker.app')
     } else if (os.type() === 'Linux') {
       return false
     } else {
       // Try to start Docker Toolbox
-      const toolboxResult = await this.cp('docker-machine start')
+      const toolboxResult = await this.exec('docker-machine start')
       if (toolboxResult.code) {
         // Get Docker Desktop path
-        const { logs = ''} = await this.cp('(Get-Command docker).Path')
+        const { logs = ''} = await this.exec('(Get-Command docker).Path')
         const desktopPath = logs.replace('Resources\\bin\\docker.exe', 'Docker Desktop.exe').trim()
         if (!desktopPath.endsWith('Desktop.exe')) {
           return false
         }
         // Try to start Docker Desktop
-        const desktopResult = await this.cp(`Start-Process "${desktopPath}"`)
+        const desktopResult = await this.exec(`Start-Process "${desktopPath}"`)
         if (desktopResult.code) {
           return false
         }

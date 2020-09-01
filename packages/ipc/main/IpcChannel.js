@@ -1,14 +1,14 @@
 const { ipcMain, net } = require('electron')
-const Pty = require('@obsidians/pty')
 
 const ipc = require('./ipc')
+const ChildProcess = require('./ChildProcess')
 
 class IpcChannel {
   constructor(channel = 'default', uid = '') {
     this.ipc = ipc
     this.channel = channel
     this.uid = uid
-    this.pty = new Pty(this)
+    this.cp = new ChildProcess()
     this.start()
   }
 
@@ -46,16 +46,7 @@ class IpcChannel {
     if (!command.trim()) {
       return
     }
-    const result = await this.pty.exec(command.trim(), config)
-    return result
-  }
-
-  async cp (command, config) {
-    if (!command.trim()) {
-      return
-    }
-    const result = await this.pty.cp(command.trim(), config)
-    return result
+    return await this.cp.exec(command.trim(), config)
   }
 
   async fetch (url) {

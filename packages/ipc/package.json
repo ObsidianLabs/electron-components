@@ -7,7 +7,6 @@
   "main": "main/index.js",
   "browser": "src/index.js",
   "dependencies": {
-    "@obsidians/pty": "^0.9.1"
   },
   "peerDependencies": {
     "electron": "^8.0.0"

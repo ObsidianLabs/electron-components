@@ -17,6 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@obsidians/file-ops": "^0.1.0",
     "@obsidians/ipc": "^0.1.2",
     "@obsidians/notification": "^0.1.0",
     "@obsidians/pty": "^0.9.1",
