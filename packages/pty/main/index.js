@@ -9,96 +9,74 @@ class Pty {
     this.config = {}
   }
 
-  get proc () {
-    if (!this._proc) {
-      this._proc = this.createProc()
-    }
-    return this._proc
-  }
-
-  createProc () {
+  createProc (cmd, config, { resolve, reject }) {
     let switches
     let shell = defaultShell
     if (process.platform === 'win32') {
       shell = 'powershell.exe'
-      switches = ['-NoLogo', '-NoProfile']
+      switches = ['-NoLogo', '-NoProfile', '-Command', cmd]
     } else if (defaultShell.indexOf('zsh') > -1) {
-      switches = ['--no-globalrcs', '--no-rcs', '-i']
+      switches = ['--no-globalrcs', '--no-rcs', '-i', '-c', cmd]
     } else {
       shell = '/bin/bash'
-      switches = ['--noprofile', '--norc', '-i']
+      switches = ['--noprofile', '--norc', '-i', '-c', cmd]
     }
 
     const proc = pty.spawn(shell, switches, {
       env: process.env,
       name: this.ipcChannel.channelName,
-      cols: 87,
-      rows: 1,
+      cols: this.cols || 87,
+      rows: this.rows || 1,
       useConpty: false,
       cwd: this.cwd,
+      ...config,
     })
 
     let logs = ''
     proc.onData(data => {
-      const indexOfPs = data.indexOf(`PS ${this.cwd}>\u001b[0K`)
-      if (indexOfPs > -1) {
-        if (indexOfPs > 0) {
-          logs += data.slice(0, indexOfPs)
-          this.ipcChannel.send('data', data.slice(0, indexOfPs))
-        }
-        this.resolve && this.resolve({ logs })
-        return
-      }
       logs += data
       this.ipcChannel.send('data', data)
-      if (this.config.resolveOnFirstLog) {
-        this.resolve({ logs })
+      if (config.resolveOnFirstLog) {
+        resolve({ logs })
       }
-      if (this.config.resolveOnLog) {
-        if (this.config.resolveOnLog.test(logs)) {
-          this.resolve({ logs })
+      if (config.resolveOnLog) {
+        if (config.resolveOnLog.test(logs)) {
+          resolve({ logs })
         }
       }
     })
 
-    // proc._agent._$onProcessExit(code => {
-    //   console.log('onProcessExit')
-    //   // console.log(code)
-    // })
-
     proc.onExit(e => {
-      this.promise = null
-      this.resolve({ code: e.exitCode, logs })
+      this.proc = null
+      resolve({ code: e.exitCode, logs })
     })
 
     return proc
   }
 
   run (cmd, config = {}) {
-    // if (this.promise) {
-    //   throw new Error('Pty is already running a process.')
-    // }
-    this.config = config
+    if (this.proc) {
+      throw new Error('Pty is already running a process.')
+    }
 
-    this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve
-      this.reject = reject
-      this.proc.write(`${cmd}\r`)
+    return new Promise((resolve, reject) => {
+      this.proc = this.createProc(cmd, config, { resolve, reject })
     })
-    
-    return this.promise
   }
 
   resize ({ cols, rows }) {
+    this.cols = cols
+    this.rows = rows
     if (this.proc) {
       this.proc.resize(cols, rows)
     }
   }
 
   kill (signal) {
-    if (this.promise) {
+    if (this.proc) {
+      console.log('kill')
       this.proc.write(Uint8Array.from([0x03, 0x0d])) // send ctrl+c
-      // this.proc.kill()
+      this.proc.destroy()
       // reject(new Error(signal))
       // return this.promise.catch(e => true)
     }

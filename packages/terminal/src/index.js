@@ -108,7 +108,7 @@ export default class Terminal extends PureComponent {
     const bgColor = getColor('--color-bg2')
 
     const term = new XTerm({
-      fontSize: 13,
+      fontSize: 12,
       fontFamily: this.props.font,
       theme: {
         foreground: color,
@@ -202,9 +202,7 @@ export default class Terminal extends PureComponent {
     this.scrollToBottom()
 
     const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
-    if (!process.env.OS_IS_WINDOWS) {
-      this.writeToTerminal(`${chalk.bold.gray('>')} ${colorCommand(cmd)}\n\r`)
-    }
+    this.writeToTerminal(`${chalk.bold.gray('>')} ${colorCommand(cmd)}\n\r`)
     return await this.terminalChannel.invoke('run', cmd, mergedConfig)
   }
 

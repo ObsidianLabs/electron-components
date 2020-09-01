@@ -8,8 +8,8 @@ class TerminalChannelManager extends IpcChannel {
   }
 
   create (logId, cwd) {
-    // TODO if cwd change, need to update TerminalChannel
     if (this.terminals[logId]) {
+      this.terminals[logId].pty.cwd = cwd
       return
     }
     const handler = new TerminalChannel(logId, cwd)
