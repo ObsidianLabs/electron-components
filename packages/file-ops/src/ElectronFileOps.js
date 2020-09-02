@@ -10,6 +10,7 @@ export default class ElectronFileOps extends FileOps {
     this.trash = window.require('trash')
 
     this.homePath = this.electron.remote.app.getPath('home')
+    this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
   }
 
   onFocus (handler) {
@@ -20,10 +21,10 @@ export default class ElectronFileOps extends FileOps {
     this.electron.ipcRenderer.on('off-focus', handler)
   }
 
-  async openNewFile (defaultPath = this.homePath) {
+  async openNewFile (defaultPath = this.workspace) {
     const result = await this.electron.remote.dialog.showOpenDialog({
       properties: ['openFile'],
-      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.homePath, defaultPath),
+      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       filters: [
         // { name: 'all', extensions: ['cpp', 'hpp', 'wasm', 'abi', 'md', 'js', 'json', 'c', 'h', 'o'] }
       ]
@@ -37,10 +38,10 @@ export default class ElectronFileOps extends FileOps {
     }
   }
 
-  async chooseFolder (defaultPath = this.homePath) {
+  async chooseFolder (defaultPath = this.workspace) {
     const result = await this.electron.remote.dialog.showOpenDialog({
       buttonLabel: 'Open',
-      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.homePath, defaultPath),
+      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       properties: ['openDirectory', 'createDirectory']
     })
 

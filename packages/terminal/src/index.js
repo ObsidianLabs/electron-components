@@ -8,6 +8,7 @@ import chalk from 'chalk'
 
 import { getColor } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
+import fileOps from '@obsidians/file-ops'
 
 import 'xterm/css/xterm.css'
 
@@ -248,6 +249,7 @@ Terminal.propTypes = {
 }
 
 Terminal.defaultProps = {
+  cwd: fileOps.current.workspace,
   height: '100%',
   font: 'Hack, Menlo, monospace',
   className: '',
