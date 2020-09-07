@@ -62,7 +62,7 @@ export default class MultiSelect extends PureComponent {
               {props.children}
             </div>
           ),
-          ValueContainer: props => <div className='form-control'><components.ValueContainer {...props} className='p-0' /></div>,
+          ValueContainer: props => <div className='form-control h-auto'><components.ValueContainer {...props} className='p-0' /></div>,
           MultiValueLabel: props => <div {...props.innerProps} onClick={() => this.onClickLabel(props.data)} onMouseDown={event => event.stopPropagation()}>{props.children}</div>,
           IndicatorsContainer: props => <div className='input-group-append'>{props.children}</div>,
           DropdownIndicator: () => <button className="dropdown-toggle btn btn-secondary" />,
