@@ -13,7 +13,6 @@ theme.tree.base = {
   ...theme.tree.base,
   position: 'relative',
   display: 'block',
-  overflow: 'hidden',
   background: 'transparent',
   fontFamily: 'inherit',
   paddingLeft: '12px',
@@ -198,12 +197,14 @@ export default class FileTree extends PureComponent {
     )
 
     return (
-      <Treebeard
-        style={theme}
-        data={this.state.treeData}
-        decorators={decorators}
-        onToggle={this.onToggle}
-      />
+      <div className='d-flex align-items-stretch flex-column h-100' style={{ overflowY: 'auto' }}>
+        <Treebeard
+          style={theme}
+          data={this.state.treeData}
+          decorators={decorators}
+          onToggle={this.onToggle}
+        />
+      </div>
     )
   }
 }

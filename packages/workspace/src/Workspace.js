@@ -204,7 +204,7 @@ export default class Workspace extends Component {
             return size
           }}
         >
-          <div className='d-flex flex-column align-items-stretch'>
+          <div className='d-flex flex-column align-items-stretch h-100'>
             <div className='d-flex border-bottom-1'>
               <ToolbarButton
                 id='new'
