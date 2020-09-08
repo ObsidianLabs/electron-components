@@ -11,6 +11,7 @@ export default class ElectronFileOps extends FileOps {
 
     this.homePath = this.electron.remote.app.getPath('home')
     this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
+    this.ensureDirectory(this.workspace)
   }
 
   onFocus (handler) {

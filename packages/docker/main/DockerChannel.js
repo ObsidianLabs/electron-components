@@ -8,7 +8,7 @@ class DockerChannel extends IpcChannel {
 
   async check () {
     const result = await this.exec('docker info')
-    return !result.code
+    return !result.code || result.logs.startsWith('WARNING:')
   }
 
   async version () {
