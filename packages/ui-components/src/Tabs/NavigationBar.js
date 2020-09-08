@@ -93,7 +93,7 @@ export default class NavigationBar extends PureComponent {
 
   onMouseUp = event => {
     if (this.noSelection) {
-      if (this.selection.start === this.selection.end) {
+      if (this.selection && this.selection.start === this.selection.end) {
         event.target.select()
       }
     }
