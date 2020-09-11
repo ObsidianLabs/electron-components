@@ -16,7 +16,7 @@ export default class TreeNodeContextMenu extends PureComponent {
     }
 
     return (
-      <MenuItem 
+      <MenuItem
         key={`menu-item-${index}`}
         onClick={onClick}
       >

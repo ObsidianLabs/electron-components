@@ -188,13 +188,19 @@ export default class FileTree extends PureComponent {
       )
     }
 
-    decorators.Container = props => (
-      <TreeNodeContainer
-        {...props}
-        contextMenu={this.props.contextMenu}
-        readonly={this.props.readonly}
-      />
-    )
+    decorators.Container = props => {
+      let contextMenu = this.props.contextMenu
+      if (typeof contextMenu === 'function') {
+        contextMenu = contextMenu(props.node)
+      }
+      return (
+        <TreeNodeContainer
+          {...props}
+          contextMenu={contextMenu}
+          readonly={this.props.readonly}
+        />
+      )
+    }
 
     return (
       <div className='d-flex align-items-stretch flex-column h-100' style={{ overflowY: 'auto' }}>

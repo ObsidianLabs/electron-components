@@ -173,6 +173,7 @@ export default class Workspace extends Component {
       Terminal = <div></div>,
       defaultSize,
       readonly = false,
+      makeContextMenu = x => x,
     } = this.props
 
     const {
@@ -220,7 +221,7 @@ export default class Workspace extends Component {
               initialPath={initialFile}
               onSelect={this.openFile}
               readonly={readonly}
-              contextMenu={contextMenu}
+              contextMenu={makeContextMenu(contextMenu)}
             />
           </div>
           <SplitPane
