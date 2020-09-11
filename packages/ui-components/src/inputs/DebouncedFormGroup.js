@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 import {
   Label,
@@ -11,15 +12,16 @@ import DebouncedInput from './DebouncedInput'
 export default forwardRef(DebouncedFormGroup)
 
 function DebouncedFormGroup (props, ref) {
-  const { label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, ...otherProps } = props
+  const { size, label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, ...otherProps } = props
 
   return (
-    <FormGroup className={formGroupClassName}>
-      <Label>{label}</Label>
+    <FormGroup className={classnames(size === 'sm' && 'mb-2', formGroupClassName)}>
+      <Label className={classnames(size === 'sm' && 'mb-1 small font-weight-bold')}>{label}</Label>
       {
         inputType === 'input' &&
         <DebouncedInput
           ref={ref}
+          size={size}
           disabled={disabled}
           placeholder={placeholder}
           {...otherProps}

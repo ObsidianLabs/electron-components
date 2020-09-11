@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 
 import {
   InputGroupAddon,
+  Button,
 } from 'reactstrap'
 
 import Select, { components } from 'react-select'
@@ -46,6 +48,8 @@ export default class MultiSelect extends PureComponent {
   }
 
   render () {
+    const { size, addon, value, options } = this.props
+    
     return (
       <Select
         isMulti
@@ -56,9 +60,14 @@ export default class MultiSelect extends PureComponent {
         components={{
           Control: props => (
             <div onMouseDown={props.innerProps.onMouseDown} className='input-group input-group-sm'>
-              <InputGroupAddon addonType='prepend'>
-                {this.props.addon}
-              </InputGroupAddon>
+              { addon
+                ? <InputGroupAddon addonType='prepend'>
+                    <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
+                      <div className='w-5'>{addon}</div>
+                    </Button>
+                  </InputGroupAddon>
+                : null
+              }
               {props.children}
             </div>
           ),
@@ -73,8 +82,8 @@ export default class MultiSelect extends PureComponent {
           GroupHeading: props => <h6 className='dropdown-header'>{props.children}</h6>,
           Option: props => props.data.type === 'divider' ? <div className='dropdown-divider' /> : <div className='dropdown-item' {...props.innerProps}>{props.children}</div>,
         }}
-        value={this.props.value}
-        options={this.props.options}
+        value={value}
+        options={options}
         onChange={this.onChange}
       />
     )

@@ -6,6 +6,7 @@ import {
   InputGroup,
   Input,
   InputGroupAddon,
+  Button,
   FormText,
   FormFeedback,
 } from 'reactstrap'
@@ -76,7 +77,12 @@ export default class DebouncedInput extends PureComponent {
           size={size}
           className={classnames(inputGroupClassName, typeof invalid === 'boolean' && (invalid ? 'is-invalid' : 'is-valid'))}
         >
-          { addon ? <InputGroupAddon addonType='prepend'>{addon}</InputGroupAddon> : null }
+          { addon 
+            ? <InputGroupAddon addonType='prepend'>
+                <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+              </InputGroupAddon>
+            : null
+          }
           <Input
             innerRef={this.input}
             bsSize={size}

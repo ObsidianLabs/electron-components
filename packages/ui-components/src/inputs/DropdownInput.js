@@ -1,9 +1,13 @@
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 
 import {
   FormGroup,
   Label,
-  UncontrolledButtonDropdown,
+  InputGroup,
+  InputGroupAddon,
+  Button,
+  InputGroupButtonDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
@@ -13,6 +17,7 @@ export default class DropdownInput extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
+      dropdownOpen: false,
       selected: this.props.value
     }
   }
@@ -21,6 +26,10 @@ export default class DropdownInput extends PureComponent {
     if (this.props.value !== prevProps.value) {
       this.setState({ selected: this.props.value })
     }
+  }
+
+  toggleDropdown = () => {
+    this.setState({ dropdownOpen: !this.state.dropdownOpen })
   }
 
   findSelectedOption = (options, id) => {
@@ -97,25 +106,45 @@ export default class DropdownInput extends PureComponent {
 
   render () {
     const {
+      size,
       label,
+      addon,
       options = [],
     } = this.props
 
     const selectedOption = this.findSelectedOption(options, this.state.selected)
 
     return (
-      <FormGroup>
-        <Label>{label}</Label>
-        <UncontrolledButtonDropdown className='btn-block' direction='down' >
-          <DropdownToggle caret className='bg2 d-flex align-items-center justify-content-between'>
-            {this.renderText(selectedOption)}
-          </DropdownToggle>
-          <DropdownMenu className='w-100'>
-            {this.renderOptions(options, this.state.selected)}
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
+      <FormGroup className={classnames(size === 'sm' && 'mb-2')}>
+        <Label className={classnames(size === 'sm' && 'mb-1 small font-weight-bold')}>{label}</Label>
+        <InputGroup
+          size={size}
+          className='flex-nowrap'
+        >
+          <InputGroupAddon addonType='prepend'>
+          { addon 
+            ? <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+            : null
+          }
+          </InputGroupAddon>
+          <InputGroupButtonDropdown
+            addonType={addon && 'append'}
+            size={size}
+            direction='down'
+            className='p-relative flex-grow-1'
+            style={{ width: 0 }}
+            isOpen={this.state.dropdownOpen}
+            toggle={this.toggleDropdown}
+          >
+            <DropdownToggle caret className='bg2 d-flex w-100 align-items-center justify-content-between overflow-hidden'>
+              {this.renderText(selectedOption)}
+            </DropdownToggle>
+            <DropdownMenu className={classnames('w-100', size && `dropdown-menu-${size}`)}>
+              {this.renderOptions(options, this.state.selected)}
+            </DropdownMenu>
+          </InputGroupButtonDropdown>
+        </InputGroup>
       </FormGroup>
     )
-
   }
 }
