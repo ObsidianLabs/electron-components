@@ -1,3 +1,4 @@
+import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
 
 const SEVERITIES = {
@@ -48,7 +49,13 @@ export default class MonacoEditorModelSession {
     return this._model
   }
   get filePath () {
-    return decodeURIComponent(this._model.uri.toString().replace('file://', ''))
+    let filePath = decodeURIComponent(this._model.uri.toString().replace('file://', ''))
+    if (process.env.OS_IS_WINDOWS) {
+      filePath = fileOps.current.path.normalize(filePath.substr(1))
+      const [root, others] = filePath.split(':')
+      filePath = `${root.toUpperCase()}:${others}`
+    }
+    return filePath
   }
   get CustomTab () {
     return this._CustomTab
