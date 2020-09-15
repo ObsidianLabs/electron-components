@@ -17,7 +17,7 @@ class ChildProcess {
 
       proc.stderr.on('data', data => {
         resolve({ code: -1, logs: data.toString() })
-      });
+      })
 
       proc.on('close', code => {
         this.promise = null
