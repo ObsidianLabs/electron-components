@@ -1,7 +1,5 @@
 import fileOps from '@obsidians/file-ops'
 
-const { remote } = window.require('electron')
-
 const handlers = {}
 
 const showInFinder = node => {
@@ -18,7 +16,7 @@ const openInTerminal = node => {
 }
 
 const deleteFile = async node => {
-  const { response } = await remote.dialog.showMessageBox({
+  const { response } = await fileOps.current.showMessageBox({
     message: `Are you sure you want to delete ${node.path}?`,
     buttons: ['Move to Trash', 'Cancel']
   })

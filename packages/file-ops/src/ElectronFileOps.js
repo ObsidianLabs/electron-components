@@ -54,6 +54,14 @@ export default class ElectronFileOps extends FileOps {
     }
   }
 
+  showOpenDialog (options) {
+    return this.electron.remote.dialog.showOpenDialog(this.electron.remote.getCurrentWindow(), options)
+  }
+
+  showMessageBox ({ message, buttons }) {
+    return this.electron.remote.dialog.showMessageBox({ message, buttons })
+  }
+
   openItem (filePath) {
     return this.electron.shell.openItem(filePath)
   }
