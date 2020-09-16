@@ -1,4 +1,5 @@
 import ElectronFileOps from './ElectronFileOps'
+import WebFileOps from './WebFileOps'
 
 class FileOpsManager {
   constructor () {
@@ -10,6 +11,9 @@ class FileOpsManager {
     this._fsType = fsType
     if (fsType === 'electron') {
       this._fileOps = new ElectronFileOps()
+      return
+    } else if (fsType === 'web') {
+      this._fileOps = new WebFileOps()
       return
     }
     throw new Error(`Unknown fsType "${this.fsType}".`)
