@@ -1,4 +1,4 @@
-const { ipcRenderer } = window.require('electron')
+import ipcRenderer from './ipcRenderer' 
 
 export default class IpcChannel {
   constructor(channel = 'default', uid = '') {
