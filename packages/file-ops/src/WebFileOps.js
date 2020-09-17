@@ -1,14 +1,10 @@
 import path from 'path-browserify'
 import FileOps from './FileOps'
+import RemoteFs from './RemoteFs'
 
 export default class WebFileOps extends FileOps {
   constructor () {
-    const fs = {
-      promises: {
-        readFile: () => '',
-        writeFile: () => {},
-      }
-    }
+    const fs = new RemoteFs()
     super(fs, path)
 
     this.electron = {}
@@ -68,7 +64,7 @@ export default class WebFileOps extends FileOps {
   }
 
   getAppVersion () {
-    return 'v0.3.0'
+    return process.env.APP_VERSION
   }
 
   openLink (href) {
