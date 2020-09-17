@@ -21,7 +21,7 @@ if (window.require) {
           case 'check':
             return
         }
-      } else if (channel.startsWith('obsidians-ipc-ckb-keypair')) {
+      } else if (channel.startsWith(`obsidians-ipc-${process.env.BUILD}-keypair`)) {
         switch (method) {
           case 'allKeypairAddresses':
             return []
