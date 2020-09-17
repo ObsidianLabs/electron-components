@@ -8,15 +8,19 @@ class FileOpsManager {
   }
 
   set fsType (fsType) {
-    this._fsType = fsType
     if (fsType === 'electron') {
+      this._fsType = fsType
       this._fileOps = new ElectronFileOps()
       return
     } else if (fsType === 'web') {
+      this._fsType = fsType
       this._fileOps = new WebFileOps()
       return
     }
     throw new Error(`Unknown fsType "${this.fsType}".`)
+  }
+  get fsType () {
+    return this._fsType
   }
 
   get current () {
