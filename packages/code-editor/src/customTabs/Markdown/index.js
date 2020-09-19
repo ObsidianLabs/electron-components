@@ -8,6 +8,7 @@ import {
 
 import ReactMarkdown from 'react-markdown'
 import Highlight from 'react-highlight'
+import { Link } from 'react-router-dom'
 
 import './styles.scss'
 
@@ -155,7 +156,7 @@ export default class Markdown extends Component {
                       <span className='link' onClick={() => fileOps.current.openLink(props.href)}>{props.children}</span>
                     )
                   }
-                  return <a className='link' href={props.href}>{props.children}</a>
+                  return <Link className='link' to={props.href}>{props.children}</Link>
                 },
                 linkReference: props => {
                   try {
@@ -166,7 +167,7 @@ export default class Markdown extends Component {
                       )
                     }
                   } catch (e) {}
-                  return <a className='link' href={props.href}>{props.children}</a>
+                  return <Link className='link' to={props.href}>{props.children}</Link>
                 },
                 inlineCode: props => <kbd>{props.children}</kbd>,
                 code: props => (
