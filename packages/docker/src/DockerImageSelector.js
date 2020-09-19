@@ -75,7 +75,7 @@ export default class DockerImageSelector extends PureComponent {
             {icon}
             {this.props.title || this.imageName} ({this.props.selected || 'none'})
           </DropdownToggle>
-          <DropdownMenu right>
+          <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
             <DropdownItem header>
               <i className='far fa-desktop mr-2' />Installed
             </DropdownItem>
