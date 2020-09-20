@@ -1,9 +1,7 @@
 import Immutable, { List } from 'immutable'
 
 export default {
-  default: Immutable.fromJS({
-    dev: {},
-  }),
+  default: Immutable.fromJS({}),
   persist: true,
   actions: {
     ADD_TRANSACTION: {
