@@ -141,6 +141,7 @@ export default class DropdownInput extends PureComponent {
       options = [],
       value,
       inputClassName,
+      invalid,
     } = this.props
     const paddingRight = this.state.paddingRight
 
@@ -179,6 +180,7 @@ export default class DropdownInput extends PureComponent {
               onClick={this.onClickInput}
               placeholder={placeholder}
               disabled={!editable}
+              invalid={typeof invalid === 'boolean' ? invalid : undefined}
             />
           </div>
           <div

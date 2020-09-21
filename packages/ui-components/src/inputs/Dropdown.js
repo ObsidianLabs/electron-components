@@ -25,14 +25,16 @@ export default function Dropdown (props) {
     ))
   }
 
+  const icon = props.icon || ''
+
   return (
     <InputGroupButtonDropdown
       addonType='append'
       isOpen={dropdownOpen}
       toggle={toggleDropDown}
     >
-      <DropdownToggle caret key={`dropdown-icon-${props.icon.replace(/\s/g, '-')}`}>
-        <i className={`${props.icon} mr-1`} />
+      <DropdownToggle caret key={`dropdown-icon-${icon.replace(/\s/g, '-')}`}>
+        { icon && <i className={`${props.icon} mr-1`} /> }
       </DropdownToggle>
       <DropdownMenu right>
         <DropdownItem header>{props.header}</DropdownItem>

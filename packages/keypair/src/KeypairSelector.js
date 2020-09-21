@@ -41,8 +41,10 @@ export default class KeypairSelector extends PureComponent {
       editable,
       maxLength,
       icon = 'fas fa-key',
+      noCaret,
       value,
       onChange,
+      invalid,
     } = this.props
 
     return (
@@ -52,9 +54,9 @@ export default class KeypairSelector extends PureComponent {
         placeholder={placeholder}
         editable={editable}
         maxLength={maxLength}
-        noCaret={size === 'sm'}
         inputClassName={value ? 'code' : ''}
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
+        noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
         options={this.state.keypairs.map(k => ({
           id: k.address,
           badge: (
@@ -74,6 +76,7 @@ export default class KeypairSelector extends PureComponent {
         renderText={option => option.badge}
         value={value}
         onChange={onChange}
+        invalid={invalid}
       />
     )
   }

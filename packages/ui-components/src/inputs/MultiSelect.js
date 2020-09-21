@@ -48,7 +48,7 @@ export default class MultiSelect extends PureComponent {
   }
 
   render () {
-    const { size, addon, value, options } = this.props
+    const { size, addon, value, options, placeholder } = this.props
     
     return (
       <Select
@@ -85,6 +85,7 @@ export default class MultiSelect extends PureComponent {
         value={value}
         options={options}
         onChange={this.onChange}
+        placeholder={placeholder}
       />
     )
   }
