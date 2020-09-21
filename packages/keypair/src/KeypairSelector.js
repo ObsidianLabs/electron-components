@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 
 import {
   DropdownInput,
@@ -21,33 +22,58 @@ export default class KeypairSelector extends PureComponent {
   }
 
   updateKeypairs = keypairs => {
-    if (!this.state.keypairs.length && keypairs.length) {
-      this.props.onChange(keypairs[0].address)
-    }
-    if (this.state.keypairs.length && !keypairs.length) {
-      this.props.onChange()
+    if (!this.props.editable) {
+      if (!this.state.keypairs.length && keypairs.length) {
+        this.props.onChange(keypairs[0].address)
+      }
+      if (this.state.keypairs.length && !keypairs.length) {
+        this.props.onChange()
+      }
     }
     this.setState({ keypairs })
   }
 
   render () {
+    const {
+      size,
+      label,
+      placeholder = '(No keypairs)',
+      editable,
+      maxLength,
+      icon = 'fas fa-key',
+      value,
+      onChange,
+    } = this.props
+
     return (
       <DropdownInput
-        size={this.props.size}
-        label={this.props.label}
-        addon={<i className='fas fa-key' />}
+        size={size}
+        label={label}
+        placeholder={placeholder}
+        editable={editable}
+        maxLength={maxLength}
+        noCaret={size === 'sm'}
+        inputClassName={value ? 'code' : ''}
+        addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         options={this.state.keypairs.map(k => ({
           id: k.address,
+          badge: (
+            <div
+              className={classnames('d-flex align-items-center', size !== 'sm' && 'mr-1')}
+              style={size === 'sm' ? { fontSize: '0.875rem' } : null}
+            >
+              <Badge color='info' style={{ top: 0 }}>{k.name}</Badge>
+            </div>
+          ),
           display: (
             <div className='w-100 d-flex align-items-center justify-content-between'>
               <code className='text-overflow-dots mr-1'>{k.address}</code><Badge color='info' style={{ top: 0 }}>{k.name}</Badge>
             </div>
           )
         }))}
-        renderText={option => <div className='w-100 mr-1'>{option.display}</div>}
-        placeholder='(No keypairs)'
-        value={this.props.value}
-        onChange={this.props.onChange}
+        renderText={option => option.badge}
+        value={value}
+        onChange={onChange}
       />
     )
   }

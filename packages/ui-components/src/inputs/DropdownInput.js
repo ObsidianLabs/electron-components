@@ -7,7 +7,8 @@ import {
   InputGroup,
   InputGroupAddon,
   Button,
-  InputGroupButtonDropdown,
+  Input,
+  Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
@@ -18,14 +19,38 @@ export default class DropdownInput extends PureComponent {
     super(props)
     this.state = {
       dropdownOpen: false,
-      selected: this.props.value
+      paddingRight: 8,
     }
+    this.input = React.createRef()
+    this.toggler = React.createRef()
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.value !== prevProps.value) {
-      this.setState({ selected: this.props.value })
+    if (prevProps.value === this.props.value) {
+      return
     }
+    setTimeout(() => {
+      const togglerWidth = this.toggler.current?.offsetWidth
+      if (togglerWidth) {
+        this.setState({ paddingRight: togglerWidth })
+      }
+    }, 100)
+  }
+
+  onChange = event => {
+    this.props.onChange(event.target.value)
+  }
+
+  onKeyPress = event => {
+    if (event.charCode === 13) {
+      this.input.current.blur()
+      this.setState({ dropdownOpen: false })
+    }
+  }
+
+  onClickInput = event => {
+    event.stopPropagation()
+    this.setState({ dropdownOpen: true })
   }
 
   toggleDropdown = () => {
@@ -49,12 +74,12 @@ export default class DropdownInput extends PureComponent {
 
   renderText = option => {
     if (!option) {
-      return <span className='text-muted'>(None)</span>
+      return null
     }
     if (this.props.renderText) {
       return this.props.renderText(option)
     }
-    return option.display
+    return null
   }
 
   renderOptions = (options, selected) => {
@@ -109,41 +134,80 @@ export default class DropdownInput extends PureComponent {
       size,
       label,
       addon,
+      placeholder,
+      editable,
+      maxLength,
+      noCaret,
       options = [],
+      value,
+      inputClassName,
     } = this.props
+    const paddingRight = this.state.paddingRight
 
-    const selectedOption = this.findSelectedOption(options, this.state.selected)
+    const selectedOption = this.findSelectedOption(options, value)
+
+    const inputGroup = (
+      <InputGroup
+        size={size}
+        className='flex-nowrap'
+      >
+        <InputGroupAddon addonType='prepend'>
+        { addon 
+          ? <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+          : null
+        }
+        </InputGroupAddon>
+        <Dropdown
+          className='d-flex flex-grow-1'
+          direction='down'
+          isOpen={this.state.dropdownOpen}
+          toggle={this.toggleDropdown}
+        >
+          <div
+            className='d-flex flex-grow-1'
+            onClick={this.toggleDropdown}
+          >
+            <Input
+              innerRef={this.input}
+              bsSize={size}
+              className={inputClassName}
+              style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight } : null}
+              value={value}
+              onChange={this.onChange}
+              maxLength={maxLength}
+              onKeyPress={this.onKeyPress}
+              onClick={this.onClickInput}
+              placeholder={placeholder}
+              disabled={!editable}
+            />
+          </div>
+          <div
+            ref={this.toggler}
+            className={'p-absolute h-100'}
+            style={{ right: 0, zIndex: 100 }}
+          >
+            <DropdownToggle
+              caret={!noCaret}
+              className={classnames('bg-transparent d-flex align-items-center h-100', size === 'sm' && 'px-1')}
+            >
+              {this.renderText(selectedOption)}
+            </DropdownToggle>
+          </div>
+          <DropdownMenu right className={classnames('input-dropdown-menu', size && `dropdown-menu-${size}`)}>
+            {this.renderOptions(options, value)}
+          </DropdownMenu>
+        </Dropdown>
+      </InputGroup>
+    )
+
+    if (!label) {
+      return inputGroup
+    }
 
     return (
       <FormGroup className={classnames(size === 'sm' && 'mb-2')}>
         <Label className={classnames(size === 'sm' && 'mb-1 small font-weight-bold')}>{label}</Label>
-        <InputGroup
-          size={size}
-          className='flex-nowrap'
-        >
-          <InputGroupAddon addonType='prepend'>
-          { addon 
-            ? <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
-            : null
-          }
-          </InputGroupAddon>
-          <InputGroupButtonDropdown
-            addonType={addon && 'append'}
-            size={size}
-            direction='down'
-            className='p-relative flex-grow-1'
-            style={{ width: 0 }}
-            isOpen={this.state.dropdownOpen}
-            toggle={this.toggleDropdown}
-          >
-            <DropdownToggle caret className='bg2 d-flex w-100 align-items-center justify-content-between overflow-hidden'>
-              {this.renderText(selectedOption)}
-            </DropdownToggle>
-            <DropdownMenu className={classnames('w-100', size && `dropdown-menu-${size}`)}>
-              {this.renderOptions(options, this.state.selected)}
-            </DropdownMenu>
-          </InputGroupButtonDropdown>
-        </InputGroup>
+        {inputGroup}
       </FormGroup>
     )
   }
