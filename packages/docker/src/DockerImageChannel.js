@@ -26,7 +26,7 @@ export default class DockerImageChannel extends IpcChannel {
     this.eventTarget.addEventListener('versions', eventHandler)
   }
 
-  async remoteVersions (size = 10) {
+  async remoteVersions (size) {
     return await this.invoke('remoteVersions', size)
   }
 
