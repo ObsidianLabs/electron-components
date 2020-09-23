@@ -13,7 +13,7 @@ export default class BaseQueueManager {
     if (index === -1) {
       tx = { txHash, status, ts: moment().unix(), data }
       BaseQueueManager.pending.unshift(tx)
-    } else if (status !== 'CONFIRMED' && status !== 'FAILED') {
+    } else if (!status.startsWith('CONFIRMED') && !status.startsWith('FAILED')) {
       tx = BaseQueueManager.pending[index]
       tx.status = status
       tx.ts = moment().unix()
