@@ -42,7 +42,7 @@ class DockerImageChannel extends IpcChannel {
     await this.exec(`docker rmi ${this.imageName}:${version}`)
   }
 
-  async remoteVersions (size = 15) {
+  async remoteVersions (size = 20) {
     const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/${this.imageName}/tags`)
     let versions = JSON.parse(res)
     if (this.filter) {
