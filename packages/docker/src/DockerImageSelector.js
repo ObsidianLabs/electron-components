@@ -52,7 +52,9 @@ export default class DockerImageSelector extends PureComponent {
       )
     }
 
-    return this.state.versions.map(v => (
+    const versions = [...this.state.versions]
+    versions.reverse()
+    return versions.map(v => (
       <DropdownItem
         key={`image-version-${v.Tag}`}
         active={this.props.selected === v.Tag}
