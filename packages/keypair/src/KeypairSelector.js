@@ -33,6 +33,26 @@ export default class KeypairSelector extends PureComponent {
     this.setState({ keypairs })
   }
 
+  renderDisplay = key => {
+    return (highlight, active) => {
+      let address = key.address
+      if (!active) {
+        address = []
+        key.address.split(highlight).forEach(part => {
+          address.push(part)
+          address.push(<b className='text-primary'>{highlight}</b>)
+        })
+        address.pop()
+      }
+      return (
+        <div className='w-100 d-flex align-items-center justify-content-between'>
+          <code className='text-overflow-dots mr-1'>{address}</code>
+          <Badge color='info' style={{ top: 0 }}>{key.name}</Badge>
+        </div>
+      )
+    }
+  }
+
   render () {
     const {
       size,
@@ -67,11 +87,7 @@ export default class KeypairSelector extends PureComponent {
               <Badge color='info' style={{ top: 0 }}>{k.name}</Badge>
             </div>
           ),
-          display: (
-            <div className='w-100 d-flex align-items-center justify-content-between'>
-              <code className='text-overflow-dots mr-1'>{k.address}</code><Badge color='info' style={{ top: 0 }}>{k.name}</Badge>
-            </div>
-          )
+          display: this.renderDisplay(k)
         }))}
         renderText={option => option.badge}
         value={value}
