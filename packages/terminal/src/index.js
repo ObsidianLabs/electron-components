@@ -27,7 +27,8 @@ export default class Terminal extends PureComponent {
     this.inputRef = React.createRef()
 
     this.terminalChannel = initTerminalChannel(this.props.logId, this.props.cwd)
-    this.terminalChannel.onData(this.onIpcData)
+    this.terminalChannel.on('executing', executing => this.setState({ executing }))
+    this.terminalChannel.on('data', this.onLogReceived)
   }
 
   componentDidMount () {
@@ -60,19 +61,6 @@ export default class Terminal extends PureComponent {
     this.autofit && clearInterval(this.autofit)
     if (this.term) {
       this.term.dispose()
-    }
-  }
-
-  onIpcData = (method, args) => {
-    switch (method) {
-      case 'executing':
-        this.setState({ executing: args[0] })
-        return
-      case 'data':
-        this.onLogReceived(args[0])
-        return
-      default:
-        return
     }
   }
 
@@ -207,10 +195,9 @@ export default class Terminal extends PureComponent {
     return await this.terminalChannel.invoke('run', cmd, mergedConfig)
   }
 
-  onLogReceived (message) {
+  onLogReceived = message => {
     const parsedMessage = this.props.onLogReceived(message)
     this.writeToTerminal(parsedMessage)
-    return
   }
 
   stop = async () => {

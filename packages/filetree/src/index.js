@@ -61,7 +61,7 @@ export default class FileTree extends PureComponent {
   loadedCallback = null
 
   componentDidMount () {
-    filetreeChannel.onData(this.onIpcData)
+    filetreeChannel.on('refresh-directory', this.refreshDirectory)
     this.loadTree(this.props.projectRoot)
   }
 
@@ -73,16 +73,6 @@ export default class FileTree extends PureComponent {
   
   componentWillUnmount () {
     filetreeChannel.dispose()
-  }
-
-  onIpcData = (method, args) => {
-    switch (method) {
-      case 'refresh-directory':
-        this.refreshDirectory(args[0])
-        return
-      default:
-        return
-    }
   }
 
   loadTree = async projectRoot => {

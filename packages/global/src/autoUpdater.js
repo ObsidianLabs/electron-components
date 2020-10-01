@@ -4,20 +4,15 @@ import globalModalManager from './modals/globalModalManager'
 class AutoUpdater {
   constructor () {
     this.channel = new IpcChannel('auto-update')
-    this.onData = this.onData.bind(this)
-    this.onStatus = this.onStatus.bind(this)
-    this.channel.onData(this.onData)
+    this.channel.on('status', this.onStatus)
+  }
+
+  dispose () {
+    this.channel.dispose()
   }
 
   check () {
     this.channel.invoke('check')
-  }
-
-  onData (method, args) {
-    switch (method) {
-      case 'status':
-        this.onStatus(args[0])
-    }
   }
 
   async onStatus (status) {

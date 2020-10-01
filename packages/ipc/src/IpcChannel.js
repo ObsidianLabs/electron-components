@@ -4,8 +4,9 @@ export default class IpcChannel {
   constructor(channel = 'default', uid = '') {
     this.channel = channel
     this.uid = uid
-    this.callback = undefined
+    this.listeners = {}
     this.onDataReceived = this.onDataReceived.bind(this)
+    ipcRenderer.on(this.channelResponse, this.onDataReceived)
   }
 
   get channelName() {
@@ -17,19 +18,37 @@ export default class IpcChannel {
   }
 
   dispose () {
-    this.callback = undefined
+    this.listeners = {}
     ipcRenderer.removeListener(this.channelResponse, this.onDataReceived)
   }
 
-  onData (callback) {
-    this.callback = callback
-    ipcRenderer.on(this.channelResponse, this.onDataReceived)
+  on (method, callback) {
+    if (!this.listeners[method]) {
+      this.listeners[method] = []
+    }
+    this.listeners[method].push(callback)
+
+    return () => this.off(method, callback)
+  }
+
+  off (method, callback) {
+    if (!this.listeners[method]) {
+      return
+    }
+    let cbs = this.listeners[method]
+    for (let i = 0; i < cbs.length; i++) {
+      if (cbs[i] === callback) {
+        cbs.splice(i, 1)
+        return
+      }
+    }
   }
 
   onDataReceived (event, method, ...args) {
-    if (this.callback) {
-      this.callback(method, args)
+    if (!this.listeners[method]) {
+      return
     }
+    this.listeners[method].forEach(cb => cb(...args))
   }
 
   invoke (method, ...args) {
