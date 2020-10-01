@@ -53,7 +53,6 @@ export default class DockerImageSelector extends PureComponent {
     }
 
     const versions = [...this.state.versions]
-    versions.reverse()
     return versions.map(v => (
       <DropdownItem
         key={`image-version-${v.Tag}`}
@@ -66,35 +65,41 @@ export default class DockerImageSelector extends PureComponent {
   }
 
   render () {
+    let {
+      HeaderDockerItems,
+      children,
+    } = this.props
+
+    HeaderDockerItems = HeaderDockerItems || <><i className='far fa-desktop mr-2' />Installed</>
+
     let icon = null
     if (this.props.icon) {
       icon = <span key='icon' className='mr-1'><i className={this.props.icon} /></span>
     }
-    return (
-      <React.Fragment>
-        <UncontrolledButtonDropdown direction='up'>
-          <DropdownToggle size='sm' color='default' className='rounded-0 text-muted px-2'>
-            {icon}
-            {this.props.title || this.imageName} ({this.props.selected || 'none'})
-          </DropdownToggle>
-          <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
-            <DropdownItem header>
-              <i className='far fa-desktop mr-2' />Installed
-            </DropdownItem>
-            {this.renderItems()}
-            <DropdownItem divider />
-            <DropdownItem onClick={this.openManager}>
-              <i className='fas fa-cog mr-1' />
-              {this.props.modalTitle}...
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
-        <DockerImageManager
-          ref={this.modal}
-          {...this.props}
-          onRefresh={this.onRefreshVersions}
-        />
-      </React.Fragment>
-    )
+    return <>
+      <UncontrolledButtonDropdown direction='up'>
+        <DropdownToggle size='sm' color='default' className='rounded-0 text-muted px-2'>
+          {icon}
+          {this.props.title || this.imageName} ({this.props.selected || 'none'})
+        </DropdownToggle>
+        <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
+          {children}
+          <DropdownItem header>
+            {HeaderDockerItems}
+          </DropdownItem>
+          {this.renderItems()}
+          <DropdownItem divider />
+          <DropdownItem onClick={this.openManager}>
+            <i className='fas fa-cog mr-1' />
+            {this.props.modalTitle}...
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
+      <DockerImageManager
+        ref={this.modal}
+        {...this.props}
+        onRefresh={this.onRefreshVersions}
+      />
+    </>
   }
 }

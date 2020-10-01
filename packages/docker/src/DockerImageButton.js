@@ -37,23 +37,21 @@ export default class DockerImageButton extends PureComponent {
       icon = <span key='icon' className='mr-1'><i className={this.props.icon} /></span>
     }
 
-    return (
-      <React.Fragment>
-        <Button onClick={this.openManager}>
-          {icon}
-          {this.props.title || this.imageName}
-          {
-            nInstalled
-              ? <Badge pill color='info' className='ml-1'>{nInstalled}</Badge>
-              : null
-          }
-        </Button>
-        <DockerImageManager
-          ref={this.modal}
-          {...this.props}
-          onRefresh={this.onRefreshVersions}
-        />
-      </React.Fragment>
-    )
+    return <>
+      <Button onClick={this.openManager}>
+        {icon}
+        {this.props.title || this.imageName}
+        {
+          nInstalled
+            ? <Badge pill color='info' className='ml-1'>{nInstalled}</Badge>
+            : null
+        }
+      </Button>
+      <DockerImageManager
+        ref={this.modal}
+        {...this.props}
+        onRefresh={this.onRefreshVersions}
+      />
+    </>
   }
 }

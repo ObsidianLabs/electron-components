@@ -71,31 +71,29 @@ export default class DebouncedInput extends PureComponent {
 
   render () {
     const { addon, size, inputGroupClassName, feedback, invalid, children, ...props } = this.props
-    return (
-      <React.Fragment>
-        <InputGroup
-          size={size}
-          className={classnames(inputGroupClassName, typeof invalid === 'boolean' && (invalid ? 'is-invalid' : 'is-valid'))}
-        >
-          { addon 
-            ? <InputGroupAddon addonType='prepend'>
-                <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
-              </InputGroupAddon>
-            : null
-          }
-          <Input
-            innerRef={this.input}
-            bsSize={size}
-            valid={typeof invalid === 'boolean' ? !invalid : undefined}
-            invalid={typeof invalid === 'boolean' ? invalid : undefined}
-            {...props}
-            value={this.state.value}
-            onChange={this.onChange}
-          />
-          {children}
-        </InputGroup>
-        {this.renderFeedback(feedback, invalid)}
-      </React.Fragment>
-    )
+    return <>
+      <InputGroup
+        size={size}
+        className={classnames(inputGroupClassName, typeof invalid === 'boolean' && (invalid ? 'is-invalid' : 'is-valid'))}
+      >
+        { addon 
+          ? <InputGroupAddon addonType='prepend'>
+              <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+            </InputGroupAddon>
+          : null
+        }
+        <Input
+          innerRef={this.input}
+          bsSize={size}
+          valid={typeof invalid === 'boolean' ? !invalid : undefined}
+          invalid={typeof invalid === 'boolean' ? invalid : undefined}
+          {...props}
+          value={this.state.value}
+          onChange={this.onChange}
+        />
+        {children}
+      </InputGroup>
+      {this.renderFeedback(feedback, invalid)}
+    </>
   }
 }

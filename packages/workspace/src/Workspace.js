@@ -169,7 +169,7 @@ export default class Workspace extends Component {
       theme,
       projectRoot,
       initialFile,
-      Toolbar,
+      ProjectToolbar,
       Terminal = <div></div>,
       defaultSize,
       readonly = false,
@@ -191,63 +191,61 @@ export default class Workspace extends Component {
       return <ProjectInvalid projectRoot={projectRoot} />
     }
 
-    return (
-      <React.Fragment>
-        <SplitPane
-          className='obsidians-workspace'
-          defaultSize={defaultSize}
-          minSize={160}
-          onChange={this.throttledDispatchResizeEvent}
-          adjustSize={size => {
-            if (size && Math.abs(size - defaultSize) < 5) {
-              return defaultSize
-            }
-            return size
-          }}
-        >
-          <div className='d-flex flex-column align-items-stretch h-100'>
-            <div className='d-flex border-bottom-1'>
-              <ToolbarButton
-                id='new'
-                icon='fas fa-plus'
-                tooltip='New File'
-                onClick={() => this.openCreateFileModal()}
-              />
-              {Toolbar}
-            </div>
-            <FileTree
-              ref={this.filetree}
-              projectRoot={projectRoot}
-              initialPath={initialFile}
-              onSelect={this.openFile}
-              readonly={readonly}
-              contextMenu={makeContextMenu(contextMenu)}
+    return <>
+      <SplitPane
+        className='obsidians-workspace'
+        defaultSize={defaultSize}
+        minSize={160}
+        onChange={this.throttledDispatchResizeEvent}
+        adjustSize={size => {
+          if (size && Math.abs(size - defaultSize) < 5) {
+            return defaultSize
+          }
+          return size
+        }}
+      >
+        <div className='d-flex flex-column align-items-stretch h-100'>
+          <div className='d-flex border-bottom-1'>
+            <ToolbarButton
+              id='new'
+              icon='fas fa-plus'
+              tooltip='New File'
+              onClick={() => this.openCreateFileModal()}
             />
+            <ProjectToolbar />
           </div>
-          <SplitPane
-            split='horizontal'
-            primary='second'
-            size={showTerminal ? terminalSize : 0}
-            minSize={0}
-            onChange={terminalSize => {
-              this.setState({ terminalSize })
-              this.throttledDispatchResizeEvent()
-            }}
-            onDragFinished={this.onDragTerminal}
-          >
-            <CodeEditorCollection
-              ref={this.codeEditor}
-              theme={theme}
-              initialTab={this.tabFromPath(initialFile)}
-              projectRoot={projectRoot}
-              onSelectTab={this.onSelectTab}
-              readonly={readonly}
-            />
-            {Terminal}
-          </SplitPane>
+          <FileTree
+            ref={this.filetree}
+            projectRoot={projectRoot}
+            initialPath={initialFile}
+            onSelect={this.openFile}
+            readonly={readonly}
+            contextMenu={makeContextMenu(contextMenu)}
+          />
+        </div>
+        <SplitPane
+          split='horizontal'
+          primary='second'
+          size={showTerminal ? terminalSize : 0}
+          minSize={0}
+          onChange={terminalSize => {
+            this.setState({ terminalSize })
+            this.throttledDispatchResizeEvent()
+          }}
+          onDragFinished={this.onDragTerminal}
+        >
+          <CodeEditorCollection
+            ref={this.codeEditor}
+            theme={theme}
+            initialTab={this.tabFromPath(initialFile)}
+            projectRoot={projectRoot}
+            onSelectTab={this.onSelectTab}
+            readonly={readonly}
+          />
+          {Terminal}
         </SplitPane>
-        <CreateFileOrFolderModals ref={this.modal} />
-      </React.Fragment>
-    )
+      </SplitPane>
+      <CreateFileOrFolderModals ref={this.modal} />
+    </>
   }
 }

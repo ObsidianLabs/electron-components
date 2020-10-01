@@ -41,27 +41,29 @@ export default class DockerImageInputSelector extends PureComponent {
     if (!versions.length) {
       versions.push({ id: 'none', display: `(No ${this.props.noneName || this.imageName} installed)`, disabled: true })
     }
-    return (
-      <React.Fragment>
-        <DropdownInput
-          label={this.props.label || this.imageName}
-          options={[
-            { children: this.state.versions },
-            {
-              id: 'manager',
-              display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
-              onClick: this.openManager,
-            }
-          ]}
-          value={this.props.selected}
-          onChange={this.props.onSelected}
-        />
-        <DockerImageManager
-          ref={this.modal}
-          {...this.props}
-          onRefresh={this.onRefreshVersions}
-        />
-      </React.Fragment>
-    )
+    return <>
+      <DropdownInput
+        label={this.props.label || this.imageName}
+        options={[
+          {
+            group: <><i className='fas fa-download mr-1' />installed</>,
+            children: this.state.versions,
+          },
+          {
+            id: 'manager',
+            display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
+            onClick: this.openManager,
+          }
+        ]}
+        inputClassName={this.props.inputClassName}
+        value={this.props.selected}
+        onChange={this.props.onSelected}
+      />
+      <DockerImageManager
+        ref={this.modal}
+        {...this.props}
+        onRefresh={this.onRefreshVersions}
+      />
+    </>
   }
 }

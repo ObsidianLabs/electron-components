@@ -78,19 +78,17 @@ export default class MonacoEditorContainer extends PureComponent {
 
     const { onCommand, onChange } = this.props
 
-    return (
-      <React.Fragment>
-        <MonacoEditor
-          ref={editor => (this.editor = editor)}
-          modelSession={this.state.modelSession}
-          theme={this.props.theme}
-          onCommand={onCommand}
-          onChange={() => onChange(true)}
-        />
-        <CustomTabContainer
-          modelSession={this.state.modelSession}
-        />
-      </React.Fragment>
-    )
+    return <>
+      <MonacoEditor
+        ref={editor => (this.editor = editor)}
+        modelSession={this.state.modelSession}
+        theme={this.props.theme}
+        onCommand={onCommand}
+        onChange={() => onChange(true)}
+      />
+      <CustomTabContainer
+        modelSession={this.state.modelSession}
+      />
+    </>
   }
 }

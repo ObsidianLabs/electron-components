@@ -25,20 +25,18 @@ export default function ToolbarButton ({
     </UncontrolledTooltip>
   )
 
-  return (
-    <React.Fragment>
-      <Button
-        size={size}
-        color={color}
-        id={`toolbar-btn-${id}`}
-        key={`toolbar-btn-${id}`}
-        className={classnames('rounded-0 border-0 flex-none px-2 w-5 flex-column align-items-center', className)}
-        onClick={onClick}
-        disabled={readonly}
-      >
-        {childrenComponent}
-      </Button>
-      {tooltipComponent}
-    </React.Fragment>
-  )
+  return <>
+    <Button
+      size={size}
+      color={color}
+      id={`toolbar-btn-${id}`}
+      key={`toolbar-btn-${id}`}
+      className={classnames('rounded-0 border-0 flex-none px-2 w-5 flex-column align-items-center', className)}
+      onClick={onClick}
+      disabled={readonly}
+    >
+      {childrenComponent}
+    </Button>
+    {tooltipComponent}
+  </>
 }

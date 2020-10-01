@@ -148,42 +148,40 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   render () {
-    return (
-      <React.Fragment>
-        <Modal
-          ref={this.modal}
-          title='Keypair Manager'
-          textActions={['Create', 'Import']}
-          textCancel='Close'
-          onActions={[this.createKeypair, this.importKeypair]}
-        >
-          <div className='d-flex flex-row align-items-center mb-2'>
-            <div className='h4 m-0 mr-3'><i className='fas fa-exclamation-triangle text-warning' /></div>
-            <div>
-              <div><b>DO NOT</b> use on mainnet! For development purpose only.</div>
-              <div className='small text-muted'>
-                For convenience in development, the private keys are saved unencrypted.
-              </div>
+    return <>
+      <Modal
+        ref={this.modal}
+        title='Keypair Manager'
+        textActions={['Create', 'Import']}
+        textCancel='Close'
+        onActions={[this.createKeypair, this.importKeypair]}
+      >
+        <div className='d-flex flex-row align-items-center mb-2'>
+          <div className='h4 m-0 mr-3'><i className='fas fa-exclamation-triangle text-warning' /></div>
+          <div>
+            <div><b>DO NOT</b> use on mainnet! For development purpose only.</div>
+            <div className='small text-muted'>
+              For convenience in development, the private keys are saved unencrypted.
             </div>
           </div>
-          <table className='table table-sm table-hover table-striped'>
-            <thead>
-              <tr>
-                <th style={{ width: '20%' }}>Name</th>
-                <th style={{ width: '60%' }}>Address</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.renderKeypairTable()}
-            </tbody>
-          </table>
-        </Modal>
-        <CreateKeypairModal ref={this.createKeypairModal} secretName={this.props.secretName} />
-        <ImportKeypairModal ref={this.importKeypairModal} secretName={this.props.secretName} />
-        <RevealSecretModal ref={this.revealSecretModal} secretName={this.props.secretName}/>
-        <KeypairNameModal ref={this.keypairNameModal} />
-      </React.Fragment>
-    )
+        </div>
+        <table className='table table-sm table-hover table-striped'>
+          <thead>
+            <tr>
+              <th style={{ width: '20%' }}>Name</th>
+              <th style={{ width: '60%' }}>Address</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderKeypairTable()}
+          </tbody>
+        </table>
+      </Modal>
+      <CreateKeypairModal ref={this.createKeypairModal} secretName={this.props.secretName} />
+      <ImportKeypairModal ref={this.importKeypairModal} secretName={this.props.secretName} />
+      <RevealSecretModal ref={this.revealSecretModal} secretName={this.props.secretName}/>
+      <KeypairNameModal ref={this.keypairNameModal} />
+    </>
   }
 }

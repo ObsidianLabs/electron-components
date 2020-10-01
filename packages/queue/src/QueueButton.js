@@ -83,31 +83,29 @@ export default class QueueButton extends PureComponent {
 
     const { txs, QueueItem, TransactionDetails } = this.props
 
-    return (
-      <React.Fragment>
-        <UncontrolledButtonDropdown direction='up'>
-          <DropdownToggle size='sm' color='default' className='rounded-0 px-2 text-muted'>
-            {icon}Transactions
-          </DropdownToggle>
-          <DropdownMenu className='dropdown-menu-sm'>
-            {this.renderDropdownItems(BaseQueueManager.pending, txs?.toJS() || [], QueueItem)}
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
-        <Modal
-          ref={this.txModal}
-          title='Transaction'
-        >
-          <TransactionDetails
-            tx={this.state.tx}
-            closeModal={() => this.txModal.current.closeModal()}
-          />
-        </Modal>
-        <Modal
-          ref={this.allTxsModal}
-          title='All Transactions'
-        >
-        </Modal>
-      </React.Fragment>
-    )
+    return <>
+      <UncontrolledButtonDropdown direction='up'>
+        <DropdownToggle size='sm' color='default' className='rounded-0 px-2 text-muted'>
+          {icon}Transactions
+        </DropdownToggle>
+        <DropdownMenu className='dropdown-menu-sm'>
+          {this.renderDropdownItems(BaseQueueManager.pending, txs?.toJS() || [], QueueItem)}
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
+      <Modal
+        ref={this.txModal}
+        title='Transaction'
+      >
+        <TransactionDetails
+          tx={this.state.tx}
+          closeModal={() => this.txModal.current.closeModal()}
+        />
+      </Modal>
+      <Modal
+        ref={this.allTxsModal}
+        title='All Transactions'
+      >
+      </Modal>
+    </>
   }
 }

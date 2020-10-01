@@ -95,36 +95,34 @@ export default class DownloadImageButton extends PureComponent {
         <i className='fas fa-spinner fa-spin mr-2' />{downloadingTitle} {this.state.downloadVersion}...
       </div>
     )
-    return (
-      <React.Fragment>
-        <UncontrolledButtonDropdown size={size}>
-          <DropdownToggle
-            caret
-            color={color}
-            onClick={() => this.fetchRemoteVersions()}
-          >
-            <i className='fas fa-download mr-1' />Install
-          </DropdownToggle>
-          <DropdownMenu right={right}>
-            <DropdownItem header className='small'>{installDropdownHeader}</DropdownItem>
-            {this.renderVersions()}
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
-        <Modal
-          ref={this.modal}
-          title={title}
+    return <>
+      <UncontrolledButtonDropdown size={size}>
+        <DropdownToggle
+          caret
+          color={color}
+          onClick={() => this.fetchRemoteVersions()}
         >
-          <div className='rounded overflow-hidden'>
-            <Terminal
-              active
-              logId={logId}
-              height='300px'
-              cmd={`docker pull ${imageName}:${this.state.downloadVersion}`}
-              onFinished={this.onDownloaded}
-            />
-          </div>
-        </Modal>
-      </React.Fragment>
-    )
+          <i className='fas fa-download mr-1' />Install
+        </DropdownToggle>
+        <DropdownMenu right={right}>
+          <DropdownItem header className='small'>{installDropdownHeader}</DropdownItem>
+          {this.renderVersions()}
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
+      <Modal
+        ref={this.modal}
+        title={title}
+      >
+        <div className='rounded overflow-hidden'>
+          <Terminal
+            active
+            logId={logId}
+            height='300px'
+            cmd={`docker pull ${imageName}:${this.state.downloadVersion}`}
+            onFinished={this.onDownloaded}
+          />
+        </div>
+      </Modal>
+    </>
   }
 }

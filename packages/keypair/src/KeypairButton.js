@@ -17,11 +17,9 @@ export default class KeypairButton extends PureComponent {
       secretName = 'Private Key'
     } = this.props
 
-    return (
-      <React.Fragment>
-        <div onClick={this.openModal}>{this.props.children}</div>
-        <KeypairManagerModal ref={this.modal} secretName={secretName} />
-      </React.Fragment>
-    )
+    return <>
+      <div onClick={this.openModal}>{this.props.children}</div>
+      <KeypairManagerModal ref={this.modal} secretName={secretName} />
+    </>
   }
 }
