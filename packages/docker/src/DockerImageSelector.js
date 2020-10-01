@@ -78,9 +78,14 @@ export default class DockerImageSelector extends PureComponent {
     }
     return <>
       <UncontrolledButtonDropdown direction='up'>
-        <DropdownToggle size='sm' color='default' className='rounded-0 text-muted px-2'>
+        <DropdownToggle
+          size='sm'
+          color='default'
+          className='rounded-0 text-muted px-2 text-nowrap overflow-hidden text-overflow-dots'
+          style={{ maxWidth: 200 }}
+        >
           {icon}
-          {this.props.title || this.imageName} ({this.props.selected || 'none'})
+          {this.props.title || this.imageName} ({this.props.selected?.toString() || 'none'})
         </DropdownToggle>
         <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
           {children}

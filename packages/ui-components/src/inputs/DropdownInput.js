@@ -184,9 +184,12 @@ export default class DropdownInput extends PureComponent {
     })
   }
 
-  renderText = option => {
-    if (!option) {
+  renderText = (option, value) => {
+    if (!value) {
       return null
+    }
+    if (!option) {
+      return this.props.NoneBadge
     }
     if (this.props.renderText) {
       return this.props.renderText(option)
@@ -258,7 +261,7 @@ export default class DropdownInput extends PureComponent {
               caret={!noCaret}
               className={classnames('bg-transparent d-flex align-items-center h-100', size === 'sm' && 'px-1')}
             >
-              {this.renderText(selectedOption)}
+              {this.renderText(selectedOption, value)}
             </DropdownToggle>
           </div>
           <DropdownMenu right className={classnames('input-dropdown-menu', size && `dropdown-menu-${size}`)}>

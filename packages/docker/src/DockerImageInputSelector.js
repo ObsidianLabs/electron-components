@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 
 import {
   DropdownInput,
+  Badge,
 } from '@obsidians/ui-components'
 
 import DockerImageManager from './DockerImageManager'
@@ -38,8 +39,10 @@ export default class DockerImageInputSelector extends PureComponent {
 
   render () {
     let versions = this.state.versions
+    let placeholder = `Select a version of ${this.props.noneName || this.imageName}`
     if (!versions.length) {
-      versions.push({ id: 'none', display: `(No ${this.props.noneName || this.imageName} installed)`, disabled: true })
+      placeholder = `(No ${this.props.noneName || this.imageName} installed)`
+      versions.push({ id: 'none', display: placeholder, disabled: true })
     }
     return <>
       <DropdownInput
@@ -56,7 +59,11 @@ export default class DockerImageInputSelector extends PureComponent {
           }
         ]}
         inputClassName={this.props.inputClassName}
-        value={this.props.selected}
+        placeholder={placeholder}
+        NoneBadge={
+          <Badge color='danger' style={{ top: 0 }} className='mr-1'>not installed</Badge>
+        }
+        value={this.props.selected?.toString() || ''}
         onChange={this.props.onSelected}
       />
       <DockerImageManager
