@@ -17,8 +17,6 @@ export default class MonacoEditor extends Component {
     registerThemes()
 
     this.throttledLayoutEditor = throttle(this.layoutEditor, 500)
-    window.layout = () => this.throttledLayoutEditor()
-
     this.monacoEditor = this.createEditorWith(this.props.modelSession.model)
 
     this.throttledLayoutEditor()
@@ -27,7 +25,7 @@ export default class MonacoEditor extends Component {
 
   shouldComponentUpdate (props) {
     if (props.modelSession !== this.props.modelSession) {
-      if (this.props.modelSession._model) {
+      if (this.props.modelSession.model) {
         this.props.modelSession.viewState = this.monacoEditor.saveViewState()
       }
       props.modelSession.recoverInEditor(this.monacoEditor)

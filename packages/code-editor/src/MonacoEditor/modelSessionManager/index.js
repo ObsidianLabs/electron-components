@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor'
 import fileOps from '@obsidians/file-ops' 
 import notification from '@obsidians/notification'
+import { filetreeChannel } from '@obsidians/filetree'
 
 import MonacoEditorModelSession from './MonacoEditorModelSession'
 
@@ -31,6 +32,9 @@ class ModelSessionManager {
     this.currentModelSession = null
     this.sessions = {}
     this.decorationCollection = {}
+
+    this.onRefreshFile = this.onRefreshFile.bind(this)
+    filetreeChannel.on('refresh-file', this.onRefreshFile)
   }
 
   set codeEditor (codeEditor) {
@@ -99,6 +103,13 @@ class ModelSessionManager {
 
   async openNewFile (projectRoot = this.projectRoot) {
     return await fileOps.current.openNewFile(projectRoot)
+  }
+
+  onRefreshFile (data) {
+    if (!this.sessions[data.path]) {
+      return
+    }
+    this.sessions[data.path].refreshValue(data.content)
   }
 
   updateDecorations (decorationCollection) {
