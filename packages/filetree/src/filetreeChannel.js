@@ -1,3 +1,9 @@
 import { IpcChannel } from '@obsidians/ipc'
 
-export default new IpcChannel('file-tree')
+class FileTreeChannel extends IpcChannel {
+  constructor () {
+    super('file-tree')
+  }
+}
+
+export default new FileTreeChannel()

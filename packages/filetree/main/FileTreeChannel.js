@@ -14,23 +14,12 @@ class FileTreeChannel extends IpcChannel {
     }
 
     this.fileTreeClient = new FileTreeClient(projectRoot, this)
-    await this.fileTreeClient.ready()
-    return this.fileTreeClient.tree
+    return this.fileTreeClient.ready()
   }
 
   async loadDirectory (directory) {
-    await this.fileTreeClient.loadDirectory(directory)
-    return this.fileTreeClient.treePointer[directory].children
-  }
-
-  async toggleDirectory (directory, toggled) {
-    this.fileTreeClient.treePointer[directory].toggled = toggled
-    if (toggled) {
-      await this.fileTreeClient.loadDirectory(directory)
-      this.send('refresh-directory', this.fileTreeClient.treePointer[directory])
-    } else {
-      this.fileTreeClient.closeDirectory(directory)
-    }
+    const node = await this.fileTreeClient.loadDirectory(directory)
+    return node.children
   }
 }
 

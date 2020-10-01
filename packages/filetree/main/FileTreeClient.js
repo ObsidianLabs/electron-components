@@ -1,7 +1,7 @@
-const fs = require('fs')
 const path = require('path')
 const FileHound = require('filehound')
-const debounce = require('lodash/debounce')
+
+const FileTreeWatcher = require('./FileTreeWatcher')
 
 class FileTreeClient {
   constructor (rootDir, channel) {
@@ -12,7 +12,6 @@ class FileTreeClient {
     this.tree = {
       name: base,
       root: true,
-      toggled: true,
       path: this.rootDir,
       loading: true,
       children: []
@@ -20,62 +19,24 @@ class FileTreeClient {
     this.treePointer = {
       [this.rootDir]: this.tree
     }
-    this.watchers = {}
 
-    this.debouncedRefresh = debounce(async (directory, callback) => {
-      await this.refreshDirectory(directory)
-      callback()
-    }, 200)
-
-    this.debouncedRefreshPromise = directory => new Promise(resolve => {
-      this.debouncedRefresh(directory, resolve)
-    })
+    this.watcher = new FileTreeWatcher(rootDir, this)
   }
 
   dispose () {
-    Object.keys(this.watchers).forEach(watchingPath => {
-      if (this.watchers[watchingPath]) {
-        this.watchers[watchingPath].close()
-      }
-      this.watchers[watchingPath] = undefined
-    })
+    this.watcher.dispose()
   }
 
   async ready () {
-    await this.loadDirectory(this.rootDir)
+    return this.loadDirectory(this.rootDir)
+  }
+
+  async loadAndRefreshDirectory (directory) {
+    const node = await this.loadDirectory(directory)
+    this.channel.send('refresh-directory', node)
   }
 
   async loadDirectory (directory) {
-    if (!this.treePointer[directory]) {
-      return
-    }
-
-    await this.refreshDirectory(directory)
-
-    if (this.treePointer[directory]) {
-      this.treePointer[directory].toggled = true
-    }
-
-    if (!this.watchers[directory]) {
-      this.watchers[directory] = fs.watch(directory, async () => {
-        await this.debouncedRefreshPromise(directory)
-        this.channel.send('refresh-directory', this.treePointer[directory])
-      })
-    }
-  }
-
-  closeDirectory (directory) {
-    if (this.treePointer[directory]) {
-      this.treePointer[directory].toggled = false
-    }
-
-    if (this.watchers[directory]) {
-      this.watchers[directory].close()
-    }
-    this.watchers[directory] = undefined
-  }
-
-  async refreshDirectory (directory) {
     if (this.treePointer[directory].children) {
       this.treePointer[directory].children = []
     }
@@ -96,7 +57,6 @@ class FileTreeClient {
           this.treePointer[dirPath] = this.treePointer[dirPath] || {
             name: base,
             path: dirPath,
-            toggled: false,
             loading: true,
             children: []
           }
@@ -122,6 +82,8 @@ class FileTreeClient {
       })
 
     this.treePointer[directory].loading = false
+
+    return this.treePointer[directory]
   }
 }
 

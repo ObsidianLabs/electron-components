@@ -35,6 +35,10 @@ export default class IpcChannel {
     if (!this.listeners[method]) {
       return
     }
+    if (!callback) {
+      this.listeners[method] = []
+      return
+    }
     let cbs = this.listeners[method]
     for (let i = 0; i < cbs.length; i++) {
       if (cbs[i] === callback) {
