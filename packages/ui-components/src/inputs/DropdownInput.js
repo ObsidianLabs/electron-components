@@ -184,14 +184,8 @@ export default class DropdownInput extends PureComponent {
   }
 
   renderText = (option, value) => {
-    if (!value) {
-      return null
-    }
-    if (!option) {
-      return this.props.NoneBadge
-    }
     if (this.props.renderText) {
-      return this.props.renderText(option)
+      return this.props.renderText(option, value)
     }
     return null
   }

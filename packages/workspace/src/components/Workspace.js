@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 
 import throttle from 'lodash/throttle'
 
@@ -12,9 +11,9 @@ import fileOps from '@obsidians/file-ops'
 import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
-import CreateFileOrFolderModals from './CreateFileOrFolderModals'
 import contextMenu, { registerHandlers } from './contextMenu'
 
+import CreateFileOrFolderModals from './CreateFileOrFolderModals'
 import ProjectLoading from './ProjectLoading'
 import ProjectInvalid from './ProjectInvalid'
 

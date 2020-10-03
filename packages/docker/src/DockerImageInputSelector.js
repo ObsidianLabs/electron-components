@@ -37,14 +37,27 @@ export default class DockerImageInputSelector extends PureComponent {
     this.modal.current.openModal()
   }
 
+  renderText = (option, selected) => {
+    if (this.state.loading) {
+      return null
+    }
+    if (this.state.versions.length && !selected) {
+      return <Badge color='danger' style={{ top: 0 }} className='mr-1'>not selected</Badge>
+    } else if (!option) {
+      return <Badge color='danger' style={{ top: 0 }} className='mr-1'>not installed</Badge>
+    }
+    return null
+  }
+
   render () {
-    let { loading, versions } = this.state
+    let { versions } = this.state
+
     let placeholder = `Select a version of ${this.props.noneName || this.imageName}`
     if (!versions.length) {
       placeholder = `(No ${this.props.noneName || this.imageName} installed)`
       versions.push({ id: 'none', display: placeholder, disabled: true })
     }
-    const NoneBadge = !loading ? <Badge color='danger' style={{ top: 0 }} className='mr-1'>not installed</Badge> : null
+
     return <>
       <DropdownInput
         label={this.props.label || this.imageName}
@@ -62,7 +75,7 @@ export default class DockerImageInputSelector extends PureComponent {
         disableAutoSelection={this.props.disableAutoSelection}
         inputClassName={this.props.inputClassName}
         placeholder={placeholder}
-        NoneBadge={NoneBadge}
+        renderText={this.renderText}
         value={this.props.selected?.toString() || ''}
         onChange={this.props.onSelected}
       />

@@ -33,8 +33,8 @@ class ModelSessionManager {
     this.sessions = {}
     this.decorationCollection = {}
 
-    this.onRefreshFile = this.onRefreshFile.bind(this)
-    filetreeChannel.on('refresh-file', this.onRefreshFile)
+    this.refreshFile = this.refreshFile.bind(this)
+    filetreeChannel.on('refresh-file', this.refreshFile)
   }
 
   set codeEditor (codeEditor) {
@@ -105,7 +105,12 @@ class ModelSessionManager {
     return await fileOps.current.openNewFile(projectRoot)
   }
 
-  onRefreshFile (data) {
+  onRefreshFile (callback) {
+    this._onRefreshFileCallback = callback
+  }
+
+  refreshFile (data) {
+    this._onRefreshFileCallback && this._onRefreshFileCallback(data)
     if (!this.sessions[data.path]) {
       return
     }

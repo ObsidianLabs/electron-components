@@ -82,7 +82,7 @@ export default class DockerImageSelector extends PureComponent {
           size='sm'
           color='default'
           className='rounded-0 text-muted px-2 text-nowrap overflow-hidden text-overflow-dots'
-          style={{ maxWidth: 200 }}
+          style={{ maxWidth: 240 }}
         >
           {icon}
           {this.props.title || this.imageName} ({this.props.selected?.toString() || 'none'})
