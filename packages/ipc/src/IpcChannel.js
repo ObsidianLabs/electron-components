@@ -5,8 +5,8 @@ export default class IpcChannel {
     this.channel = channel
     this.uid = uid
     this.listeners = {}
-    this.onDataReceived = this.onDataReceived.bind(this)
-    ipcRenderer.on(this.channelResponse, this.onDataReceived)
+    this._onDataReceived = this._onDataReceived.bind(this)
+    ipcRenderer.on(this.channelResponse, this._onDataReceived)
   }
 
   get channelName() {
@@ -19,27 +19,31 @@ export default class IpcChannel {
 
   dispose () {
     this.listeners = {}
-    ipcRenderer.removeListener(this.channelResponse, this.onDataReceived)
+    ipcRenderer.removeListener(this.channelResponse, this._onDataReceived)
   }
 
-  on (method, callback) {
-    if (!this.listeners[method]) {
-      this.listeners[method] = []
+  invoke (method, ...args) {
+    return ipcRenderer.invoke(this.channelName, method, args)
+  }
+
+  on (event, callback) {
+    if (!this.listeners[event]) {
+      this.listeners[event] = []
     }
-    this.listeners[method].push(callback)
+    this.listeners[event].push(callback)
 
-    return () => this.off(method, callback)
+    return () => this.off(event, callback)
   }
 
-  off (method, callback) {
-    if (!this.listeners[method]) {
+  off (event, callback) {
+    if (!this.listeners[event]) {
       return
     }
     if (!callback) {
-      this.listeners[method] = []
+      this.listeners[event] = []
       return
     }
-    let cbs = this.listeners[method]
+    let cbs = this.listeners[event]
     for (let i = 0; i < cbs.length; i++) {
       if (cbs[i] === callback) {
         cbs.splice(i, 1)
@@ -48,14 +52,18 @@ export default class IpcChannel {
     }
   }
 
-  onDataReceived (event, method, ...args) {
-    if (!this.listeners[method]) {
-      return
-    }
-    this.listeners[method].forEach(cb => cb(...args))
+  get events () {
+    return Object.keys(this.listeners)
   }
 
-  invoke (method, ...args) {
-    return ipcRenderer.invoke(this.channelName, method, args)
+  trigger (event, ...args) {
+    if (!this.listeners[event]) {
+      return
+    }
+    this.listeners[event].forEach(cb => cb(...args))
+  }
+
+  _onDataReceived (_, method, ...args) {
+    this.trigger(method, ...args)
   }
 }
