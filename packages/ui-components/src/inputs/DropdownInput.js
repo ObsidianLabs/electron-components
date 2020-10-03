@@ -62,7 +62,6 @@ export default class DropdownInput extends PureComponent {
 
       currentIndex = currentIndex + direction
       while (currentIndex >= 0 && currentIndex < this.dropdownOptions.length) {
-        console.log(currentIndex)
         const option = this.dropdownOptions[currentIndex]
         if (!option.disabled && !option.header && !option.divider && !option.onClick) {
           this.props.onChange(option.id)

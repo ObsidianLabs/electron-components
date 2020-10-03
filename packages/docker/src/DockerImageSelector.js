@@ -28,7 +28,7 @@ export default class DockerImageSelector extends PureComponent {
   onRefreshVersions = versions => {
     if (!versions.length) {
       this.props.onSelected('')
-    } else if (!this.props.selected) {
+    } else if (!this.props.disableAutoSelection && !this.props.selected) {
       this.props.onSelected(versions[0].Tag)
     }
     this.setState({ loading: false, versions })
