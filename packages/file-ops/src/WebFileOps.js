@@ -72,8 +72,6 @@ export default class WebFileOps extends FileOps {
   }
 
   openInTerminal (filePath) {
-    return this.exec(`open -a Terminal "${filePath}"`)
-    // exec(`start cmd @cmd /k pushd "${node.path}"`)
   }
 
   trash (files) {

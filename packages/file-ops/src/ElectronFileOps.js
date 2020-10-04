@@ -1,3 +1,5 @@
+import { IpcChannel } from '@obsidians/ipc'
+
 import FileOps from './FileOps'
 
 export default class ElectronFileOps extends FileOps {
@@ -79,8 +81,8 @@ export default class ElectronFileOps extends FileOps {
   }
 
   openInTerminal (filePath) {
-    return this.exec(`open -a Terminal "${filePath}"`)
-    // exec(`start cmd @cmd /k pushd "${node.path}"`)
+    const channel = new IpcChannel()
+    channel.invoke('exec', `open -a Terminal "${filePath}"`)
   }
 
   trash (files) {

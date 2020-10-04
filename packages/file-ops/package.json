@@ -6,6 +6,7 @@
   "license": "GPL-3.0",
   "main": "src/index.js",
   "dependencies": {
+    "@obsidians/ipc": "^0.1.2",
     "filehound": "^1.17.4",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
