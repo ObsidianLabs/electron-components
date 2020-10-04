@@ -65,4 +65,8 @@ export default class ProjectManager {
       this.projectSettings?.update(data.content)
     }
   }
+
+  effect (key, callback) {
+    return () => this.channel.on(key, callback)
+  }
 }

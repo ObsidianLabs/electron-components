@@ -89,7 +89,7 @@ export default class KeypairSelector extends PureComponent {
           ),
           display: this.renderDisplay(k)
         }))}
-        renderText={option => option.badge}
+        renderText={option => option?.badge}
         value={value}
         onChange={onChange}
         invalid={invalid}
