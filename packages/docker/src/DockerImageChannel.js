@@ -15,7 +15,10 @@ export default class DockerImageChannel extends IpcChannel {
   }
 
   async versions () {
-    const versions = await this.invoke('versions')
+    let versions = []
+    try {
+      versions = await this.invoke('versions')
+    } catch (e) {}
     const event = new CustomEvent('versions', { detail: versions })
     this.eventTarget.dispatchEvent(event)
     return versions

@@ -12,6 +12,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Badge,
 } from 'reactstrap'
 
 export default class DropdownInput extends PureComponent {
@@ -19,7 +20,7 @@ export default class DropdownInput extends PureComponent {
     super(props)
     this.state = {
       dropdownOpen: false,
-      paddingRight: 8,
+      paddingRight: 0,
       filterMode: false,
     }
 
@@ -34,7 +35,7 @@ export default class DropdownInput extends PureComponent {
     }
     setTimeout(() => {
       const togglerWidth = this.toggler.current?.offsetWidth
-      if (togglerWidth) {
+      if (typeof togglerWidth === 'number') {
         this.setState({ paddingRight: togglerWidth })
       }
     }, 100)
@@ -100,7 +101,7 @@ export default class DropdownInput extends PureComponent {
       if (Array.isArray(item.children)) {
         for (const subitem of item.children) {
           if (subitem.id && subitem.id === id) {
-            return { group: item.group, ...subitem }
+            return { group: item.group, badge: item.badge, ...subitem }
           }
         }
       }
@@ -186,9 +187,12 @@ export default class DropdownInput extends PureComponent {
     })
   }
 
-  renderText = (option, value) => {
-    if (this.props.renderText) {
-      return this.props.renderText(option, value)
+  renderText = option => {
+    const { editable, renderText } = this.props
+    if (renderText) {
+      return renderText(option)
+    } else if (!editable) {
+      return option?.display
     }
     return null
   }
@@ -204,62 +208,77 @@ export default class DropdownInput extends PureComponent {
       noCaret,
       options = [],
       value,
+      bg,
       inputClassName,
       invalid,
     } = this.props
-    const paddingRight = this.state.paddingRight
 
     const selectedOption = this.findSelectedOption(options, value)
     const dropdownOptions = this.renderOptions()
+
+    const badge = selectedOption?.badge || this.props.badge
+    const badgeColor = selectedOption?.badgeColor || this.props.badgeColor || 'info'
+
+    const text = this.renderText(selectedOption)
 
     const inputGroup = (
       <InputGroup
         size={size}
         className='flex-nowrap'
       >
-        <InputGroupAddon addonType='prepend'>
-        { addon 
-          ? <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
-          : null
+        {
+          addon &&
+            <InputGroupAddon addonType='prepend'>
+              <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+            </InputGroupAddon>
         }
-        </InputGroupAddon>
         <Dropdown
           className='d-flex flex-grow-1'
           direction='down'
           isOpen={this.state.dropdownOpen && dropdownOptions.length}
           toggle={this.toggleDropdown}
         >
-          <div
-            className='d-flex flex-grow-1'
-            onClick={this.toggleDropdown}
+          {
+            editable &&
+              <div className='d-flex flex-grow-1' onClick={this.toggleDropdown}>
+                <Input
+                  innerRef={this.input}
+                  bsSize={size}
+                  className={classnames(inputClassName, bg)}
+                  style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: this.state.paddingRight + 8 } : null}
+                  value={value}
+                  onChange={this.onChange}
+                  maxLength={maxLength}
+                  onKeyDown={this.onKeyDown}
+                  onClick={this.onClickInput}
+                  placeholder={placeholder}
+                  disabled={!editable}
+                  invalid={typeof invalid === 'boolean' ? invalid : undefined}
+                />
+              </div>
+          }
+          <DropdownToggle
+            tag='div'
+            size={size}
+            caret={!noCaret}
+            className={classnames(
+              'd-flex align-items-center h-100 form-control',
+              bg || (editable ? 'bg-transparent' : 'bg2'),
+              size === 'sm' && 'btn-sm',
+              editable ? 'w-auto p-absolute' : 'w-0 flex-grow-1',
+            )}
+            style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, right: 0 } : { right: 0 }}
           >
-            <Input
-              innerRef={this.input}
-              bsSize={size}
-              className={inputClassName}
-              style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight } : null}
-              value={value}
-              onChange={this.onChange}
-              maxLength={maxLength}
-              onKeyDown={this.onKeyDown}
-              onClick={this.onClickInput}
-              placeholder={placeholder}
-              disabled={!editable}
-              invalid={typeof invalid === 'boolean' ? invalid : undefined}
-            />
-          </div>
-          <div
-            ref={this.toggler}
-            className={'p-absolute h-100'}
-            style={{ right: 0, zIndex: 100 }}
-          >
-            <DropdownToggle
-              caret={!noCaret}
-              className={classnames('bg-transparent d-flex align-items-center h-100', size === 'sm' && 'px-1')}
+            <div
+              ref={this.toggler}
+              className={classnames('w-100 d-flex align-items-center justify-content-between overflow-hidden', size !== 'sm' && 'mr-1')}
             >
-              {this.renderText(selectedOption, value)}
-            </DropdownToggle>
-          </div>
+              { !editable && <div className={classnames('text-overflow-dots', text ? '' : 'text-placeholder')}>{text || placeholder}</div> }
+              <Badge color={badgeColor} className='ml-1' style={{ top: 0 }}>
+                {badge}
+              </Badge>
+            </div>
+          </DropdownToggle>
           <DropdownMenu right className={classnames('input-dropdown-menu', size && `dropdown-menu-${size}`)}>
             {dropdownOptions}
           </DropdownMenu>

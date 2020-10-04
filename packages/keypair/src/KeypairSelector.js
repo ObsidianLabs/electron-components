@@ -79,17 +79,10 @@ export default class KeypairSelector extends PureComponent {
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
         options={this.state.keypairs.map(k => ({
           id: k.address,
-          badge: (
-            <div
-              className={classnames('d-flex align-items-center', size !== 'sm' && 'mr-1')}
-              style={size === 'sm' ? { fontSize: '0.875rem' } : null}
-            >
-              <Badge color='info' style={{ top: 0 }}>{k.name}</Badge>
-            </div>
-          ),
+          badge: k.name,
           display: this.renderDisplay(k)
         }))}
-        renderText={option => option?.badge}
+        renderText={!editable && (option => <code>{option?.id}</code>)}
         value={value}
         onChange={onChange}
         invalid={invalid}

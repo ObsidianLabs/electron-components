@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react'
 
 import {
   DropdownInput,
-  Badge,
 } from '@obsidians/ui-components'
 
 import DockerImageManager from './DockerImageManager'
@@ -37,16 +36,19 @@ export default class DockerImageInputSelector extends PureComponent {
     this.modal.current.openModal()
   }
 
-  renderText = (option, selected) => {
+  badgeProps = selected => {
     if (this.state.loading) {
-      return null
+      return { badge: <span key='loading'><i className='fas fa-spin fa-spinner mr-1' />Loading...</span> }
     }
-    if (this.state.versions.length && !selected) {
-      return <Badge color='danger' style={{ top: 0 }} className='mr-1'>not selected</Badge>
-    } else if (!option) {
-      return <Badge color='danger' style={{ top: 0 }} className='mr-1'>not installed</Badge>
+    if (!selected) {
+      if (this.state.versions.length) {
+        return { badge: 'not selected', badgeColor: 'danger' }
+      }
+      return
     }
-    return null
+    if (!this.state.versions.find(v => v.id === selected) && !this.props.extraOptions?.find(i => i.id === selected)) {
+      return { badge: 'not installed', badgeColor: 'danger' }
+    }
   }
 
   render () {
@@ -78,9 +80,10 @@ export default class DockerImageInputSelector extends PureComponent {
         label={this.props.label || this.imageName}
         options={options}
         disableAutoSelection={this.props.disableAutoSelection}
+        bg={this.props.bg}
         inputClassName={this.props.inputClassName}
         placeholder={placeholder}
-        renderText={this.renderText}
+        {...this.badgeProps(this.props.selected)}
         value={this.props.selected?.toString() || ''}
         onChange={this.props.onSelected}
       />
