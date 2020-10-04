@@ -128,7 +128,10 @@ export default class DropdownInput extends PureComponent {
         })
         if (groupOptions.length) {
           groupOptions.unshift({ header: item.group, index })
-          groupOptions.push({ divider: true, index })
+          groupOptions.push({ divider: true, index: `post-${index}` })
+          if (dropdownOptions.length && !dropdownOptions[dropdownOptions.length - 1].divider) {
+            groupOptions.unshift({ divider: true, index: `pre-${index}` })
+          }
           dropdownOptions = dropdownOptions.concat(groupOptions)
         }
       } else {

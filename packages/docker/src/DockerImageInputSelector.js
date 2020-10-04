@@ -58,20 +58,25 @@ export default class DockerImageInputSelector extends PureComponent {
       versions.push({ id: 'none', display: placeholder, disabled: true })
     }
 
+    let options = [
+      {
+        group: <><i className='fas fa-download mr-1' />installed</>,
+        children: this.state.versions,
+      },
+      {
+        id: 'manager',
+        display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
+        onClick: this.openManager,
+      }
+    ]
+    if (this.props.extraOptions) {
+      options = [...this.props.extraOptions, ...options]
+    }
+
     return <>
       <DropdownInput
         label={this.props.label || this.imageName}
-        options={[
-          {
-            group: <><i className='fas fa-download mr-1' />installed</>,
-            children: this.state.versions,
-          },
-          {
-            id: 'manager',
-            display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
-            onClick: this.openManager,
-          }
-        ]}
+        options={options}
         disableAutoSelection={this.props.disableAutoSelection}
         inputClassName={this.props.inputClassName}
         placeholder={placeholder}
