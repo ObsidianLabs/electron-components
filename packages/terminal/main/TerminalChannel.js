@@ -12,8 +12,8 @@ class TerminalChannel extends IpcChannel {
     if (!command.trim()) {
       return
     }
-    if (config.stop) {
-      this.stopCommand = config.stop.command
+    if (config.stopCommand) {
+      this.stopCommand = config.stopCommand
     }
     return await this.pty.run(command.trim(), config)
   }
@@ -24,7 +24,7 @@ class TerminalChannel extends IpcChannel {
 
   async kill () {
     return new Promise(resolve => {
-      setTimeout(resolve, 2000)
+      setTimeout(resolve, 10000)
       if (this.stopCommand) {
         this.exec(this.stopCommand).then(resolve)
       } else {

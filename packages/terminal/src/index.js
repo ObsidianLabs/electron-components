@@ -23,7 +23,6 @@ export default class Terminal extends PureComponent {
     super(props)
     this.initialized = false
     this.incompleteLine = ''
-    this.stopObject = null
     this.termRef = React.createRef()
     this.inputRef = React.createRef()
 
@@ -174,7 +173,6 @@ export default class Terminal extends PureComponent {
     this.inputRef.current?.setState({ executing: true })
     
     const result = await this.onInputSubmit(cmd, config)
-    this.stopObject = config.stop
     if (this.props.onFinished) {
       this.props.onFinished(result)
     }
@@ -202,15 +200,7 @@ export default class Terminal extends PureComponent {
   }
 
   stop = async () => {
-    let n
-    if (this.stopObject) {
-      setTimeout(() => {
-        n = notification.info(this.stopObject?.notification, '', 0)
-      }, 0)
-    }
     await this.terminalChannel.invoke('kill')
-    n?.dismiss()
-    this.stopObject = null
   }
 
   render () {
