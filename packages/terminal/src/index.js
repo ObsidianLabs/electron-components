@@ -23,6 +23,7 @@ export default class Terminal extends PureComponent {
     super(props)
     this.initialized = false
     this.incompleteLine = ''
+    this.stopObject = null
     this.termRef = React.createRef()
     this.inputRef = React.createRef()
 
@@ -50,18 +51,17 @@ export default class Terminal extends PureComponent {
       this.createTerm()
     }
     if (!prevProps.active && this.props.active) {
-      this.term && this.term.scrollLines(0)
+      this.term?.scrollLines(0)
     }
   }
 
   componentWillUnmount () {
+    this.autofit && clearInterval(this.autofit)
+
     this.stop()
     this.terminalChannel.dispose()
 
-    this.autofit && clearInterval(this.autofit)
-    if (this.term) {
-      this.term.dispose()
-    }
+    this.term?.dispose()
   }
 
   resizeTerm () {
@@ -147,7 +147,7 @@ export default class Terminal extends PureComponent {
   }
 
   focus () {
-    this.inputRef.current && this.inputRef.current.focus()
+    this.inputRef.current?.focus()
   }
 
   clearContent () {
@@ -157,7 +157,7 @@ export default class Terminal extends PureComponent {
   scrollToBottom () {
     if (this.props.active) {
       this.resizeTerm()
-      setTimeout(() => this.term && this.term.scrollToBottom(), 300)
+      setTimeout(() => this.term?.scrollToBottom(), 300)
     }
   }
 
@@ -171,13 +171,14 @@ export default class Terminal extends PureComponent {
   }
 
   exec = async (cmd, config) => {
-    this.inputRef.current && this.inputRef.current.setState({ executing: true })
+    this.inputRef.current?.setState({ executing: true })
     
     const result = await this.onInputSubmit(cmd, config)
+    this.stopObject = config.stop
     if (this.props.onFinished) {
       this.props.onFinished(result)
     }
-    this.inputRef.current && this.inputRef.current.setState({ executing: false })
+    this.inputRef.current?.setState({ executing: false })
 
     return result
   }
@@ -201,7 +202,15 @@ export default class Terminal extends PureComponent {
   }
 
   stop = async () => {
+    let n
+    if (this.stopObject) {
+      setTimeout(() => {
+        n = notification.info(this.stopObject?.notification, '', 0)
+      }, 0)
+    }
     await this.terminalChannel.invoke('kill')
+    n?.dismiss()
+    this.stopObject = null
   }
 
   render () {
