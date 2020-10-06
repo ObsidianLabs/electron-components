@@ -11,7 +11,7 @@
     "node-pty": "0.9.0"
   },
   "devDependencies": {
-    "electron": "8.3.4",
+    "electron": "8.5.1",
     "electron-rebuild": "^1.11.0",
     "lerna": "^3.20.2"
   },
