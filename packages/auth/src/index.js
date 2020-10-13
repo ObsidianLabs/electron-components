@@ -1,3 +1,3 @@
-export { default as Auth } from './Auth'
+export { default } from './Auth'
 
 export { default as redux } from './redux'

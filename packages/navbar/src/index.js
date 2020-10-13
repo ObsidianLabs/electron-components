@@ -68,7 +68,7 @@ export default class Header extends PureComponent {
   }
 
   render () {
-    const { navbarLeft, navbarRight, children } = this.props
+    const { profile, navbarLeft, navbarRight, children } = this.props
 
     return (
       <Navbar tag='header' dark expand>
@@ -83,7 +83,7 @@ export default class Header extends PureComponent {
             className='nav-link d-flex p-0'
             activeClassName='active'
           >
-            <User />
+            <User profile={profile} />
           </NavLink>
         </Nav>
         {this.renderContextMenu(navbarLeft)}

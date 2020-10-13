@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@obsidians/auth": "^0.1.0",
-    "@obsidians/redux": "^0.1.0",
     "react-contextmenu": "^2.13.0",
     "reactstrap": "^8.4.1"
   },

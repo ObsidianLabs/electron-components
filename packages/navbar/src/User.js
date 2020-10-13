@@ -9,13 +9,11 @@ import {
 
 import { withRouter } from 'react-router'
 
-import { Auth } from '@obsidians/auth'
-import redux from '@obsidians/redux'
+import Auth from '@obsidians/auth'
 
 class User extends Component {
   state = {
     isDropdownOpen: false,
-    auth: new Auth()
   }
 
   onToggle = event => {
@@ -23,15 +21,12 @@ class User extends Component {
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
   }
 
-  renderAvatar = () => {
-    const state = redux.getState()
-    const avatar = state.auth.get('avatar')
+  renderAvatar = avatar => {
     if (avatar) {
       return (
         <div
           key='with-avatar'
-          className='d-flex bg-secondary align-items-center justify-content-center overflow-hidden'
-          style={{ width: 32, height: 32, borderRadius: 16 }}
+          className='d-flex bg-secondary align-items-center justify-content-center user-avatar'
         >
           <img className='user-avatar' src={avatar}/>
         </div>
@@ -40,30 +35,48 @@ class User extends Component {
     return (
       <div
         key='no-avatar'
-        className='d-flex bg-secondary align-items-center justify-content-center overflow-hidden'
-        style={{ width: 32, height: 32, borderRadius: 16 }}
+        className='d-flex bg-secondary align-items-center justify-content-center user-avatar'
       >
         <i className='fa fa-user-alt' />
       </div>
     )
   }
 
-  renderDropdownMenus = () => {
+  renderDropdownMenus = profile => {
+    const username = profile.get('username')
+
+    if (username) {
+      return (
+        <DropdownMenu right>
+          <DropdownItem header>Logged in as</DropdownItem>
+          <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/guest`)}>
+            <i className='fas fa-user w-3 mr-2' />
+            {username}
+          </DropdownItem>
+          <DropdownItem divider />
+          <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
+            <i className='fas fa-sign-out w-3 mr-2' />Log out
+          </DropdownItem>
+        </DropdownMenu>
+      )
+    }
+
     return (
       <DropdownMenu right>
-        <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/guest`)}>
-          <i className='fas fa-th-list mr-2' />
-          My Projects
+        <DropdownItem key='login' onClick={() => Auth.login()}>
+          <i className='fas fa-sign-in w-3 mr-2' />Login
         </DropdownItem>
-        <DropdownItem key='login' onClick={() => this.state.auth.login()}>
-          <i className='fas fa-sign-in mr-2' />
-          Login
+        <DropdownItem divider />
+        <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/guest`)}>
+          <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>
       </DropdownMenu>
     )
   }
 
   render () {
+    const { profile } = this.props
+
     return (
       <ButtonDropdown
         group={false}
@@ -73,9 +86,9 @@ class User extends Component {
         onClick={event => event.preventDefault()}
       >
         <DropdownToggle tag='div' className='nav-dropdown-toggle px-2'>
-          {this.renderAvatar()}
+          {this.renderAvatar(profile.get('avatar'))}
         </DropdownToggle>
-        {this.renderDropdownMenus()}
+        {this.renderDropdownMenus(profile)}
       </ButtonDropdown>
     )
   }

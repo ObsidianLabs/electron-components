@@ -63,3 +63,10 @@
   height: 32px;
   background-color: var(--color-border);
 }
+
+.user-avatar {
+  overflow: hidden;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+}

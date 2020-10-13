@@ -105,7 +105,7 @@ export default class DownloadImageButton extends PureComponent {
           <i className='fas fa-download mr-1' />Install
         </DropdownToggle>
         <DropdownMenu right={right}>
-          <DropdownItem header className='small'>{installDropdownHeader}</DropdownItem>
+          <DropdownItem header>{installDropdownHeader}</DropdownItem>
           {this.renderVersions()}
         </DropdownMenu>
       </UncontrolledButtonDropdown>

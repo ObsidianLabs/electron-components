@@ -1,14 +1,14 @@
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 
 export default {
-  default: Immutable.fromJS({}),
+  default: Map({}),
   persist: true,
   actions: {
     UPDATE_PROFILE: {
-      reducer: (state, { payload }) => {
-        const { token, username, avatar } = payload
-        return Immutable.fromJS({ token, username, avatar })
-      }
+      reducer: (state, { payload }) => state.merge(payload)
+    },
+    CLEAR_USER_PROFILE: {
+      reducer: () => Map({})
     },
   }
 }

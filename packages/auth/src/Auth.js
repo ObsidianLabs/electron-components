@@ -1,24 +1,34 @@
 import redux from '@obsidians/redux'
 import decode from 'jwt-decode'
 
-export default class Auth {
-  constructor(authServerUrl, project) {
-    this.authServerUrl = authServerUrl || process.env.AUTH_SERVER
-    this.project = project || process.env.BUILD
-  }
+import providers from './providers'
 
-  login(provider = 'github') {
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=0719e502c798dd4bb376&scope=read:user&redirect_uri=${this.authServerUrl}/api/v1/auth/callback/${this.project}/${provider}`;
-  }
+const authServerUrl = process.env.REACT_APP_AUTH_SERVER
 
-  async loginToAuthServer(props) {
-    const query = new URLSearchParams(props.location.search);
+export default {
+  profile: null,
+
+  login (provider = 'github') {
+    if (!providers[provider]) {
+      return
+    }
+    providers[provider].login()
+  },
+
+  logout (history) {
+    this.profile = {}
+    redux.dispatch('CLEAR_USER_PROFILE')
+    history.replace('/')
+  },
+
+  async handleCallback ({ location, history }) {
+    const query = new URLSearchParams(location.search);
     const code = query.get('code')
     const provider = query.get('provider')
 
     let token
     try {
-      const response = await fetch(`${this.authServerUrl}/api/v1/auth/login`, {
+      const response = await fetch(`${authServerUrl}/api/v1/auth/login`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -28,23 +38,27 @@ export default class Auth {
       });
       const result = await response.json()
       token = result.token
-    } catch (error) {
-      props.history.push('/')
-      return null
+    } catch (err) {
+      history.replace('/')
+      return
     }
 
     if (!token) {
-      props.history.push('/')
-      return null
+      history.replace('/')
+      return
     }
 
     const { username, avatar } = decode(token)
-    redux.dispatch('UPDATE_PROFILE', { token, username, avatar })
-    props.history.push('/')
-  }
+    this.profile = { token, username, avatar }
+    history.replace('/')
+  },
 
-  handleCallback(props) {
-    this.loginToAuthServer(props)
-    return null
-  }
+  updateProfile () {
+    if (this.profile) {
+      redux.dispatch('UPDATE_PROFILE', this.profile)
+    } else {
+      const profile = redux.getState().profile
+      this.profile = profile.toJS()
+    }
+  },
 }
