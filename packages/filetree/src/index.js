@@ -168,7 +168,7 @@ export default class FileTree extends PureComponent {
     this.setState({ cursor: node })
     await this.forceUpdate()
     if (!node.children && this.props.onSelect) {
-      this.props.onSelect(node.path)
+      this.props.onSelect(node)
     }
   }
 

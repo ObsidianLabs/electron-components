@@ -21,7 +21,7 @@ const deleteFile = async node => {
     buttons: ['Move to Trash', 'Cancel']
   })
   if (response === 0) {
-    await fileOps.current.trash([ node.path ])
+    await fileOps.current.deleteFile(node.path)
   }
 }
 

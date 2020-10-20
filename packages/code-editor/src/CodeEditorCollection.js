@@ -152,6 +152,7 @@ export default class CodeEditorCollection extends Component {
             ref={editorCollection => this.editorCollection = editorCollection}
             theme={this.props.theme}
             path={this.state.selectedTab.path}
+            remote={this.state.selectedTab.remote}
             mode={this.state.selectedTab.mode}
             readonly={this.props.readonly}
             onChange={this.setCurrentTabUnsaved}

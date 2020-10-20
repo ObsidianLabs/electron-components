@@ -44,13 +44,13 @@ export default class MonacoEditorContainer extends PureComponent {
     modelSessionManager.closeAllModelSessions()
   }
 
-  async loadFile ({ path, mode, readonly = false }) {
-    const modelSession = await this.modelSessionFromFile({ path, mode, readonly })
+  async loadFile ({ path, remote, mode, readonly = false }) {
+    const modelSession = await this.modelSessionFromFile({ path, remote, mode, readonly })
     this.setState({ loaded: true, modelSession })
   }
 
-  async modelSessionFromFile ({ path, mode, readonly }) {
-    const modelSession = await modelSessionManager.newModelSession(path, mode)
+  async modelSessionFromFile ({ path, remote, mode, readonly }) {
+    const modelSession = await modelSessionManager.newModelSession(path, remote, mode)
     modelSession.readonly = readonly
     return modelSession
   }

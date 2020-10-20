@@ -64,15 +64,15 @@ export default class Workspace extends Component {
     }
   }
 
-  tabFromPath = filePath => ({ path: filePath, key: filePath })
+  tabFromPath = (filePath, remote) => ({ path: filePath, key: filePath, remote })
 
-  openFile = (filePath, setTreeActive) => {
-    this.codeEditor.current.openTab(this.tabFromPath(filePath))
+  openFile = ({ path, remote }, setTreeActive) => {
+    this.codeEditor.current.openTab(this.tabFromPath(path, remote))
 
-    if (filePath.startsWith('custom:')) {
+    if (path.startsWith('custom:')) {
       this.filetree.current.setNoActive()
     } else if (setTreeActive) {
-      this.filetree.current.setActive(filePath)
+      this.filetree.current.setActive(path)
     }
   }
 
@@ -141,7 +141,7 @@ export default class Workspace extends Component {
     const {
       theme,
       projectManager,
-      initialFile,
+      initial,
       ProjectToolbar,
       Terminal = <div></div>,
       defaultSize,
@@ -180,7 +180,7 @@ export default class Workspace extends Component {
           <FileTree
             ref={this.filetree}
             projectManager={projectManager}
-            initialPath={initialFile}
+            initialPath={initial.path}
             onSelect={this.openFile}
             readonly={readonly}
             contextMenu={makeContextMenu(contextMenu)}
@@ -200,7 +200,7 @@ export default class Workspace extends Component {
           <CodeEditorCollection
             ref={this.codeEditor}
             theme={theme}
-            initialTab={this.tabFromPath(initialFile)}
+            initialTab={this.tabFromPath(initial.path, initial.remote)}
             projectRoot={projectManager.projectRoot}
             onSelectTab={this.onSelectTab}
             readonly={readonly}

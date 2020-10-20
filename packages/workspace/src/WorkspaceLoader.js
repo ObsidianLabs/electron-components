@@ -13,7 +13,7 @@ export default class WorkspaceLoader extends PureComponent {
     this.state = {
       loading: true,
       invalid: false,
-      initialFile: undefined,
+      initial: null,
       terminal: false,
       context: {}
     }
@@ -43,7 +43,7 @@ export default class WorkspaceLoader extends PureComponent {
     } else {
       this.setState({
         loading: false,
-        initialFile: result.initialFile,
+        initial: result.initial,
         context: {
           projectRoot,
           projectSettings: result.projectSettings,
@@ -94,7 +94,7 @@ export default class WorkspaceLoader extends PureComponent {
           ref={this.workspace}
           theme={this.props.theme}
           projectManager={this.props.projectManager}
-          initialFile={this.state.initialFile}
+          initial={this.state.initial}
           terminal={terminal}
           defaultSize={272}
           makeContextMenu={this.props.makeContextMenu}

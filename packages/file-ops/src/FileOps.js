@@ -77,22 +77,6 @@ export default class FileOps {
     }
   }
 
-  async createNewFolder (folderPath) {
-    if (await this.isDirectory(folderPath)) {
-      throw new Error(`Folder <b>${folderPath}</b> already exists.`)
-    }
-  
-    try {
-      await this.fs.ensureDir(folderPath)
-    } catch (e) {
-      if (e.code === 'EISDIR') {
-        throw new Error(`File <b>${folderPath}</b> already exists.`)
-      } else {
-        throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
-      }
-    }
-  }
-
   getDockerMountPath (mountPath) {
     if (process.env.OS_IS_WINDOWS) {
       const { root } = this.path.parse(mountPath)

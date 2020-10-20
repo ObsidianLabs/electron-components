@@ -36,8 +36,9 @@ function generateAnnotation ({ type, text, row, column }) {
 
 
 export default class MonacoEditorModelSession {
-  constructor (model, CustomTab, decorations = []) {
+  constructor (model, remote, CustomTab, decorations = []) {
     this._model = model
+    this._remote = remote
     this._CustomTab = CustomTab
     this._readonly = false
     this._decorations = decorations
@@ -50,7 +51,9 @@ export default class MonacoEditorModelSession {
   }
   get filePath () {
     let filePath = decodeURIComponent(this._model.uri.toString().replace('file://', ''))
-    if (process.env.OS_IS_WINDOWS) {
+    if (this._remote) {
+      filePath = filePath.substr(1)
+    } else if (process.env.OS_IS_WINDOWS) {
       filePath = fileOps.current.path.normalize(filePath.substr(1))
       const [root, others] = filePath.split(':')
       filePath = `${root.toUpperCase()}:${others}`

@@ -1,4 +1,4 @@
-import client from './client' 
+import HttpClient from './HttpClient' 
 
 export default class HttpIpcChannel {
   constructor(channel = 'default', uid = '') {
@@ -6,32 +6,34 @@ export default class HttpIpcChannel {
     this.uid = uid
     this.listeners = {}
     this._onDataReceived = this._onDataReceived.bind(this)
-    client.on(this.channelResponse, this._onDataReceived)
+
+    this.client = new HttpClient(`${process.env.REACT_APP_AUTH_SERVER}/api/v1/tbaas`, `${process.env.REACT_APP_IPC_SERVER_URL}/api/v1`)
+    this.client.on(this.channelResponse, this._onDataReceived)
   }
 
   get channelName() {
     if (this.uid) {
-      return `obsidians-ipc-${this.channel}-${this.uid}`
+      return `${this.channel}-${this.uid}`
     } else {
-      return `obsidians-ipc-${this.channel}`
+      return `${this.channel}`
     }
   }
 
   get channelResponse() {
     if (this.uid) {
-      return `obsidians-ipc-response-${this.channel}-${this.uid}`
+      return `response-${this.channel}-${this.uid}`
     } else {
-      return `obsidians-ipc-response-${this.channel}`
+      return `response-${this.channel}`
     }
   }
 
   dispose () {
     this.listeners = {}
-    client.removeListener(this.channelResponse, this._onDataReceived)
+    this.client.removeListener(this.channelResponse, this._onDataReceived)
   }
 
   invoke (method, ...args) {
-    return client.invoke(this.channelName, method, ...args)
+    return this.client.invoke(this.channelName, method, ...args)
   }
 
   on (event, callback) {

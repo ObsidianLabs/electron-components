@@ -2,6 +2,8 @@ import redux from '@obsidians/redux'
 import decode from 'jwt-decode'
 import AWS from 'aws-sdk'
 
+import fileOps from '@obsidians/file-ops'
+
 import providers from './providers'
 
 const authServerUrl = process.env.REACT_APP_AUTH_SERVER
@@ -46,104 +48,16 @@ export default {
       return
     }
 
-    const credential = await new Promise(resolve => {
-      const sts = new AWS.STS();
-      const params = {
-        WebIdentityToken: awsToken,
-        RoleArn: 'arn:aws:iam::023286913450:role/Cognito_webIDE_auth_testAuth_Role',
-        RoleSessionName: 'leontest',
-        DurationSeconds: 43200,
-      };
-      sts.assumeRoleWithWebIdentity(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else resolve(data); // successful response
-      });
-    });
-
-    console.log('credential', credential);
-
-    const accessKeyId = credential.Credentials.AccessKeyId;
-    const secretAccessKey = credential.Credentials.SecretAccessKey;
-    const sessionToken = credential.Credentials.SessionToken;
-
-    AWS.config.update({
-      accessKeyId,
-      secretAccessKey,
-      sessionToken,
-    });
-
-
-    const s3 = new AWS.S3();
-
-    // List
-    const s3ListResponse = await new Promise(resolve => {
-      const params = {
-        Bucket: 'webidetest',
-        Prefix: 'public/',
-      };
-      s3.listObjectsV2(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else resolve(data); // successful response
-      });
-    });
-    console.log('s3ListResponse', s3ListResponse);
-
-
-    // Create
-    const s3PutResponse = await new Promise(resolve => {
-      const params = {
-        Bucket: 'webidetest',
-        Key: 'public/test.txt',
-        Body: 'test string from putObject'
-      };
-      s3.putObject(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else resolve(data); // successful response
-      });
+    const sts = new AWS.STS()
+    const params = {
+      WebIdentityToken: awsToken,
+      RoleArn: 'arn:aws:iam::023286913450:role/Cognito_webIDE_auth_testAuth_Role',
+      RoleSessionName: 'leontest',
+      DurationSeconds: 43200,
+    }
+    const awsCredential = await new Promise((resolve, reject) => {
+      sts.assumeRoleWithWebIdentity(params, (err, data) => err ? reject(err) : resolve(data))
     })
-    console.log('s3PutResponse', s3PutResponse)
-
-
-    // Read
-    const s3GetResponse = await new Promise(resolve => {
-      const params = {
-        Bucket: 'webidetest',
-        Key: 'public/test.txt',
-      };
-      s3.getObject(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else resolve(data); // successful response
-      });
-    });
-    console.log('s3GetResponse', s3GetResponse);
-
-
-    // Delete
-    const s3DeleteResponse = await new Promise(resolve => {
-      const params = {
-        Bucket: 'webidetest',
-        Key: 'public/test.txt',
-      };
-      s3.deleteObject(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else resolve(data); // successful response
-      });
-    })
-    console.log('s3DeleteResponse', s3DeleteResponse)
-
-
-    // List
-    const s3ListResponse2 = await new Promise(resolve => {
-      const params = {
-        Bucket: 'webidetest',
-        Prefix: 'public/',
-      };
-      s3.listObjectsV2(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else resolve(data); // successful response
-      });
-    });
-    console.log('s3ListResponse2', s3ListResponse2);
 
     if (!token) {
       history.replace('/')
@@ -151,7 +65,7 @@ export default {
     }
 
     const { username, avatar } = decode(token)
-    this.profile = { token, username, avatar }
+    this.profile = { token, username, avatar, awsCredential }
     history.replace('/')
   },
 
@@ -161,6 +75,9 @@ export default {
     } else {
       const profile = redux.getState().profile
       this.profile = profile.toJS()
+    }
+    if (this.profile.awsCredential) {
+      fileOps.current.fs.updateCredential(this.profile.awsCredential)
     }
   },
 }

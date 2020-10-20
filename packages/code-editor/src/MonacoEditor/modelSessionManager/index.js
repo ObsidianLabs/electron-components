@@ -1,3 +1,4 @@
+import React from 'react'
 import * as monaco from 'monaco-editor'
 import fileOps from '@obsidians/file-ops' 
 import notification from '@obsidians/notification'
@@ -50,15 +51,21 @@ class ModelSessionManager {
     const modeTitle = this.customTabTitles[tab.mode || mode]
     if (modeTitle) {
       return modeTitle
+    } else if (tab.text) {
+      return tab.text
+    } else if (tab.remote) {
+      const basename = fileOps.current.path.basename(tab.path)
+      return <span key='cloud-icon'><i className='fas fa-cloud small text-muted mr-1' />{basename}</span>
+    } else {
+      return fileOps.current.path.basename(tab.path)
     }
-    return tab.text || fileOps.current.path.basename(tab.path)
   }
 
   get currentFilePath () {
-    return this.currentModelSession ? this.currentModelSession.filePath : undefined
+    return this.currentModelSession?.filePath
   }
 
-  async newModelSession (filePath, mode = this.modeDetector(filePath)) {
+  async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath), ) {
     if (!filePath) {
       throw new Error('Empty path for "newModelSession"')
     }
@@ -69,7 +76,7 @@ class ModelSessionManager {
         const code = await fileOps.current.readFile(filePath)
         model = monaco.editor.createModel(code, mode, monaco.Uri.file(filePath))
       }
-      this.sessions[filePath] = new MonacoEditorModelSession(model, this.CustomTabs[mode], this.decorationCollection[filePath] || [])
+      this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationCollection[filePath] || [])
     }
     return this.sessions[filePath]
   }

@@ -6,11 +6,12 @@
   "license": "GPL-3.0",
   "main": "src/index.js",
   "dependencies": {
+    "@obsidians/file-ops": "^0.1.0",
     "@obsidians/redux": "^0.1.0",
-    "aws-sdk": "^2.774.0",
     "jwt-decode": "^3.0.0"
   },
   "peerDependencies": {
+    "aws-sdk": "^2.774.0",
     "immutable": "^4.0.0-rc.12"
   }
 }

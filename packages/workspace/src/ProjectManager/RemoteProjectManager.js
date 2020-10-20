@@ -9,6 +9,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
     this.project = null
     this.terminalButton = null
+    this.prefix = 'public'
   }
 
   get projectRoot () {
@@ -23,6 +24,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
       return { error: e.message }
     }
 
+    this.projectName = project.name
     this.projectId = project._id
 
     let projectSettings
@@ -30,17 +32,17 @@ export default class RemoteProjectManager extends BaseProjectManager {
       projectSettings = await this.readProjectSettings()
     } catch (e) {
       console.warn(e)
-      return { initialFile: this.settingsFilePath, projectSettings: null }
+      return { initial: { path: this.settingsFilePath, remote: true }, projectSettings: null }
     }
 
     if (await this.isMainValid()) {
-      return { initialFile: this.mainFilePath, projectSettings }
+      return { initial: { path: this.mainFilePath, remote: true }, projectSettings }
     }
-    return { initialFile: this.settingsFilePath, projectSettings }
+    return { initial: { path: this.settingsFilePath, remote: true }, projectSettings }
   }
 
   pathForProjectFile (relativePath) {
-    return `${this.projectId}/${relativePath}`
+    return `${this.prefix}/${this.projectId}/${relativePath}`
   }
 
   async readProjectSettings () {
@@ -50,18 +52,18 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory () {
-    const result = await fileOps.current.fs.list(this.projectId)
+    const result = await fileOps.current.fs.list(`${this.prefix}/${this.projectId}`)
     return {
-      name: this.projectRoot,
+      name: this.projectName,
       root: true,
-      path: this.projectId,
+      path: `${this.prefix}/${this.projectId}`,
       loading: false,
-      children: []
+      children: result
     }
   }
 
-  async loadDirectory () {
-    return await this.channel.invoke('loadDirectory', this.projectRoot)
+  async loadDirectory (dirPath) {
+    return await fileOps.current.fs.list(dirPath)
   }
 
   onRefreshDirectory () {}

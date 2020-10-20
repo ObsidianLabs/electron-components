@@ -1,18 +1,16 @@
 import path from 'path-browserify'
 import FileOps from './FileOps'
-import RemoteFs from './RemoteFs'
+import AwsS3Fs from './AwsS3Fs'
 
 export default class WebFileOps extends FileOps {
   constructor () {
-    const fs = new RemoteFs()
+    const fs = new AwsS3Fs()
     super(fs, path)
 
     this.electron = {}
-    this.trash = {}
 
     this.homePath = '/'
     this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
-    // this.ensureDirectory(this.workspace)
   }
 
   onFocus (handler) {
@@ -55,12 +53,25 @@ export default class WebFileOps extends FileOps {
     }
   }
 
+  showMessageBox ({ message, buttons }) {
+    const result = window.confirm(message)
+    return { response: result ? 0 : 1 }
+  }
+
   openItem (filePath) {
     return this.electron.shell.openItem(filePath)
   }
 
   showItemInFolder (filePath) {
     return this.electron.shell.showItemInFolder(filePath)
+  }
+
+  async createNewFolder (folderPath) {
+    try {
+      await this.fs.ensureDir(folderPath)
+    } catch (e) {
+      throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+    }
   }
 
   getAppVersion () {
@@ -74,7 +85,7 @@ export default class WebFileOps extends FileOps {
   openInTerminal (filePath) {
   }
 
-  trash (files) {
-    return this.trash(files)
+  deleteFile (filePath) {
+    return this.fs.deleteFile(filePath)
   }
 }
