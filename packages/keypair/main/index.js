@@ -30,7 +30,7 @@ class KeypairManager extends IpcChannel {
     await keytar.setPassword(`@obsidians/${this.build}-keypair`, address, secret)
   }
 
-  async deleteKeypair(address) {
+  async deleteKeypair (address) {
     await keytar.deletePassword(`@obsidians/${this.build}-keypair`, address)
   }
 }

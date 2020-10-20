@@ -4,6 +4,7 @@ import {
   Modal,
   IconButton,
   DeleteButton,
+  Table,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -16,6 +17,14 @@ import RevealSecretModal from './RevealSecretModal'
 import KeypairNameModal from './KeypairNameModal'
 
 export default class KeypairManagerModal extends PureComponent {
+  static defaultProps = {
+    title: 'Keypair Manager',
+    warning: true,
+    head: ['Name', 'Address'],
+    actions: true,
+    RevealSecretModal,
+  }
+
   constructor (props) {
     super(props)
 
@@ -148,14 +157,11 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   render () {
-    return <>
-      <Modal
-        ref={this.modal}
-        title='Keypair Manager'
-        textActions={['Create', 'Import']}
-        textCancel='Close'
-        onActions={[this.createKeypair, this.importKeypair]}
-      >
+    const { title, warning, head, actions, RevealSecretModal } = this.props
+
+    let warningComponent = null
+    if (warning) {
+      warningComponent = (
         <div className='d-flex flex-row align-items-center mb-2'>
           <div className='h4 m-0 mr-3'><i className='fas fa-exclamation-triangle text-warning' /></div>
           <div>
@@ -165,18 +171,30 @@ export default class KeypairManagerModal extends PureComponent {
             </div>
           </div>
         </div>
-        <table className='table table-sm table-hover table-striped'>
-          <thead>
+      )
+    }
+
+    return <>
+      <Modal
+        ref={this.modal}
+        title={title}
+        textActions={actions ? ['Create', 'Import'] : []}
+        textCancel='Close'
+        onActions={[this.createKeypair, this.importKeypair]}
+      >
+        {warningComponent}
+        <Table
+          tableSm
+          TableHead={(
             <tr>
-              <th style={{ width: '20%' }}>Name</th>
-              <th style={{ width: '60%' }}>Address</th>
+              <th style={{ width: '20%' }}>{head[0]}</th>
+              <th style={{ width: '60%' }}>{head[1]}</th>
               <th></th>
             </tr>
-          </thead>
-          <tbody>
-            {this.renderKeypairTable()}
-          </tbody>
-        </table>
+          )}
+        >
+          {this.renderKeypairTable()}
+        </Table>
       </Modal>
       <CreateKeypairModal ref={this.createKeypairModal} secretName={this.props.secretName} />
       <ImportKeypairModal ref={this.importKeypairModal} secretName={this.props.secretName} />
