@@ -70,7 +70,7 @@ export default class DebouncedInput extends PureComponent {
   }
 
   render () {
-    const { addon, size, inputGroupClassName, feedback, invalid, children, ...props } = this.props
+    const { size, inputGroupClassName, addon, append, onClickAppend, feedback, invalid, children, ...props } = this.props
     return <>
       <InputGroup
         size={size}
@@ -78,7 +78,9 @@ export default class DebouncedInput extends PureComponent {
       >
         { addon 
           ? <InputGroupAddon addonType='prepend'>
-              <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+              <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
+                <div className='w-5'>{addon}</div>
+              </Button>
             </InputGroupAddon>
           : null
         }
@@ -91,6 +93,18 @@ export default class DebouncedInput extends PureComponent {
           value={this.state.value}
           onChange={this.onChange}
         />
+        { append 
+          ? <InputGroupAddon addonType='append'>
+              <Button
+                color='secondary'
+                className={classnames(size === 'sm' ? 'px-0' : 'px-1')}
+                onClick={onClickAppend}
+              >
+                <div className='w-5'>{append}</div>
+              </Button>
+            </InputGroupAddon>
+          : null
+        }
         {children}
       </InputGroup>
       {this.renderFeedback(feedback, invalid)}
