@@ -1,6 +1,6 @@
-import ipcRenderer from './ipcRenderer' 
+const { ipcRenderer } = window.require('electron')
 
-export default class IpcChannel {
+export default class ElectronIpcChannel {
   constructor(channel = 'default', uid = '') {
     this.channel = channel
     this.uid = uid
@@ -10,11 +10,19 @@ export default class IpcChannel {
   }
 
   get channelName() {
-    return `obsidians-ipc-${this.channel}-${this.uid}`
+    if (this.uid) {
+      return `obsidians-ipc-${this.channel}-${this.uid}`
+    } else {
+      return `obsidians-ipc-${this.channel}`
+    }
   }
 
   get channelResponse() {
-    return `obsidians-ipc-response-${this.channel}-${this.uid}`
+    if (this.uid) {
+      return `obsidians-ipc-response-${this.channel}-${this.uid}`
+    } else {
+      return `obsidians-ipc-response-${this.channel}`
+    }
   }
 
   dispose () {

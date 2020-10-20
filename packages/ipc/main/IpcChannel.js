@@ -13,11 +13,19 @@ class IpcChannel {
   }
 
   get channelName() {
-    return `obsidians-ipc-${this.channel}-${this.uid}`
+    if (this.uid) {
+      return `obsidians-ipc-${this.channel}-${this.uid}`
+    } else {
+      return `obsidians-ipc-${this.channel}`
+    }
   }
 
   get channelResponse() {
-    return `obsidians-ipc-response-${this.channel}-${this.uid}`
+    if (this.uid) {
+      return `obsidians-ipc-response-${this.channel}-${this.uid}`
+    } else {
+      return `obsidians-ipc-response-${this.channel}`
+    }
   }
 
   start () {

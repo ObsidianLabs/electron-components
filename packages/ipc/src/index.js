@@ -1,3 +1,11 @@
 export default 'The default export is not available'
 
-export { default as IpcChannel } from './IpcChannel'
+let TempIpcChannel
+
+if (window.require) {
+  TempIpcChannel = require('./ElectronIpcChannel').default
+} else {
+  TempIpcChannel = require('./HttpIpcChannel').default
+}
+
+export const IpcChannel = TempIpcChannel
