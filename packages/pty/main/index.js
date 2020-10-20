@@ -74,7 +74,6 @@ class Pty {
 
   kill (signal) {
     if (this.proc) {
-      console.log('kill')
       this.proc.write(Uint8Array.from([0x03, 0x0d])) // send ctrl+c
       this.proc.destroy()
       // reject(new Error(signal))
