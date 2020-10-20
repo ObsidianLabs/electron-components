@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react'
 
-import fileOps from '@obsidians/file-ops'
-
 import Workspace from './components/Workspace'
 import WorkspaceContext from './WorkspaceContext'
 
@@ -39,40 +37,19 @@ export default class WorkspaceLoader extends PureComponent {
   async prepareProject ({ projectManager, projectRoot }) {
     this.setState({ loading: true, invalid: false, context: {} })
 
-    if (!await fileOps.current.isDirectory(projectRoot)) {
+    const result = await projectManager.prepareProject()
+    if (result.error) {
       this.setState({ loading: false, invalid: true })
-      return
-    }
-
-    let projectSettings
-    try {
-      projectSettings = await projectManager.readProjectSettings()
-    } catch (e) {
-      console.warn(e)
+    } else {
       this.setState({
         loading: false,
-        initialFile: projectManager.settingsFilePath,
+        initialFile: result.initialFile,
+        context: {
+          projectRoot,
+          projectSettings: result.projectSettings,
+        }
       })
-      return
     }
-
-    this.setState({ context: {
-      projectRoot,
-      projectSettings,
-    } })
-
-    if (await projectManager.isMainValid()) {
-      this.setState({
-        loading: false,
-        initialFile: projectManager.mainFilePath,
-      })
-      return
-    }
-
-    this.setState({
-      loading: false,
-      initialFile: projectManager.settingsFilePath,
-    })
   }
 
   saveAll = async () => {
@@ -116,7 +93,7 @@ export default class WorkspaceLoader extends PureComponent {
         <Workspace
           ref={this.workspace}
           theme={this.props.theme}
-          projectRoot={projectRoot}
+          projectManager={this.props.projectManager}
           initialFile={this.state.initialFile}
           terminal={terminal}
           defaultSize={272}

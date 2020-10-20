@@ -70,13 +70,8 @@ export default class MonacoEditorModelSession {
     }
   }
 
-  onValueModified (cb) {
-    this._onValueModifiedCallback = cb
-  }
   refreshValue (value) {
-    if (this._onValueModifiedCallback) {
-      this._onValueModifiedCallback(value)
-    }
+    this.value = value
   }
 
   get readonly () {

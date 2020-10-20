@@ -14,9 +14,6 @@ import FileTree from '@obsidians/filetree'
 import contextMenu, { registerHandlers } from './contextMenu'
 
 import CreateFileOrFolderModals from './CreateFileOrFolderModals'
-import ProjectLoading from './ProjectLoading'
-import ProjectInvalid from './ProjectInvalid'
-
 
 const getSizeUpdate = SplitPane.getSizeUpdate
 SplitPane.getSizeUpdate = (props, state) => {
@@ -43,8 +40,6 @@ export default class Workspace extends Component {
     }, 200)
 
     this.state = {
-      loading: true,
-      invalid: false,
       showTerminal: !!props.terminal,
       terminalSize: 160,
     }
@@ -55,15 +50,7 @@ export default class Workspace extends Component {
     })
   }
 
-  componentDidMount () {
-    this.prepareProject(this.props.projectRoot)
-  }
-
   async componentDidUpdate (prevProps) {
-    if (this.hasProjectChanged(prevProps, this.props)) {
-      this.prepareProject(this.props.projectRoot)
-    }
-
     if (prevProps.terminal !== this.props.terminal) {
       if (this.props.terminal) {
         this.setState({
@@ -74,19 +61,6 @@ export default class Workspace extends Component {
         this.setState({ showTerminal: false })
       }
       window.dispatchEvent(new Event('resize'))
-    }
-  }
-
-  hasProjectChanged = (prev, next) => {
-    return prev.projectRoot !== next.projectRoot
-  }
-
-  prepareProject = async projectRoot => {
-    this.setState({ loading: true })
-    if (await fileOps.current.isDirectory(projectRoot)) {
-      this.setState({ loading: false, invalid: false })
-    } else {
-      this.setState({ loading: false, invalid: true })
     }
   }
 
@@ -116,7 +90,7 @@ export default class Workspace extends Component {
 
   openCreateFileModal = node => {
     const activeNode = node || this.filetree.current.activeNode
-    let basePath = this.props.projectRoot
+    let basePath = this.props.projectManager.projectRoot
     if (activeNode) {
       basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     }
@@ -125,7 +99,7 @@ export default class Workspace extends Component {
 
   openCreateFolderModal = node => {
     const activeNode = node || this.filetree.current.activeNode
-    let basePath = this.props.projectRoot
+    let basePath = this.props.projectManager.projectRoot
     if (activeNode) {
       basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     }
@@ -166,7 +140,7 @@ export default class Workspace extends Component {
   render () {
     const {
       theme,
-      projectRoot,
+      projectManager,
       initialFile,
       ProjectToolbar,
       Terminal = <div></div>,
@@ -176,19 +150,9 @@ export default class Workspace extends Component {
     } = this.props
 
     const {
-      loading,
-      invalid,
       showTerminal,
       terminalSize,
     } = this.state
-
-    if (loading) {
-      return <ProjectLoading projectRoot={projectRoot} />
-    }
-
-    if (invalid) {
-      return <ProjectInvalid projectRoot={projectRoot} />
-    }
 
     return <>
       <SplitPane
@@ -215,7 +179,7 @@ export default class Workspace extends Component {
           </div>
           <FileTree
             ref={this.filetree}
-            projectRoot={projectRoot}
+            projectManager={projectManager}
             initialPath={initialFile}
             onSelect={this.openFile}
             readonly={readonly}
@@ -237,7 +201,7 @@ export default class Workspace extends Component {
             ref={this.codeEditor}
             theme={theme}
             initialTab={this.tabFromPath(initialFile)}
-            projectRoot={projectRoot}
+            projectRoot={projectManager.projectRoot}
             onSelectTab={this.onSelectTab}
             readonly={readonly}
           />

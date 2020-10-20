@@ -4,7 +4,7 @@ const FileTreeClient = require('./FileTreeClient')
 
 class FileTreeChannel extends IpcChannel {
   constructor() {
-    super('file-tree')
+    super('project')
     this.fileTreeClient = null
   }
 

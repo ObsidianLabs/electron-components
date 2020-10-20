@@ -1,28 +1,64 @@
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
-import { IpcChannel } from '@obsidians/ipc'
 import { modelSessionManager } from '@obsidians/code-editor'
 
-export default class ProjectManager {
+import BaseProjectManager from './BaseProjectManager'
+
+export default class LocalProjectManager extends BaseProjectManager {
   constructor () {
+    super()
+
     this.project = null
     this.terminalButton = null
-    this.channel = new IpcChannel('project')
 
-    this.onRefreshFile = this.onRefreshFile.bind(this)
-    modelSessionManager.onRefreshFile(this.onRefreshFile)
+    this.channel.on('refresh-file', this.onRefreshFile.bind(this))
   }
 
   get projectRoot () {
     return this.project?.props.projectRoot
   }
 
+  async prepareProject () {
+    if (!await fileOps.current.isDirectory(this.projectRoot)) {
+      return { error: 'invalid project' }
+    }
+
+    let projectSettings
+    try {
+      projectSettings = await this.readProjectSettings()
+    } catch (e) {
+      console.warn(e)
+      return { initialFile: this.settingsFilePath, projectSettings: null }
+    }
+
+    if (await this.isMainValid()) {
+      return { initialFile: this.mainFilePath, projectSettings }
+    }
+    return { initialFile: this.settingsFilePath, projectSettings }
+  }
+
   pathForProjectFile (relativePath) {
     return this.projectRoot ? fileOps.current.path.join(this.projectRoot, relativePath) : ''
   }
 
+  async loadRootDirectory () {
+    return await this.channel.invoke('loadTree', this.projectRoot)
+  }
+
+  async loadDirectory () {
+    return await this.channel.invoke('loadDirectory', this.projectRoot)
+  }
+
+  onRefreshDirectory (callback) {
+    this.channel.on('refresh-directory', callback)
+  }
+
+  offRefreshDirectory () {
+    this.channel.off('refresh-directory')
+  }
+
   async readProjectSettings () {
-    this.projectSettings = new this.ProjectSettings(this.settingsFilePath, this.channel)
+    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, this.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
@@ -55,15 +91,16 @@ export default class ProjectManager {
     return await this.projectSettings.readSettings()
   }
 
-  toggleTerminal (terminal) {
-    this.terminalButton?.setState({ terminal })
-    this.project?.toggleTerminal(terminal)
-  }
-
   onRefreshFile (data) {
+    modelSessionManager.refreshFile(data)
     if (data.path === this.settingsFilePath) {
       this.projectSettings?.update(data.content)
     }
+  }
+
+  toggleTerminal (terminal) {
+    this.terminalButton?.setState({ terminal })
+    this.project?.toggleTerminal(terminal)
   }
 
   effect (key, callback) {
