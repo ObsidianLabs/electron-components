@@ -28,10 +28,6 @@ export default class CodeEditorCollection extends Component {
     return this.state.selectedTab !== state.selectedTab
   }
 
-  get projectRoot () {
-    return this.props.projectRoot
-  }
-
   openTab = tab => {
     this.tabs.current.currentTab = tab
   }
@@ -149,7 +145,7 @@ export default class CodeEditorCollection extends Component {
           initialSelected={this.props.initialTab}
           onSelectTab={this.onSelectTab}
           tryCloseTab={this.tryCloseTab}
-          createNewTab={() => modelSessionManager.openNewFile()}
+          createNewTab={() => fileOps.current.openNewFile(this.props.projectRoot)}
           getTabText={tab => modelSessionManager.tabTitle(tab)}
         >
           <MonacoEditorContainer

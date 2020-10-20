@@ -40,9 +40,6 @@ class ModelSessionManager {
   set codeEditor (codeEditor) {
     this._codeEditor = codeEditor
   }
-  get projectRoot () {
-    return this._codeEditor.projectRoot
-  }
 
   registerModeDetector (modeDetector) {
     this.modeDetector = modeDetector
@@ -99,10 +96,6 @@ class ModelSessionManager {
       console.warn(e)
       notification.error('Save Failed', e.message)
     }
-  }
-
-  async openNewFile (projectRoot = this.projectRoot) {
-    return await fileOps.current.openNewFile(projectRoot)
   }
 
   onRefreshFile (callback) {
