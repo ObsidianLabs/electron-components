@@ -49,6 +49,7 @@ export {
   UncontrolledDropdown,
   UncontrolledButtonDropdown,
   InputGroupButtonDropdown,
+  Media,
 } from 'reactstrap'
 
 import './styles/index.scss'
