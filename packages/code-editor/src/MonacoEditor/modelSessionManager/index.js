@@ -85,6 +85,7 @@ class ModelSessionManager {
     if (!this.sessions[filePath]) {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
+    this._codeEditor.fileSaving(filePath)
     await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
     this._codeEditor.fileSaved(filePath)
   }

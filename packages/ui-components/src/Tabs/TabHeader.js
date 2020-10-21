@@ -13,8 +13,7 @@ class TabHeaderItem extends PureComponent {
   }
 
   renderCloseBtn () {
-    const { tab, unsaved, onCloseTab } = this.props
-
+    const { tab, unsaved, saving, onCloseTab } = this.props
     if (!onCloseTab) {
       return null
     }
@@ -30,13 +29,19 @@ class TabHeaderItem extends PureComponent {
       >
         <span
           key='nav-item-dot'
-          className={classnames('nav-item-close-dot', { active: unsaved })}
+          className={classnames('nav-item-close-dot', { active: unsaved && !saving })}
         >
           <i className='fas fa-circle' />
         </span>
         <span
+          key='nav-item-loading'
+          className={classnames('nav-item-close-loading', { active: saving })}
+        >
+          <i className='fas fa-spin fa-spinner' />
+        </span>
+        <span
           key='nav-item-close'
-          className={classnames('nav-item-close-times', { active: !unsaved })}
+          className={classnames('nav-item-close-times', { active: !unsaved && !saving })}
         >
           <i className='fas fa-times' />
         </span>
@@ -91,6 +96,7 @@ export default class TabHeader extends PureComponent {
                 size={size}
                 tab={tab}
                 unsaved={tab.unsaved}
+                saving={tab.saving}
                 tabText={tabText}
                 active={selected.key === tab.key}
                 onSelectTab={onSelectTab}

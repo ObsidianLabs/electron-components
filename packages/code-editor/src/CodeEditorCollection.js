@@ -103,14 +103,16 @@ export default class CodeEditorCollection extends Component {
     modelSessionManager.closeAllModelSessions()
   }
 
-  fileSaved = async (path, saveAsPath) => {
-    const updates = { unsaved: false }
+  fileSaving = filePath => this.tabs.current.updateTab({ saving: true }, filePath)
+
+  fileSaved = async (filePath, saveAsPath) => {
+    const updates = { unsaved: false, saving: false }
     if (saveAsPath) {
-      await this.editorCollection.renameFile(path, saveAsPath)
+      await this.editorCollection.renameFile(filePath, saveAsPath)
       updates.key = saveAsPath
       updates.path = saveAsPath
     }
-    const newTab = this.tabs.current.updateTab(updates, path)
+    const newTab = this.tabs.current.updateTab(updates, filePath)
     if (saveAsPath) {
       this.onSelectTab(newTab)
     }

@@ -1,11 +1,15 @@
 import React from 'react'
 
-export default function ({ modelSession }) {
-  if (!modelSession.CustomTab) {
-    return null
-  }
+import {
+  LoadingScreen,
+} from '@obsidians/ui-components'
 
-  return (
-    <modelSession.CustomTab modelSession={modelSession} />
-  )
+export default function ({ loading, modelSession }) {
+  if (loading) {
+    return <div className='custom-tab bg2'><LoadingScreen /></div>
+  } else if (!modelSession.CustomTab) {
+    return null
+  } else {
+    return <modelSession.CustomTab modelSession={modelSession} />
+  }
 }

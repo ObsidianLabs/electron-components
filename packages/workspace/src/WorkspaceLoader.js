@@ -64,7 +64,7 @@ export default class WorkspaceLoader extends PureComponent {
   }
 
   openProjectSettings = () => {
-    this.workspace.current.openFile(this.props.projectManager.settingsFilePath)
+    this.workspace.current.openFile({ path: this.props.projectManager.settingsFilePath })
   }
 
   render () {

@@ -99,8 +99,17 @@
             display: block;
           }
         }
+
+        &>.nav-item-close-loading {
+          display: none;
+          font-size: small;
   
-        &:hover>.nav-item-close-dot {
+          &.active {
+            display: block;
+          }
+        }
+
+        &:hover>.nav-item-close-dot, &:hover>.nav-item-close-loading {
           display: none;
         }
       }

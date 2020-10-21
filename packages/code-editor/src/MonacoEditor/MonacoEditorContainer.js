@@ -18,7 +18,8 @@ export default class MonacoEditorContainer extends PureComponent {
   }
 
   state = {
-    loaded: false,
+    initialized: false,
+    loading: false,
     modelSession: null
   }
 
@@ -45,8 +46,9 @@ export default class MonacoEditorContainer extends PureComponent {
   }
 
   async loadFile ({ path, remote, mode, readonly = false }) {
+    this.setState({ loading: true })
     const modelSession = await this.modelSessionFromFile({ path, remote, mode, readonly })
-    this.setState({ loaded: true, modelSession })
+    this.setState({ initialized: true, loading: false, modelSession })
   }
 
   async modelSessionFromFile ({ path, remote, mode, readonly }) {
@@ -72,7 +74,8 @@ export default class MonacoEditorContainer extends PureComponent {
   }
 
   render () {
-    if (!this.state.loaded) {
+    const { initialized, loading, modelSession } = this.state
+    if (!initialized) {
       return <LoadingScreen />
     }
 
@@ -81,13 +84,14 @@ export default class MonacoEditorContainer extends PureComponent {
     return <>
       <MonacoEditor
         ref={editor => (this.editor = editor)}
-        modelSession={this.state.modelSession}
+        modelSession={modelSession}
         theme={this.props.theme}
         onCommand={onCommand}
         onChange={() => onChange(true)}
       />
       <CustomTabContainer
-        modelSession={this.state.modelSession}
+        loading={loading}
+        modelSession={modelSession}
       />
     </>
   }
