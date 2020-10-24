@@ -65,16 +65,16 @@ export default class MonacoEditorModelSession {
   }
 
   get value () {
-    return this._model ? this._model.getValue() : undefined
+    return this._model?.getValue()
   }
   set value (v) {
-    if (this._model) {
-      this._model.setValue(v)
-    }
+    this._model?.setValue(v)
   }
 
   refreshValue (value) {
-    this.value = value
+    if (this.value !== value) {
+      this.value = value
+    }
   }
 
   get readonly () {

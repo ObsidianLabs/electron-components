@@ -107,6 +107,7 @@ class ModelSessionManager {
       return
     }
     this.sessions[data.path].refreshValue(data.content)
+    this._codeEditor.fileSaved(data.path)
   }
 
   updateDecorations (decorationCollection) {
