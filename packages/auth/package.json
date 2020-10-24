@@ -4,7 +4,9 @@
   "description": "Authentication",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
-  "main": "dist/index.js",
+  "source": "src/index.js",
+  "main": "main/index.js",
+  "browser": "dist/index.es.js",
   "files": [
     "dist",
     "main"
