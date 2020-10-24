@@ -128,8 +128,8 @@ export default class BaseModal extends Component {
     let errorComponent = null
     if (this.state.error) {
       errorComponent = (
-        <Alert color='danger'>
-          <pre>{this.state.error}</pre>
+        <Alert color='danger' className='mb-0'>
+          <pre className='pre-wrap user-select mb-0'>{this.state.error}</pre>
         </Alert>
       )
     }

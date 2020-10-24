@@ -15,6 +15,13 @@
   flex: 1 0 0;
 }
 
+.user-select {
+  user-select: text;
+}
+.user-select-none {
+  user-select: none;
+}
+
 .text-placeholder {
   color: var(--color-placeholder);
 }
@@ -78,4 +85,12 @@ pre.pre-box {
   border-radius: .4rem;
   user-select: text;
 }
-
+.nowrap {
+  white-space: nowrap;
+}
+.pre-wrap {
+  white-space: pre-wrap;
+}
+.break-all {
+  word-break: break-all;
+}
