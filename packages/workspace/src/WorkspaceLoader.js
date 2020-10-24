@@ -33,10 +33,10 @@ export default class WorkspaceLoader extends PureComponent {
     }
   }
 
-  async prepareProject ({ ProjectManager, projectRoot }) {
+  async prepareProject ({ ProjectManager, projectRoot, type }) {
     this.setState({ loading: true, invalid: false, context: {} })
 
-    const projectManager = new ProjectManager(this, projectRoot)
+    const projectManager = new ProjectManager[type](this, projectRoot)
 
     const result = await projectManager.prepareProject()
     if (result.error) {
