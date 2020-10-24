@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@obsidians/redux": "^0.1.0",
-    "@obsidians/ui-components": "^0.2.0",
+    "@obsidians/ui-components": "^0.2.2",
     "moment": "^2.24.0"
   },
   "devDependencies": {
