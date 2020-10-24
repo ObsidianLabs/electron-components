@@ -60,14 +60,13 @@ export default class FileTree extends PureComponent {
   loadedCallback = null
 
   componentDidMount () {
-    this.props.projectManager.onRefreshDirectory(this.refreshDirectory)
-    this.loadTree()
+    this.loadTree(this.props.projectManager)
   }
 
   componentDidUpdate (prevProps) {
-    // FIXME: how to know project has changed?
-    if (prevProps.projectManager.projectRoot !== this.props.projectManager.projectRoot) {
-      this.loadTree()
+    if (prevProps.projectManager !== this.props.projectManager) {
+      prevProps.projectManager.offRefreshDirectory()
+      this.loadTree(this.props.projectManager)
     }
   }
   
@@ -75,10 +74,12 @@ export default class FileTree extends PureComponent {
     this.props.projectManager.offRefreshDirectory()
   }
 
-  loadTree = async () => {
+  loadTree = async projectManager => {
+    projectManager.onRefreshDirectory(this.refreshDirectory)
+
     this.loaded = false
 
-    const treeData = await this.props.projectManager.loadRootDirectory()
+    const treeData = await projectManager.loadRootDirectory()
     treeData.toggled = true
 
     await this.setState({ treeData })

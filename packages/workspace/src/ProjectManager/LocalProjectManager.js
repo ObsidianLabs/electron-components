@@ -5,17 +5,10 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import BaseProjectManager from './BaseProjectManager'
 
 export default class LocalProjectManager extends BaseProjectManager {
-  constructor () {
-    super()
+  constructor (project, projectRoot) {
+    super(project, projectRoot)
 
-    this.project = null
-    this.terminalButton = null
-
-    this.channel.on('refresh-file', this.onRefreshFile.bind(this))
-  }
-
-  get projectRoot () {
-    return this.project?.props.projectRoot
+    BaseProjectManager.channel.on('refresh-file', this.onRefreshFile.bind(this))
   }
 
   async prepareProject () {
@@ -42,29 +35,30 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory () {
-    return await this.channel.invoke('loadTree', this.projectRoot)
+    return await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
   }
 
-  async loadDirectory () {
-    return await this.channel.invoke('loadDirectory', this.projectRoot)
+  async loadDirectory (dirPath) {
+    return await BaseProjectManager.channel.invoke('loadDirectory', dirPath)
   }
 
   onRefreshDirectory (callback) {
-    this.channel.on('refresh-directory', callback)
+    BaseProjectManager.channel.on('refresh-directory', callback)
   }
 
   offRefreshDirectory () {
-    this.channel.off('refresh-directory')
+    BaseProjectManager.channel.off('refresh-directory')
   }
 
   async readProjectSettings () {
-    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, this.channel)
+    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
 
   openProjectSettings () {
-    this.project?.openProjectSettings()
+    console.log(this.settingsFilePath)
+    this.project.openProjectSettings(this.settingsFilePath)
   }
 
   get mainFilePath () {
@@ -99,11 +93,7 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   toggleTerminal (terminal) {
-    this.terminalButton?.setState({ terminal })
-    this.project?.toggleTerminal(terminal)
-  }
-
-  effect (key, callback) {
-    return () => this.channel.on(key, callback)
+    BaseProjectManager.terminalButton?.setState({ terminal })
+    this.project.toggleTerminal(terminal)
   }
 }

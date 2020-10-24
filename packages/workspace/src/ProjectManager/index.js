@@ -1,1 +1,1 @@
-export { default } from './RemoteProjectManager'
+export { default } from './LocalProjectManager'

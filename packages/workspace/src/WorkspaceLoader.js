@@ -20,7 +20,6 @@ export default class WorkspaceLoader extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.projectManager.project = this
     this.props.addLanguages && this.props.addLanguages()
     this.prepareProject(this.props)
   }
@@ -34,8 +33,10 @@ export default class WorkspaceLoader extends PureComponent {
     }
   }
 
-  async prepareProject ({ projectManager, projectRoot }) {
+  async prepareProject ({ ProjectManager, projectRoot }) {
     this.setState({ loading: true, invalid: false, context: {} })
+
+    const projectManager = new ProjectManager(this, projectRoot)
 
     const result = await projectManager.prepareProject()
     if (result.error) {
@@ -46,6 +47,7 @@ export default class WorkspaceLoader extends PureComponent {
         initial: result.initial,
         context: {
           projectRoot,
+          projectManager,
           projectSettings: result.projectSettings,
         }
       })
@@ -63,8 +65,8 @@ export default class WorkspaceLoader extends PureComponent {
     }
   }
 
-  openProjectSettings = () => {
-    this.workspace.current.openFile({ path: this.props.projectManager.settingsFilePath })
+  openProjectSettings = settingsFilePath => {
+    this.workspace.current.openFile({ path: settingsFilePath })
   }
 
   render () {
@@ -93,13 +95,11 @@ export default class WorkspaceLoader extends PureComponent {
         <Workspace
           ref={this.workspace}
           theme={this.props.theme}
-          projectManager={this.props.projectManager}
           initial={this.state.initial}
           terminal={terminal}
           defaultSize={272}
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
-          onToggleTerminal={terminal => this.props.projectManager.toggleTerminal(terminal)}
           Terminal={<CompilerTerminal active={terminal} cwd={projectRoot} />}
         />
       </WorkspaceContext.Provider>

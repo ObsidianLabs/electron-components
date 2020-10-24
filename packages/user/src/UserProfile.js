@@ -76,6 +76,10 @@ export default class UserProfile extends PureComponent {
   }
 
   render () {
+    if (!process.env.IS_WEB) {
+      return null
+    }
+
     const profile = this.props.profile
     
     return (

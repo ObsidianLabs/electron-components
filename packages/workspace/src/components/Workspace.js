@@ -11,6 +11,8 @@ import fileOps from '@obsidians/file-ops'
 import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
+import WorkspaceContext from '../WorkspaceContext'
+
 import contextMenu, { registerHandlers } from './contextMenu'
 
 import CreateFileOrFolderModals from './CreateFileOrFolderModals'
@@ -26,9 +28,7 @@ SplitPane.getSizeUpdate = (props, state) => {
 }
 
 export default class Workspace extends Component {
-  static defaultProps = {
-    onToggleTerminal: () => {}
-  }
+  static contextType = WorkspaceContext
 
   constructor (props) {
     super(props)
@@ -90,7 +90,7 @@ export default class Workspace extends Component {
 
   openCreateFileModal = node => {
     const activeNode = node || this.filetree.current.activeNode
-    let basePath = this.props.projectManager.projectRoot
+    let basePath = this.context.projectRoot
     if (activeNode) {
       basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     }
@@ -99,7 +99,7 @@ export default class Workspace extends Component {
 
   openCreateFolderModal = node => {
     const activeNode = node || this.filetree.current.activeNode
-    let basePath = this.props.projectManager.projectRoot
+    let basePath = this.context.projectRoot
     if (activeNode) {
       basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     }
@@ -130,9 +130,9 @@ export default class Workspace extends Component {
       if (this.state.terminalSize < 160) {
         this.setState({ terminalSize: 160 })
       }
-      this.props.onToggleTerminal(true)
+      this.context.projectManager.toggleTerminal(true)
     } else if (size < 50) {
-      this.props.onToggleTerminal(false)
+      this.context.projectManager.toggleTerminal(false)
       this.setState({ terminalSize: 0 })
     }
   }
@@ -140,7 +140,6 @@ export default class Workspace extends Component {
   render () {
     const {
       theme,
-      projectManager,
       initial,
       ProjectToolbar,
       Terminal = <div></div>,
@@ -179,11 +178,11 @@ export default class Workspace extends Component {
           </div>
           <FileTree
             ref={this.filetree}
-            projectManager={projectManager}
+            projectManager={this.context.projectManager}
             initialPath={initial.path}
             onSelect={this.openFile}
             readonly={readonly}
-            contextMenu={makeContextMenu(contextMenu)}
+            contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />
         </div>
         <SplitPane
@@ -201,7 +200,7 @@ export default class Workspace extends Component {
             ref={this.codeEditor}
             theme={theme}
             initialTab={this.tabFromPath(initial.path, initial.remote)}
-            projectRoot={projectManager.projectRoot}
+            projectRoot={this.context.projectRoot}
             onSelectTab={this.onSelectTab}
             readonly={readonly}
           />

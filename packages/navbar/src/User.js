@@ -43,6 +43,16 @@ class User extends Component {
   }
 
   renderDropdownMenus = profile => {
+    if (!process.env.IS_WEB) {
+      return (
+        <DropdownMenu right>
+          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/guest`)}>
+            <i className='fas fa-th-list w-3 mr-2' />My Projects
+          </DropdownItem>
+        </DropdownMenu>
+      )
+    }
+
     const username = profile.get('username')
 
     if (username) {

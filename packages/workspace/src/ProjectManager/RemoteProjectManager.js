@@ -4,22 +4,16 @@ import notification from '@obsidians/notification'
 import BaseProjectManager from './BaseProjectManager'
 
 export default class RemoteProjectManager extends BaseProjectManager {
-  constructor () {
-    super()
+  constructor (project, projectRoot) {
+    super(project, projectRoot)
 
-    this.project = null
-    this.terminalButton = null
     this.prefix = 'public'
-  }
-
-  get projectRoot () {
-    return this.project?.props.projectRoot
   }
 
   async prepareProject () {
     let project
     try {
-      project = await this.channel.invoke('get', this.projectRoot)
+      project = await BaseProjectManager.channel.invoke('get', this.projectRoot)
     } catch (e) {
       return { error: e.message }
     }
@@ -46,7 +40,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async readProjectSettings () {
-    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, this.channel)
+    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
@@ -71,7 +65,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   offRefreshDirectory () {}
 
   openProjectSettings () {
-    this.project?.openProjectSettings()
+    this.project.openProjectSettings(this.settingsFilePath)
   }
 
   get mainFilePath () {
@@ -105,11 +99,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   toggleTerminal (terminal) {
-    this.terminalButton?.setState({ terminal })
-    this.project?.toggleTerminal(terminal)
-  }
-
-  effect (key, callback) {
-    return () => this.channel.on(key, callback)
+    BaseProjectManager.terminalButton?.setState({ terminal })
+    this.project.toggleTerminal(terminal)
   }
 }
