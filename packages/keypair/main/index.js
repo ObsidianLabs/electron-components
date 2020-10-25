@@ -5,32 +5,40 @@ const { IpcChannel } = require('@obsidians/ipc')
 
 class KeypairManager extends IpcChannel {
   constructor(build) {
-    super(`${build}-keypair`)
+    super('keypair')
     this.build = build
   }
 
-  async allKeypairAddresses () {
-    const keys = await keytar.findCredentials(`@obsidians/${this.build}-keypair`)
-    return keys.map(({ account }) => account)
+  async get (address) {
+    if (address) {
+      return this.loadSecret(address)
+    } else {
+      const keys = await keytar.findCredentials(`@obsidians/${this.build}-keypair`)
+      return keys.map(({ account }) => account)
+    }
   }
 
   async loadSecret (address) {
     const secret = await keytar.getPassword(`@obsidians/${this.build}-keypair`, address)
     if (secret) {
-      return secret
+      return { address, secret }
     }
   }
 
-  async newSecret () {
-    const privKey = randomBytes(32).toString('hex')
-    return `0x${privKey}`
+  async post (task, keypair) {
+    if (task === 'new-secret') {
+      const privKey = randomBytes(32).toString('hex')
+      return `0x${privKey}`
+    } else {
+      await this.save(keypair.address, keypair.secret)
+    }
   }
 
-  async saveKeypair (address, secret) {
+  async save (address, secret) {
     await keytar.setPassword(`@obsidians/${this.build}-keypair`, address, secret)
   }
 
-  async deleteKeypair (address) {
+  async delete (address) {
     await keytar.deletePassword(`@obsidians/${this.build}-keypair`, address)
   }
 }

@@ -1,11 +1,12 @@
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
+import notification from '@obsidians/notification'
 
 import { kp } from '@obsidians/sdk'
 
 class KeypairManager {
-  constructor (build) {
-    this.channel = new IpcChannel(`${build}-keypair`)
+  constructor () {
+    this.channel = new IpcChannel('keypair')
     this.onKeypairUpdated = null
     this.eventTarget = new EventTarget()
   }
@@ -16,9 +17,14 @@ class KeypairManager {
   }
 
   async loadAllKeypairs () {
-    const addresses = await this.channel.invoke('allKeypairAddresses')
-    const names = redux.getState().keypairs
-    return addresses.map(address => ({ address, name: names.get(address) }))
+    try {
+      const addresses = await this.channel.invoke('get')
+      const names = redux.getState().keypairs
+      return addresses.map(address => ({ address, name: names.get(address) }))
+    } catch (e) {
+      notification.error('Error', e.message)
+      return []
+    }
   }
   
   async newKeypair () {
@@ -26,7 +32,7 @@ class KeypairManager {
   }
 
   async saveKeypair (name, keypair) {
-    await this.channel.invoke('saveKeypair', keypair.address, keypair.secret)
+    await this.channel.invoke('post', '', keypair)
     await this.updateKeypairName(keypair.address, name)
   }
 
@@ -38,7 +44,7 @@ class KeypairManager {
   }
 
   async deleteKeypair (keypair) {
-    await this.channel.invoke('deleteKeypair', keypair.address)
+    await this.channel.invoke('delete', keypair.address)
     redux.dispatch('REMOVE_KEYPAIR_NAME', { address: keypair.address })
     const keypairs = await this.loadAllKeypairs()
     const event = new CustomEvent('updated', { detail: keypairs })
@@ -46,7 +52,7 @@ class KeypairManager {
   }
 
   async getSigner (address) {
-    const secret = await this.channel.invoke('loadSecret', address)
+    const { secret } = await this.channel.invoke('get', address)
     if (!secret) {
       throw new Error('No secret key for address: ' + address)
     }
