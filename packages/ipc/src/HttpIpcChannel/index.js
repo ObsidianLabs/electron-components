@@ -1,4 +1,4 @@
-import HttpClient from './HttpClient' 
+import HttpClient from './HttpClient'
 
 export default class HttpIpcChannel {
   constructor(channel = 'default', uid = '') {
@@ -7,7 +7,15 @@ export default class HttpIpcChannel {
     this.listeners = {}
     this._onDataReceived = this._onDataReceived.bind(this)
 
-    this.client = new HttpClient(`${process.env.REACT_APP_AUTH_SERVER}/api/v1/tbaas`, `${process.env.REACT_APP_IPC_SERVER_URL}/api/v1`)
+    const {
+      PROJECT,
+      REACT_APP_AUTH_SERVER,
+      REACT_APP_IPC_SERVER_URL,
+    } = process.env
+    this.client = new HttpClient(
+      `${REACT_APP_AUTH_SERVER}/api/v1/${PROJECT}`,
+      `${REACT_APP_IPC_SERVER_URL}/api/v1`
+    )
     this.client.on(this.channelResponse, this._onDataReceived)
   }
 

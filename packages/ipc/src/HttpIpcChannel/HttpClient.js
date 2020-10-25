@@ -1,3 +1,5 @@
+import redux from '@obsidians/redux'
+
 export default class HttpClient {
   constructor (generalUrl, specificUrl) {
     this.generalUrl = generalUrl
@@ -36,17 +38,25 @@ export default class HttpClient {
 
     if (method === 'get') {
       const endpoint = args[0] ? `${channel}/${args[0]}` : channel
-      return this.query(`${this.generalUrl}/${endpoint}`, 'GET', args[1])
+      return this.query(`${this.generalUrl}/${endpoint}`, 'GET')
+    } else if (method === 'post') {
+      const endpoint = args[0] ? `${channel}/${args[0]}` : channel
+      return this.query(`${this.generalUrl}/${endpoint}`, 'POST', args[1])
+    } else if (method === 'delete') {
+      const endpoint = args[0] ? `${channel}/${args[0]}` : channel
+      return this.query(`${this.generalUrl}/${endpoint}`, 'DELETE')
     }
 
     return this.query(`${this.specificUrl}/${channel}`, 'POST', { method, args })
   }
 
   async query (endpoint, method, params) {
+    const token = redux.getState().profile.get('token')
     const opts = {
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       method,
     }
@@ -55,6 +65,10 @@ export default class HttpClient {
     }
 
     const response = await fetch(endpoint, opts)
+    if (response.status === 401) {
+      throw new Error('Not authorized')
+    }
+
     let result = await response.text()
 
     try {
