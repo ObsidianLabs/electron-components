@@ -1,8 +1,8 @@
 
 const project = process.env.PROJECT
-const authServerUrl = process.env.REACT_APP_AUTH_SERVER
+const serverUrl = process.env.REACT_APP_SERVER_URL
 const githubClientId = process.env.REACT_APP_GITHUB_CLIENT_ID
-const redirectUri = `${authServerUrl}/api/v1/auth/callback/${project}/github`
+const redirectUri = `${serverUrl}/api/v1/auth/callback/${project}/github`
 
 export default {
   login () {

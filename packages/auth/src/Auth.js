@@ -6,7 +6,7 @@ import fileOps from '@obsidians/file-ops'
 
 import providers from './providers'
 
-const authServerUrl = process.env.REACT_APP_AUTH_SERVER
+const serverUrl = process.env.REACT_APP_SERVER_URL
 
 export default {
   profile: null,
@@ -32,7 +32,7 @@ export default {
     let token
     let awsToken
     try {
-      const response = await fetch(`${authServerUrl}/api/v1/auth/login`, {
+      const response = await fetch(`${serverUrl}/api/v1/auth/login`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'

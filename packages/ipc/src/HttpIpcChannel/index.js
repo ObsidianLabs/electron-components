@@ -9,11 +9,11 @@ export default class HttpIpcChannel {
 
     const {
       PROJECT,
-      REACT_APP_AUTH_SERVER,
+      REACT_APP_SERVER_URL,
       REACT_APP_IPC_SERVER_URL,
     } = process.env
     this.client = new HttpClient(
-      `${REACT_APP_AUTH_SERVER}/api/v1/${PROJECT}`,
+      `${REACT_APP_SERVER_URL}/api/v1/${PROJECT}`,
       `${REACT_APP_IPC_SERVER_URL}/api/v1`
     )
     this.client.on(this.channelResponse, this._onDataReceived)
