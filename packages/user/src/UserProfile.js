@@ -6,6 +6,8 @@ import {
   IconButton,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
+
 export default class UserProfile extends PureComponent {
   renderAvatar = avatar => {
     if (avatar) {
@@ -76,7 +78,7 @@ export default class UserProfile extends PureComponent {
   }
 
   render () {
-    if (!process.env.IS_WEB) {
+    if (platform.isDesktop) {
       return null
     }
 

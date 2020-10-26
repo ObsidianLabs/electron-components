@@ -9,6 +9,7 @@ import {
 
 import { withRouter } from 'react-router'
 
+import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
 class User extends Component {
@@ -43,7 +44,7 @@ class User extends Component {
   }
 
   renderDropdownMenus = profile => {
-    if (!process.env.IS_WEB) {
+    if (platform.isDesktop) {
       return (
         <DropdownMenu right>
           <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/guest`)}>

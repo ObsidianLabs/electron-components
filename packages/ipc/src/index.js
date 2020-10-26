@@ -1,8 +1,8 @@
-export default 'The default export is not available'
+import platform from '@obsidians/platform'
 
 let TempIpcChannel
 
-if (window.require) {
+if (platform.isDesktop) {
   TempIpcChannel = require('./ElectronIpcChannel').default
 } else {
   TempIpcChannel = require('./HttpIpcChannel').default

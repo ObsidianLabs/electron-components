@@ -17,6 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@obsidians/platform": "^0.1.0",
     "@obsidians/redux": "^0.1.0",
     "@obsidians/ui-components": "^0.2.2",
     "@obsidians/workspace": "^0.1.1"
