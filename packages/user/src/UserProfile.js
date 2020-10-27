@@ -9,12 +9,14 @@ import {
 import platform from '@obsidians/platform'
 
 export default class UserProfile extends PureComponent {
-  renderAvatar = avatar => {
-    if (avatar) {
+  renderAvatar = () => {
+    const { profile } = this.props
+
+    if (profile?.avatar) {
       return (
         <Media
           object
-          src={avatar}
+          src={profile.avatar}
           className='rounded-circle'
           style={{ width: 100, height: 100 }}
         />
@@ -23,6 +25,7 @@ export default class UserProfile extends PureComponent {
     return (
       <Media
         middle
+        key='no-user'
         className='d-flex align-items-center justify-content-center rounded-circle bg-secondary text-muted'
         style={{ width: 100, height: 100 }}
       >
@@ -31,11 +34,10 @@ export default class UserProfile extends PureComponent {
     )
   }
 
-  renderUserInfo = profile => {
-    const username = profile.get('username')
-    const desc = profile.get('desc')
+  renderUserInfo = () => {
+    const { profile } = this.props
 
-    if (!username) {
+    if (!profile) {
       return <>
         <Media heading className='text-muted'>
           (not logged in)
@@ -44,6 +46,8 @@ export default class UserProfile extends PureComponent {
         <p className='break-line'>{this.renderLoginButton()}</p>
       </>
     }
+
+    const { username, desc } = profile
     return <>
       <Media heading className='d-flex align-items-end'>
         {username}
@@ -82,15 +86,13 @@ export default class UserProfile extends PureComponent {
       return null
     }
 
-    const profile = this.props.profile
-    
     return (
       <Media className='overflow-hidden mb-4'>
         <Media left className='mr-4'>
-          {this.renderAvatar(profile.get('avatar'))}
+          {this.renderAvatar()}
         </Media>
         <Media body>
-          {this.renderUserInfo(profile)}
+          {this.renderUserInfo()}
         </Media>
       </Media>
     )

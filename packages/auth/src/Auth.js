@@ -11,6 +11,10 @@ const serverUrl = process.env.REACT_APP_SERVER_URL
 export default {
   profile: null,
 
+  get username () {
+    return this.profile && this.profile.username
+  },
+
   login (provider = 'github') {
     if (!providers[provider]) {
       return

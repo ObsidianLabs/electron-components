@@ -68,7 +68,8 @@ export default class Header extends PureComponent {
   }
 
   render () {
-    const { profile, navbarLeft, navbarRight, children } = this.props
+    const { profile, navbarLeft, navbarRight } = this.props
+    const username = profile.get('username') || 'local'
 
     return (
       <Navbar tag='header' dark expand>
@@ -78,7 +79,7 @@ export default class Header extends PureComponent {
         <Nav navbar className='ml-auto navbar-nav-scroll navbar-right'>
           {this.renderRightNavbar(navbarRight)}
           <NavLink
-            to='/guest'
+            to={`/${username}`}
             exact
             className='nav-link d-flex p-0'
             activeClassName='active'

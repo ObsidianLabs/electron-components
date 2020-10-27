@@ -4,28 +4,83 @@ import {
   ButtonGroup,
   Button,
   LoadingScreen,
+  CenterScreen,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
-import { BaseProjectManager } from '@obsidians/workspace'
-import { ProjectList, actions } from '@obsidians/project'
+import { IpcChannel } from '@obsidians/ipc'
+import { BaseProjectManager, actions } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
+import ProjectList from './ProjectList'
+
+const userChannel = new IpcChannel('user')
 
 class UserHomepage extends PureComponent {
+  state = {
+    notfound: false,
+    loading: true,
+    user: null,
+    projects: [],
+  }
+
   componentDidMount () {
-    // this.getProjectList(this.props.profile.get('username'))
+    const { username } = this.props.match.params
+    this.getProjectList(username)
+  }
+
+  componentDidUpdate (props) {
+    const { username } = this.props.match.params
+    const { username: prev } = props.match.params
+    if (username !== prev) {
+      this.getProjectList(username)
+    }
   }
 
   getProjectList = async username => {
-    const projects = await BaseProjectManager.channel.invoke('get', username)
-    redux.dispatch('UPDATE_PROJECT_LIST', projects.map(p => ({
+    if (username === 'local') {
+      this.setState({ loading: false, notfound: false, user: null, projects: [] })
+      return
+    }
+
+    this.setState({ loading: true, notfound: false })
+
+    let user
+    if (!this.isSelf()) {
+      try {
+        user = await userChannel.invoke(username)
+      } catch (e) {
+        this.setState({ loading: false, notfound: true, user: username })
+        return
+      }
+    }
+    const res = await BaseProjectManager.channel.invoke('get', username)
+    const projects = res.map(p => ({
       id: p.name,
       name: p.name,
+      author: username,
       path: `${username}/${p.name}`,
-    })))
+    }))
+
+    this.setState({
+      loading: false,
+      user,
+      projects,
+    })
+    if (this.isSelf()) {
+      redux.dispatch('UPDATE_PROJECT_LIST', projects)
+    }
+  }
+
+  isSelf = () => {
+    const { profile, match } = this.props
+    return match.params.username === profile.get('username')
   }
 
   renderCreateNewProjectButton = () => {
+    if (!this.isSelf()) {
+      return null
+    }
     return (
       <Button
         color='success'
@@ -37,6 +92,9 @@ class UserHomepage extends PureComponent {
   }
 
   renderOpenProjectButton = () => {
+    if (!this.isSelf() || platform.isWeb) {
+      return null
+    }
     return (
       <Button
         color='success'
@@ -50,21 +108,25 @@ class UserHomepage extends PureComponent {
   }
 
   render () {
-    const { profile, projects } = this.props
+    const { profile } = this.props
+    const { loading, notfound, user, projects } = this.state
 
-    if (projects.get('loading')) {
+    if (loading) {
       return <LoadingScreen />
+    } else if (notfound) {
+      return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
     }
 
     return (
       <div className='d-flex w-100 h-100' style={{ overflow: 'auto' }}>
         <div className='container py-5'>
-          <UserProfile profile={profile} />
-
+          <UserProfile
+            profile={this.isSelf() ? profile.toJS() : user}
+          />
           <div className='d-flex flex-row justify-content-between my-3'>
             <ButtonGroup>
               <h4 color='primary'>
-                <i className='fas fa-th-list mr-2' />My Projects
+                <i className='fas fa-th-list mr-2' />Projects
               </h4>
             </ButtonGroup>
             <ButtonGroup>
@@ -74,7 +136,7 @@ class UserHomepage extends PureComponent {
           </div>
 
           <ProjectList
-            projects={this.props.projects.get('local').toJS()}
+            projects={this.isSelf() ? this.props.projects.get('local').toJS() : projects}
           />
         </div>
       </div>

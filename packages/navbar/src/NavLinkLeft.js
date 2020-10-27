@@ -13,7 +13,10 @@ class NavLinkLeft extends PureComponent {
 
   onToggle = event => {
     const { route, selected, history, location } = this.props
-    const url = `/${route}/${selected.id || ''}`
+    let url = `/${route}`
+    if (selected.id) {
+      url = `/${route}/${selected.id}`
+    }
     const match = location.pathname.startsWith(url)
     if (!match) {
       history.push(url)
@@ -34,9 +37,13 @@ class NavLinkLeft extends PureComponent {
   render () {
     const { route, title, selected, dropdown, icon } = this.props
 
+    let url = `/${route}`
+    if (selected.id) {
+      url = `/${route}/${selected.id}`
+    }
     return (
       <NavLink
-        to={`/${route}/${selected.id || ''}`}
+        to={url}
         className='nav-link d-flex p-0'
         style={{ width: 273 }}
         activeClassName='active'

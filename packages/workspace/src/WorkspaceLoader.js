@@ -1,5 +1,9 @@
 import React, { PureComponent } from 'react'
 
+import { Button } from '@obsidians/ui-components'
+
+import notification from '@obsidians/notification'
+
 import Workspace from './components/Workspace'
 import WorkspaceContext from './WorkspaceContext'
 
@@ -69,10 +73,23 @@ export default class WorkspaceLoader extends PureComponent {
     this.workspace.current.openFile({ path: settingsFilePath })
   }
 
+  removeProject = projectRoot => {
+    const id = btoa(projectRoot)
+    redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
+
+    // const selected = redux.getState().projects.get('selected')
+    // if (selected && selected.get('id') === id) {
+    //   redux.dispatch('SELECT_PROJECT', { project: undefined })
+    //   this.history.replace(`/local`)
+    // }
+    // redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
+    // notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)
+    notification.info('Remove Project Successful', `Project <b>${projectRoot}</b> is removed`)
+  }
+
   render () {
     const {
       projectRoot,
-      InvalidProjectActions = null,
       ProjectToolbar,
       CompilerTerminal,
     } = this.props
@@ -85,7 +102,10 @@ export default class WorkspaceLoader extends PureComponent {
     if (this.state.invalid) {
       return (
         <ProjectInvalid projectRoot={projectRoot || '(undefined)'}>
-          {InvalidProjectActions}
+          <Button
+            color='secondary'
+            onClick={() => this.removeProject(projectRoot)}
+          >Remove</Button>
         </ProjectInvalid>
       )
     }

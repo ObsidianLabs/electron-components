@@ -47,7 +47,7 @@ class User extends Component {
     if (platform.isDesktop) {
       return (
         <DropdownMenu right>
-          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/guest`)}>
+          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
             <i className='fas fa-th-list w-3 mr-2' />My Projects
           </DropdownItem>
         </DropdownMenu>
@@ -60,7 +60,7 @@ class User extends Component {
       return (
         <DropdownMenu right>
           <DropdownItem header>Logged in as</DropdownItem>
-          <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/guest`)}>
+          <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/${username}`)}>
             <i className='fas fa-user w-3 mr-2' />
             {username}
           </DropdownItem>
@@ -78,7 +78,7 @@ class User extends Component {
           <i className='fas fa-sign-in w-3 mr-2' />Login
         </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/guest`)}>
+        <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
           <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>
       </DropdownMenu>

@@ -17,6 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@obsidians/ipc": "^0.1.2",
     "@obsidians/platform": "^0.1.0",
     "@obsidians/redux": "^0.1.0",
     "@obsidians/ui-components": "^0.2.2",
@@ -42,7 +43,8 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-router-dom": "^5.1.2"
   },
   "eslintConfig": {
     "extends": "react-app"
