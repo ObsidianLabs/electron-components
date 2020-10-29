@@ -32,7 +32,6 @@ export class ProjectActions {
         project: {
           id: projectId,
           path: projectRoot,
-          author: 'local',
           name: base,
         }
       })

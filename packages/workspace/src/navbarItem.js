@@ -24,8 +24,6 @@ const projectContextMenus = id => {
 }
 
 export default function navbarItem (projects, selected, username) {
-  console.log(selected)
-
   const projectDropdown = [
     {
       id: 'new-project',

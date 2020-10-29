@@ -57,7 +57,6 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   openProjectSettings () {
-    console.log(this.settingsFilePath)
     this.project.openProjectSettings(this.settingsFilePath)
   }
 

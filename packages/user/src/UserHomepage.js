@@ -38,6 +38,15 @@ class UserHomepage extends PureComponent {
   }
 
   getProjectList = async username => {
+    if (platform.isDesktop) {
+      const projects = this.props.projects.get('local').toJS().map(x => {
+        delete x.author
+        return x
+      })
+      this.setState({ loading: false, notfound: false, user: null, projects })
+      return
+    }
+
     if (username === 'local') {
       this.setState({ loading: false, notfound: false, user: null, projects: [] })
       return
@@ -135,9 +144,7 @@ class UserHomepage extends PureComponent {
             </ButtonGroup>
           </div>
 
-          <ProjectList
-            projects={this.isSelf() ? this.props.projects.get('local').toJS() : projects}
-          />
+          <ProjectList projects={projects} />
         </div>
       </div>
     )
