@@ -39,11 +39,7 @@ class UserHomepage extends PureComponent {
 
   getProjectList = async username => {
     if (platform.isDesktop) {
-      const projects = this.props.projects.get('local').toJS().map(x => {
-        delete x.author
-        return x
-      })
-      this.setState({ loading: false, notfound: false, user: null, projects })
+      this.setState({ loading: false, notfound: false, user: null })
       return
     }
 
@@ -83,7 +79,7 @@ class UserHomepage extends PureComponent {
 
   isSelf = () => {
     const { profile, match } = this.props
-    return match.params.username === profile.get('username')
+    return platform.isDesktop || match.params.username === profile.get('username')
   }
 
   renderCreateNewProjectButton = () => {
@@ -118,7 +114,17 @@ class UserHomepage extends PureComponent {
 
   render () {
     const { profile } = this.props
-    const { loading, notfound, user, projects } = this.state
+    const { loading, notfound, user } = this.state
+
+    let projects
+    if (platform.isDesktop) {
+      projects = this.props.projects.get('local').toJS().map(p => {
+        delete p.author
+        return p
+      })
+    } else {
+      projects = this.state.projects
+    }
 
     if (loading) {
       return <LoadingScreen />
