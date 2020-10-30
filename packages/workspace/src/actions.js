@@ -1,5 +1,6 @@
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
+import notification from '@obsidians/notification'
 
 export class ProjectActions {
   constructor() {
@@ -39,7 +40,7 @@ export class ProjectActions {
     } catch (e) {}
   }
 
-  async removeProject () {
+  async removeProject ({ id, name }) {
     const selected = redux.getState().projects.get('selected')
     if (selected && selected.get('id') === id) {
       redux.dispatch('SELECT_PROJECT', { project: undefined })
