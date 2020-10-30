@@ -45,7 +45,7 @@ export default function navbarItem (projects, selected, username) {
   return {
     route: selected.author || username,
     title: 'Project',
-    icon: 'fa-file-code',
+    icon: 'fas fa-file-code',
     selected,
     dropdown: projectDropdown,
     contextMenu: projectContextMenus,
