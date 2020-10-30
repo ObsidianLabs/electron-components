@@ -38,6 +38,16 @@ export class ProjectActions {
       this.history.replace(`/local/${projectId}`)
     } catch (e) {}
   }
+
+  async removeProject () {
+    const selected = redux.getState().projects.get('selected')
+    if (selected && selected.get('id') === id) {
+      redux.dispatch('SELECT_PROJECT', { project: undefined })
+      this.history.replace(`/local`)
+    }
+    redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
+    notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)
+  }
 }
 
 export default new ProjectActions()
