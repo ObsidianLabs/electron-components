@@ -5,8 +5,12 @@ import AWS from 'aws-sdk'
 import fileOps from '@obsidians/file-ops'
 
 import providers from './providers'
+import { AWSRoleArn, AWSRoleSessionName, AWSRegion } from '../config.json'
 
 const serverUrl = process.env.REACT_APP_SERVER_URL
+const awsRoleArn = process.env.REACT_APP_AWS_ROLE_ARN || AWSRoleArn
+const awsRoleSessionName = process.env.REACT_APP_AWS_ROLE_SESSION_NAME || AWSRoleSessionName
+const awsRegion = process.env.REACT_APP_AWS_REGION || AWSRegion
 
 export default {
   profile: null,
@@ -52,12 +56,15 @@ export default {
       return
     }
 
+    AWS.config.update({
+      region: awsRegion,
+    })
     const sts = new AWS.STS()
     const params = {
       WebIdentityToken: awsToken,
-      RoleArn: 'arn:aws:iam::023286913450:role/Cognito_webIDE_auth_testAuth_Role',
-      RoleSessionName: 'leontest',
-      DurationSeconds: 43200,
+      RoleArn: awsRoleArn,
+      RoleSessionName: awsRoleSessionName,
+      DurationSeconds: 3600,
     }
     const awsCredential = await new Promise((resolve, reject) => {
       sts.assumeRoleWithWebIdentity(params, (err, data) => err ? reject(err) : resolve(data))
