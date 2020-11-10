@@ -1,14 +1,15 @@
 import React, { PureComponent } from 'react'
 
 import { Button } from '@obsidians/ui-components'
-
-import notification from '@obsidians/notification'
+import platform from '@obsidians/platform'
 
 import Workspace from './components/Workspace'
 import WorkspaceContext from './WorkspaceContext'
 
 import ProjectLoading from './components/ProjectLoading'
 import ProjectInvalid from './components/ProjectInvalid'
+
+import actions from './actions'
 
 export default class WorkspaceLoader extends PureComponent {
   constructor (props) {
@@ -73,18 +74,24 @@ export default class WorkspaceLoader extends PureComponent {
     this.workspace.current.openFile({ path: settingsFilePath })
   }
 
+  renderInvalidProject = projectRoot => {
+    if (platform.isDesktop) {
+      return (
+        <ProjectInvalid projectRoot={projectRoot || '(undefined)'}>
+          <Button
+            color='secondary'
+            onClick={() => this.removeProject(projectRoot)}
+          >Remove</Button>
+        </ProjectInvalid>
+      )
+    } else {
+      return <ProjectInvalid projectRoot={projectRoot || '(undefined)'} />
+    }
+  }
+
   removeProject = projectRoot => {
     const id = btoa(projectRoot)
-    redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
-
-    // const selected = redux.getState().projects.get('selected')
-    // if (selected && selected.get('id') === id) {
-    //   redux.dispatch('SELECT_PROJECT', { project: undefined })
-    //   this.history.replace(`/local`)
-    // }
-    // redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
-    // notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)
-    notification.info('Remove Project Successful', `Project <b>${projectRoot}</b> is removed`)
+    actions.removeProject({ id, name: projectRoot })
   }
 
   render () {
@@ -100,14 +107,7 @@ export default class WorkspaceLoader extends PureComponent {
     }
 
     if (this.state.invalid) {
-      return (
-        <ProjectInvalid projectRoot={projectRoot || '(undefined)'}>
-          <Button
-            color='secondary'
-            onClick={() => this.removeProject(projectRoot)}
-          >Remove</Button>
-        </ProjectInvalid>
-      )
+      return this.renderInvalidProject(projectRoot)
     }
 
     return (
