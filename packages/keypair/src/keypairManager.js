@@ -52,11 +52,11 @@ class KeypairManager {
   }
 
   async getSigner (address) {
-    const { secret } = await this.channel.invoke('get', address)
-    if (!secret) {
-      throw new Error('No secret key for address: ' + address)
+    const result = await this.channel.invoke('get', address)
+    if (!result || !result.secret) {
+      throw new Error(`No key for <b>${address}</b>`)
     }
-    return secret
+    return result.secret
   }
 }
 
