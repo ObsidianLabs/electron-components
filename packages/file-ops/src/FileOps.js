@@ -20,19 +20,6 @@ export default class FileOps {
     }
   }
 
-  async isDirectoryNotEmpty (dirPath) {
-    if (!await this.isDirectory(dirPath)) {
-      return false
-    }
-
-    const files = this.fs.readdirSync(dirPath)
-    if (files && files.length) {
-      return true
-    }
-
-    return false
-  }
-
   async ensureDirectory (dirPath) {
     try {
       await this.fs.ensureDir(dirPath)

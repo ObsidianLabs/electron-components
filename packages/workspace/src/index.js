@@ -3,6 +3,7 @@ import './styles.scss'
 export { default } from './WorkspaceLoader'
 export { default as WorkspaceContext } from './WorkspaceContext'
 
+export { default as NewProjectModal } from './components/NewProjectModal'
 export { default as AbstractProjectSettingsTab } from './components/AbstractProjectSettingsTab'
 export { default as ProjectPath } from './components/ProjectPath'
 export { default as TerminalButton } from './components/TerminalButton'
