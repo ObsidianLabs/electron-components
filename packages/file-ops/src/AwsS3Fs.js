@@ -1,6 +1,9 @@
 import AWS from 'aws-sdk'
 
-const Bucket = 'webidetest'
+import { AWSS3Region, AWSBucket } from './config.json'
+
+const region = process.env.REACT_APP_AWS_S3_REGION || AWSS3Region
+const Bucket = process.env.REACT_APP_AWS_BUCKET || AWSBucket
 
 export default class AwsS3Fs {
   constructor () {
@@ -14,7 +17,7 @@ export default class AwsS3Fs {
 
   async updateCredential (credential) {
     AWS.config.update({
-      region: 'ap-southeast-1',
+      region,
       accessKeyId: credential.Credentials.AccessKeyId,
       secretAccessKey: credential.Credentials.SecretAccessKey,
       sessionToken: credential.Credentials.SessionToken,
