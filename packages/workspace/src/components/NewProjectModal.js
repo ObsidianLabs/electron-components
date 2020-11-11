@@ -29,7 +29,7 @@ export default class NewProjectModal extends PureComponent {
       projectRoot: '',
       template: props.defaultTemplate,
       creating: false,
-      hasError: false,
+      showTerminal: false,
     }
 
     this.modal = React.createRef()
@@ -42,7 +42,7 @@ export default class NewProjectModal extends PureComponent {
   }
 
   openModal () {
-    this.setState({ hasError: false })
+    this.setState({ creating: false, showTerminal: false })
     this.modal.current.openModal()
     return new Promise(resolve => { this.onConfirm = resolve })
   }
@@ -77,14 +77,13 @@ export default class NewProjectModal extends PureComponent {
     if (created) {
       this.modal.current.closeModal()
       this.onConfirm(created)
-      this.setState({ name: '', projectRoot: '', template: this.props.defaultTemplate, hasError: false })
+      this.setState({ name: '', projectRoot: '', template: this.props.defaultTemplate, creating: false, showTerminal: false })
     } else {
-      this.setState({ hasError: true })
+      this.setState({ creating: false })
     }
-    this.setState({ creating: false })
   }
 
-  createProject = async ({ projectRoot, name, template }) => {
+  async createProject ({ projectRoot, name, template }) {
     try {
       const created = await this.channel.invoke('post', '', { projectRoot, name, template })
       notification.success('Successful', `New project <b>${name}</b> is created.`)
@@ -130,7 +129,7 @@ export default class NewProjectModal extends PureComponent {
 
   render () {
     const { templates } = this.props
-    const { name, creating } = this.state
+    const { name, creating, showTerminal } = this.state
 
     return (
       <Modal
@@ -154,10 +153,10 @@ export default class NewProjectModal extends PureComponent {
           onChange={template => this.setState({ template })}
         />
         {this.renderOtherOptions()}
-        <div style={{ display: this.state.creating || this.state.hasError ? 'block' : 'none'}}>
+        <div style={{ display: showTerminal ? 'block' : 'none'}}>
           <Terminal
             ref={this.terminal}
-            active={this.state.creating}
+            active={showTerminal}
             height='200px'
             logId='create-project'
             className='rounded overflow-hidden'
