@@ -59,19 +59,6 @@ export default class NewProjectModal extends PureComponent {
   onCreateProject = async () => {
     this.setState({ creating: true })
 
-    let created = await this.createProject()
-
-    if (created) {
-      this.modal.current.closeModal()
-      this.onConfirm(created)
-      this.setState({ name: '', projectRoot: '', template: this.props.defaultTemplate, hasError: false })
-    } else {
-      this.setState({ hasError: true })
-    }
-    this.setState({ creating: false })
-  }
-
-  createProject = async () => {
     const { name, template } = this.state
 
     let projectRoot
@@ -85,6 +72,19 @@ export default class NewProjectModal extends PureComponent {
       }
     }
 
+    const created = await this.createProject({ projectRoot, name, template })
+
+    if (created) {
+      this.modal.current.closeModal()
+      this.onConfirm(created)
+      this.setState({ name: '', projectRoot: '', template: this.props.defaultTemplate, hasError: false })
+    } else {
+      this.setState({ hasError: true })
+    }
+    this.setState({ creating: false })
+  }
+
+  createProject = async ({ projectRoot, name, template }) => {
     try {
       const created = await this.channel.invoke('post', '', { projectRoot, name, template })
       notification.success('Successful', `New project <b>${name}</b> is created.`)
