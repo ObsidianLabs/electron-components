@@ -1,3 +1,4 @@
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 import set from 'lodash/set'
@@ -14,7 +15,9 @@ export default class ProjectSettings {
   }
 
   async readSettings () {
-    await fileOps.current.ensureFile(this.settingFilePath)
+    if (platform.isDesktop) {
+      await fileOps.current.ensureFile(this.settingFilePath)
+    }
     const settingsJson = await fileOps.current.readFile(this.settingFilePath)
 
     this.update(settingsJson)
