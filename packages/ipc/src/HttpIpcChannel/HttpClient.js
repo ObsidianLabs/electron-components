@@ -10,6 +10,7 @@ export default class HttpClient {
 
   async invoke (channel, method, ...args) {
     if (channel.startsWith('docker')) {
+      const imageName = channel.replace('docker-image-', '')
       switch (method) {
         case 'check':
           return true
@@ -18,6 +19,8 @@ export default class HttpClient {
         case 'version':
           return true
         case 'versions':
+          const versions = await this.query(`${this.serverUrl}/docker/${imageName}`, 'GET')
+          return versions.map(v => ({ Tag: v.name }))
         case 'remoteVersions':
           return []
       }

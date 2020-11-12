@@ -7,6 +7,8 @@ import {
   DropdownItem,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
+
 import DockerImageManager from './DockerImageManager'
 
 export default class DockerImageSelector extends PureComponent {
@@ -64,13 +66,32 @@ export default class DockerImageSelector extends PureComponent {
     ))
   }
 
+  renderManagerItem = () => {
+    if (platform.isWeb) {
+      return null
+    }
+    return <>
+      <DropdownItem divider />
+        <DropdownItem onClick={this.openManager}>
+          <i className='fas fa-cog mr-1' />
+          {this.props.modalTitle}...
+        </DropdownItem>
+    </>
+  }
+
   render () {
     let {
       HeaderDockerItems,
       children,
     } = this.props
 
-    HeaderDockerItems = HeaderDockerItems || <><i className='far fa-desktop mr-2' />Installed</>
+    if (!HeaderDockerItems) {
+      if (platform.isDesktop) {
+        HeaderDockerItems = <><i className='far fa-desktop mr-2' />Installed</>
+      } else {
+        HeaderDockerItems = <><i className='fas fa-code-merge mr-1' />Versions</>
+      }
+    }
 
     let icon = null
     if (this.props.icon) {
@@ -93,11 +114,7 @@ export default class DockerImageSelector extends PureComponent {
             {HeaderDockerItems}
           </DropdownItem>
           {this.renderItems()}
-          <DropdownItem divider />
-          <DropdownItem onClick={this.openManager}>
-            <i className='fas fa-cog mr-1' />
-            {this.props.modalTitle}...
-          </DropdownItem>
+          {this.renderManagerItem()}
         </DropdownMenu>
       </UncontrolledButtonDropdown>
       <DockerImageManager

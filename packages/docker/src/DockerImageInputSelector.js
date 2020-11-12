@@ -4,6 +4,8 @@ import {
   DropdownInput,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
+
 import DockerImageManager from './DockerImageManager'
 
 export default class DockerImageInputSelector extends PureComponent {
@@ -60,17 +62,27 @@ export default class DockerImageInputSelector extends PureComponent {
       versions.push({ id: 'none', display: placeholder, disabled: true })
     }
 
-    let options = [
-      {
-        group: <><i className='fas fa-download mr-1' />installed</>,
-        children: this.state.versions,
-      },
-      {
-        id: 'manager',
-        display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
-        onClick: this.openManager,
-      }
-    ]
+    let options
+    if (platform.isDesktop) {
+      options = [
+        {
+          group: <><i className='fas fa-download mr-1' />Installed</>,
+          children: this.state.versions,
+        },
+        {
+          id: 'manager',
+          display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
+          onClick: this.openManager,
+        }
+      ]
+    } else {
+      options = [
+        {
+          group: <><i className='fas fa-code-merge mr-1' />Versions</>,
+          children: this.state.versions,
+        }
+      ]
+    }
     if (this.props.extraOptions) {
       options = [...this.props.extraOptions, ...options]
     }

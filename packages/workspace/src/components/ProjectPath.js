@@ -1,20 +1,37 @@
 import React from 'react'
 
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
-export default function ProjectPath ({ projectRoot }) {
-  return (
-    <kbd>
-      <span
-        key={`open-${projectRoot}`}
-        className='hover-inline mr-1'
-        style={{ display: 'inline-block', width: '1rem' }}
-        onClick={() => fileOps.current.openItem(projectRoot)}
-      >
-        <i className='fas fa-folder-open hover-show' />
-        <i className='fas fa-folder hover-hide' />
-      </span>
-      {projectRoot}
-    </kbd>
-  )
+let ProjectPath
+
+if (platform.isDesktop) {
+  ProjectPath = ({ projectRoot }) => {
+    return (
+      <kbd>
+        <span
+          key={`open-${projectRoot}`}
+          className='d-inline-block hover-inline w-3 mr-1'
+          onClick={() => fileOps.current.openItem(projectRoot)}
+        >
+          <i className='fas fa-folder-open hover-show' />
+          <i className='fas fa-folder hover-hide' />
+        </span>
+        {projectRoot}
+      </kbd>
+    )
+  }
+} else {
+  ProjectPath = ({ projectRoot }) => {
+    return (
+      <kbd>
+        <span className='d-inline-block mr-1'>
+          <i className='fas fa-cloud' />
+        </span>
+        {projectRoot}
+      </kbd>
+    )
+  }
 }
+
+export default ProjectPath
