@@ -32,11 +32,17 @@ export default {
     providers[provider].login()
   },
 
-  logout (history) {
+  async logout (history) {
     this.profile = {}
     this.credentials = {}
     redux.dispatch('CLEAR_USER_PROFILE')
-    // TODO call logout api to delete refresh_token cookie from server
+
+    try {
+      await fetch(`${serverUrl}/api/v1/auth/logout`, {
+        credentials: 'include',
+      });
+    } catch (error) {}
+
     history.replace('/')
   },
 
