@@ -7,8 +7,8 @@
   "main": "main/index.js",
   "browser": "src/index.js",
   "dependencies": {
-    "@obsidians/platform": "^0.1.0",
-    "@obsidians/redux": "^0.1.0"
+    "@obsidians/auth": "^0.1.0",
+    "@obsidians/platform": "^0.1.0"
   },
   "peerDependencies": {
     "electron": "^8.0.0"

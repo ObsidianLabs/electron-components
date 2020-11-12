@@ -1,4 +1,4 @@
-import redux from '@obsidians/redux'
+import Auth from '@obsidians/auth'
 
 const PROJECT = process.env.PROJECT
 
@@ -58,7 +58,11 @@ export default class HttpClient {
   }
 
   async query (endpoint, method, params) {
-    const token = redux.getState().profile.get('token')
+
+    const token = await Auth.getToken()
+    if (!token) {
+      throw new Error('Not authorized')
+    }
     const opts = {
       headers: {
         Authorization: `Bearer ${token}`,
