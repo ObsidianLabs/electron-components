@@ -17,6 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@obsidians/auth": "^0.1.0",
     "@obsidians/ipc": "^0.1.2",
     "@obsidians/platform": "^0.1.0",
     "@obsidians/redux": "^0.1.0",

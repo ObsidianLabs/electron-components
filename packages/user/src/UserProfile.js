@@ -7,6 +7,7 @@ import {
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
+import Auth from '@obsidians/auth'
 
 export default class UserProfile extends PureComponent {
   renderAvatar = () => {
@@ -51,12 +52,12 @@ export default class UserProfile extends PureComponent {
     return <>
       <Media heading className='d-flex align-items-end'>
         {username}
-        <IconButton
+        {/* <IconButton
           color='default'
           className='ml-1 text-muted'
           icon='fas fa-pencil-alt'
           onClick={() => {}}
-        />
+        /> */}
       </Media>
       <p className='break-line'>{this.renderDescription(desc)}</p>
     </>
@@ -67,7 +68,7 @@ export default class UserProfile extends PureComponent {
       <Button
         color='primary'
         size='sm'
-        onClick={() => {}}
+        onClick={() => Auth.login()}
       >
         <i key='sign-in' className='fas fa-sign-in mr-2' />Log in
       </Button>
