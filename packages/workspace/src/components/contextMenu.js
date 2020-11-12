@@ -48,8 +48,8 @@ if (platform.isDesktop) {
   contextMenu = [
     { text: 'New File', onClick: node => handlers.newFile(node) },
     { text: 'New Folder', onClick: node => handlers.newFolder(node) },
-    null,
-    { text: 'Download' },
+    // null,
+    // { text: 'Download' },
     null,
     { text: 'Delete', onClick: deleteFile },
   ]
