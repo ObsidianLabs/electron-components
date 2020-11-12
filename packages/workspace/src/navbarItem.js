@@ -30,22 +30,25 @@ const projectContextMenus = id => {
 
 export default function navbarItem (projects, selected, username) {
   const projectDropdown = [
-    {
-      id: 'new-project',
-      name: 'Create Project...',
-      icon: 'fas fa-plus',
-      onClick: () => actions.newProject(),
-    },
-    {
-      id: 'open-project',
-      name: 'Open Project...',
-      icon: 'fas fa-folder-plus',
-      onClick: () => actions.openProject(),
-    },
     { divider: true },
     { header: 'projects' },
     ...(projects.length ? projects : [{ none: true }]),
   ]
+
+  if (platform.isDesktop) {
+    projectDropdown.unshift({
+      id: 'open-project',
+      name: 'Open Project...',
+      icon: 'fas fa-folder-plus',
+      onClick: () => actions.openProject(),
+    })
+  }
+  projectDropdown.unshift({
+    id: 'new-project',
+    name: 'Create Project...',
+    icon: 'fas fa-plus',
+    onClick: () => actions.newProject(),
+  })
 
   return {
     route: selected.author || username,
