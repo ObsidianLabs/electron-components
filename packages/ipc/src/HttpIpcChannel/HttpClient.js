@@ -1,4 +1,5 @@
 import redux from '@obsidians/redux'
+import Auth from '@obsidians/auth'
 
 const PROJECT = process.env.PROJECT
 
@@ -55,6 +56,8 @@ export default class HttpClient {
   }
 
   async query (endpoint, method, params) {
+    await Auth.refresh()
+
     const token = redux.getState().profile.get('token')
     const opts = {
       headers: {

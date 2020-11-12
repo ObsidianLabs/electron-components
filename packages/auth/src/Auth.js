@@ -37,25 +37,79 @@ export default {
     const code = query.get('code')
     const provider = query.get('provider')
 
-    let token
-    let awsToken
-    try {
-      const response = await fetch(`${serverUrl}/api/v1/auth/login`, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({ code, provider })
-      });
-      const result = await response.json()
-      token = result.token
-      awsToken = result.awsToken
-    } catch (err) {
+    const tokens = await this.fetchTokens(code, provider)
+    if (!tokens) {
       history.replace('/')
       return
     }
 
+    const { token, awsToken } = tokens
+
+    const awsCredential = await this.fetchAwsCredential(awsToken)
+    if (!awsCredential) {
+      history.replace('/')
+      return
+    }
+
+    const { username, avatar } = decode(token)
+    this.profile = { token, username, avatar, awsCredential }
+    history.replace('/')
+  },
+
+  async refresh() {
+    if (!this.shouldRefresh()) {
+      return
+    }
+
+    const tokens = await this.fetchTokens()
+    if (!tokens) {
+      return
+    }
+
+    const { token, awsToken } = tokens
+
+    const awsCredential = await this.fetchAwsCredential(awsToken)
+    if (!awsCredential) {
+      return
+    }
+
+    const { username, avatar } = decode(token)
+    this.profile = { token, username, avatar, awsCredential }
+    this.updateProfile()
+  },
+
+  async fetchTokens (code, provider) {
+    try {
+      let url
+      let method
+      let body
+      if (code && provider) {
+        url = `${serverUrl}/api/v1/auth/login`
+        method = 'POST'
+        body = JSON.stringify({ code, provider })
+      } else {
+        url = `${serverUrl}/api/v1/auth/refresh-token`
+        method = 'GET'
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        method,
+        body,
+      });
+
+      const { token, awsToken } = await response.json()
+      return { token, awsToken }
+    } catch (error) {
+      return
+    }
+  },
+
+  async fetchAwsCredential(awsToken) {
     AWS.config.update({
       region: awsRegion,
     })
@@ -66,18 +120,14 @@ export default {
       RoleSessionName: awsRoleSessionName,
       DurationSeconds: 3600,
     }
-    const awsCredential = await new Promise((resolve, reject) => {
-      sts.assumeRoleWithWebIdentity(params, (err, data) => err ? reject(err) : resolve(data))
-    })
-
-    if (!token) {
-      history.replace('/')
+    try {
+      const awsCredential = await new Promise((resolve, reject) => {
+        sts.assumeRoleWithWebIdentity(params, (err, data) => err ? reject(err) : resolve(data))
+      })
+      return awsCredential
+    } catch (error) {
       return
     }
-
-    const { username, avatar } = decode(token)
-    this.profile = { token, username, avatar, awsCredential }
-    history.replace('/')
   },
 
   updateProfile () {
@@ -90,5 +140,11 @@ export default {
     if (this.profile.awsCredential) {
       fileOps.current.fs.updateCredential(this.profile.awsCredential)
     }
+  },
+
+  shouldRefresh () {
+    const { exp } = decode(this.profile.token)
+    const currentTs = Math.floor(Date.now() / 1000)
+    return exp - currentTs < 60
   },
 }
