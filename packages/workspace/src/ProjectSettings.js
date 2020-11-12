@@ -15,10 +15,10 @@ export default class ProjectSettings {
   }
 
   async readSettings () {
-    if (platform.isDesktop) {
-      await fileOps.current.ensureFile(this.settingFilePath)
-    }
-    const settingsJson = await fileOps.current.readFile(this.settingFilePath)
+    let settingsJson
+    try {
+      settingsJson = await fileOps.current.readFile(this.settingFilePath)
+    } catch (e) {}
 
     this.update(settingsJson)
     return this.settings

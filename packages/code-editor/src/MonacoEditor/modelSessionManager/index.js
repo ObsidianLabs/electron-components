@@ -73,7 +73,10 @@ class ModelSessionManager {
     if (!this.sessions[filePath]) {
       let model = null
       if (!filePath.startsWith('custom:')) {
-        const code = await fileOps.current.readFile(filePath)
+        let code = ''
+        try {
+          code = await fileOps.current.readFile(filePath)
+        } catch (e) {}
         model = monaco.editor.createModel(code, mode, monaco.Uri.file(filePath))
       }
       this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationCollection[filePath] || [])
