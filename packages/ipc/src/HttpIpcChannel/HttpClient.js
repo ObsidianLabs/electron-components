@@ -1,9 +1,11 @@
 import Auth from '@obsidians/auth'
+import BuildService from './BuildService'
 
 const PROJECT = process.env.PROJECT
 
 export default class HttpClient {
-  constructor (serverUrl, specificUrl) {
+  constructor (ipc, serverUrl, specificUrl) {
+    this.ipc = ipc
     this.serverUrl = serverUrl
     this.specificUrl = specificUrl
   }
@@ -30,6 +32,9 @@ export default class HttpClient {
           return
       }
     } else if (channel.startsWith('terminal')) {
+      if (method === 'run') {
+        await this.startBuildTask(args[0], args[1])
+      }
       return
     } else if (channel.endsWith('-project')) {
       if (method === 'loadTree') {
@@ -44,21 +49,33 @@ export default class HttpClient {
     }
 
     if (method === 'get') {
-      const endpoint = args[0] ? `${channel}/${args[0]}` : channel
-      return this.query(`${this.serverUrl}/${PROJECT}/${endpoint}`, 'GET')
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.queryApiPath(`${PROJECT}/${apiPath}`, 'GET')
     } else if (method === 'post') {
-      const endpoint = args[0] ? `${channel}/${args[0]}` : channel
-      return this.query(`${this.serverUrl}/${PROJECT}/${endpoint}`, 'POST', args[1])
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.queryApiPath(`${PROJECT}/${apiPath}`, 'POST', args[1])
     } else if (method === 'delete') {
-      const endpoint = args[0] ? `${channel}/${args[0]}` : channel
-      return this.query(`${this.serverUrl}/${PROJECT}/${endpoint}`, 'DELETE')
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.queryApiPath(`${PROJECT}/${apiPath}`, 'DELETE')
     }
 
-    return this.query(`${this.specificUrl}/${channel}`, 'POST', { method, args })
+    return this.queryApiPath(channel, 'POST', { method, args })
+  }
+
+  async startBuildTask (cmd, opt) {
+    const build = new BuildService(this, {
+      cmd,
+      project: opt.cwd,
+    })
+    const onData = data => this.ipc.trigger('data', data)
+    await build.start(onData)
+  }
+
+  async queryApiPath (apiPath, method, params) {
+    return this.query(`${this.serverUrl}/${apiPath}`, method, params)
   }
 
   async query (endpoint, method, params) {
-
     const token = await Auth.getToken()
     if (!token) {
       throw new Error('Not authorized')

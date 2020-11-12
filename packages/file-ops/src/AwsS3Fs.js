@@ -15,7 +15,7 @@ export default class AwsS3Fs {
     }
   }
 
-  async updateCredential (credential) {
+  updateCredential (credential) {
     AWS.config.update({
       region,
       accessKeyId: credential.Credentials.AccessKeyId,

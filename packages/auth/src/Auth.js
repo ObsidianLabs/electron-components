@@ -3,6 +3,7 @@ import decode from 'jwt-decode'
 import AWS from 'aws-sdk'
 
 import fileOps from '@obsidians/file-ops'
+import { BuildService } from '@obsidians/ipc'
 
 import providers from './providers'
 import { AWSRoleArn, AWSRoleSessionName, AWSRegion } from '../config.json'
@@ -166,6 +167,7 @@ export default {
     }
     if (this.credentials && this.credentials.awsCredential) {
       fileOps.current.fs.updateCredential(this.credentials.awsCredential)
+      BuildService.updateCredential(this.credentials.awsCredential)
     }
   },
 

@@ -9,3 +9,4 @@ if (platform.isDesktop) {
 }
 
 export const IpcChannel = TempIpcChannel
+export { default as BuildService } from './HttpIpcChannel/BuildService'

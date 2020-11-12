@@ -11,6 +11,7 @@
     "@obsidians/platform": "^0.1.0"
   },
   "peerDependencies": {
+    "aws-sdk": "^2.774.0",
     "electron": "^8.0.0"
   }
 }

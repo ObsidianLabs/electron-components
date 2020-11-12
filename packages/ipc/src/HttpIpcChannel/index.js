@@ -12,6 +12,7 @@ export default class HttpIpcChannel {
       REACT_APP_IPC_SERVER_URL,
     } = process.env
     this.client = new HttpClient(
+      this,
       `${REACT_APP_SERVER_URL}/api/v1`,
       `${REACT_APP_IPC_SERVER_URL}/api/v1`
     )
