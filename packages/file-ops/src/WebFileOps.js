@@ -79,7 +79,7 @@ export default class WebFileOps extends FileOps {
   }
 
   openLink (href) {
-    return this.electron.shell.openExternal(href)
+    window.open(href, '_blank')
   }
 
   openInTerminal (filePath) {

@@ -1,3 +1,4 @@
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 const handlers = {}
@@ -30,14 +31,28 @@ export const registerHandlers = ({ newFile, newFolder }) => {
   handlers.newFolder = newFolder
 }
 
-export default [
-  { text: 'New File', onClick: node => handlers.newFile(node) },
-  { text: 'New Folder', onClick: node => handlers.newFolder(node) },
-  null,
-  { text: 'Open' },
-  null,
-  { text: 'Open Containing Folder', onClick: showInFinder },
-  { text: 'Open in Terminal', onClick: openInTerminal },
-  null,
-  { text: 'Delete', onClick: deleteFile },
-]
+let contextMenu
+if (platform.isDesktop) {
+  contextMenu = [
+    { text: 'New File', onClick: node => handlers.newFile(node) },
+    { text: 'New Folder', onClick: node => handlers.newFolder(node) },
+    null,
+    { text: 'Open' },
+    null,
+    { text: 'Open Containing Folder', onClick: showInFinder },
+    { text: 'Open in Terminal', onClick: openInTerminal },
+    null,
+    { text: 'Delete', onClick: deleteFile },
+  ]
+} else {
+  contextMenu = [
+    { text: 'New File', onClick: node => handlers.newFile(node) },
+    { text: 'New Folder', onClick: node => handlers.newFolder(node) },
+    null,
+    { text: 'Download' },
+    null,
+    { text: 'Delete', onClick: deleteFile },
+  ]
+}
+
+export default contextMenu

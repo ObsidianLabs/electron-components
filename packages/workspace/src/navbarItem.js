@@ -1,8 +1,13 @@
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import actions from './actions'
 
 const projectContextMenus = id => {
   if (id === 'new-project' || id === 'open-project') {
+    return
+  }
+
+  if (platform.isWeb) {
     return
   }
 
