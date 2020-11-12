@@ -21,6 +21,10 @@ export default {
     return this.profile && this.profile.username
   },
 
+  get isLogin () {
+    return !!this.username
+  },
+
   login (provider = 'github') {
     if (!providers[provider]) {
       return
@@ -82,6 +86,7 @@ export default {
     this.profile = { username, avatar }
     this.credentials = { token, awsCredential }
     this.updateProfile()
+    this.refreshPromise = null
   },
 
   async fetchTokens (code, provider) {
@@ -157,6 +162,9 @@ export default {
   },
 
   shouldRefresh () {
+    if (!this.isLogin) {
+      return false
+    }
     if (!this.credentials || !this.credentials.token) {
       return true
     }

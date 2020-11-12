@@ -57,6 +57,9 @@ export default class HttpClient {
   async query (endpoint, method, params) {
 
     const token = await Auth.getToken()
+    if (!token) {
+      throw new Error('Not authorized')
+    }
     const opts = {
       headers: {
         Authorization: `Bearer ${token}`,
