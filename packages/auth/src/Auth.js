@@ -14,6 +14,8 @@ const awsRegion = process.env.REACT_APP_AWS_REGION || AWSRegion
 
 export default {
   profile: null,
+  credentials: null,
+  refreshPromise: null,
 
   get username () {
     return this.profile && this.profile.username
@@ -28,7 +30,9 @@ export default {
 
   logout (history) {
     this.profile = {}
+    this.credentials = {}
     redux.dispatch('CLEAR_USER_PROFILE')
+    // TODO call logout api to delete refresh_token cookie from server
     history.replace('/')
   },
 
@@ -52,7 +56,8 @@ export default {
     }
 
     const { username, avatar } = decode(token)
-    this.profile = { token, username, avatar, awsCredential }
+    this.profile = { username, avatar }
+    this.credentials = { token, awsCredential }
     history.replace('/')
   },
 
@@ -74,7 +79,8 @@ export default {
     }
 
     const { username, avatar } = decode(token)
-    this.profile = { token, username, avatar, awsCredential }
+    this.profile = { username, avatar }
+    this.credentials = { token, awsCredential }
     this.updateProfile()
   },
 
@@ -130,6 +136,14 @@ export default {
     }
   },
 
+  async getToken () {
+    if (!this.refreshPromise) {
+      this.refreshPromise = this.refresh()
+    }
+    await this.refreshPromise
+    return this.credentials && this.credentials.token
+  },
+
   updateProfile () {
     if (this.profile) {
       redux.dispatch('UPDATE_PROFILE', this.profile)
@@ -137,13 +151,16 @@ export default {
       const profile = redux.getState().profile
       this.profile = profile.toJS()
     }
-    if (this.profile.awsCredential) {
-      fileOps.current.fs.updateCredential(this.profile.awsCredential)
+    if (this.credentials && this.credentials.awsCredential) {
+      fileOps.current.fs.updateCredential(this.credentials.awsCredential)
     }
   },
 
   shouldRefresh () {
-    const { exp } = decode(this.profile.token)
+    if (!this.credentials || !this.credentials.token) {
+      return true
+    }
+    const { exp } = decode(this.credentials.token)
     const currentTs = Math.floor(Date.now() / 1000)
     return exp - currentTs < 60
   },

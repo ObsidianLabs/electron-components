@@ -56,9 +56,8 @@ export default class HttpClient {
   }
 
   async query (endpoint, method, params) {
-    await Auth.refresh()
 
-    const token = redux.getState().profile.get('token')
+    const token = await Auth.getToken()
     const opts = {
       headers: {
         Authorization: `Bearer ${token}`,
