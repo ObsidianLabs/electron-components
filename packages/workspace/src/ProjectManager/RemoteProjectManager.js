@@ -19,6 +19,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     }
 
     this.projectName = project.name
+    this.userId = project.userId
     this.projectId = project._id
 
     let projectSettings
@@ -36,7 +37,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   pathForProjectFile (relativePath) {
-    return `${this.prefix}/${this.projectId}/${relativePath}`
+    return `${this.prefix}/${this.userId}/${this.projectId}/${relativePath}`
   }
 
   async readProjectSettings () {
