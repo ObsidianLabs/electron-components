@@ -35,6 +35,7 @@ export default {
   async logout (history) {
     this.profile = {}
     this.credentials = {}
+    this.refreshPromise = null
     redux.dispatch('CLEAR_USER_PROFILE')
 
     try {
