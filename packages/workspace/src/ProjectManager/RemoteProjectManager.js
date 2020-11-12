@@ -49,13 +49,15 @@ export default class RemoteProjectManager extends BaseProjectManager {
       name: this.projectName,
       root: true,
       path: `${this.prefix}/${this.userId}/${this.projectId}`,
+      pathInProject: this.projectName,
       loading: false,
-      children: result
+      children: result.map(item => ({ ...item, pathInProject: `${this.projectName}/${item.name}` }))
     }
   }
 
-  async loadDirectory (dirPath) {
-    return await fileOps.current.fs.list(dirPath)
+  async loadDirectory (node) {
+    const result = await fileOps.current.fs.list(node.path)
+    return result.map(item => ({ ...item, pathInProject: `${node.pathInProject}/${item.name}` }))
   }
 
   onRefreshDirectory () {}

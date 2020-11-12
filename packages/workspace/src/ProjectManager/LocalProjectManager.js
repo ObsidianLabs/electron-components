@@ -38,8 +38,8 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
   }
 
-  async loadDirectory (dirPath) {
-    return await BaseProjectManager.channel.invoke('loadDirectory', dirPath)
+  async loadDirectory (node) {
+    return await BaseProjectManager.channel.invoke('loadDirectory', node.path)
   }
 
   onRefreshDirectory (callback) {

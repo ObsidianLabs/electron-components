@@ -113,7 +113,7 @@ export default class FileTree extends PureComponent {
   }
 
   loadDirectory = async node => {
-    const children = await this.props.projectManager.loadDirectory(node.path)
+    const children = await this.props.projectManager.loadDirectory(node)
     node.loading = false
     node.children = children
   }
@@ -135,6 +135,10 @@ export default class FileTree extends PureComponent {
 
   get activeNode () {
     return this.state.cursor
+  }
+
+  get rootNode () {
+    return this.state.treeData
   }
 
   setNoActive = () => {

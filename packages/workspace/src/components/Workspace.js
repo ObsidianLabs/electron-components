@@ -7,6 +7,7 @@ import {
   ToolbarButton,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
@@ -89,21 +90,23 @@ export default class Workspace extends Component {
   }
 
   openCreateFileModal = node => {
-    const activeNode = node || this.filetree.current.activeNode
-    let basePath = this.context.projectRoot
-    if (activeNode) {
-      basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
+    const activeNode = node || this.filetree.current.activeNode || this.filetree.current.rootNode
+    const basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
+    let baseName = basePath
+    if (platform.isWeb) {
+      baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
     }
-    this.modal.current.openCreateFileModal(basePath)
+    this.modal.current.openCreateFileModal({ baseName, basePath })
   }
 
   openCreateFolderModal = node => {
-    const activeNode = node || this.filetree.current.activeNode
-    let basePath = this.context.projectRoot
-    if (activeNode) {
-      basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
+    const activeNode = node || this.filetree.current.activeNode || this.filetree.current.rootNode
+    const basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
+    let baseName = basePath
+    if (platform.isWeb) {
+      baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
     }
-    this.modal.current.openCreateFolderModal(basePath)
+    this.modal.current.openCreateFolderModal({ baseName, basePath })
   }
 
   saveAll = async () => {

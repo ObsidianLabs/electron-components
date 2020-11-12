@@ -15,18 +15,19 @@ export default class CreateFileOrFolderModals extends PureComponent {
       type: 'file',
       loading: false,
       name: '',
+      baseName: '',
       basePath: '',
     }
     this.modal = React.createRef()
   }
 
-  openCreateFileModal = basePath => {
-    this.setState({ type: 'file', loading: false, name: '', basePath })
+  openCreateFileModal = ({ basePath, baseName }) => {
+    this.setState({ type: 'file', loading: false, name: '', baseName, basePath })
     this.modal.current.openModal()
   }
 
-  openCreateFolderModal = basePath => {
-    this.setState({ type: 'folder', loading: false, name: '', basePath })
+  openCreateFolderModal = ({ basePath, baseName }) => {
+    this.setState({ type: 'folder', loading: false, name: '', baseName, basePath })
     this.modal.current.openModal()
   }
 
@@ -62,7 +63,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
         onConfirm={this.onCreate}
       >
         <DebouncedFormGroup
-          label={<div>Create a new {this.state.type} in <kbd>{this.state.basePath}</kbd></div>}
+          label={<div>Create a new {this.state.type} in <kbd>{this.state.baseName}</kbd></div>}
           placeholder={this.state.type === 'file' ? 'File name' : 'Folder name'}
           maxLength='50'
           value={this.state.name}
