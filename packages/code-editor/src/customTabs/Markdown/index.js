@@ -143,7 +143,7 @@ export default class Markdown extends Component {
 
     return (
       <div className='custom-tab bg2 markdown'>
-        <div className='jumbotron bg-transparent' style={{ overflowX: 'hidden' }}>
+        <div className='jumbotron bg-transparent break-all' style={{ overflowX: 'hidden' }}>
           <div className='container'>
             <ReactMarkdown
               className='user-select'
