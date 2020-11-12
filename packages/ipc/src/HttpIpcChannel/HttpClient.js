@@ -1,4 +1,3 @@
-import redux from '@obsidians/redux'
 import Auth from '@obsidians/auth'
 
 const PROJECT = process.env.PROJECT
