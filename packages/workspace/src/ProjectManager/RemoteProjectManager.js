@@ -47,11 +47,11 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory () {
-    const result = await fileOps.current.fs.list(`${this.prefix}/${this.projectId}`)
+    const result = await fileOps.current.fs.list(`${this.prefix}/${this.userId}/${this.projectId}`)
     return {
       name: this.projectName,
       root: true,
-      path: `${this.prefix}/${this.projectId}`,
+      path: `${this.prefix}/${this.userId}/${this.projectId}`,
       loading: false,
       children: result
     }
