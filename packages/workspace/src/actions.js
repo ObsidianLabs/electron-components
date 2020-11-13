@@ -46,7 +46,8 @@ export class ProjectActions {
     const selected = redux.getState().projects.get('selected')
     if (selected && selected.get('id') === id) {
       redux.dispatch('SELECT_PROJECT', { project: undefined })
-      this.history.replace(`/local`)
+      const author = Auth.username || 'local'
+      this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
     notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
@@ -11,7 +11,7 @@ import {
   Alert
 } from 'reactstrap'
 
-export default class BaseModal extends Component {
+export default class BaseModal extends PureComponent {
   static propTypes = {
     wide: PropTypes.bool,
     overflow: PropTypes.bool,
@@ -39,15 +39,6 @@ export default class BaseModal extends Component {
   state = {
     isOpen: false,
     error: ''
-  }
-
-  shouldComponentUpdate (props, state) {
-    return (
-      props.confirmDisabled !== this.props.confirmDisabled ||
-      props.children !== this.props.children ||
-      state.isOpen !== this.state.isOpen ||
-      state.error !== this.state.error
-    )
   }
 
   async openModal () {

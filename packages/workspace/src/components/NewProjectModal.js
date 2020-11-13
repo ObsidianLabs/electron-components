@@ -37,7 +37,6 @@ export default class NewProjectModal extends PureComponent {
     this.terminal = React.createRef()
     this.path = fileOps.current.path
     this.fs = fileOps.current.fs
-    this.channel = new IpcChannel('project')
 
     actions.newProjectModal = this
   }
@@ -86,7 +85,7 @@ export default class NewProjectModal extends PureComponent {
 
   async createProject ({ projectRoot, name, template }) {
     try {
-      const created = await this.channel.invoke('post', '', { projectRoot, name, template })
+      const created = await BaseProjectManager.channel.invoke('post', '', { projectRoot, name, template })
       if (created._id) {
         await fileOps.current.writeFile(`public/${created.userId}/${created._id}/README.md`, `# ${name}\n`)
         await fileOps.current.writeFile(`public/${created.userId}/${created._id}/${BaseProjectManager.ProjectSettings.configFileName}`, '{}')
