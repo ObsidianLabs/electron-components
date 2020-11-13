@@ -48,8 +48,8 @@ export default class NavDropdown extends Component {
       return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
     }
 
-    const { id, name } = item
-    const isSelected = this.props.selected === id
+    const { id, route, name } = item
+    const isSelected = this.props.selected === id && this.props.route === route
 
     return (
       <DropdownItem

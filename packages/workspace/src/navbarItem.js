@@ -32,7 +32,7 @@ export default function navbarItem (projects, selected, username) {
   const projectDropdown = [
     { divider: true },
     { header: 'projects' },
-    ...(projects.length ? projects : [{ none: true }]),
+    ...(projects.length ? projects.map(p => ({ ...p, route: p.author })) : [{ none: true }]),
   ]
 
   if (platform.isDesktop) {
