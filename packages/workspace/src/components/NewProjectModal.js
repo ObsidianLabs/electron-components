@@ -18,6 +18,7 @@ import notification from '@obsidians/notification'
 import { IpcChannel } from '@obsidians/ipc'
 import Terminal from '@obsidians/terminal'
 
+import BaseProjectManager from '../ProjectManager/BaseProjectManager'
 import actions from '../actions'
 
 export default class NewProjectModal extends PureComponent {
@@ -86,6 +87,10 @@ export default class NewProjectModal extends PureComponent {
   async createProject ({ projectRoot, name, template }) {
     try {
       const created = await this.channel.invoke('post', '', { projectRoot, name, template })
+      if (created._id) {
+        await fileOps.current.writeFile(`public/${created.userId}/${created._id}/README.md`, `# ${name}\n`)
+        await fileOps.current.writeFile(`public/${created.userId}/${created._id}/${BaseProjectManager.ProjectSettings.configFileName}`, '{}')
+      }
       notification.success('Successful', `New project <b>${name}</b> is created.`)
       return created
     } catch (e) {

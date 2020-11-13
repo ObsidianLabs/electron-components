@@ -17,6 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@obsidians/auth": "^0.1.0",
     "@obsidians/code-editor": "^0.1.0",
     "@obsidians/file-ops": "^0.1.0",
     "@obsidians/filetree": "^0.1.1",

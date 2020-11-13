@@ -1,3 +1,4 @@
+import Auth from '@obsidians/auth'
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
@@ -9,8 +10,9 @@ export class ProjectActions {
   }
 
   async newProject () {
-    const { id, projectRoot, name, author = 'local' } = await this.newProjectModal.openModal()
-    const projectId = id || btoa(projectRoot)
+    const { _id, projectRoot, name } = await this.newProjectModal.openModal()
+    const author = Auth.username || 'local'
+    const projectId = _id ? name : btoa(projectRoot)
     redux.dispatch('ADD_PROJECT', {
       type: 'local',
       project: {
