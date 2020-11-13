@@ -7,11 +7,14 @@ import {
 
 import { kp } from '@obsidians/sdk'
 
+import keypairManager from './keypairManager'
+
 export default class ImportKeypairModal extends PureComponent {
   constructor (props) {
     super(props)
 
     this.state = {
+      pending: false,
       name: '',
       valid: false,
       feedback: '',
@@ -49,12 +52,16 @@ export default class ImportKeypairModal extends PureComponent {
     const { name, keypair } = this.state
 
     if (!keypair) {
-      this.onResolve({})
+      this.onResolve()
       return
     }
 
+    this.setState({ pending: true })
+    await keypairManager.saveKeypair(name, keypair)
+    this.setState({ pending: false })
+
     this.modal.current.closeModal()
-    this.onResolve({ name, keypair })
+    this.onResolve(true)
   }
 
   render () {
@@ -69,6 +76,7 @@ export default class ImportKeypairModal extends PureComponent {
         ref={this.modal}
         title='Import Keypair'
         textConfirm='Import'
+        pending={this.state.pending && 'Importing...'}
         onConfirm={this.onConfirm}
         confirmDisabled={!name || !valid}
       >

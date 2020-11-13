@@ -53,9 +53,8 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   createKeypair = async () => {
-    const { name, keypair } = await this.createKeypairModal.current.openModal()
-    if (name && keypair) {
-      await keypairManager.saveKeypair(name, keypair)
+    const success = await this.createKeypairModal.current.openModal()
+    if (success) {
       notification.success(
         'Create Keypair Successful',
         `A new keypair is created and saved in ${process.env.PROJECT_NAME}.`
@@ -65,9 +64,8 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   importKeypair = async () => {
-    const { name, keypair } = await this.importKeypairModal.current.openModal()
-    if (name && keypair) {
-      await keypairManager.saveKeypair(name, keypair)
+    const success = await this.importKeypairModal.current.openModal()
+    if (success) {
       notification.success(
         'Import Keypair Successful',
         `The keypair is imported to ${process.env.PROJECT_NAME}.`
@@ -112,11 +110,8 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   editName = async keypair => {
-    const newName = await this.keypairNameModal.current.openModal(keypair.name)
-    if (newName) {
-      keypairManager.updateKeypairName(keypair.address, newName)
-      this.refresh()
-    }
+    await this.keypairNameModal.current.openModal(keypair)
+    this.refresh()
   }
 
   renderKeypairRow = keypair => {

@@ -14,7 +14,7 @@ class KeypairManager extends IpcChannel {
       return this.loadSecret(address)
     } else {
       const keys = await keytar.findCredentials(`@obsidians/${this.build}-keypair`)
-      return keys.map(({ account }) => account)
+      return keys.map(({ account }) => ({ address: account }))
     }
   }
 
@@ -33,6 +33,8 @@ class KeypairManager extends IpcChannel {
       await this.save(keypair.address, keypair.secret)
     }
   }
+
+  async put () {}
 
   async save (address, secret) {
     await keytar.setPassword(`@obsidians/${this.build}-keypair`, address, secret)

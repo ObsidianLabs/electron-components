@@ -54,6 +54,9 @@ export default class HttpClient {
     } else if (method === 'post') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
       return this.queryApiPath(`${PROJECT}/${apiPath}`, 'POST', args[1])
+    } else if (method === 'put') {
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.queryApiPath(`${PROJECT}/${apiPath}`, 'PUT', args[1])
     } else if (method === 'delete') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
       return this.queryApiPath(`${PROJECT}/${apiPath}`, 'DELETE')
@@ -88,7 +91,7 @@ export default class HttpClient {
       },
       method,
     }
-    if (method === 'POST') {
+    if (method === 'POST' || method === 'PUT') {
       opts.body = JSON.stringify(params)
     }
 

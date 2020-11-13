@@ -13,6 +13,7 @@ export default class CreateKeypairModal extends PureComponent {
     super(props)
 
     this.state = {
+      pending: false,
       name: '',
       keypair: null,
     }
@@ -36,12 +37,16 @@ export default class CreateKeypairModal extends PureComponent {
     const { name, keypair } = this.state
 
     if (!keypair) {
-      this.onResolve({})
+      this.onResolve()
       return
     }
 
+    this.setState({ pending: true })
+    await keypairManager.saveKeypair(name, keypair)
+    this.setState({ pending: false })
+
     this.modal.current.closeModal()
-    this.onResolve({ name, keypair })
+    this.onResolve(true)
   }
 
   render () {
@@ -54,9 +59,11 @@ export default class CreateKeypairModal extends PureComponent {
       <Modal
         ref={this.modal}
         title='Create Keypair'
-        textConfirm='Save'
+        textConfirm='Create'
+        pending={this.state.pending && 'Creating...'}
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name || !address}
+        colorActions={['info']}
         textActions={['Regenerate']}
         onActions={[this.regenerateKeypair]}
       >

@@ -5,11 +5,15 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
+import keypairManager from './keypairManager'
+
 export default class KeypairNameModal extends PureComponent {
   constructor (props) {
     super(props)
 
     this.state = {
+      saving: false,
+      address: '',
       name: '',
     }
 
@@ -18,17 +22,22 @@ export default class KeypairNameModal extends PureComponent {
   }
   
 
-  openModal (name) {
+  openModal ({ address, name }) {
     this.modal.current.openModal()
-    this.setState({ name })
+    this.setState({ address, name })
     setTimeout(() => this.input.current.focus(), 100)
     return new Promise(resolve => this.onResolve = resolve)
   }
 
   onConfirm = async () => {
-    const { name } = this.state
+    const { address, name } = this.state
+
+    this.setState({ saving: true })
+    await keypairManager.updateKeypairName(address, name)
+    this.setState({ saving: false })
+
     this.modal.current.closeModal()
-    this.onResolve(name)
+    this.onResolve()
   }
 
   render () {
@@ -37,6 +46,7 @@ export default class KeypairNameModal extends PureComponent {
         ref={this.modal}
         title='Modify Keypair Name'
         textConfirm='Save'
+        pending={this.state.saving && 'Saving...'}
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name}
       >

@@ -18,9 +18,9 @@ class KeypairManager {
 
   async loadAllKeypairs () {
     try {
-      const addresses = await this.channel.invoke('get')
+      const keypairs = await this.channel.invoke('get')
       const names = redux.getState().keypairs
-      return addresses.map(address => ({ address, name: names.get(address) }))
+      return keypairs.map(kp => ({ address: kp.address, name: kp.name || names.get(kp.address) }))
     } catch (e) {
       notification.error('Error', e.message)
       return []
@@ -32,12 +32,14 @@ class KeypairManager {
   }
 
   async saveKeypair (name, keypair) {
+    keypair.name = name
     await this.channel.invoke('post', '', keypair)
     await this.updateKeypairName(keypair.address, name)
   }
 
   async updateKeypairName (address, name) {
     redux.dispatch('UPDATE_KEYPAIR_NAME', { address, name })
+    const result = await this.channel.invoke('put', address, { name })
     const keypairs = await this.loadAllKeypairs()
     const event = new CustomEvent('updated', { detail: keypairs })
     this.eventTarget.dispatchEvent(event)

@@ -40,8 +40,8 @@ export default class HttpIpcChannel {
     this.client.removeListener(this.channelResponse, this._onDataReceived)
   }
 
-  invoke (method, ...args) {
-    return this.client.invoke(this.channelName, method, ...args)
+  async invoke (method, ...args) {
+    return await this.client.invoke(this.channelName, method, ...args)
   }
 
   on (event, callback) {
