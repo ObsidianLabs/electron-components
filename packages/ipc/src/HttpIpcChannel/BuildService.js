@@ -40,7 +40,6 @@ export default class BuildService {
   async checkStatus () {
     const result = await this.client.queryApiPath(`build/${this.buildId}`)
     this.status = result.status
-    console.log(result.status)
     return this.status
   }
 
@@ -61,7 +60,6 @@ export default class BuildService {
 
       const h = setInterval(() => {
         this.checkStatus().then(status => {
-          console.log(status)
           if (status === 'COMPLETED') {
             clearInterval(h)
           }
