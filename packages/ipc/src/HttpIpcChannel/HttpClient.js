@@ -33,7 +33,7 @@ export default class HttpClient {
       }
     } else if (channel.startsWith('terminal')) {
       if (method === 'run') {
-        await this.startBuildTask(args[0], args[1])
+        return await this.startBuildTask(args[0], args[1])
       }
       return
     } else if (channel.endsWith('-project')) {
@@ -69,9 +69,12 @@ export default class HttpClient {
     const build = new BuildService(this, {
       cmd,
       project: opt.cwd,
+      image: opt.image,
+      imageVersion: opt.imageVersion,
+      language: opt.language
     })
     const onData = data => this.ipc.trigger('data', data)
-    await build.start(onData)
+    return await build.start(onData)
   }
 
   async queryApiPath (apiPath, method, params) {

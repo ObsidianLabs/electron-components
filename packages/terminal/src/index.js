@@ -121,7 +121,7 @@ export default class Terminal extends PureComponent {
     }
     
     if (this.props.cmd) {
-      this.exec(this.props.cmd)
+      this.exec(this.props.cmd, this.props.opt)
     }
 
     return this.term
@@ -169,7 +169,7 @@ export default class Terminal extends PureComponent {
     this.preActiveMessage += message
   }
 
-  exec = async (cmd, config) => {
+  exec = async (cmd, config = {}) => {
     this.inputRef.current?.setState({ executing: true })
     
     const result = await this.onInputSubmit(cmd, config)
