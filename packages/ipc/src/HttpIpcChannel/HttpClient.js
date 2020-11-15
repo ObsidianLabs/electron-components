@@ -62,7 +62,7 @@ export default class HttpClient {
       return this.queryApiPath(`${PROJECT}/${apiPath}`, 'DELETE')
     }
 
-    return this.queryApiPath(channel, 'POST', { method, args })
+    return this.query(`${this.specificUrl}/${channel}`, 'POST', { method, args })
   }
 
   async startBuildTask (cmd, opt) {
