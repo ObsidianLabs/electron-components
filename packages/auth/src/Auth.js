@@ -95,7 +95,6 @@ export default {
     this.profile = { username, avatar }
     this.credentials = { token, awsCredential }
     this.updateProfile()
-    this.refreshPromise = null
   },
 
   async fetchTokens (code, provider) {
@@ -155,6 +154,7 @@ export default {
       this.refreshPromise = this.refresh()
     }
     await this.refreshPromise
+    this.refreshPromise = null
     return this.credentials && this.credentials.token
   },
 
