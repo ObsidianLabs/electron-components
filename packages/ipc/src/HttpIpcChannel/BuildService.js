@@ -9,7 +9,6 @@ export default class BuildService {
   constructor(client, opt = {}) {
     this.client = client
     this.image = opt.image || ''
-    this.imageVersion = opt.imageVersion || ''
     this.language = opt.language || ''
     this.cmd = opt.cmd || ''
     this.project = opt.project || ''
@@ -32,7 +31,6 @@ export default class BuildService {
     try {
       const result = await this.client.queryApiPath(`${PROJECT}/project/${this.project}/build`, 'POST', {
         image: this.image,
-        imageVersion: this.imageVersion,
         language: this.language,
         cmd: this.cmd
       })

@@ -70,7 +70,6 @@ export default class HttpClient {
       cmd,
       project: opt.cwd,
       image: opt.image,
-      imageVersion: opt.imageVersion,
       language: opt.language
     })
     const onData = data => this.ipc.trigger('data', data)
