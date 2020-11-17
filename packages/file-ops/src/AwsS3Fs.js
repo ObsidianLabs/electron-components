@@ -59,7 +59,7 @@ export default class AwsS3Fs {
   async deleteFile (filePath) {
     const params = {
       Bucket,
-      Key: `${filePath}/`,
+      Key: `${filePath}`,
     }
     await new Promise((resolve, reject) => {
       this.s3.deleteObject(params, (err, data) => err ? reject(err) : resolve(data))
