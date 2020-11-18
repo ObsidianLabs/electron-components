@@ -95,7 +95,7 @@ export default class AwsS3Fs {
       let path = item.Key
       const name = path.replace(`${dirPath}/`, '')
       return { name, path, remote: true }
-    }).filter(item => item.name)
+    }).filter(item => item.name && item.name !== '.placeholder')
     return [...folders, ...files]
   }
 }

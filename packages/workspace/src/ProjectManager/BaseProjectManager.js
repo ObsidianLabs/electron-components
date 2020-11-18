@@ -16,6 +16,14 @@ export default class BaseProjectManager {
     throw new Error('ProjectManager.settingsFilePath is not implemented.')
   }
 
+  onRefreshDirectory (callback) {
+    BaseProjectManager.channel.on('refresh-directory', callback)
+  }
+
+  offRefreshDirectory () {
+    BaseProjectManager.channel.off('refresh-directory')
+  }
+
   static effect (key, callback) {
     return () => BaseProjectManager.channel.on(key, callback)
   }

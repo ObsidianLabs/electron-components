@@ -42,14 +42,6 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await BaseProjectManager.channel.invoke('loadDirectory', node.path)
   }
 
-  onRefreshDirectory (callback) {
-    BaseProjectManager.channel.on('refresh-directory', callback)
-  }
-
-  offRefreshDirectory () {
-    BaseProjectManager.channel.off('refresh-directory')
-  }
-
   async readProjectSettings () {
     this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
@@ -82,6 +74,50 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
 
     return await this.projectSettings.readSettings()
+  }
+
+  async createNewFile (basePath, name) {
+    const filePath = fileOps.current.path.join(basePath, name)
+    if (await fileOps.current.isFile(filePath)) {
+      throw new Error(`File <b>${filePath}</b> already exists.`)
+    }
+  
+    try {
+      await fileOps.current.fs.ensureFile(filePath)
+    } catch (e) {
+      if (e.code === 'EISDIR') {
+        throw new Error(`Folder <b>${filePath}</b> already exists.`)
+      } else {
+        throw new Error(`Fail to create the file <b>${filePath}</b>.`)
+      }
+    }
+  }
+
+  async createNewFolder (basePath, name) {
+    const folderPath = fileOps.current.path.join(basePath, name)
+    if (await fileOps.current.isDirectory(folderPath)) {
+      throw new Error(`Folder <b>${folderPath}</b> already exists.`)
+    }
+  
+    try {
+      await fileOps.current.fs.ensureDir(folderPath)
+    } catch (e) {
+      if (e.code === 'EISDIR') {
+        throw new Error(`File <b>${folderPath}</b> already exists.`)
+      } else {
+        throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+      }
+    }
+  }
+
+  async deleteFile (node) {
+    const { response } = await fileOps.current.showMessageBox({
+      message: `Are you sure you want to delete ${node.path}?`,
+      buttons: ['Move to Trash', 'Cancel']
+    })
+    if (response === 0) {
+      await fileOps.current.deleteFile(node.path)
+    }
   }
 
   onRefreshFile (data) {

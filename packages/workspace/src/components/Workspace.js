@@ -48,6 +48,7 @@ export default class Workspace extends Component {
     registerHandlers({
       newFile: node => this.openCreateFileModal(node),
       newFolder: node => this.openCreateFolderModal(node),
+      deleteFile: node => this.context.projectManager.deleteFile(node),
     })
   }
 
@@ -210,7 +211,10 @@ export default class Workspace extends Component {
           {Terminal}
         </SplitPane>
       </SplitPane>
-      <CreateFileOrFolderModals ref={this.modal} />
+      <CreateFileOrFolderModals
+        ref={this.modal}
+        projectManager={this.context.projectManager}
+      />
     </>
   }
 }

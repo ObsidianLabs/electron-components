@@ -48,22 +48,6 @@ export default class FileOps {
     return this.fs.promises.writeFile(filePath, content)
   }
 
-  async createNewFile (filePath) {
-    if (await this.isFile(filePath)) {
-      throw new Error(`File <b>${filePath}</b> already exists.`)
-    }
-  
-    try {
-      await this.fs.ensureFile(filePath)
-    } catch (e) {
-      if (e.code === 'EISDIR') {
-        throw new Error(`Folder <b>${filePath}</b> already exists.`)
-      } else {
-        throw new Error(`Fail to create the file <b>${filePath}</b>.`)
-      }
-    }
-  }
-
   getDockerMountPath (mountPath) {
     if (process.env.OS_IS_WINDOWS) {
       const { root } = this.path.parse(mountPath)

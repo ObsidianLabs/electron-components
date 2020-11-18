@@ -5,7 +5,6 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
-import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 
 export default class CreateFileOrFolderModals extends PureComponent {
@@ -32,17 +31,17 @@ export default class CreateFileOrFolderModals extends PureComponent {
   }
 
   onCreate = async () => {
-    const newPath = fileOps.current.path.join(this.state.basePath, this.state.name)
+    const { basePath, name } = this.state
     if (this.state.type === 'file') {
       try {
-        await fileOps.current.createNewFile(newPath)
+        await this.props.projectManager.createNewFile(basePath, name)
       } catch (e) {
         notification.error('Cannot Create File', e.message)
         return
       }
     } else if (this.state.type === 'folder') {
       try {
-        await fileOps.current.createNewFolder(newPath)
+        await this.props.projectManager.createNewFolder(basePath, name)
       } catch (e) {
         notification.error('Cannot Create Folder', e.message)
         return

@@ -16,19 +16,10 @@ const openInTerminal = node => {
   fileOps.current.openInTerminal(basePath)
 }
 
-const deleteFile = async node => {
-  const { response } = await fileOps.current.showMessageBox({
-    message: `Are you sure you want to delete ${node.path}?`,
-    buttons: ['Move to Trash', 'Cancel']
-  })
-  if (response === 0) {
-    await fileOps.current.deleteFile(node.path)
-  }
-}
-
-export const registerHandlers = ({ newFile, newFolder }) => {
+export const registerHandlers = ({ newFile, newFolder, deleteFile }) => {
   handlers.newFile = newFile
   handlers.newFolder = newFolder
+  handlers.deleteFile = deleteFile
 }
 
 let contextMenu
@@ -42,7 +33,7 @@ if (platform.isDesktop) {
     { text: 'Open Containing Folder', onClick: showInFinder },
     { text: 'Open in Terminal', onClick: openInTerminal },
     null,
-    { text: 'Delete', onClick: deleteFile },
+    { text: 'Delete', onClick: node => handlers.deleteFile(node) },
   ]
 } else {
   contextMenu = [
@@ -51,7 +42,7 @@ if (platform.isDesktop) {
     // null,
     // { text: 'Download' },
     null,
-    { text: 'Delete', onClick: deleteFile },
+    { text: 'Delete', onClick: node => handlers.deleteFile(node) },
   ]
 }
 

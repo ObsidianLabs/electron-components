@@ -60,10 +60,6 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return result.map(item => ({ ...item, pathInProject: `${node.pathInProject}/${item.name}` }))
   }
 
-  onRefreshDirectory () {}
-
-  offRefreshDirectory () {}
-
   openProjectSettings () {
     this.project.openProjectSettings(this.settingsFilePath)
   }
@@ -90,6 +86,56 @@ export default class RemoteProjectManager extends BaseProjectManager {
     }
 
     return await this.projectSettings.readSettings()
+  }
+
+  async createNewFile (basePath, name) {
+    const filePath = fileOps.current.path.join(basePath, name)
+    if (await fileOps.current.isFile(filePath)) {
+      throw new Error(`File <b>${filePath}</b> already exists.`)
+    }
+  
+    try {
+      await fileOps.current.fs.ensureFile(filePath)
+    } catch (e) {
+      throw new Error(`Fail to create the file <b>${filePath}</b>.`)
+    }
+
+    const children = await fileOps.current.fs.list(basePath)
+    BaseProjectManager.channel.trigger('refresh-directory', { path: basePath, children })
+  }
+
+  async createNewFolder (basePath, name) {
+    const folderPath = fileOps.current.path.join(basePath, name)
+    if (await fileOps.current.isDirectory(folderPath)) {
+      throw new Error(`Folder <b>${folderPath}</b> already exists.`)
+    }
+  
+    try {
+      await fileOps.current.fs.ensureDir(folderPath)
+    } catch (e) {
+      throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+    }
+
+    const children = await fileOps.current.fs.list(basePath)
+    BaseProjectManager.channel.trigger('refresh-directory', { path: basePath, children })
+  }
+
+  async deleteFile (node) {
+    const { response } = await fileOps.current.showMessageBox({
+      message: `Are you sure you want to delete ${node.path}?`,
+      buttons: ['Delete', 'Cancel']
+    })
+    if (response === 0) {
+      if (node.children) {
+        await fileOps.current.deleteFile(`${node.path}/`)
+      } else {
+        await fileOps.current.deleteFile(node.path)
+      }
+    }
+
+    const { dir } = fileOps.current.path.parse(node.path)
+    const children = await fileOps.current.fs.list(dir)
+    BaseProjectManager.channel.trigger('refresh-directory', { path: dir, children })
   }
 
   onRefreshFile (data) {
