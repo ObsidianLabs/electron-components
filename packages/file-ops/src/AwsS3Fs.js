@@ -78,23 +78,24 @@ export default class AwsS3Fs {
   }
 
   async list (dirPath) {
-    const params = { Bucket, Prefix: dirPath }
+    const params = {
+      Bucket,
+      Prefix: `${dirPath}/`,
+      Delimiter: '/'
+    }
     const result = await new Promise((resolve, reject) => {
       this.s3.listObjectsV2(params, (err, data) => err ? reject(err) : resolve(data))
     })
-    return result.Contents.map(item => {
-      const isDirectory = item.Key.endsWith('/')
-      let path = item.Key
-      if (isDirectory) {
-        path = path.slice(0, -1)
-      }
+    const folders = result.CommonPrefixes.map(item => {
+      const path = item.Prefix.slice(0, -1)
       const name = path.replace(`${dirPath}/`, '')
-      const node = { name, path, remote: true }
-      if (isDirectory) {
-        node.loading = true
-        node.children = []
-      }
-      return node
+      return { name, path, children: [], loading: true, remote: true }
     }).filter(item => item.name)
+    const files = result.Contents.map(item => {
+      let path = item.Key
+      const name = path.replace(`${dirPath}/`, '')
+      return { name, path, remote: true }
+    }).filter(item => item.name)
+    return [...folders, ...files]
   }
 }
