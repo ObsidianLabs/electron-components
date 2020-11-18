@@ -83,7 +83,7 @@ export default class HttpClient {
   async query (endpoint, method, params) {
     const token = await Auth.getToken()
     if (!token) {
-      throw new Error('Not authorized')
+      throw new Error('Need login to perform this operation')
     }
     const opts = {
       headers: {
@@ -99,7 +99,7 @@ export default class HttpClient {
 
     const response = await fetch(endpoint, opts)
     if (response.status === 401) {
-      throw new Error('Not authorized')
+      throw new Error('Need login to perform this operation')
     }
 
     let result = await response.text()
