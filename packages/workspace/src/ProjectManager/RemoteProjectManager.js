@@ -37,6 +37,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return `${this.prefix}/${this.userId}/${this.projectId}/${relativePath}`
   }
 
+  pathInProject (filePath = '') {
+    return filePath.replace(`${this.prefix}/${this.userId}/${this.projectId}`, this.projectName)
+  }
+
   async readProjectSettings () {
     this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
@@ -57,7 +61,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async loadDirectory (node) {
     const result = await fileOps.current.fs.list(node.path)
-    return result.map(item => ({ ...item, pathInProject: `${node.pathInProject}/${item.name}` }))
+    return result.map(item => ({
+      ...item,
+      pathInProject: this.pathInProject(item.path)
+    }))
   }
 
   openProjectSettings () {
@@ -91,50 +98,47 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async createNewFile (basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
-      throw new Error(`File <b>${filePath}</b> already exists.`)
+      throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
     }
   
     try {
       await fileOps.current.fs.ensureFile(filePath)
     } catch (e) {
-      throw new Error(`Fail to create the file <b>${filePath}</b>.`)
+      throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
     }
 
-    const children = await fileOps.current.fs.list(basePath)
+    const children = await this.loadDirectory({ path: basePath })
     BaseProjectManager.channel.trigger('refresh-directory', { path: basePath, children })
   }
 
   async createNewFolder (basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
-    if (await fileOps.current.isDirectory(folderPath)) {
-      throw new Error(`Folder <b>${folderPath}</b> already exists.`)
-    }
   
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
-      throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+      throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
     }
 
-    const children = await fileOps.current.fs.list(basePath)
+    const children = await this.loadDirectory({ path: basePath })
     BaseProjectManager.channel.trigger('refresh-directory', { path: basePath, children })
   }
 
   async deleteFile (node) {
     const { response } = await fileOps.current.showMessageBox({
-      message: `Are you sure you want to delete ${node.path}?`,
+      message: `Are you sure you want to delete ${node.pathInProject}?`,
       buttons: ['Delete', 'Cancel']
     })
     if (response === 0) {
       if (node.children) {
-        await fileOps.current.deleteFile(`${node.path}/`)
+        await fileOps.current.fs.deleteFolder(node.path)
       } else {
-        await fileOps.current.deleteFile(node.path)
+        await fileOps.current.fs.deleteFile(node.path)
       }
     }
 
     const { dir } = fileOps.current.path.parse(node.path)
-    const children = await fileOps.current.fs.list(dir)
+    const children = await this.loadDirectory({ path: dir })
     BaseProjectManager.channel.trigger('refresh-directory', { path: dir, children })
   }
 

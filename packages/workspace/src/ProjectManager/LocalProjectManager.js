@@ -116,7 +116,7 @@ export default class LocalProjectManager extends BaseProjectManager {
       buttons: ['Move to Trash', 'Cancel']
     })
     if (response === 0) {
-      await fileOps.current.deleteFile(node.path)
+      await fileOps.current.fs.deleteFile(node.path)
     }
   }
 

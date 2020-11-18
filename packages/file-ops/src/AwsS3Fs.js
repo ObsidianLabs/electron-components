@@ -31,9 +31,7 @@ export default class AwsS3Fs {
       Bucket,
       Key: filePath,
     }
-    const result = await new Promise((resolve, reject) => {
-      this.s3.getObject(params, (err, data) => err ? reject(err) : resolve(data))
-    })
+    const result = await this.s3.getObject(params).promise()
     return result.Body.toString()
   }
 
@@ -43,9 +41,7 @@ export default class AwsS3Fs {
       Key: filePath,
       Body: content
     }
-    await new Promise((resolve, reject) => {
-      this.s3.putObject(params, (err, data) => err ? reject(err) : resolve(data))
-    })
+    await this.s3.putObject(params).promise()
   }
 
   async ensureFile (filePath) {
@@ -59,11 +55,41 @@ export default class AwsS3Fs {
   async deleteFile (filePath) {
     const params = {
       Bucket,
-      Key: `${filePath}`,
+      Key: filePath,
     }
-    await new Promise((resolve, reject) => {
-      this.s3.deleteObject(params, (err, data) => err ? reject(err) : resolve(data))
+    await this.s3.deleteObject(params).promise()
+  }
+
+  async deleteFolder (dirPath) {
+    await this.emptyS3Directory(dirPath)
+    const params = {
+      Bucket,
+      Key: `${dirPath}/`,
+    }
+    await this.s3.deleteObject(params).promise()
+  }
+
+  async emptyS3Directory(dirPath) {
+    const listedObjects = await this.s3.listObjectsV2({
+      Bucket,
+      Prefix: dirPath
+    }).promise();
+    if (listedObjects.Contents.length === 0) {
+      return
+    }
+
+    const deleteParams = {
+      Bucket,
+      Delete: { Objects: [] }
+    }
+    listedObjects.Contents.forEach(({ Key }) => {
+        deleteParams.Delete.Objects.push({ Key })
     })
+    await this.s3.deleteObjects(deleteParams).promise()
+
+    if (listedObjects.IsTruncated) {
+      await this.emptyS3Directory(dirPath)
+    }
   }
 
   stat (path) {
@@ -83,9 +109,8 @@ export default class AwsS3Fs {
       Prefix: `${dirPath}/`,
       Delimiter: '/'
     }
-    const result = await new Promise((resolve, reject) => {
-      this.s3.listObjectsV2(params, (err, data) => err ? reject(err) : resolve(data))
-    })
+    const result = await this.s3.listObjectsV2(params).promise()
+
     const folders = result.CommonPrefixes.map(item => {
       const path = item.Prefix.slice(0, -1)
       const name = path.replace(`${dirPath}/`, '')
