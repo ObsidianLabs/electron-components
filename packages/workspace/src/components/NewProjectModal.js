@@ -86,10 +86,6 @@ export default class NewProjectModal extends PureComponent {
   async createProject ({ projectRoot, name, template }) {
     try {
       const created = await BaseProjectManager.channel.invoke('post', '', { projectRoot, name, template })
-      if (created._id) {
-        await fileOps.current.writeFile(`public/${created.userId}/${created._id}/README.md`, `# ${name}\n`)
-        await fileOps.current.writeFile(`public/${created.userId}/${created._id}/${BaseProjectManager.ProjectSettings.configFileName}`, '{}')
-      }
       notification.success('Successful', `New project <b>${name}</b> is created.`)
       return created
     } catch (e) {
