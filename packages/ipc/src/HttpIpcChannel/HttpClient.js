@@ -62,6 +62,20 @@ export default class HttpClient {
       return this.queryApiPath(`${PROJECT}/${apiPath}`, 'DELETE')
     }
 
+    if (method === 'GET') {
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.query(`${this.specificUrl}/${apiPath}`, 'GET')
+    } else if (method === 'POST') {
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.query(`${this.specificUrl}/${apiPath}`, 'POST', args[1])
+    } else if (method === 'PUT') {
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.query(`${this.specificUrl}/${apiPath}`, 'PUT', args[1])
+    } else if (method === 'DELETE') {
+      const apiPath = args[0] ? `${channel}/${args[0]}` : channel
+      return this.query(`${this.specificUrl}/${apiPath}`, 'DELETE')
+    }
+
     return this.query(`${this.specificUrl}/${channel}`, 'POST', { method, args })
   }
 
