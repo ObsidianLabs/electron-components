@@ -7,7 +7,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   constructor (project, projectRoot) {
     super(project, projectRoot)
 
-    this.prefix = 'public'
+    this.prefix = 'private'
   }
 
   async prepareProject () {
