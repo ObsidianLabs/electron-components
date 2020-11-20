@@ -14,6 +14,10 @@ export default class BuildService {
     this.project = opt.project || ''
     this.buildId = ''
     this.status = ''
+    this.onData = () => {}
+    this.noMoreLog = false
+    this.nextToken = undefined
+    this.abort = false
   }
 
   static updateCredential (credential) {
@@ -35,50 +39,57 @@ export default class BuildService {
         cmd: this.cmd
       })
       this.buildId = result._id
+      this.onData = onData
   
-      await this.checkStatus(onData)
+      await this.checkStatus()
       return { code: this.status === 'SUCCESS' ? 0 : -1, logs: this.status }
     } catch (e) {
       return { code: -1, logs: e }
     }
   }
 
-  async checkStatus (onData, currentToken) {
+  async stop () {
+    // TODO: stop build task by sending a request to server
+    this.abort = true
+  }
+
+  async checkStatus () {
+    if (this.abort) {
+      return
+    }
+
+    await delay(1000)
+
     const result = await this.client.queryApiPath(`build/${this.buildId}`)
     this.status = result.status
 
-    await delay(2000)
-
     try {
-      if (this.status === 'BUILDING') {
-        const nextToken = await this.streamLogs(onData, currentToken)
-        await this.checkStatus(onData, nextToken)
-      } else if (this.status === 'QUEUED' || this.status === 'PENDING') {
-        await this.checkStatus(onData, currentToken)
-      } else {
-        await this.streamLogs(onData, currentToken)
+      if (this.status === 'PENDING' || this.status === 'QUEUED') {
+        await this.checkStatus()
+      } else if (this.status === 'BUILDING' || !this.noMoreLog) {
+        await this.streamLogs()
+        await this.checkStatus()
       }
     } catch (e) {
-      await this.checkStatus(onData, currentToken)
+      await this.checkStatus()
     }
   }
 
-  streamLogs (onData, nextToken) {
+  async streamLogs () {
     const params = {
       logGroupName: 'webIDEbuildLogs',
       logStreamName: this.buildId,
-      nextToken
+      nextToken: this.nextToken
     }
-    return new Promise((resolve, reject) => {
-      BuildService.watcher.getLogEvents(params, (err, data) => {
-        if (err) {
-          console.warn(err)
-          reject(err)
-        } else {
-          data.events.forEach(e => onData(`${e.message}\n\r`))
-          resolve(data.nextBackwardToken)
-        }
-      })
+    const data = await BuildService.watcher.getLogEvents(params).promise()
+    data.events.forEach(e => {
+      const msg = e.message
+      if (msg === this.buildId) {
+        this.noMoreLog = true
+      } else {
+        this.onData(`${msg}\n\r`)
+      }
     })
+    this.nextToken = data.nextFordwardToken
   }
 }
