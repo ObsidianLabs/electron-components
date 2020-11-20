@@ -24,6 +24,8 @@ export default class BaseProjectManager {
     BaseProjectManager.channel.off('refresh-directory')
   }
 
+  refreshDirectory () {}
+
   static effect (key, callback) {
     return () => BaseProjectManager.channel.on(key, callback)
   }

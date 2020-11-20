@@ -107,8 +107,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
       throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
     }
 
-    const children = await this.loadDirectory({ path: basePath })
-    BaseProjectManager.channel.trigger('refresh-directory', { path: basePath, children })
+    await this.refreshDirectory(basePath)
   }
 
   async createNewFolder (basePath, name) {
@@ -120,8 +119,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
       throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
     }
 
-    const children = await this.loadDirectory({ path: basePath })
-    BaseProjectManager.channel.trigger('refresh-directory', { path: basePath, children })
+    await this.refreshDirectory(basePath)
   }
 
   async deleteFile (node) {
@@ -138,6 +136,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
     }
 
     const { dir } = fileOps.current.path.parse(node.path)
+    await this.refreshDirectory(dir)
+  }
+
+  async refreshDirectory (dir = `${this.prefix}/${this.userId}/${this.projectId}`) {
     const children = await this.loadDirectory({ path: dir })
     BaseProjectManager.channel.trigger('refresh-directory', { path: dir, children })
   }
