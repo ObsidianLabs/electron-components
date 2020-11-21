@@ -79,6 +79,7 @@ export default class BuildService {
     const params = {
       logGroupName: 'webIDEbuildLogs',
       logStreamName: this.buildId,
+      startFromHead: true,
       nextToken: this.nextToken
     }
     const data = await BuildService.watcher.getLogEvents(params).promise()
@@ -90,6 +91,6 @@ export default class BuildService {
         this.onData(`${msg}\n\r`)
       }
     })
-    this.nextToken = data.nextFordwardToken
+    this.nextToken = data.nextForwardToken
   }
 }
