@@ -30,16 +30,18 @@ export class ProjectActions {
     try {
       const projectRoot = await fileOps.current.chooseFolder()
       const { base } = fileOps.current.path.parse(projectRoot)
+      const author = 'local'
       const projectId = btoa(projectRoot)
       redux.dispatch('ADD_PROJECT', {
         type: 'local',
         project: {
           id: projectId,
+          author,
           path: projectRoot,
           name: base,
         }
       })
-      this.history.replace(`/local/${projectId}`)
+      this.history.push(`/${author}/${projectId}`)
     } catch (e) {}
   }
 
