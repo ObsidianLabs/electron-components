@@ -2,6 +2,7 @@ import Auth from '@obsidians/auth'
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
+import platform from '@obsidians/platform'
 
 export class ProjectActions {
   constructor() {
@@ -11,7 +12,7 @@ export class ProjectActions {
 
   async newProject () {
     const { _id, projectRoot, name } = await this.newProjectModal.openModal()
-    const author = Auth.username || 'local'
+    const author = platform.isDesktop ? 'local' : Auth.username
     const projectId = _id ? name : btoa(projectRoot)
     redux.dispatch('ADD_PROJECT', {
       type: 'local',
@@ -46,7 +47,7 @@ export class ProjectActions {
     const selected = redux.getState().projects.get('selected')
     if (selected && selected.get('id') === id) {
       redux.dispatch('SELECT_PROJECT', { project: undefined })
-      const author = Auth.username || 'local'
+      const author = platform.isDesktop ? 'local' : Auth.username
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
