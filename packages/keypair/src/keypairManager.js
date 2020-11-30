@@ -34,12 +34,15 @@ class KeypairManager {
   async saveKeypair (name, keypair) {
     keypair.name = name
     await this.channel.invoke('post', '', keypair)
-    await this.updateKeypairName(keypair.address, name)
+    redux.dispatch('UPDATE_KEYPAIR_NAME', { address: keypair.address, name })
+    const keypairs = await this.loadAllKeypairs()
+    const event = new CustomEvent('updated', { detail: keypairs })
+    this.eventTarget.dispatchEvent(event)
   }
 
   async updateKeypairName (address, name) {
     redux.dispatch('UPDATE_KEYPAIR_NAME', { address, name })
-    const result = await this.channel.invoke('put', address, { name })
+    await this.channel.invoke('put', address, { name })
     const keypairs = await this.loadAllKeypairs()
     const event = new CustomEvent('updated', { detail: keypairs })
     this.eventTarget.dispatchEvent(event)
@@ -53,12 +56,20 @@ class KeypairManager {
     this.eventTarget.dispatchEvent(event)
   }
 
-  async getSigner (address) {
-    const result = await this.channel.invoke('get', address)
-    if (!result || !result.secret) {
-      throw new Error(`No key for <b>${address}</b>`)
+  async getKeypair (address) {
+    const keypair = await this.channel.invoke('get', address)
+    if (!keypair) {
+      throw new Error(`No keypair for <b>${address}</b>`)
     }
-    return result.secret
+    return keypair
+  }
+
+  async getSecret (address, key = 'secret') {
+    const keypair = await this.getKeypair(address)
+    if (!keypair[key]) {
+      throw new Error(`No ${key} for <b>${address}</b>`)
+    }
+    return keypair[key]
   }
 }
 
