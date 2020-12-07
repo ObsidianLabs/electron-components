@@ -11,9 +11,9 @@ import notification from '@obsidians/notification'
 
 import keypairManager from './keypairManager'
 
+import RevealSecretModal from './RevealSecretModal'
 import CreateKeypairModal from './CreateKeypairModal'
 import ImportKeypairModal from './ImportKeypairModal'
-import RevealSecretModal from './RevealSecretModal'
 import KeypairNameModal from './KeypairNameModal'
 
 export default class KeypairManagerModal extends PureComponent {
@@ -23,6 +23,7 @@ export default class KeypairManagerModal extends PureComponent {
     head: ['Name', 'Address'],
     actions: true,
     RevealSecretModal,
+    ImportKeypairModal,
   }
 
   constructor (props) {
@@ -152,7 +153,14 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   render () {
-    const { title, warning, head, actions, RevealSecretModal } = this.props
+    const {
+      title,
+      warning,
+      head,
+      actions,
+      RevealSecretModal,
+      ImportKeypairModal,
+    } = this.props
 
     let warningComponent = null
     if (warning) {
