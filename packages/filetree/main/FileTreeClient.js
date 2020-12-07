@@ -37,6 +37,9 @@ class FileTreeClient {
   }
 
   async loadDirectory (directory) {
+    if (!this.treePointer[directory]) {
+      return
+    }
     if (this.treePointer[directory].children) {
       this.treePointer[directory].children = []
     }
