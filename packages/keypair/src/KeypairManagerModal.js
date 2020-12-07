@@ -23,6 +23,7 @@ export default class KeypairManagerModal extends PureComponent {
     head: ['Name', 'Address'],
     actions: true,
     RevealSecretModal,
+    CreateKeypairModal,
     ImportKeypairModal,
   }
 
@@ -159,6 +160,7 @@ export default class KeypairManagerModal extends PureComponent {
       head,
       actions,
       RevealSecretModal,
+      CreateKeypairModal,
       ImportKeypairModal,
     } = this.props
 
