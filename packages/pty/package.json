@@ -8,10 +8,10 @@
   "scripts": {},
   "dependencies": {
     "default-shell": "^1.0.1",
-    "node-pty": "0.9.0",
+    "node-pty": "^0.10.0-beta18",
     "strip-ansi": "^6.0.0"
   },
   "peerDependencies": {
-    "electron": "^8.0.0"
+    "electron": "^11.0.0"
   }
 }
