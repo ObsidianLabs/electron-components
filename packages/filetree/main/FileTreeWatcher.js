@@ -27,39 +27,17 @@ class FileTreeWatcher {
   }
 
   watchDirectory (rootDir) {
-    const watcher = chokidar.watch(rootDir, {})
-    watcher.on('raw', (_, __, details) => {
-      switch (details.type) {
-        case 'file':
-          return this.onFileUpdated(details)
-        case 'directory':
-          return this.onDirectoryUpdated(details)
-        default:
-      }
+    const watcher = chokidar.watch(rootDir, {
+      ignoreInitial: true
     })
+    watcher
+      .on('add', path => this.onFileCreated({ path }))
+      .on('change', path => this.onFileModified({ path }))
+      .on('unlink', path => this.onFileMoved({ path }))
+      .on('addDir', path => this.onDirectoryCreated({ path }))
+      .on('unlinkDir', path => this.onDirectoryMoved({ path }))
+
     return watcher
-  }
-
-  onFileUpdated (details) {
-    switch (details.event) {
-      case 'created':
-        return this.onFileCreated(details)
-      case 'modified':
-        return this.onFileModified(details)
-      case 'moved':
-        return this.onFileMoved(details)
-      default:
-    }
-  }
-
-  onDirectoryUpdated (details) {
-    switch (details.event) {
-      case 'created':
-        return this.onDirectoryCreated(details)
-      case 'moved':
-        return this.onDirectoryMoved(details)
-      default:
-    }
   }
 
   onFileCreated (details) {
