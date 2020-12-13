@@ -29,7 +29,7 @@ class NavLinkLeft extends PureComponent {
       item.onClick()
     } else {
       const { history } = this.props
-      this.props.onClickItem(item.id)
+      this.props.onClickItem(item.id, item)
       history.push(`/${item.route}/${item.id || ''}`)
     }
   }
