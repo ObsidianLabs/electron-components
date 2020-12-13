@@ -21,13 +21,24 @@ export default class KeypairSelector extends PureComponent {
     keypairManager.onUpdated(this.updateKeypairs)
   }
 
-  updateKeypairs = keypairs => {
+  componentDidUpdate (prevProps) {
+    if (prevProps.filter !== this.props.filter) {
+      this.updateKeypairs(this.allKeypairs || [])
+    }
+  }
+
+  updateKeypairs = allKeypairs => {
+    this.allKeypairs = allKeypairs
+    const keypairs = this.props.filter ? allKeypairs.filter(this.props.filter) : allKeypairs
     if (!this.props.editable) {
       if (!this.state.keypairs.length && keypairs.length) {
         this.props.onChange(keypairs[0].address)
       }
       if (this.state.keypairs.length && !keypairs.length) {
         this.props.onChange()
+      }
+      if (keypairs.length && !keypairs.find(k => k.address === this.props.value)) {
+        this.props.onChange(keypairs[0].address)
       }
     }
     this.setState({ keypairs })
