@@ -8,7 +8,7 @@ import {
 
 import keypairManager from './keypairManager'
 
-export default class KeypairSelector extends PureComponent {
+export default class KeypairInputSelector extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
