@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import classnames from 'classnames'
 
 import {
   ButtonDropdown,
@@ -43,6 +44,19 @@ class User extends Component {
     )
   }
 
+  renderExtraLoggedInOptions = () => {
+    if (!this.props.extraLoggedInOptions) {
+      return null
+    }
+
+    return this.props.extraLoggedInOptions.map((option, index) => (
+      <DropdownItem key={`extra-loggedin-option-${index}`} onClick={option.onClick}>
+        {option.icon && <i className={classnames(option.icon, 'w-3 mr-2')} />}
+        {option.text}
+      </DropdownItem>
+    ))
+  }
+
   renderDropdownMenus = profile => {
     if (platform.isDesktop) {
       return (
@@ -64,6 +78,7 @@ class User extends Component {
             <i className='fas fa-user w-3 mr-2' />
             {username}
           </DropdownItem>
+          {this.renderExtraLoggedInOptions()}
           <DropdownItem divider />
           <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
             <i className='fas fa-sign-out w-3 mr-2' />Log out
