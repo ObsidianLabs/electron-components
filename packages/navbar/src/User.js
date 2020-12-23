@@ -49,12 +49,17 @@ class User extends Component {
       return null
     }
 
-    return this.props.extraLoggedInOptions.map((option, index) => (
-      <DropdownItem key={`extra-loggedin-option-${index}`} onClick={option.onClick}>
-        {option.icon && <i className={classnames(option.icon, 'w-3 mr-2')} />}
-        {option.text}
-      </DropdownItem>
-    ))
+    return this.props.extraLoggedInOptions.map((option, index) => {
+      if (option.divider) {
+        return <DropdownItem key={`extra-loggedin-option-${index}`} divider />
+      }
+      return (
+        <DropdownItem key={`extra-loggedin-option-${index}`} onClick={option.onClick}>
+          {option.icon && <i className={classnames(option.icon, 'w-3 mr-2')} />}
+          {option.text}
+        </DropdownItem>
+      )
+    })
   }
 
   renderDropdownMenus = profile => {
