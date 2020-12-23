@@ -96,6 +96,7 @@ export default class KeypairSelector extends PureComponent {
       title,
       modalTitle,
       secretName,
+      modifyNameDisabled,
       selected,
     } = this.props
 
@@ -129,7 +130,11 @@ export default class KeypairSelector extends PureComponent {
           </DropdownItem>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
-      <KeypairManagerModal ref={this.modal} secretName={secretName} />
+      <KeypairManagerModal
+        ref={this.modal}
+        secretName={secretName}
+        modifyNameDisabled={modifyNameDisabled}
+      />
     </>
   }
 }

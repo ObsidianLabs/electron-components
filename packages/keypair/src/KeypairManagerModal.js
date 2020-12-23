@@ -122,12 +122,15 @@ export default class KeypairManagerModal extends PureComponent {
         <td>
           <div className='d-flex'>
             {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
-            <IconButton
-              color='transparent'
-              className='ml-2 text-muted hover-show'
-              onClick={() => this.editName(keypair)}
-              icon='fas fa-pencil-alt'
-            />
+            {
+              !this.props.modifyNameDisabled &&
+              <IconButton
+                color='transparent'
+                className='ml-2 text-muted hover-show'
+                onClick={() => this.editName(keypair)}
+                icon='fas fa-pencil-alt'
+              />
+            }
           </div>
         </td>
         <td>
