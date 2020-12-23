@@ -17,13 +17,13 @@ export default class IoIpcChannel {
     }
   }
 
-  get channelResponse() {
-    if (this.uid) {
-      return `response-${this.channel}-${this.uid}`
-    } else {
-      return `response-${this.channel}`
-    }
-  }
+  // get channelResponse() {
+  //   if (this.uid) {
+  //     return `response-${this.channel}-${this.uid}`
+  //   } else {
+  //     return `response-${this.channel}`
+  //   }
+  // }
 
   get socket () {
     if (!this._socket) {
@@ -35,12 +35,12 @@ export default class IoIpcChannel {
   async createSocket () {
     const token = await Auth.getToken()
     const { REACT_APP_IPC_SERVER_URL } = process.env
-    const socketUrl = `${REACT_APP_IPC_SERVER_URL.replace('http', 'ws')}/${this.channelName}`
+    const socketUrl = `${REACT_APP_IPC_SERVER_URL.replace('http', 'ws')}/${this.channel}`
 
     return new Promise((resolve, reject) => {
-      const socket = io(socketUrl, { query: { token } })
+      const socket = io(socketUrl, { query: { token, uid: this.uid } })
       socket.on('connect', () => resolve(socket))
-      socket.on('disconnect', console.log('disconnect'))
+      socket.on('disconnect', () => console.debug(`${this.uid} disconnected.`))
       socket.on('res', this._onDataReceived)
       socket.on('error', msg => {
         console.warn(msg)
@@ -49,8 +49,11 @@ export default class IoIpcChannel {
     })
   }
 
-  dispose () {
+  async dispose () {
     this.listeners = {}
+    if (this._socket) {
+      (await this.socket).close()
+    }
   }
 
   async invoke (method, ...args) {
