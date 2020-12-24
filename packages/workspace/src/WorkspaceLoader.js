@@ -98,7 +98,7 @@ export default class WorkspaceLoader extends PureComponent {
     const {
       projectRoot,
       ProjectToolbar,
-      CompilerTerminal,
+      CompilerTerminal = () => null,
     } = this.props
     const { terminal } = this.state
 
