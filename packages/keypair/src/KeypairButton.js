@@ -16,6 +16,7 @@ export default class KeypairButton extends PureComponent {
     const {
       secretName = 'Private Key',
       modifyNameDisabled,
+      deletionDisabled,
     } = this.props
 
     return <>
@@ -24,6 +25,7 @@ export default class KeypairButton extends PureComponent {
         ref={this.modal}
         secretName={secretName}
         modifyNameDisabled={modifyNameDisabled}
+        deletionDisabled={deletionDisabled}
       />
     </>
   }

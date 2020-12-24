@@ -97,6 +97,7 @@ export default class KeypairSelector extends PureComponent {
       modalTitle,
       secretName,
       modifyNameDisabled,
+      deletionDisabled,
       selected,
     } = this.props
 
@@ -134,6 +135,7 @@ export default class KeypairSelector extends PureComponent {
         ref={this.modal}
         secretName={secretName}
         modifyNameDisabled={modifyNameDisabled}
+        deletionDisabled={deletionDisabled}
       />
     </>
   }

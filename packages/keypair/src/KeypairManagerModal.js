@@ -22,6 +22,7 @@ export default class KeypairManagerModal extends PureComponent {
     warning: true,
     head: ['Name', 'Address'],
     actions: true,
+    textActions: ['Create', 'Import'],
     RevealSecretModal,
     CreateKeypairModal,
     ImportKeypairModal,
@@ -147,10 +148,13 @@ export default class KeypairManagerModal extends PureComponent {
           </div>
         </td>
         <td align='right'>
+        {
+          !this.props.deletionDisabled &&
           <DeleteButton
             className='hover-show'
             onConfirm={() => this.deleteKey(keypair)}
           />
+        }
         </td>
       </tr>
     )
@@ -162,6 +166,7 @@ export default class KeypairManagerModal extends PureComponent {
       warning,
       head,
       actions,
+      textActions,
       RevealSecretModal,
       CreateKeypairModal,
       ImportKeypairModal,
@@ -186,7 +191,7 @@ export default class KeypairManagerModal extends PureComponent {
       <Modal
         ref={this.modal}
         title={title}
-        textActions={actions ? ['Create', 'Import'] : []}
+        textActions={actions ? textActions : []}
         textCancel='Close'
         onActions={[this.createKeypair, this.importKeypair]}
       >
