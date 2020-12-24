@@ -66,7 +66,7 @@ export default class WorkspaceLoader extends PureComponent {
   toggleTerminal = terminal => {
     this.setState({ terminal })
     if (terminal) {
-      this.props.compilerManager.focus()
+      this.props.compilerManager?.focus()
     }
   }
 
