@@ -106,25 +106,22 @@ export default class HttpClient {
   }
 
   async query (endpoint, method, params) {
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
     const token = await Auth.getToken()
-    if (!token) {
-      throw new Error('Need login to perform this operation')
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
     }
-    const opts = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method,
-    }
+    const opts = { headers, method }
     if (method === 'POST' || method === 'PUT') {
       opts.body = JSON.stringify(params)
     }
 
     const response = await fetch(endpoint, opts)
     if (response.status === 401) {
-      throw new Error('Need login to perform this operation')
+      throw new Error('Need login to perform this operation.')
     }
 
     let result = await response.text()
