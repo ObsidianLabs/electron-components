@@ -15,7 +15,6 @@ import {
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
-import { IpcChannel } from '@obsidians/ipc'
 import Terminal from '@obsidians/terminal'
 
 import BaseProjectManager from '../ProjectManager/BaseProjectManager'
@@ -27,6 +26,7 @@ export default class NewProjectModal extends PureComponent {
 
     this.state = {
       name: '',
+      invalid: false,
       projectRoot: '',
       template: props.defaultTemplate,
       creating: false,
@@ -132,8 +132,8 @@ export default class NewProjectModal extends PureComponent {
   }
 
   render () {
-    const { templates } = this.props
-    const { name, creating, showTerminal } = this.state
+    const { projectNameProps, templates } = this.props
+    const { name, invalid, creating, showTerminal } = this.state
 
     return (
       <Modal
@@ -143,12 +143,14 @@ export default class NewProjectModal extends PureComponent {
         textConfirm='Create Project'
         onConfirm={this.onCreateProject}
         pending={creating && 'Creating...'}
-        confirmDisabled={!name}
+        confirmDisabled={!name || invalid}
       >
         {this.renderLocation()}
         <DebouncedFormGroup
           label='Project name'
-          onChange={name => this.setState({ name })}
+          value={name}
+          onChange={(name, invalid) => this.setState({ name, invalid })}
+          {...projectNameProps}
         />
         <DropdownInput
           label='Template'
