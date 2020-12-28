@@ -120,17 +120,15 @@ export default class HttpClient {
     }
 
     const response = await fetch(endpoint, opts)
-    if (response.status === 401) {
-      throw new Error('Need login to perform this operation.')
-    }
 
     let result = await response.text()
-
     try {
       result = JSON.parse(result)
     } catch (e) {}
 
-    if (response.status >= 400) {
+    if (response.status === 401) {
+      throw new Error(result.message || 'Need login to perform this operation.')
+    } else if (response.status >= 400) {
       throw new Error(result.message || result)
     }
     return result
