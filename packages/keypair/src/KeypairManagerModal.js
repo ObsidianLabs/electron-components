@@ -23,6 +23,7 @@ export default class KeypairManagerModal extends PureComponent {
     head: ['Name', 'Address'],
     actions: true,
     textActions: ['Create', 'Import'],
+    keypairText: 'Keypair',
     RevealSecretModal,
     CreateKeypairModal,
     ImportKeypairModal,
@@ -56,32 +57,35 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   createKeypair = async () => {
+    const { keypairText } = this.props
     const success = await this.createKeypairModal.current.openModal()
     if (success) {
       notification.success(
-        'Create Keypair Successful',
-        `A new keypair is created and saved in ${process.env.PROJECT_NAME}.`
+        `Create ${keypairText} Successful`,
+        `A new ${keypairText.toLowerCase()} is created and saved in ${process.env.PROJECT_NAME}.`
       )
       await this.refresh()
     }
   }
 
   importKeypair = async () => {
+    const { keypairText } = this.props
     const success = await this.importKeypairModal.current.openModal()
     if (success) {
       notification.success(
-        'Import Keypair Successful',
-        `The keypair is imported to ${process.env.PROJECT_NAME}.`
+        `Import ${keypairText} Successful`,
+        `The ${keypairText.toLowerCase()} is imported to ${process.env.PROJECT_NAME}.`
       )
       await this.refresh()
     }
   }
 
   deleteKey = async keypair => {
+    const { keypairText } = this.props
     await keypairManager.deleteKeypair(keypair)
     notification.info(
-      'Delete Keypair Successful',
-      `The keypair is removed from ${process.env.PROJECT_NAME}.`
+      `Delete ${keypairText} Successful`,
+      `The ${keypairText.toLowerCase()} is removed from ${process.env.PROJECT_NAME}.`
     )
     this.refresh()
   }
@@ -101,10 +105,11 @@ export default class KeypairManagerModal extends PureComponent {
       )
     }
     if (!this.state.keypairs || !this.state.keypairs.length) {
+      const { keypairText } = this.props
       return (
         <tr key='keys-none' >
           <td align='middle' colSpan={3}>
-            (No keypairs)
+            (No {`${keypairText.toLowerCase()}s`})
           </td>
         </tr>
       )
