@@ -75,4 +75,4 @@ class KeypairManager {
   }
 }
 
-export default new KeypairManager(process.env.BUILD)
+export default new KeypairManager()
