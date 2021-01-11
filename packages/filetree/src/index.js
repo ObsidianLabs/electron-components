@@ -99,13 +99,16 @@ export default class FileTree extends PureComponent {
     }
   }
 
-  refreshDirectory = async ({ path, children }) => {
-    const node = await this.findNode(path, [this.state.treeData])
+  refreshDirectory = async (directory) => {
+    if (!directory) {
+      return
+    }
+    const node = await this.findNode(directory.path, [this.state.treeData])
     if (!node) {
       return
     }
     node.loading = false
-    node.children = children
+    node.children = directory.children
     if (this.state.cursor) {
       this.setActive(this.state.cursor.path)
     }
