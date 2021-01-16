@@ -83,7 +83,7 @@ export default class UserProfile extends PureComponent {
   }
 
   render () {
-    if (platform.isDesktop) {
+    if (!process.env.ENABLE_AUTH) {
       return null
     }
 
