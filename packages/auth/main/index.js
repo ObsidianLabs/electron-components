@@ -20,7 +20,6 @@ class AuthManager extends IpcChannel {
       }
 
       webRequest.onBeforeRequest(filter, ({ url }, callback) => {
-        const redirectURL = isDev ? 'http://localhost:3000/loading.html' : `file://${path.join(__dirname, '../loading.html')}`
         if (url.startsWith(`${serverUrl}/api/v1/auth/callback?error`)) {
           callback({ cancel: true })
           resolve()
@@ -58,6 +57,7 @@ class AuthManager extends IpcChannel {
   }
 
   async loading() {
+    const redirectURL = isDev ? 'http://localhost:3000/loading.html' : `file://${path.join(__dirname, '../loading.html')}`
     this.win.loadURL(redirectURL)
   }
 }
