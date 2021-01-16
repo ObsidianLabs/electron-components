@@ -63,16 +63,6 @@ class User extends Component {
   }
 
   renderDropdownMenus = profile => {
-    if (platform.isDesktop) {
-      return (
-        <DropdownMenu right>
-          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-            <i className='fas fa-th-list w-3 mr-2' />My Projects
-          </DropdownItem>
-        </DropdownMenu>
-      )
-    }
-
     const username = profile.get('username')
 
     if (username) {
@@ -94,7 +84,7 @@ class User extends Component {
 
     return (
       <DropdownMenu right>
-        <DropdownItem key='login' onClick={() => Auth.login()}>
+        <DropdownItem key='login' onClick={() => Auth.login(this.props.history)}>
           <i className='fas fa-sign-in w-3 mr-2' />Login
         </DropdownItem>
         <DropdownItem divider />

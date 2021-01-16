@@ -3,7 +3,8 @@ import decode from 'jwt-decode'
 import AWS from 'aws-sdk'
 
 import fileOps from '@obsidians/file-ops'
-import { BuildService } from '@obsidians/ipc'
+import { BuildService, IpcChannel } from '@obsidians/ipc'
+import platform from '@obsidians/platform'
 
 import providers from './providers'
 import { AWSRoleArn, AWSRoleSessionName, AWSRegion } from '../config.json'
@@ -26,11 +27,22 @@ export default {
     return !!this.username
   },
 
-  login (provider = 'github') {
+  async login (history, provider = 'github') {
     if (!providers[provider]) {
       return
     }
-    providers[provider].login()
+    if (platform.isDesktop) {
+      const channel = new IpcChannel('auth')
+      const loginUrl = providers[provider].loginUrl
+      const callbackUrl = await channel.invoke('login', { loginUrl, serverUrl })
+      if (callbackUrl) {
+        await this.handleCallback({ location: new URL(callbackUrl), provider, history })
+      }
+      this.updateProfile()
+      await channel.invoke('close')
+    } else {
+      providers[provider].login()
+    }
   },
 
   async logout (history) {
@@ -49,12 +61,12 @@ export default {
     history.replace('/')
   },
 
-  async handleCallback ({ location, history }) {
+  async handleCallback ({ location, history, provider }) {
     const query = new URLSearchParams(location.search);
     const code = query.get('code')
-    const provider = query.get('provider')
+    const loginProvider = provider || query.get('provider')
 
-    const tokens = await this.fetchTokens(code, provider)
+    const tokens = await this.fetchTokens(code, loginProvider)
     if (!tokens) {
       history.replace('/')
       return
@@ -165,7 +177,8 @@ export default {
       const profile = redux.getState().profile
       this.profile = profile.toJS()
     }
-    if (this.credentials && this.credentials.awsCredential) {
+    // Only for web
+    if (platform.isWeb && this.credentials && this.credentials.awsCredential) {
       fileOps.current.fs.updateCredential(this.credentials.awsCredential)
       BuildService.updateCredential(this.credentials.awsCredential)
     }
