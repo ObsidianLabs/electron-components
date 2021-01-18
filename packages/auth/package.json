@@ -4,15 +4,20 @@
   "description": "Authentication",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
-  "main": "src/index.js",
+  "main": "main/index.js",
+  "browser": "src/index.js",
   "dependencies": {
     "@obsidians/file-ops": "^0.1.0",
     "@obsidians/ipc": "^0.1.2",
+    "@obsidians/platform": "^0.1.0",
     "@obsidians/redux": "^0.1.0",
     "jwt-decode": "^3.0.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2.774.0",
     "immutable": "^4.0.0-rc.12"
+  },
+  "devDependencies": {
+    "electron-is-dev": "^1.2.0"
   }
 }
