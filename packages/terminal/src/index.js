@@ -121,7 +121,11 @@ export default class Terminal extends PureComponent {
     }
     
     if (this.props.cmd) {
-      this.exec(this.props.cmd, this.props.opt)
+      this.exec(this.props.cmd, { resolveOnFirstLog: true, ...this.props.opt }).then(result => {
+        if (this.props.onCmdExecuted) {
+          this.props.onCmdExecuted(result)
+        }
+      })
     }
 
     return this.term
