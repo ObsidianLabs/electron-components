@@ -170,14 +170,17 @@ export default class Terminal extends PureComponent {
   }
 
   exec = async (cmd, config = {}) => {
-    this.inputRef.current?.setState({ executing: true })
+    if (!this.props.interactive) {
+      this.inputRef.current?.setState({ executing: true })
+    }
     
-    const result = await this.onInputSubmit(cmd, config)
+    const result = await this.runCommand(cmd, config)
     if (this.props.onFinished) {
       this.props.onFinished(result)
     }
-    this.inputRef.current?.setState({ executing: false })
-
+    if (!this.props.interactive) {
+      this.inputRef.current?.setState({ executing: false })
+    }
     return result
   }
 
@@ -187,6 +190,14 @@ export default class Terminal extends PureComponent {
   }
 
   onInputSubmit = async (cmd, config) => {
+    if (this.props.interactive) {
+      return await this.terminalChannel.invoke('write', `${cmd}\n`)
+    } else {
+      return await this.runCommand(cmd, config)
+    }
+  }
+
+  runCommand = async (cmd, config) => {
     this.scrollToBottom()
 
     const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)

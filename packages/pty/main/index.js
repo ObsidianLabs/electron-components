@@ -64,6 +64,12 @@ class Pty {
     })
   }
 
+  write (cmd) {
+    if (this.proc) {
+      this.proc.write(cmd)
+    }
+  }
+
   resize ({ cols, rows }) {
     this.cols = cols
     this.rows = rows
