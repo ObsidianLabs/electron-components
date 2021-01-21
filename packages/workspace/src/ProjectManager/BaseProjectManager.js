@@ -26,7 +26,11 @@ export default class BaseProjectManager {
 
   refreshDirectory () {}
 
-  static effect (key, callback) {
-    return () => BaseProjectManager.channel.on(key, callback)
+  static effect (evt, callback) {
+    return () => {
+      const dispose = BaseProjectManager.channel.on(evt, callback)
+      BaseProjectManager.channel.trigger('current-value', evt)
+      return dispose
+    }
   }
 }
