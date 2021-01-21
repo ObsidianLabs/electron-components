@@ -26,8 +26,23 @@ function LabelTooltip (props) {
   </>
 }
 
+function execValidator (value, validator) {
+  if (!value || !validator) {
+    return [undefined, '']
+  }
+  const feedback = validator(value) || ''
+  return [!!feedback, feedback]
+}
+
 function DebouncedFormGroup (props, ref) {
-  const { size, label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, ...otherProps } = props
+  const { size, label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, validator, ...otherProps } = props
+
+  const [invalid, feedback] = execValidator(otherProps.value, validator)
+
+  const onChange = value => {
+    const [invalid] = execValidator(value, validator)
+    otherProps.onChange(value, invalid)
+  }
 
   return (
     <FormGroup className={classnames(size === 'sm' && 'mb-2', formGroupClassName)}>
@@ -40,7 +55,10 @@ function DebouncedFormGroup (props, ref) {
           size={size}
           disabled={disabled}
           placeholder={placeholder}
+          invalid={invalid}
+          feedback={feedback}
           {...otherProps}
+          onChange={onChange}
         />
       }
       {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import classnames from 'classnames'
 
 import {
   ButtonDropdown,
@@ -43,15 +44,33 @@ class User extends Component {
     )
   }
 
-  renderDropdownMenus = profile => {
-    if (platform.isDesktop) {
+  renderExtraLoggedInOptions = () => {
+    if (!this.props.extraLoggedInOptions) {
+      return null
+    }
+
+    return this.props.extraLoggedInOptions.map((option, index) => {
+      if (option.divider) {
+        return <DropdownItem key={`extra-loggedin-option-${index}`} divider />
+      }
       return (
-        <DropdownMenu right>
-          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-            <i className='fas fa-th-list w-3 mr-2' />My Projects
-          </DropdownItem>
-        </DropdownMenu>
+        <DropdownItem key={`extra-loggedin-option-${index}`} onClick={option.onClick}>
+          {option.icon && <i className={classnames(option.icon, 'w-3 mr-2')} />}
+          {option.text}
+        </DropdownItem>
       )
+    })
+  }
+
+  renderDropdownMenus = profile => {
+    if (!process.env.ENABLE_AUTH) {		
+      return (		
+        <DropdownMenu right>		
+          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>		
+            <i className='fas fa-th-list w-3 mr-2' />My Projects		
+          </DropdownItem>		
+        </DropdownMenu>		
+      )		
     }
 
     const username = profile.get('username')
@@ -64,6 +83,7 @@ class User extends Component {
             <i className='fas fa-user w-3 mr-2' />
             {username}
           </DropdownItem>
+          {this.renderExtraLoggedInOptions()}
           <DropdownItem divider />
           <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
             <i className='fas fa-sign-out w-3 mr-2' />Log out
@@ -74,7 +94,7 @@ class User extends Component {
 
     return (
       <DropdownMenu right>
-        <DropdownItem key='login' onClick={() => Auth.login()}>
+        <DropdownItem key='login' onClick={() => Auth.login(this.props.history)}>
           <i className='fas fa-sign-in w-3 mr-2' />Login
         </DropdownItem>
         <DropdownItem divider />

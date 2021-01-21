@@ -1,5 +1,6 @@
 import platform from '@obsidians/platform'
 
+
 let TempIpcChannel
 
 if (platform.isDesktop) {
@@ -9,4 +10,6 @@ if (platform.isDesktop) {
 }
 
 export const IpcChannel = TempIpcChannel
+
+export { default as IoIpcChannel } from './IoIpcChannel'
 export { default as BuildService } from './HttpIpcChannel/BuildService'

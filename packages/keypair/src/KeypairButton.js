@@ -14,12 +14,19 @@ export default class KeypairButton extends PureComponent {
 
   render () {
     const {
-      secretName = 'Private Key'
+      secretName = 'Private Key',
+      modifyNameDisabled,
+      deletionDisabled,
     } = this.props
 
     return <>
       <div onClick={this.openModal}>{this.props.children}</div>
-      <KeypairManagerModal ref={this.modal} secretName={secretName} />
+      <KeypairManagerModal
+        ref={this.modal}
+        secretName={secretName}
+        modifyNameDisabled={modifyNameDisabled}
+        deletionDisabled={deletionDisabled}
+      />
     </>
   }
 }

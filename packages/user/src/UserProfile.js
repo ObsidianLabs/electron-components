@@ -68,7 +68,7 @@ export default class UserProfile extends PureComponent {
       <Button
         color='primary'
         size='sm'
-        onClick={() => Auth.login()}
+        onClick={() => Auth.login(this.props.history)}
       >
         <i key='sign-in' className='fas fa-sign-in mr-2' />Log in
       </Button>
@@ -83,7 +83,7 @@ export default class UserProfile extends PureComponent {
   }
 
   render () {
-    if (platform.isDesktop) {
+    if (!process.env.ENABLE_AUTH) {
       return null
     }
 

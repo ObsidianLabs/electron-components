@@ -1,4 +1,3 @@
-import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 import set from 'lodash/set'
@@ -8,6 +7,8 @@ export default class ProjectSettings {
   constructor (settingFilePath, channel) {
     this.settingFilePath = settingFilePath
     this.channel = channel
+    channel.off('current-value')
+    channel.on('current-value', evt => this.triggerEvent(evt))
 
     this.invalid = false
     this.settings = {}
@@ -44,17 +45,24 @@ export default class ProjectSettings {
     if (!this.channel) {
       return
     }
-    
-    for (let evt of this.channel.events) {
-      const [prefix, key] = evt.split(':')
-      if (prefix === 'settings' && key) {
-        const oldValue = get(oldSettings, key)
-        const newValue = get(this.settings, key)
-        if (oldValue !== newValue) {
-          this.channel.trigger(evt, newValue)
-        }
+
+    this.channel.events.forEach(evt => this.triggerEvent(evt, oldSettings))
+  }
+
+  triggerEvent (evt, oldSettings) {
+    const [prefix, key] = evt.split(':')
+    if (prefix !== 'settings' || !key) {
+      return
+    }
+
+    const value = get(this.settings, key)
+    if (oldSettings) {
+      const oldValue = get(oldSettings, key)
+      if (oldValue === value) {
+        return
       }
     }
+    this.channel.trigger(evt, value)
   }
 
   trimSettings = (rawSettings = {}) => rawSettings

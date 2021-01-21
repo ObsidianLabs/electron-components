@@ -64,9 +64,9 @@ export default class DebouncedInput extends PureComponent {
       return null
     }
     if (typeof invalid !== 'boolean') {
-      return <FormText>{feedback}</FormText>
+      return <FormText className='ml-1'>{feedback}</FormText>
     }
-    return <FormFeedback valid={!invalid}>{feedback}</FormFeedback>
+    return <FormFeedback valid={!invalid} className='ml-1'>{feedback}</FormFeedback>
   }
 
   render () {

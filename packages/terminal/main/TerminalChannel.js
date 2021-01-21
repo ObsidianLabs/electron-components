@@ -18,6 +18,10 @@ class TerminalChannel extends IpcChannel {
     return await this.pty.run(command.trim(), config)
   }
 
+  write (command) {
+    this.pty.write(command)
+  }
+
   resize ({ cols, rows }) {
     this.pty.resize({ cols, rows })
   }

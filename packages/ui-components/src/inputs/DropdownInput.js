@@ -235,7 +235,7 @@ export default class DropdownInput extends PureComponent {
         <Dropdown
           className='d-flex flex-grow-1'
           direction='down'
-          isOpen={this.state.dropdownOpen && dropdownOptions.length}
+          isOpen={this.state.dropdownOpen && !!dropdownOptions.length}
           toggle={this.toggleDropdown}
         >
           {

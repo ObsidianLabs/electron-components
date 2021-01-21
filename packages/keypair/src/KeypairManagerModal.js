@@ -22,6 +22,8 @@ export default class KeypairManagerModal extends PureComponent {
     warning: true,
     head: ['Name', 'Address'],
     actions: true,
+    textActions: ['Create', 'Import'],
+    keypairText: 'Keypair',
     RevealSecretModal,
     CreateKeypairModal,
     ImportKeypairModal,
@@ -55,32 +57,35 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   createKeypair = async () => {
+    const { keypairText } = this.props
     const success = await this.createKeypairModal.current.openModal()
     if (success) {
       notification.success(
-        'Create Keypair Successful',
-        `A new keypair is created and saved in ${process.env.PROJECT_NAME}.`
+        `Create ${keypairText} Successful`,
+        `A new ${keypairText.toLowerCase()} is created and saved in ${process.env.PROJECT_NAME}.`
       )
       await this.refresh()
     }
   }
 
   importKeypair = async () => {
+    const { keypairText } = this.props
     const success = await this.importKeypairModal.current.openModal()
     if (success) {
       notification.success(
-        'Import Keypair Successful',
-        `The keypair is imported to ${process.env.PROJECT_NAME}.`
+        `Import ${keypairText} Successful`,
+        `The ${keypairText.toLowerCase()} is imported to ${process.env.PROJECT_NAME}.`
       )
       await this.refresh()
     }
   }
 
   deleteKey = async keypair => {
+    const { keypairText } = this.props
     await keypairManager.deleteKeypair(keypair)
     notification.info(
-      'Delete Keypair Successful',
-      `The keypair is removed from ${process.env.PROJECT_NAME}.`
+      `Delete ${keypairText} Successful`,
+      `The ${keypairText.toLowerCase()} is removed from ${process.env.PROJECT_NAME}.`
     )
     this.refresh()
   }
@@ -100,10 +105,11 @@ export default class KeypairManagerModal extends PureComponent {
       )
     }
     if (!this.state.keypairs || !this.state.keypairs.length) {
+      const { keypairText } = this.props
       return (
         <tr key='keys-none' >
           <td align='middle' colSpan={3}>
-            (No keypairs)
+            (No {`${keypairText.toLowerCase()}s`})
           </td>
         </tr>
       )
@@ -122,12 +128,15 @@ export default class KeypairManagerModal extends PureComponent {
         <td>
           <div className='d-flex'>
             {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
-            <IconButton
-              color='transparent'
-              className='ml-2 text-muted hover-show'
-              onClick={() => this.editName(keypair)}
-              icon='fas fa-pencil-alt'
-            />
+            {
+              !this.props.modifyNameDisabled &&
+              <IconButton
+                color='transparent'
+                className='ml-2 text-muted hover-show'
+                onClick={() => this.editName(keypair)}
+                icon='fas fa-pencil-alt'
+              />
+            }
           </div>
         </td>
         <td>
@@ -144,10 +153,13 @@ export default class KeypairManagerModal extends PureComponent {
           </div>
         </td>
         <td align='right'>
+        {
+          !this.props.deletionDisabled &&
           <DeleteButton
             className='hover-show'
             onConfirm={() => this.deleteKey(keypair)}
           />
+        }
         </td>
       </tr>
     )
@@ -159,6 +171,7 @@ export default class KeypairManagerModal extends PureComponent {
       warning,
       head,
       actions,
+      textActions,
       RevealSecretModal,
       CreateKeypairModal,
       ImportKeypairModal,
@@ -183,7 +196,7 @@ export default class KeypairManagerModal extends PureComponent {
       <Modal
         ref={this.modal}
         title={title}
-        textActions={actions ? ['Create', 'Import'] : []}
+        textActions={actions ? textActions : []}
         textCancel='Close'
         onActions={[this.createKeypair, this.importKeypair]}
       >
