@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import {
   Navbar,
   Nav
-} from 'reactstrap'
+} from '@obsidians/ui-components'
 
 import { NavLink } from 'react-router-dom'
 

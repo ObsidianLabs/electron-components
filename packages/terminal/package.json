@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/terminal",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "description": "Terminal component for Electron apps",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
@@ -17,15 +17,15 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/file-ops": "^0.1.0",
-    "@obsidians/ipc": "^0.1.2",
-    "@obsidians/notification": "^0.1.0",
-    "@obsidians/pty": "^0.9.1",
-    "@obsidians/ui-components": "^0.2.2",
-    "chalk": "^3.0.0",
+    "@obsidians/file-ops": "^0.3.0",
+    "@obsidians/ipc": "^0.3.0",
+    "@obsidians/notification": "^0.3.0",
+    "@obsidians/pty": "^0.10.0-beta",
+    "@obsidians/ui-components": "^0.3.0",
+    "chalk": "^4.1.0",
     "strip-ansi": "^6.0.0",
-    "xterm": "^4.4.0",
-    "xterm-addon-fit": "^0.3.0"
+    "xterm": "^4.9.0",
+    "xterm-addon-fit": "^0.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

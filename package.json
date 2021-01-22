@@ -7,12 +7,12 @@
     "build": "node init.js"
   },
   "dependencies": {
-    "keytar": "^7.2.0",
-    "node-pty": "^0.10.0-beta18"
+    "keytar": "^7.3.0",
+    "node-pty": "0.10.0-beta20"
   },
   "devDependencies": {
-    "electron": "11.0.3",
-    "electron-rebuild": "^2.3.2"
+    "electron": "11.2.0",
+    "electron-rebuild": "^2.3.4"
   },
   "workspaces": [
     "packages/*"

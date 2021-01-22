@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/pty",
-  "version": "0.9.1",
+  "version": "0.10.0-beta",
   "description": "Start a process in electron",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
@@ -8,7 +8,7 @@
   "scripts": {},
   "dependencies": {
     "default-shell": "^1.0.1",
-    "node-pty": "^0.10.0-beta18",
+    "node-pty": "0.10.0-beta20",
     "strip-ansi": "^6.0.0"
   },
   "peerDependencies": {

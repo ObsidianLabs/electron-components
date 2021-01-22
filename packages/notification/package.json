@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/notification",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Notification System",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
@@ -17,7 +17,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "react-notification-system": "^0.3.0"
+    "react-notification-system": "^0.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

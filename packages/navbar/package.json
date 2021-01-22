@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/navbar",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Navbar",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
@@ -17,10 +17,10 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/auth": "^0.1.0",
-    "@obsidians/platform": "^0.1.0",
-    "react-contextmenu": "^2.13.0",
-    "reactstrap": "^8.4.1"
+    "@obsidians/auth": "^0.3.0",
+    "@obsidians/platform": "^0.3.0",
+    "@obsidians/ui-components": "^0.3.0",
+    "react-contextmenu": "^2.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
