@@ -6,7 +6,6 @@ import {
   IconButton,
 } from '@obsidians/ui-components'
 
-import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
 export default class UserProfile extends PureComponent {
@@ -64,15 +63,17 @@ export default class UserProfile extends PureComponent {
   }
 
   renderLoginButton = () => {
-    return (
+    const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
+    return providers.map(provider => (
       <Button
         color='primary'
         size='sm'
-        onClick={() => Auth.login(this.props.history)}
+        key={`user-profile-login-${provider}`}
+        onClick={() => Auth.login(this.props.history, process.env.LOGIN_PROVIDER)}
       >
-        <i key='sign-in' className='fas fa-sign-in mr-2' />Log in
+        <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
       </Button>
-    )
+    ))
   }
 
   renderDescription = desc => {
