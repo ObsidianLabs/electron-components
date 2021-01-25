@@ -9,7 +9,7 @@ const redirectUri = 'http://tbaas.obsidians.io/callback?provider=tencent'
 
 export default {
   login () {
-    window.location.href = this.loginUrl;
+    window.location.href = this.loginUrl
   },
   get loginUrl() {
     return `https://www.qcloud.com/open/authorize?scope=login&app_id=${clientId}&redirect_url=${redirectUri}`

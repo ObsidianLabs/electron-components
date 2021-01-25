@@ -86,7 +86,7 @@ export default {
     history.replace('/')
   },
 
-  async refresh() {
+  async refresh () {
     if (!this.shouldRefresh()) {
       return
     }
