@@ -6,6 +6,7 @@ import {
   IconButton,
 } from '@obsidians/ui-components'
 
+import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
 export default class UserProfile extends PureComponent {
@@ -84,7 +85,7 @@ export default class UserProfile extends PureComponent {
   }
 
   render () {
-    if (!process.env.ENABLE_AUTH) {
+    if (platform.isDesktop && !process.env.ENABLE_AUTH) {
       return null
     }
 
