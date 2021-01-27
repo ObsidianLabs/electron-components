@@ -165,7 +165,10 @@ export default class Terminal extends PureComponent {
   }
 
   preActiveMessage = ''
-  writeToTerminal (message) {
+  writeToTerminal (message, color) {
+    if (color) {
+      message = colorCommand(message, color)
+    }
     if (this.initialized && this.term) {
       this.term.write(message)
       return
@@ -205,8 +208,12 @@ export default class Terminal extends PureComponent {
     this.scrollToBottom()
 
     const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
-    this.writeToTerminal(`${chalk.bold.gray('>')} ${colorCommand(cmd)}\n\r`)
+    this.writeCmdToTerminal(cmd)
     return await this.terminalChannel.invoke('run', cmd, mergedConfig)
+  }
+
+  writeCmdToTerminal = (cmd, prefix = '>') => {
+    this.writeToTerminal(`${chalk.bold.gray(prefix)} ${colorCommand(cmd)}\n\r`)
   }
 
   onLogReceived = message => {

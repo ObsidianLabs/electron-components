@@ -9,8 +9,8 @@ const hex = value => {
   return hexValue.length === 1 ? `0${hex}` : hexValue
 }
 
-export default function colorCommand (cmdString) {
-  const primaryColorRgb = getColor('--color-primary')
+export default function colorCommand (cmdString, colorStr = '--color-primary') {
+  const primaryColorRgb = getColor(colorStr)
   const rgb = primaryColorRgb.match(/\((\d+),\s*(\d+),\s*(\d+)\)/)
   const primaryColor = `#${hex(rgb[1])}${hex(rgb[2])}${hex(rgb[3])}`
 
