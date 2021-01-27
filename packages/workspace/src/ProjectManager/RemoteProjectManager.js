@@ -34,7 +34,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   pathForProjectFile (relativePath) {
-    return `${this.prefix}/${this.userId}/${this.projectId}/${relativePath}`
+    return fileOps.current.path.join(`${this.prefix}/${this.userId}/${this.projectId}`, relativePath)
   }
 
   pathInProject (filePath = '') {
