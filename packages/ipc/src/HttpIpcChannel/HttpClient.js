@@ -1,3 +1,4 @@
+import qs from 'qs'
 import Auth from '@obsidians/auth'
 import BuildService from './BuildService'
 
@@ -52,7 +53,7 @@ export default class HttpClient {
 
     if (method === 'get') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
-      return this.queryApiPath(`${PROJECT}/${apiPath}`, 'GET')
+      return this.queryApiPath(`${PROJECT}/${apiPath}`, 'GET', args[1])
     } else if (method === 'post') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
       return this.queryApiPath(`${PROJECT}/${apiPath}`, 'POST', args[1])
@@ -66,7 +67,7 @@ export default class HttpClient {
 
     if (method === 'GET') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
-      return this.query(`${this.specificUrl}/${apiPath}`, 'GET')
+      return this.query(`${this.specificUrl}/${apiPath}`, 'GET', args[1])
     } else if (method === 'POST') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
       return this.query(`${this.specificUrl}/${apiPath}`, 'POST', args[1])
@@ -117,6 +118,8 @@ export default class HttpClient {
     const opts = { headers, method }
     if (method === 'POST' || method === 'PUT') {
       opts.body = JSON.stringify(params)
+    } else if (method === 'GET') {
+      endpoint = endpoint + `?` + qs.stringify(params)
     }
 
     const response = await fetch(endpoint, opts)
