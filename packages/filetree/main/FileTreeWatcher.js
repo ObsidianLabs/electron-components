@@ -1,13 +1,13 @@
 const fs = require('fs')
 const path = require('path')
 const chokidar = require('chokidar')
-const throttle = require('lodash/throttle')
+const debounce = require('lodash/debounce')
 
-const throttleByKey = (func, wait) => {
+const debounceByKey = (func, wait) => {
   const cache = new Map()
   return (...args) => {
     if (!cache.has(args[0])) {
-      cache.set(args[0], throttle(func, wait))
+      cache.set(args[0], debounce(func, wait))
     }
     return cache.get(args[0])(...args)
   }
@@ -18,8 +18,8 @@ class FileTreeWatcher {
     this.watcher = this.watchDirectory(rootDir)
     this.client = client
 
-    this.throttledRefreshDirectory = throttleByKey(dir => client.loadAndRefreshDirectory(dir), 200)
-    this.throttledFileModified = throttleByKey(filePath => this.refreshFile(filePath), 200)
+    this.debouncedRefreshDirectory = debounceByKey(dir => client.loadAndRefreshDirectory(dir), 200)
+    this.debouncedFileModified = debounceByKey(filePath => this.refreshFile(filePath), 200)
   }
 
   dispose () {
@@ -42,26 +42,26 @@ class FileTreeWatcher {
 
   onFileCreated (details) {
     const { dir } = path.parse(details.path)
-    this.throttledRefreshDirectory(dir)
+    this.debouncedRefreshDirectory(dir)
   }
 
   onFileModified (details) {
-    this.throttledFileModified(details.path)
+    this.debouncedFileModified(details.path)
   }
 
   onFileMoved (details) {
     const { dir } = path.parse(details.path)
-    this.throttledRefreshDirectory(dir)
+    this.debouncedRefreshDirectory(dir)
   }
 
   onDirectoryCreated (details) {
     const { dir } = path.parse(details.path)
-    this.throttledRefreshDirectory(dir)
+    this.debouncedRefreshDirectory(dir)
   }
 
   onDirectoryMoved (details) {
     const { dir } = path.parse(details.path)
-    this.throttledRefreshDirectory(dir)
+    this.debouncedRefreshDirectory(dir)
   }
 
   async refreshFile (filePath) {
