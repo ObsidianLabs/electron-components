@@ -1,4 +1,5 @@
 const { ipcMain, net } = require('electron')
+const qs = require('qs')
 
 const ipc = require('./ipc')
 const ChildProcess = require('./ChildProcess')
@@ -57,7 +58,10 @@ class IpcChannel {
     return await this.cp.exec(command.trim(), config)
   }
 
-  async fetch (url) {
+  async fetch (url, params) {
+    if (params) {
+      url = url + `?` + qs.stringify(params)
+    }
     return await new Promise((resolve, reject) => {
       const request = net.request(url)
       request.on('response', (response) => {
