@@ -24,8 +24,9 @@
     "@obsidians/ui-components": "^0.2.2",
     "chalk": "^3.0.0",
     "strip-ansi": "^6.0.0",
-    "xterm": "^4.4.0",
-    "xterm-addon-fit": "^0.3.0"
+    "xterm": "^4.10.0",
+    "xterm-addon-fit": "^0.4.0",
+    "xterm-addon-search": "^0.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

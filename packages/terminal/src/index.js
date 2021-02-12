@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 import { Terminal as XTerm } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
+import { SearchAddon } from 'xterm-addon-search'
 
 import chalk from 'chalk'
 
@@ -101,15 +102,22 @@ export default class Terminal extends PureComponent {
       theme: {
         foreground: color,
         background: bgColor,
-        cursor: bgColor,
+        cursor: this.props.interactive ? getColor('--color-text-muted') : bgColor,
       }
     })
 
     this.termFitAddon = new FitAddon()
+    this.searchAddon = new SearchAddon()
     term.loadAddon(this.termFitAddon)
+    term.loadAddon(this.searchAddon)
     term.open(el)
     this.termFitAddon.fit()
     this.term = term
+
+    // this.term.attachCustomKeyEventHandler(this.keyboardHandler)
+    if (this.props.interactive) {
+      this.term.onData(this.onData)
+    }
 
     if (this.props.onTermCreated) {
       this.props.onTermCreated(this.term)
@@ -129,6 +137,10 @@ export default class Terminal extends PureComponent {
     }
 
     return this.term
+  }
+
+  onData = async data => {
+    await this.terminalChannel.invoke('write', data)
   }
 
   onMouseUpTerm = event => {
