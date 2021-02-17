@@ -48,8 +48,9 @@ export default class NavDropdown extends Component {
       return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
     }
 
-    const { id, name } = item
+    const { id, name, icon } = item
     const isSelected = this.props.selected === id
+    const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
 
     return (
       <DropdownItem
@@ -62,7 +63,7 @@ export default class NavDropdown extends Component {
       >
         <ContextMenuTrigger id={`dropdown-item-${this.props.route}-${id}`}>
           <span key={`dropdown-item-${isSelected}`}>
-            <i className={classnames('mr-2', isSelected ? 'fas' : 'fal', item.icon || this.props.icon)} />
+            <i className={classnames('mr-2', iconClassName)} />
           </span>
           {name}
         </ContextMenuTrigger>

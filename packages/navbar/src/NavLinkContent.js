@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function (props) {
-  const { title, selected, icon, Icon, width } = props
+  const { title, selected, icon, Icon, width, noneIcon = 'fas fa-file-times' } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`
@@ -13,7 +13,7 @@ export default function (props) {
     iconComponent = <span key='icon' className={iconClassName}>{Icon}</span>
     subtitle = selected
   } else if (!selected) {
-    iconComponent = <span key='no-selected' className={iconClassName}><i className='w-100 h-100 fas fa-file-times' /></span>
+    iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
     subtitle = '(None)'
   } else {
     iconComponent = <span key={key} className={iconClassName}><i className={`w-100 h-100 ${icon}`} /></span>

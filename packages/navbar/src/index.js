@@ -38,6 +38,7 @@ export default class Header extends PureComponent {
         route={link.route}
         title={link.title}
         icon={link.icon}
+        noneIcon={link.noneIcon}
         selected={link.selected}
         dropdown={link.dropdown}
         onClickItem={link.onClickItem}
