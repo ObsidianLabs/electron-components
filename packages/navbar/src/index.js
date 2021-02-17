@@ -48,7 +48,7 @@ export default class Header extends PureComponent {
 
   renderContextMenu = links => {
     return links.map(link => {
-      return link.dropdown.map(item => {
+      return link.dropdown.map((item, index) => {
         if (!item.id || !link.contextMenu) {
           return null
         }
@@ -58,7 +58,7 @@ export default class Header extends PureComponent {
         }
         return (
           <NavDropdownContextMenu
-            key={`nav-context-menu-${link.route}-${item.id}`}
+            key={`nav-context-menu-${link.route}-${item.id}-${index}`}
             route={link.route}
             item={item}
             contextMenu={contextMenu}

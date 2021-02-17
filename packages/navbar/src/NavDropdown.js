@@ -54,7 +54,7 @@ export default class NavDropdown extends Component {
 
     return (
       <DropdownItem
-        key={`dropdown-item-header-${id}`}
+        key={`dropdown-item-header-${id}-${index}`}
         className={classnames({ active: isSelected })}
         onClick={event => {
           event.preventDefault()
