@@ -146,6 +146,7 @@ export default class Workspace extends Component {
       theme,
       initial,
       ProjectToolbar,
+      signer,
       Terminal = <div></div>,
       defaultSize,
       readonly = false,
@@ -178,7 +179,7 @@ export default class Workspace extends Component {
               tooltip='New File'
               onClick={() => this.openCreateFileModal()}
             />
-            <ProjectToolbar />
+            <ProjectToolbar signer={signer} />
           </div>
           <FileTree
             ref={this.filetree}
