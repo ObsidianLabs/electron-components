@@ -122,6 +122,7 @@ export default class DropdownInput extends PureComponent {
           }
           groupOptions.push({
             id: subitem.id,
+            group: item.group,
             display: subitem.display,
             disabled: subitem.disabled,
             onClick: subitem.onClick,
@@ -178,7 +179,7 @@ export default class DropdownInput extends PureComponent {
             key={`item-${item.id}`}
             active={active}
             disabled={item.disabled}
-            onClick={() => item.onClick ? item.onClick() : onChange(item.id)}
+            onClick={() => item.onClick ? item.onClick() : onChange(item.id, item.group)}
           >
             {display}
           </DropdownItem>

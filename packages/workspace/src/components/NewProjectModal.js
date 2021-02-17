@@ -29,6 +29,7 @@ export default class NewProjectModal extends PureComponent {
       invalid: false,
       projectRoot: '',
       template: props.defaultTemplate,
+      group: props.defaultGroup,
       creating: false,
       showTerminal: false,
     }
@@ -42,7 +43,8 @@ export default class NewProjectModal extends PureComponent {
   }
 
   openModal () {
-    this.setState({ creating: false, showTerminal: false })
+    const { defaultTemplate, defaultGroup } = this.props
+    this.setState({ template: defaultTemplate, group: defaultGroup, creating: false, showTerminal: false })
     this.modal.current.openModal()
     return new Promise(resolve => { this.onConfirm = resolve })
   }
@@ -59,7 +61,7 @@ export default class NewProjectModal extends PureComponent {
   onCreateProject = async () => {
     this.setState({ creating: true })
 
-    const { name, template } = this.state
+    const { name, template, group } = this.state
 
     let projectRoot
     if (platform.isDesktop) {
@@ -72,7 +74,7 @@ export default class NewProjectModal extends PureComponent {
       }
     }
 
-    const created = await this.createProject({ projectRoot, name, template })
+    const created = await this.createProject({ projectRoot, name, template, group })
 
     if (created) {
       this.modal.current.closeModal()
@@ -138,7 +140,6 @@ export default class NewProjectModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        overflow
         title='Create a New Project'
         textConfirm='Create Project'
         onConfirm={this.onCreateProject}
@@ -156,7 +157,7 @@ export default class NewProjectModal extends PureComponent {
           label='Template'
           options={templates}
           value={this.state.template}
-          onChange={template => this.setState({ template })}
+          onChange={(template, group) => this.setState({ template, group })}
         />
         {this.renderOtherOptions()}
         <div style={{ display: showTerminal ? 'block' : 'none'}}>
