@@ -44,7 +44,12 @@ export default class TabsWithNavigationBar extends PureComponent {
     return { key: `tab-${this.tabIndex}`, value }
   }
 
-  updateTab = updates => this.tabs.current.updateTab(updates)
+  updateTab = updates => {
+    this.tabs.current.updateTab(updates)
+    if (updates.value) {
+      this.navbar.current.setState({ value: updates.value })
+    }
+  }
 
   onToggleStar = (value, starred) => {
     if (starred) {
