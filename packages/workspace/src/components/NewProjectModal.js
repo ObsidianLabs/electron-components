@@ -85,11 +85,11 @@ export default class NewProjectModal extends PureComponent {
     }
   }
 
-  async createProject ({ projectRoot, name, template, notify = true }) {
+  async createProject ({ notify = true, ...options }) {
     try {
-      const created = await BaseProjectManager.channel.invoke('post', '', { projectRoot, name, template })
+      const created = await BaseProjectManager.channel.invoke('post', '', options)
       if (notify) {
-        notification.success('Successful', `New project <b>${name}</b> is created.`)
+        notification.success('Successful', `New project <b>${options.name}</b> is created.`)
       }
       return created
     } catch (e) {
