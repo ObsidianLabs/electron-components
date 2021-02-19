@@ -5,6 +5,7 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
+import notification from '@obsidians/notification'
 import { kp } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
@@ -23,7 +24,6 @@ export default class ImportKeypairModal extends PureComponent {
 
     this.modal = React.createRef()
   }
-  
 
   openModal () {
     this.modal.current.openModal()
@@ -53,6 +53,25 @@ export default class ImportKeypairModal extends PureComponent {
 
     if (!keypair) {
       this.onResolve()
+      return
+    }
+
+    console.log(this.props.keypairs)
+    console.log(keypair)
+
+    if (this.props.keypairs.find(kp => kp.name === name)) {
+      notification.error(
+        `Create ${name} Failed`,
+        `You already have a keypair name ${name}`
+      )
+      return
+    }
+
+    if (this.props.keypairs.find(kp => kp.address === keypair.address)) {
+      notification.error(
+        `Create ${name} Failed`,
+        `You already have a keypair with the same address`
+      )
       return
     }
 

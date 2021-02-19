@@ -6,6 +6,8 @@ import {
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
 
+import notification from '@obsidians/notification'
+
 import keypairManager from './keypairManager'
 
 export default class CreateKeypairModal extends PureComponent {
@@ -20,7 +22,6 @@ export default class CreateKeypairModal extends PureComponent {
 
     this.modal = React.createRef()
   }
-  
 
   openModal () {
     this.modal.current.openModal()
@@ -41,6 +42,14 @@ export default class CreateKeypairModal extends PureComponent {
       return
     }
 
+    if (this.props.keypairs.find(kp => kp.name === name)) {
+      notification.error(
+        `Create ${name} Failed`,
+        'Duplicate name'
+      )
+      return
+    }
+
     this.setState({ pending: true })
     await keypairManager.saveKeypair(name, keypair)
     this.setState({ pending: false })
@@ -54,7 +63,7 @@ export default class CreateKeypairModal extends PureComponent {
       address = '',
       secret = '',
     } = this.state.keypair || {}
-    
+
     return (
       <Modal
         ref={this.modal}
