@@ -25,15 +25,23 @@ export default class TreeNodeContextMenu extends PureComponent {
     )
   }
 
+  filterContextMenu = (node, contextMenu) => {
+    if (node.root) {
+      return contextMenu.slice(0, -2)
+    }
+    return contextMenu
+  }
+
   render () {
     const { node, contextMenu } = this.props
-    if (!contextMenu || !contextMenu.length) {
+    const filteredContextMenu = this.filterContextMenu(node, contextMenu)
+    if (!filteredContextMenu || !filteredContextMenu.length) {
       return null
     }
 
     return (
       <ContextMenu id={node.path}>
-        {contextMenu.map(this.renderMenuItem)}
+        {filteredContextMenu.map(this.renderMenuItem)}
       </ContextMenu>
     )
   }
