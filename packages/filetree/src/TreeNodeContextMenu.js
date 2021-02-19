@@ -10,7 +10,10 @@ export default class TreeNodeContextMenu extends PureComponent {
       return <MenuItem key={`menu-item-${index}`} divider className='dropdown-divider' />
     }
 
-    const onClick = !menuItem.onClick ? this.props.onOpen : event => {
+    const onClick = !menuItem.onClick ? event => {
+      event.stopPropagation()
+      this.props.onOpen(event)
+    } : event => {
       event.stopPropagation()
       menuItem.onClick(this.props.node)
     }
