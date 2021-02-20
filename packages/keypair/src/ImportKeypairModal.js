@@ -56,9 +56,6 @@ export default class ImportKeypairModal extends PureComponent {
       return
     }
 
-    console.log(this.props.keypairs)
-    console.log(keypair)
-
     if (this.props.keypairs.find(kp => kp.name === name)) {
       notification.error(
         `Create ${name} Failed`,
