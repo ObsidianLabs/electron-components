@@ -14,7 +14,8 @@ import FileTree from '@obsidians/filetree'
 
 import WorkspaceContext from '../WorkspaceContext'
 
-import contextMenu, { registerHandlers } from './contextMenu'
+import contextMenu from './contextMenu'
+import actions from '../actions'
 
 import CreateFileOrFolderModals from './CreateFileOrFolderModals'
 
@@ -45,11 +46,14 @@ export default class Workspace extends Component {
       terminalSize: 160,
     }
 
-    registerHandlers({
-      newFile: node => this.openCreateFileModal(node),
-      newFolder: node => this.openCreateFolderModal(node),
+    actions.register({
+      save: this.saveAll.bind(this),
+      saveAll: this.saveAll.bind(this),
+      newFile: this.openCreateFileModal.bind(this),
+      newFolder: this.openCreateFolderModal.bind(this),
       deleteFile: node => this.context.projectManager.deleteFile(node),
     })
+    actions.ready(['showInFinder', 'openInTerminal'])
   }
 
   async componentDidUpdate (prevProps) {
@@ -87,7 +91,7 @@ export default class Workspace extends Component {
   }
 
   closeAllTabs = () => {
-    
+
   }
 
   openCreateFileModal = node => {

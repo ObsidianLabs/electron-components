@@ -40,6 +40,7 @@ export default class NewProjectModal extends PureComponent {
     this.fs = fileOps.current.fs
 
     actions.newProjectModal = this
+    actions.ready(['newProject', 'openProject', 'removeProject'])
   }
 
   openModal () {
@@ -110,7 +111,7 @@ export default class NewProjectModal extends PureComponent {
       placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
     }
 
-    return (        
+    return (
       <FormGroup>
         <Label>Project location</Label>
         <InputGroup>
