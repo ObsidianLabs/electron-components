@@ -51,7 +51,7 @@ export default class Workspace extends Component {
       saveAll: this.saveAll.bind(this),
       newFile: this.openCreateFileModal.bind(this),
       newFolder: this.openCreateFolderModal.bind(this),
-      deleteFile: node => this.context.projectManager.deleteFile(node),
+      deleteFile: node => this.context.projectManager.deleteFile(node)
     })
     actions.ready(['showInFinder', 'openInTerminal'])
   }

@@ -111,7 +111,11 @@ export default class Terminal extends PureComponent {
     term.loadAddon(this.termFitAddon)
     term.loadAddon(this.searchAddon)
     term.open(el)
-    this.termFitAddon.fit()
+    try {
+      this.termFitAddon.fit()
+    } catch (error) {
+      console.warn(error)
+    }
     this.term = term
 
     // this.term.attachCustomKeyEventHandler(this.keyboardHandler)
@@ -127,7 +131,7 @@ export default class Terminal extends PureComponent {
       term.write(this.preActiveMessage)
       this.scrollToBottom()
     }
-    
+
     if (this.props.cmd) {
       this.exec(this.props.cmd, this.props.opt).then(result => {
         if (this.props.onCmdExecuted) {
@@ -192,7 +196,7 @@ export default class Terminal extends PureComponent {
     if (!this.props.interactive) {
       this.inputRef.current?.setState({ executing: true })
     }
-    
+
     const result = await this.runCommand(cmd, config)
     if (this.props.onFinished) {
       this.props.onFinished(result)
@@ -256,7 +260,7 @@ export default class Terminal extends PureComponent {
         <div className='xterm-wrapper'>
           <div ref={this.termRef} id={`xterm-${logId}`} className='xterm-element' />
         </div>
-        { !readonly && input && 
+        { !readonly && input &&
           <TerminalInput ref={this.inputRef} onSubmit={this.onInputSubmit} onStop={this.stop} />
         }
       </div>
