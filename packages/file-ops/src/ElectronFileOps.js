@@ -32,7 +32,7 @@ export default class ElectronFileOps extends FileOps {
         // { name: 'all', extensions: ['cpp', 'hpp', 'wasm', 'abi', 'md', 'js', 'json', 'c', 'h', 'o'] }
       ]
     })
-  
+
     if (result && result.filePaths && result.filePaths[0]) {
       const filePath = result.filePaths[0]
       return { key: filePath, path: filePath }
@@ -81,8 +81,15 @@ export default class ElectronFileOps extends FileOps {
   }
 
   openInTerminal (filePath) {
+    const os = window.require('os')
     const channel = new IpcChannel()
-    channel.invoke('exec', `open -a Terminal "${filePath}"`)
+    if (os.type() === 'Darwin') {
+      channel.invoke('exec', `open -a Terminal "${filePath}"`)
+    } else if (os.type() === 'Windows_NT') {
+      channel.invoke('exec', `powershell -NoExit -Commane "Set-Location ${filePath}"`)
+    } else {
+      channel.invoke('exec', `gnome-terminal --working-directory=${filePath}`)
+    }
   }
 
   deleteFile (filePath) {
