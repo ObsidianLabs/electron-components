@@ -44,8 +44,8 @@ export default class CreateKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(kp => kp.name === name)) {
       notification.error(
-        `Create ${name} Failed`,
-        'Duplicate name'
+        `Create Keypair Failed`,
+        `The keypair name <b>${name}</b> has already been used.`
       )
       return
     }

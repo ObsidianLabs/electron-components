@@ -58,16 +58,16 @@ export default class ImportKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(kp => kp.name === name)) {
       notification.error(
-        `Create ${name} Failed`,
-        `You already have a keypair name ${name}`
+        `Import Keypair Failed`,
+        `The keypair name <b>${name}</b> has already been used.`
       )
       return
     }
 
     if (this.props.keypairs.find(kp => kp.address === keypair.address)) {
       notification.error(
-        `Create ${name} Failed`,
-        `You already have a keypair with the same address`
+        `Import Keypair Failed`,
+        `Keypair for <b>${keypair.address}</b> already exists.`
       )
       return
     }
