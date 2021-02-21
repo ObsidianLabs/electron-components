@@ -40,7 +40,6 @@ export default class NewProjectModal extends PureComponent {
     this.fs = fileOps.current.fs
 
     actions.newProjectModal = this
-    actions.ready(['newProject', 'openProject', 'removeProject'])
   }
 
   openModal () {
