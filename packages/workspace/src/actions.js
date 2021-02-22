@@ -10,6 +10,7 @@ export class ProjectActions {
   constructor() {
     this.history = null
     this.newProjectModal = null
+    this.workspace = null
   }
 
   async newProject () {
@@ -45,6 +46,14 @@ export class ProjectActions {
       })
       this.history.push(`/${author}/${projectId}`)
     } catch (e) {}
+  }
+
+  newFile () {
+    this.workspace?.openCreateFileModal()
+  }
+
+  newFolder () {
+    this.workspace?.openCreateFolderModal()
   }
 
   openTerminal () {
