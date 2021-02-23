@@ -13,6 +13,7 @@ import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
 import WorkspaceContext from '../WorkspaceContext'
+import actions from '../actions'
 
 import contextMenu, { registerHandlers } from './contextMenu'
 
@@ -44,6 +45,8 @@ export default class Workspace extends Component {
       showTerminal: !!props.terminal,
       terminalSize: 160,
     }
+
+    actions.workspace = this
 
     registerHandlers({
       newFile: node => this.openCreateFileModal(node),
@@ -87,7 +90,7 @@ export default class Workspace extends Component {
   }
 
   closeAllTabs = () => {
-    
+
   }
 
   openCreateFileModal = node => {

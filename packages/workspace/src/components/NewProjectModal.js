@@ -110,7 +110,7 @@ export default class NewProjectModal extends PureComponent {
       placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
     }
 
-    return (        
+    return (
       <FormGroup>
         <Label>Project location</Label>
         <InputGroup>
