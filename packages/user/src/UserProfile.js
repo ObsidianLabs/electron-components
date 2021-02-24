@@ -70,7 +70,7 @@ export default class UserProfile extends PureComponent {
         color='primary'
         size='sm'
         key={`user-profile-login-${provider}`}
-        onClick={() => Auth.login(this.props.history, process.env.LOGIN_PROVIDER)}
+        onClick={() => Auth.login(this.props.history, provider)}
       >
         <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
       </Button>
