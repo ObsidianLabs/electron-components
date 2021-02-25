@@ -38,12 +38,12 @@ export default class UserProfile extends PureComponent {
   renderUserInfo = () => {
     const { profile } = this.props
 
-    if (!profile) {
+    if (!profile?.username) {
       return <>
         <Media heading className='text-muted'>
           (not logged in)
         </Media>
-        <p className='break-line'>Log in to synchronize your projects on the cloud.</p>
+        {/* <p className='break-line'>Log in to synchronize your projects on the cloud.</p> */}
         <p className='break-line'>{this.renderLoginButton()}</p>
       </>
     }
