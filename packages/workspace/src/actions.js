@@ -13,6 +13,10 @@ export class ProjectActions {
     this.workspace = null
   }
 
+  get codeEditor () {
+    return this.workspace?.codeEditor?.current
+  }
+
   async newProject () {
     const { _id, projectRoot, name } = await this.newProjectModal.openModal()
     const author = platform.isDesktop ? 'local' : Auth.username
@@ -55,6 +59,13 @@ export class ProjectActions {
   newFolder () {
     this.workspace?.openCreateFolderModal()
   }
+
+  save () { this.codeEditor?.onCommand('save') }
+  saveAll () { this.workspace.saveAll() }
+  redo () { this.codeEditor?.onCommand('redo') }
+  undo () { this.codeEditor?.onCommand('undo') }
+  delete () { this.codeEditor?.onCommand('delete') }
+  selectAll () { this.codeEditor?.onCommand('selectAll') }
 
   openTerminal () {
     BaseProjectManager.instance?.toggleTerminal(true)

@@ -20,7 +20,7 @@ export default class CodeEditorCollection extends Component {
     this.state = {
       selectedTab: props.initialTab
     }
-    modelSessionManager.codeEditor = this
+    modelSessionManager.editorContainer = this
     this.tabs = React.createRef()
   }
 
@@ -108,7 +108,7 @@ export default class CodeEditorCollection extends Component {
   fileSaved = async (filePath, saveAsPath) => {
     const updates = { unsaved: false, saving: false }
     if (saveAsPath) {
-      await this.editorCollection.renameFile(filePath, saveAsPath)
+      await this.editorContainer.renameFile(filePath, saveAsPath)
       updates.key = saveAsPath
       updates.path = saveAsPath
     }
@@ -123,11 +123,22 @@ export default class CodeEditorCollection extends Component {
       case 'save':
         modelSessionManager.saveCurrentFile()
         return
+      case 'redo':
+        modelSessionManager.redo()
+        return
+      case 'undo':
+        modelSessionManager.undo()
+        return
+      case 'delete':
+        modelSessionManager.delete()
+        return
+      case 'selectAll':
+        modelSessionManager.selectAll()
+        return
       case 'close-current-tab':
         console.log('close-current-tab')
         return
       case 'project-settings':
-        // $.eosstudio.openProjectSettings()
         return
       case 'next-tab':
         this.tabs.current.nextTab()
@@ -151,7 +162,7 @@ export default class CodeEditorCollection extends Component {
           getTabText={tab => modelSessionManager.tabTitle(tab)}
         >
           <MonacoEditorContainer
-            ref={editorCollection => this.editorCollection = editorCollection}
+            ref={editorContainer => this.editorContainer = editorContainer}
             theme={this.props.theme}
             path={this.state.selectedTab.path}
             remote={this.state.selectedTab.remote}

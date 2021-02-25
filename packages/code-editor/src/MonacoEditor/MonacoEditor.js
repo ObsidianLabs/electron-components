@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import * as monaco from 'monaco-editor'
 import throttle from 'lodash/throttle'
 
+import modelSessionManager from './modelSessionManager'
 import registerThemes from './languages/registerThemes'
 
 export default class MonacoEditor extends Component {
@@ -53,6 +54,7 @@ export default class MonacoEditor extends Component {
       scrollBeyondLastLine: false,
       glyphMargin: true
     })
+    modelSessionManager.editor = monacoEditor
     monacoEditor.onDidChangeModelContent(() => this.props.onChange())
     monacoEditor.onDidChangeCursorPosition(({ position }) => {
       // $.bottomBar.updatePosition(position)

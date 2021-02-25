@@ -23,7 +23,8 @@ export function defaultModeDetector (filePath) {
 
 class ModelSessionManager {
   constructor () {
-    this._codeEditor = undefined
+    this._editorContainer = undefined
+    this._editor = undefined
     
     this.modeDetector = defaultModeDetector
     this.CustomTabs = {}
@@ -34,8 +35,12 @@ class ModelSessionManager {
     this.decorationCollection = {}
   }
 
-  set codeEditor (codeEditor) {
-    this._codeEditor = codeEditor
+  set editorContainer (editorContainer) {
+    this._editorContainer = editorContainer
+  }
+
+  set editor (editor) {
+    this._editor = editor
   }
 
   registerModeDetector (modeDetector) {
@@ -65,7 +70,7 @@ class ModelSessionManager {
     return this.currentModelSession?.filePath
   }
 
-  async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath), ) {
+  async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath)) {
     if (!filePath) {
       throw new Error('Empty path for "newModelSession"')
     }
@@ -88,9 +93,9 @@ class ModelSessionManager {
     if (!this.sessions[filePath]) {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
-    this._codeEditor.fileSaving(filePath)
+    this._editorContainer.fileSaving(filePath)
     await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
-    this._codeEditor.fileSaved(filePath)
+    this._editorContainer.fileSaved(filePath)
   }
 
   async saveCurrentFile () {
@@ -105,12 +110,49 @@ class ModelSessionManager {
     }
   }
 
+  undo () {
+    if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
+      throw new Error('No current file open.')
+    }
+    window.model = this.sessions[this.currentFilePath].model
+    this.sessions[this.currentFilePath].model.undo()
+  }
+
+  redo () {
+    if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
+      throw new Error('No current file open.')
+    }
+    this.sessions[this.currentFilePath].model.redo()
+  }
+
+  delete () {
+    if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
+      throw new Error('No current file open.')
+    }
+    const model = this.sessions[this.currentFilePath].model
+    if (this._editor) {
+      const selection = this._editor.getSelection()
+      model.pushEditOperations(null, [{
+        range: selection,
+        text: null,
+      }])
+    }
+  }
+
+  selectAll () {
+    if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
+      throw new Error('No current file open.')
+    }
+    const model = this.sessions[this.currentFilePath].model
+    this._editor?.setSelection(model.getFullModelRange())
+  }
+
   refreshFile (data) {
     if (!this.sessions[data.path]) {
       return
     }
     this.sessions[data.path].refreshValue(data.content)
-    this._codeEditor.fileSaved(data.path)
+    this._editorContainer.fileSaved(data.path)
   }
 
   updateDecorations (decorationCollection) {
