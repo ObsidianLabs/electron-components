@@ -12,14 +12,17 @@ export default function ToolbarButton ({
   size='sm',
   onClick,
   icon,
+  loading,
   tooltip = null,
   tooltipPlacement = 'bottom',
   className,
   children,
   readonly,
 }) {
-  const childrenComponent = children || <i className={icon} />
-  const tooltipComponent  = tooltip && (
+  const childrenComponent = loading
+    ? <span key='loading'><i className='fas fa-spin fa-spinner' /></span>
+    : (children || <span key='icon'><i className={icon} /></span>)
+  const tooltipComponent = tooltip && (
     <UncontrolledTooltip trigger='hover' delay={0} placement={tooltipPlacement} target={`toolbar-btn-${id}`}>
       {tooltip}
     </UncontrolledTooltip>
