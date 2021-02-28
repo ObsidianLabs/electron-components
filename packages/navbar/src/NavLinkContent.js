@@ -24,8 +24,8 @@ export default function (props) {
     <div className='nav-link-content'>
       {iconComponent}
       <div className='small pr-2 overflow-hidden'>
-        <div className='small text-white-50'>{title}</div>
-        <div className='text-light text-overflow-dots' style={{ width }}>{subtitle}</div>
+        <div className='small text-alpha-50'>{title}</div>
+        <div className='text-overflow-dots' style={{ width }}>{subtitle}</div>
       </div>
     </div>
   )

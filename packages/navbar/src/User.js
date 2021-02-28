@@ -37,7 +37,7 @@ class User extends Component {
     return (
       <div
         key='no-avatar'
-        className='d-flex bg-secondary align-items-center justify-content-center user-avatar'
+        className='d-flex bg-secondary align-items-center justify-content-center user-avatar text-light'
       >
         <i className='fa fa-user-alt' />
       </div>
