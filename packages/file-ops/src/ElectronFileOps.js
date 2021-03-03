@@ -86,7 +86,7 @@ export default class ElectronFileOps extends FileOps {
     if (os.type() === 'Darwin') {
       channel.invoke('exec', `open -a Terminal "${filePath}"`)
     } else if (os.type() === 'Windows_NT') {
-      channel.invoke('exec', `powershell -NoExit -Commane "Set-Location ${filePath}"`)
+      channel.invoke('exec', `invoke-expression 'cmd /c start powershell -NoExit -Command { Set-Location "${filePath}" }'`)
     } else {
       channel.invoke('exec', `gnome-terminal --working-directory=${filePath}`)
     }
