@@ -36,7 +36,7 @@ export default class TabbedExplorer extends PureComponent {
     }
 
     this.setState({
-      initialized: true,
+      initialized: initial.subroute,
       initialSelected,
       initialTabs,
       value: initial.value,
@@ -93,7 +93,7 @@ export default class TabbedExplorer extends PureComponent {
     } = { ...props, ...this.props }
     const { initialized, initialTabs, initialSelected, value } = this.state
 
-    if (!initialized) {
+    if (!initialized || initialized !== subroute) {
       return <LoadingScreen />
     }
 
