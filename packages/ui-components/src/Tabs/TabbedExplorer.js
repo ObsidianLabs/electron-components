@@ -118,7 +118,7 @@ export default class TabbedExplorer extends PureComponent {
         </>}
       >
         <CacheRoute
-          path={`/${route}/:value`}
+          path={`/${route}/:value?`}
           cacheKey={props => `${route}-${subroute}-${props.match?.params?.value}`}
           multiple={5}
           className='h-100 overflow-auto'

@@ -137,7 +137,7 @@ export default class Tabs extends PureComponent {
   onNewTab = async () => {
     try {
       this.currentTab = await this.props.createNewTab()
-    } catch (err) {}
+    } catch {}
   }
 
   onCloseTab = async closingTab => {
