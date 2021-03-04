@@ -28,7 +28,7 @@ class KeypairManager {
         return a.name.localeCompare(b.name)
       })
       return sorted
-    } catch (se) {
+    } catch (e) {
       notification.error('Error', e.message)
       return []
     }
