@@ -49,7 +49,7 @@ export default class TabbedExplorer extends PureComponent {
 
   openTab = value => {
     if (this.props.valueFormatter) {
-      value = this.props.valueFormatter()
+      value = this.props.valueFormatter(value)
     }
     if (value === this.currentValue) {
       return
