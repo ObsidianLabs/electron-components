@@ -18,6 +18,7 @@ export default {
     }
   ],
   external: [
+    'react-router-cache-route',
     ...Object.keys(pkg.dependencies),
     ...Object.keys(pkg.peerDependencies),
   ],

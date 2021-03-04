@@ -1,6 +1,6 @@
 export { default as SplitPane } from './SplitPane'
 export { default as Modal } from './Modal'
-export { Tabs, TabsWithNavigationBar } from './Tabs'
+export { Tabs, TabsWithNavigationBar, TabbedExplorer } from './Tabs'
 
 export { default as Screen } from './Screen/Screen'
 export { default as CenterScreen } from './Screen/CenterScreen'
