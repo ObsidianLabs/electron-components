@@ -30,8 +30,12 @@ export default class ElectronIpcChannel {
     ipcRenderer.removeListener(this.channelResponse, this._onDataReceived)
   }
 
-  invoke (method, ...args) {
-    return ipcRenderer.invoke(this.channelName, method, args)
+  async invoke (method, ...args) {
+    const { result, error } = await ipcRenderer.invoke(this.channelName, method, args)
+    if (error) {
+      throw new Error(error)
+    }
+    return result
   }
 
   on (event, callback) {
