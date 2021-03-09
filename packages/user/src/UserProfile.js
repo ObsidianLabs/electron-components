@@ -38,12 +38,12 @@ export default class UserProfile extends PureComponent {
   renderUserInfo = () => {
     const { profile } = this.props
 
-    if (!profile) {
+    if (!profile?.username) {
       return <>
         <Media heading className='text-muted'>
           (not logged in)
         </Media>
-        <p className='break-line'>Log in to synchronize your projects on the cloud.</p>
+        {/* <p className='break-line'>Log in to synchronize your projects on the cloud.</p> */}
         <p className='break-line'>{this.renderLoginButton()}</p>
       </>
     }
@@ -64,15 +64,17 @@ export default class UserProfile extends PureComponent {
   }
 
   renderLoginButton = () => {
-    return (
+    const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
+    return providers.map(provider => (
       <Button
         color='primary'
         size='sm'
-        onClick={() => Auth.login(this.props.history)}
+        key={`user-profile-login-${provider}`}
+        onClick={() => Auth.login(this.props.history, provider)}
       >
-        <i key='sign-in' className='fas fa-sign-in mr-2' />Log in
+        <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
       </Button>
-    )
+    ))
   }
 
   renderDescription = desc => {
@@ -83,7 +85,7 @@ export default class UserProfile extends PureComponent {
   }
 
   render () {
-    if (!process.env.ENABLE_AUTH) {
+    if (platform.isDesktop && !process.env.ENABLE_AUTH) {
       return null
     }
 

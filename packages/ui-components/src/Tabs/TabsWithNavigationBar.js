@@ -31,7 +31,7 @@ export default class TabsWithNavigationBar extends PureComponent {
   onSelectTab = tab => {
     this.setState({ tab })
     if (this.props.onValue) {
-      this.props.onValue(tab.value)
+      this.props.onValue(tab.value || '')
     }
   }
 
@@ -44,7 +44,12 @@ export default class TabsWithNavigationBar extends PureComponent {
     return { key: `tab-${this.tabIndex}`, value }
   }
 
-  updateTab = updates => this.tabs.current.updateTab(updates)
+  updateTab = updates => {
+    this.tabs.current.updateTab(updates)
+    if (updates.value) {
+      this.navbar.current.setState({ value: updates.value })
+    }
+  }
 
   onToggleStar = (value, starred) => {
     if (starred) {
@@ -91,7 +96,7 @@ export default class TabsWithNavigationBar extends PureComponent {
         initialTabs={initialTabs}
         getTabText={this.getTabText}
         onSelectTab={this.onSelectTab}
-        createNewTab={() => this.createNewTab()}
+        createNewTab={this.createNewTab}
         tryCloseTab={() => this.onCloseTab}
         onTabsUpdated={this.onTabsUpdated}
       >

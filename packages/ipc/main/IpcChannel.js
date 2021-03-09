@@ -1,4 +1,5 @@
 const { ipcMain, net } = require('electron')
+const qs = require('qs')
 
 const ipc = require('./ipc')
 const ChildProcess = require('./ChildProcess')
@@ -30,7 +31,7 @@ class IpcChannel {
 
   start () {
     if (!this.channel) {
-      throw new Error(`Not a valid IpcChannel (channel name: ${this.channel}`)
+      throw new Error(`Not a valid IpcChannel (channel name: ${this.channel})`)
     }
     ipcMain.handle(this.channelName, (_, method, args) => this.onRequest(method, args))
   }
@@ -43,7 +44,13 @@ class IpcChannel {
     if (!this[method]) {
       throw new Error(`Method ${method} is not defined for channel ${this.channel}`)
     }
-    return this[method](...args)
+    try {
+      const result = await this[method](...args)
+      return { result }
+    } catch (e) {
+      console.warn(e)
+      return { error: e.message }
+    }
   }
 
   send (method, ...data) {
@@ -57,7 +64,10 @@ class IpcChannel {
     return await this.cp.exec(command.trim(), config)
   }
 
-  async fetch (url) {
+  async fetch (url, params) {
+    if (params) {
+      url = url + `?` + qs.stringify(params)
+    }
     return await new Promise((resolve, reject) => {
       const request = net.request(url)
       request.on('response', (response) => {

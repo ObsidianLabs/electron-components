@@ -20,13 +20,20 @@ class KeypairManager {
     try {
       const keypairs = await this.channel.invoke('get')
       const names = redux.getState().keypairs
-      return keypairs.map(kp => ({ address: kp.address, name: kp.name || names.get(kp.address) }))
+      const unsorted = keypairs.map(kp => ({ address: kp.address, name: kp.name || names.get(kp.address) }))
+      const sorted = unsorted.sort((a, b) => {
+        if (!a.name || !b.name) {
+          return 0
+        }
+        return a.name.localeCompare(b.name)
+      })
+      return sorted
     } catch (e) {
       notification.error('Error', e.message)
       return []
     }
   }
-  
+
   async newKeypair () {
     return kp.newKeypair()
   }

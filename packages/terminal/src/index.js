@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 import { Terminal as XTerm } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
+import { SearchAddon } from 'xterm-addon-search'
 
 import chalk from 'chalk'
 
@@ -101,15 +102,26 @@ export default class Terminal extends PureComponent {
       theme: {
         foreground: color,
         background: bgColor,
-        cursor: bgColor,
+        cursor: this.props.interactive ? getColor('--color-text-muted') : bgColor,
       }
     })
 
     this.termFitAddon = new FitAddon()
+    this.searchAddon = new SearchAddon()
     term.loadAddon(this.termFitAddon)
+    term.loadAddon(this.searchAddon)
     term.open(el)
-    this.termFitAddon.fit()
+    try {
+      this.termFitAddon.fit()
+    } catch (error) {
+      console.warn(error)
+    }
     this.term = term
+
+    // this.term.attachCustomKeyEventHandler(this.keyboardHandler)
+    if (this.props.interactive) {
+      this.term.onData(this.onData)
+    }
 
     if (this.props.onTermCreated) {
       this.props.onTermCreated(this.term)
@@ -119,7 +131,7 @@ export default class Terminal extends PureComponent {
       term.write(this.preActiveMessage)
       this.scrollToBottom()
     }
-    
+
     if (this.props.cmd) {
       this.exec(this.props.cmd, this.props.opt).then(result => {
         if (this.props.onCmdExecuted) {
@@ -129,6 +141,10 @@ export default class Terminal extends PureComponent {
     }
 
     return this.term
+  }
+
+  onData = async data => {
+    await this.terminalChannel.invoke('write', data)
   }
 
   onMouseUpTerm = event => {
@@ -165,7 +181,10 @@ export default class Terminal extends PureComponent {
   }
 
   preActiveMessage = ''
-  writeToTerminal (message) {
+  writeToTerminal (message, color) {
+    if (color) {
+      message = colorCommand(message, color)
+    }
     if (this.initialized && this.term) {
       this.term.write(message)
       return
@@ -177,7 +196,7 @@ export default class Terminal extends PureComponent {
     if (!this.props.interactive) {
       this.inputRef.current?.setState({ executing: true })
     }
-    
+
     const result = await this.runCommand(cmd, config)
     if (this.props.onFinished) {
       this.props.onFinished(result)
@@ -205,8 +224,12 @@ export default class Terminal extends PureComponent {
     this.scrollToBottom()
 
     const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
-    this.writeToTerminal(`${chalk.bold.gray('>')} ${colorCommand(cmd)}\n\r`)
+    this.writeCmdToTerminal(cmd)
     return await this.terminalChannel.invoke('run', cmd, mergedConfig)
+  }
+
+  writeCmdToTerminal = (cmd, prefix = '>') => {
+    this.writeToTerminal(`${chalk.bold.gray(prefix)} ${colorCommand(cmd)}\n\r`)
   }
 
   onLogReceived = message => {
@@ -237,7 +260,7 @@ export default class Terminal extends PureComponent {
         <div className='xterm-wrapper'>
           <div ref={this.termRef} id={`xterm-${logId}`} className='xterm-element' />
         </div>
-        { !readonly && input && 
+        { !readonly && input &&
           <TerminalInput ref={this.inputRef} onSubmit={this.onInputSubmit} onStop={this.stop} />
         }
       </div>

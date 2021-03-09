@@ -44,22 +44,31 @@ export default class KeypairInputSelector extends PureComponent {
   }
 
   renderDisplay = key => {
+    const { address, name } = key
     return (highlight, active) => {
-      let address = key.address
+      let highlightAddress = address
       if (!active) {
-        address = []
-        key.address.split(highlight).forEach(part => {
-          address.push(part)
-          address.push(<b className='text-primary'>{highlight}</b>)
+        highlightAddress = []
+        address.split(highlight).forEach(part => {
+          highlightAddress.push(part)
+          highlightAddress.push(<b className='text-primary'>{highlight}</b>)
         })
-        address.pop()
+        highlightAddress.pop()
       }
       return (
         <div className='w-100 d-flex align-items-center justify-content-between'>
-          <code className='text-overflow-dots mr-1'>{address}</code>
-          <Badge color='info' style={{ top: 0 }}>{key.name}</Badge>
+          <code className='text-overflow-dots mr-1'>{highlightAddress}</code>
+          <Badge color='info' style={{ top: 0 }}>{name}</Badge>
         </div>
       )
+    }
+  }
+
+  mapKeyToOption = key => {
+    return {
+      id: key.address,
+      badge: key.name,
+      display: this.renderDisplay(key)
     }
   }
 
@@ -74,8 +83,20 @@ export default class KeypairInputSelector extends PureComponent {
       noCaret,
       value,
       onChange,
+      extra = [],
       invalid,
     } = this.props
+
+    const options = this.state.keypairs.map(this.mapKeyToOption)
+    const extraOptions = extra.map(item => {
+      if (item.children) {
+        return {
+          ...item,
+          children: item.children.map(this.mapKeyToOption)
+        }
+      }
+      return this.mapKeypairToOption(item)
+    })
 
     return (
       <DropdownInput
@@ -87,11 +108,7 @@ export default class KeypairInputSelector extends PureComponent {
         inputClassName={value ? 'code' : ''}
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
-        options={this.state.keypairs.map(k => ({
-          id: k.address,
-          badge: k.name,
-          display: this.renderDisplay(k)
-        }))}
+        options={[...options, ...extraOptions]}
         renderText={!editable && (option => <code>{option?.id}</code>)}
         value={value}
         onChange={onChange}

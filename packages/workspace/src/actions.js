@@ -4,10 +4,17 @@ import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
 import platform from '@obsidians/platform'
 
+import BaseProjectManager from './ProjectManager/BaseProjectManager'
+
 export class ProjectActions {
   constructor() {
     this.history = null
     this.newProjectModal = null
+    this.workspace = null
+  }
+
+  get codeEditor () {
+    return this.workspace?.codeEditor?.current
   }
 
   async newProject () {
@@ -43,6 +50,25 @@ export class ProjectActions {
       })
       this.history.push(`/${author}/${projectId}`)
     } catch (e) {}
+  }
+
+  newFile () {
+    this.workspace?.openCreateFileModal()
+  }
+
+  newFolder () {
+    this.workspace?.openCreateFolderModal()
+  }
+
+  save () { this.codeEditor?.onCommand('save') }
+  saveAll () { this.workspace.saveAll() }
+  redo () { this.codeEditor?.onCommand('redo') }
+  undo () { this.codeEditor?.onCommand('undo') }
+  delete () { this.codeEditor?.onCommand('delete') }
+  selectAll () { this.codeEditor?.onCommand('selectAll') }
+
+  openTerminal () {
+    BaseProjectManager.instance?.toggleTerminal(true)
   }
 
   async removeProject ({ id, name }) {

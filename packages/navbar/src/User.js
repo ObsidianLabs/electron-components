@@ -37,7 +37,7 @@ class User extends Component {
     return (
       <div
         key='no-avatar'
-        className='d-flex bg-secondary align-items-center justify-content-center user-avatar'
+        className='d-flex bg-secondary align-items-center justify-content-center user-avatar text-light'
       >
         <i className='fa fa-user-alt' />
       </div>
@@ -63,14 +63,14 @@ class User extends Component {
   }
 
   renderDropdownMenus = profile => {
-    if (!process.env.ENABLE_AUTH) {		
-      return (		
-        <DropdownMenu right>		
-          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>		
+    if (platform.isDesktop && !process.env.ENABLE_AUTH) {
+      return (
+        <DropdownMenu right>
+          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
             <i className='fas fa-th-list w-3 mr-2' />My Projects		
-          </DropdownItem>		
-        </DropdownMenu>		
-      )		
+          </DropdownItem>
+        </DropdownMenu>
+      )
     }
 
     const username = profile.get('username')
@@ -94,15 +94,25 @@ class User extends Component {
 
     return (
       <DropdownMenu right>
-        <DropdownItem key='login' onClick={() => Auth.login(this.props.history)}>
-          <i className='fas fa-sign-in w-3 mr-2' />Login
-        </DropdownItem>
+        {this.renderLoginButton()}
         <DropdownItem divider />
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
           <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>
       </DropdownMenu>
     )
+  }
+
+  renderLoginButton = () => {
+    const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
+    return providers.map(provider => (
+      <DropdownItem
+        key={`login-${provider}`}
+        onClick={() => Auth.login(this.props.history, provider)}
+      >
+        <i className='fas fa-sign-in w-3 mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
+      </DropdownItem>
+    ))
   }
 
   render () {

@@ -98,6 +98,7 @@ export default class WorkspaceLoader extends PureComponent {
     const {
       projectRoot,
       ProjectToolbar,
+      signer,
       CompilerTerminal = () => null,
     } = this.props
     const { terminal } = this.state
@@ -120,6 +121,7 @@ export default class WorkspaceLoader extends PureComponent {
           defaultSize={272}
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
+          signer={signer}
           Terminal={<CompilerTerminal active={terminal} cwd={projectRoot} />}
         />
       </WorkspaceContext.Provider>

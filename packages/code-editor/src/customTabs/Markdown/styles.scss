@@ -1,6 +1,13 @@
 .markdown {
   color: var(--color-text);
 
+  & h1:not(:first-child), & h2, & h3 {
+    margin-top: 1.25rem;
+  }
+  & h4, & h5, & h6 {
+    margin-top: 0.75rem;
+  }
+
   & strong {
     color: var(--color-text);
   }
