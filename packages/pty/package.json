@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/pty",
-  "version": "0.10.0-beta",
+  "version": "0.10.0",
   "description": "Start a process in electron",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
