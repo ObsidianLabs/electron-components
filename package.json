@@ -7,8 +7,8 @@
     "build": "node init.js"
   },
   "dependencies": {
-    "keytar": "^7.3.0",
-    "node-pty": "0.10.0-beta20"
+    "keytar": "^7.4.0",
+    "node-pty": "0.10.0"
   },
   "devDependencies": {
     "electron": "11.2.0",

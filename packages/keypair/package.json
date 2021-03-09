@@ -21,7 +21,7 @@
     "@obsidians/notification": "^0.3.0",
     "@obsidians/redux": "^0.3.0",
     "@obsidians/ui-components": "^0.3.0",
-    "keytar": "^7.3.0"
+    "keytar": "^7.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
