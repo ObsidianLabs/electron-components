@@ -1,20 +1,20 @@
 {
   "name": "@obsidians/file-ops",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "File Operations",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
   "main": "src/index.js",
   "dependencies": {
-    "@obsidians/ipc": "^0.1.2",
+    "@obsidians/ipc": "^0.3.0",
     "filehound": "^1.17.4",
-    "fs-extra": "^8.1.0",
-    "lodash": "^4.17.15",
+    "fs-extra": "^9.1.0",
+    "lodash": "^4.17.20",
     "path-browserify": "^1.0.1",
-    "trash": "^6.1.1"
+    "trash": "^7.0.0"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.774.0",
-    "electron": "^8.0.0"
+    "aws-sdk": "^2.830.0",
+    "electron": "^11.0.0"
   }
 }

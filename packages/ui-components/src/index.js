@@ -26,6 +26,8 @@ export { default as Table } from './Table'
 export { default as getColor } from './getColor'
 
 export {
+  Navbar,
+  Nav,
   Button,
   ButtonGroup,
   Badge,
@@ -47,6 +49,7 @@ export {
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
+  ButtonDropdown,
   UncontrolledButtonDropdown,
   InputGroupButtonDropdown,
   Media,

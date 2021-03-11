@@ -7,7 +7,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-} from 'reactstrap'
+} from '@obsidians/ui-components'
 
 import { ContextMenuTrigger } from 'react-contextmenu'
 

@@ -1,6 +1,6 @@
 {
   "name": "@obsidians/navbar",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Navbar",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
@@ -17,10 +17,10 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@obsidians/auth": "^0.1.0",
-    "@obsidians/platform": "^0.1.0",
-    "react-contextmenu": "^2.13.0",
-    "reactstrap": "^8.4.1"
+    "@obsidians/auth": "^0.3.0",
+    "@obsidians/platform": "^0.3.0",
+    "@obsidians/ui-components": "^0.3.0",
+    "react-contextmenu": "^2.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -29,15 +29,15 @@
     "@babel/plugin-proposal-function-bind": "^7.7.4",
     "@babel/preset-env": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-url": "^4.0.2",
     "@svgr/rollup": "^5.2.0",
-    "babel-eslint": "10.0.3",
+    "babel-eslint": "^10.1.0",
     "cross-env": "^6.0.3",
-    "node-sass": "^4.14.1",
-    "rollup": "^2.0.2",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-commonjs": "^10.1.0",
+    "node-sass": "^5.0.0",
+    "rollup": "^2.37.1",
     "rollup-plugin-peer-deps-external": "^2.2.2",
     "rollup-plugin-postcss": "^2.3.0"
   },

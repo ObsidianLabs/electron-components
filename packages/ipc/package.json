@@ -1,19 +1,19 @@
 {
   "name": "@obsidians/ipc",
-  "version": "0.1.2",
+  "version": "0.3.0",
   "description": "IPC between electron main and renderer processes",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
   "main": "main/index.js",
   "browser": "src/index.js",
   "dependencies": {
-    "@obsidians/auth": "^0.1.0",
-    "@obsidians/platform": "^0.1.0",
+    "@obsidians/auth": "^0.3.0",
+    "@obsidians/platform": "^0.3.0",
     "qs": "^6.9.6"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.774.0",
-    "electron": "^8.0.0",
-    "socket.io-client": "^2.3.1"
+    "aws-sdk": "^2.830.0",
+    "electron": "^11.0.0",
+    "socket.io-client": "^2.4.0"
   }
 }
