@@ -18,7 +18,7 @@ class Redux {
 
   init (config, updateStore) {
     const { actions, reducers, persists } = configureRedux(config)
-    console.info('[Redux] store to persist', persists)
+    // console.info('[Redux] store to persist', persists)
 
     this.actions = actions
     this.store = createStore(
