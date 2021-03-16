@@ -70,7 +70,7 @@ export default class DebouncedInput extends PureComponent {
   }
 
   render () {
-    const { size, inputGroupClassName, addon, append, onClickAppend, feedback, invalid, children, ...props } = this.props
+    const { size, inputGroupClassName, addon, append, onClickAppend, feedback, invalid, children, height, ...props } = this.props
     return <>
       <InputGroup
         size={size}
@@ -89,6 +89,7 @@ export default class DebouncedInput extends PureComponent {
           bsSize={size}
           valid={typeof invalid === 'boolean' ? !invalid : undefined}
           invalid={typeof invalid === 'boolean' ? invalid : undefined}
+          style={height ? { height } : undefined}
           {...props}
           value={this.state.value}
           onChange={this.onChange}
