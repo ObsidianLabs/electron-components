@@ -104,7 +104,7 @@ export default class ImportKeypairModal extends PureComponent {
         />
         <DebouncedFormGroup
           label={`Enter the ${this.props.secretName.toLowerCase()} you want to import`}
-          maxLength='200'
+          maxLength='300'
           onChange={this.onChange}
           feedback={feedback}
           valid={valid}
