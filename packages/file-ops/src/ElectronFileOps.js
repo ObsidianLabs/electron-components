@@ -65,7 +65,7 @@ export default class ElectronFileOps extends FileOps {
   }
 
   openItem (filePath) {
-    return this.electron.shell.openItem(filePath)
+    return this.electron.shell.openPath(filePath)
   }
 
   showItemInFolder (filePath) {
