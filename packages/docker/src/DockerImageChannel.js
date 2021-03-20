@@ -18,6 +18,7 @@ export default class DockerImageChannel extends IpcChannel {
 
     this.filter = getHandler(opts.filter, defaultFilter)
     this.sort = getHandler(opts.sort, defaultSort)
+    this.size = opts.size || 20
   }
 
   get imageName () {
@@ -44,7 +45,7 @@ export default class DockerImageChannel extends IpcChannel {
     this.eventTarget.addEventListener('versions', eventHandler)
   }
 
-  async remoteVersions (size = 20) {
+  async remoteVersions (size = this.size) {
     const versions = await this.invoke('remoteVersions', size)
     return this._organizeVersionsByKey(versions, 'name').slice(0, size)
   }
