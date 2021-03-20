@@ -129,6 +129,21 @@ export default class NewProjectModal extends PureComponent {
     )
   }
 
+  renderTemplate = () => {
+    const { noTemplate, templates } = this.props
+    if (noTemplate) {
+      return null
+    }
+    return (
+      <DropdownInput
+        label='Template'
+        options={templates}
+        value={this.state.template}
+        onChange={(template, group) => this.setState({ template, group })}
+      />
+    )
+  }
+
   renderOtherOptions = () => {
     return null
   }
@@ -154,12 +169,7 @@ export default class NewProjectModal extends PureComponent {
           onChange={(name, invalid) => this.setState({ name, invalid })}
           {...projectNameProps}
         />
-        <DropdownInput
-          label='Template'
-          options={templates}
-          value={this.state.template}
-          onChange={(template, group) => this.setState({ template, group })}
-        />
+        {this.renderTemplate()}
         {this.renderOtherOptions()}
         <div style={{ display: showTerminal ? 'block' : 'none'}}>
           <Terminal
