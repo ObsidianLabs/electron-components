@@ -20,7 +20,8 @@
     "lodash": "^4.17.20",
     "react-select": "^3.2.0",
     "react-split-pane": "^0.1.92",
-    "reactstrap": "^8.9.0"
+    "reactstrap": "^8.9.0",
+    "@obsidians/i18n": "^0.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
