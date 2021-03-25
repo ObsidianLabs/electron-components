@@ -2,6 +2,7 @@ const translation = {
   loading: 'Loading...',
   loggingIn: 'Logging in...',
   none: 'None',
+  pending: 'Pending',
   button: {
     save: 'Save',
     cancel: 'Cancel',
@@ -145,7 +146,15 @@ const translation = {
     loginAs: 'Logged in as',
     loginProvider: 'Login {{provider}}',
     logout: 'Log out',
-  }
+  },
+  queue: {
+    transaction: {
+      transaction: 'Transaction',
+      transactions: 'Transactions',
+      all: 'All Transactions',
+      recent: 'Recent Transactions',
+    },
+  },
 }
 
 export default {
