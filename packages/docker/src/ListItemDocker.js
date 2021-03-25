@@ -3,6 +3,7 @@ import {
   Button,
   ListGroupItem
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
@@ -35,7 +36,7 @@ export default class ListItemDocker extends PureComponent {
     } else if (version) {
       this.mounted && this.setState({ docker: 'INSTALLED', version })
       if (process.env.OS_IS_LINUX) {
-        notification.error('Fail to run docker', 'Make sure the non-root user has privileges to run docker')
+        notification.error(t('docker.error.fail'), t('docker.error.linuxPrivileges'))
       }
     } else {
       this.mounted && this.setState({ docker: 'NONE', version: '' })
@@ -49,7 +50,7 @@ export default class ListItemDocker extends PureComponent {
       this.mounted && this.setState({ docker: 'STARTED' })
     } else {
       this.mounted && this.setState({ docker: 'INSTALLED' })
-      notification.error('Fail to run docker', 'Something went wrong when starting Docker, please try again.')
+      notification.error(t('docker.error.fail'), t('docker.error.unknown'))
     }
     this.props.onStartedDocker()
   }
@@ -70,9 +71,9 @@ export default class ListItemDocker extends PureComponent {
   renderSubtitle = () => {
     switch (this.state.docker) {
       case '':
-        return <span>Loading...</span>
+        return <span>{t('loading')}</span>
       case 'NONE':
-        return <span>Docker is required to start a local node.</span>
+        return <span>{t('docker.required')}</span>
       default:
         return <span>{this.state.version}</span>
     }
@@ -83,28 +84,28 @@ export default class ListItemDocker extends PureComponent {
       case '':
         return null
       case 'NONE':
-        return <Button color='primary' onClick={this.installDocker}>Install</Button>
+        return <Button color='primary' onClick={this.installDocker}>{t('docker.install')}</Button>
       case 'INSTALLED':
         if (process.env.OS_IS_LINUX) {
           return (
             <Button color='primary' onClick={() => fileOps.current.openLink('https://docs.docker.com/engine/install/linux-postinstall')}>
-              Need Privileges
+              {t('docker.privileges')}
             </Button>
           )
         } else {
-          return <Button color='primary' onClick={this.startDocker}>Start Docker</Button>
+          return <Button color='primary' onClick={this.startDocker}>{t('docker.start')}</Button>
         }
       case 'STARTING':
         return (
           <Button color='primary' disabled>
-            <span><i className='fas fa-spin fa-spinner mr-1' /></span>Starting Docker
+            <span><i className='fas fa-spin fa-spinner mr-1' /></span>{t('docker.starting')}
           </Button>
         )
       default:
-        return <Button color='secondary'>Started</Button>
+        return <Button color='secondary'>{t('docker.started')}</Button>
     }
   }
-  
+
   installDocker = () => {
     if (process.env.OS_IS_LINUX) {
       fileOps.current.openLink('https://docs.docker.com/engine/install/ubuntu')

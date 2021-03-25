@@ -1,5 +1,5 @@
 const translation = {
-  loading: 'Loading',
+  loading: 'Loading...',
   loggingIn: 'Logging in...',
   welcome: {
     welcome: 'Welcome to {{projectName}}',
@@ -10,7 +10,7 @@ const translation = {
   editor: {
     lost: 'Your changes will be lost if you close this item without saving.',
     project: {
-      setting: 'Project Settings2',
+      setting: 'Project Settings',
       invalid: 'Invalid Project',
       cantReadSetting: 'Cannot read project settings for',
       makeSurePermission: 'Make sure you have the read/write permission for',
@@ -21,6 +21,41 @@ const translation = {
       noFile: 'No current file open.',
       saveFailed: 'Save Failed',
     },
+  },
+  docker: {
+    need: 'Need Docker',
+    required: 'Docker is required to start a local node.',
+    install: 'Install',
+    installing: 'Installing',
+    installed: 'Installed',
+    start: 'Start Docker',
+    starting: 'Starting Docker',
+    started: 'Started',
+    privileges: 'Need Privileges',
+    image: {
+      select: 'Select a version of {{name}}',
+      noInstall:'(No {{name}} installed)',
+      versions: 'Versions',
+      manager: '{{name}} Manager',
+      downloading: 'Downloading {{name}}',
+      uninstallConfirm: 'Click again to uninstall',
+      none: 'None',
+      availableVersions: 'Available Versions',
+    },
+    badge: {
+      noSelect: 'not selected',
+      noInstall: 'not installed',
+    },
+    table: {
+      version: 'version',
+      created: 'created',
+      size: 'size',
+    },
+    error: {
+      fail: 'Fail to run docker',
+      linuxPrivileges: 'Make sure the non-root user has privileges to run docker',
+      unknown: 'Something went wrong when starting Docker, please try again'
+    }
   },
   button: {
     save: 'Save',

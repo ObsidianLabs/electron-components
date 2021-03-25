@@ -4,6 +4,7 @@ import {
   Badge,
   ListGroupItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import fileOps from '@obsidians/file-ops'
 
@@ -65,13 +66,13 @@ export default class ListItemDockerImage extends PureComponent {
   renderSubtitle = subtitle => {
     switch (this.state.status) {
       case '':
-        return <span>Loading...</span>
+        return <span>{t('loading')}</span>
       case 'NO_DOCKER':
       case 'NONE':
       case 'INSTALLING':
         return <span>{subtitle}</span>
       default:
-        return <span>Installed: {this.state.versions.map(v => <Badge key={v} className='mr-1'>{v}</Badge>)}</span>
+        return <span>{t('docker.installed')}: {this.state.versions.map(v => <Badge key={v} className='mr-1'>{v}</Badge>)}</span>
     }
   }
 
@@ -80,7 +81,7 @@ export default class ListItemDockerImage extends PureComponent {
       case '':
         return null
       case 'NO_DOCKER':
-        return <Button color='secondary'>Need Docker</Button>
+        return <Button color='secondary'>{t('docker.need')}</Button>
       case 'NONE':
         return (
           <DownloadImageButton
@@ -94,11 +95,11 @@ export default class ListItemDockerImage extends PureComponent {
       case 'INSTALLING':
         return (
           <Button color='primary' disabled>
-            <span><i className='fas fa-spin fa-spinner mr-1' /></span>Installing
+            <span><i className='fas fa-spin fa-spinner mr-1' /></span>{t('docker.installing')}
           </Button>
         )
       default:
-        return <Button color='secondary'>Installed</Button>
+        return <Button color='secondary'>{t('docker.installed')}</Button>
     }
   }
 
