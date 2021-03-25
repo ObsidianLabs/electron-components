@@ -1,7 +1,8 @@
 import React from 'react'
 import * as monaco from 'monaco-editor'
-import fileOps from '@obsidians/file-ops' 
+import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 import MonacoEditorModelSession from './MonacoEditorModelSession'
 
@@ -25,7 +26,7 @@ class ModelSessionManager {
   constructor () {
     this._editorContainer = undefined
     this._editor = undefined
-    
+
     this.modeDetector = defaultModeDetector
     this.CustomTabs = {}
     this.customTabTitles = {}
@@ -72,7 +73,7 @@ class ModelSessionManager {
 
   async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath)) {
     if (!filePath) {
-      throw new Error('Empty path for "newModelSession"')
+      throw new Error(t('editor.error.emptyPath'))
     }
 
     if (!this.sessions[filePath]) {
@@ -91,7 +92,7 @@ class ModelSessionManager {
 
   async saveFile (filePath) {
     if (!this.sessions[filePath]) {
-      throw new Error(`File "${filePath}" is not open in the current workspace.`)
+      throw new Error(t('editor.error.fileNotOpen', { path: filePath }))
     }
     this._editorContainer.fileSaving(filePath)
     await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
@@ -100,19 +101,19 @@ class ModelSessionManager {
 
   async saveCurrentFile () {
     if (!this.currentFilePath) {
-      throw new Error('No current file open.')
+      throw new Error(t('editor.error.noFile'))
     }
     try {
       await this.saveFile(this.currentFilePath)
     } catch (e) {
       console.warn(e)
-      notification.error('Save Failed', e.message)
+      notification.error(t('editor.error.saveFailed'), e.message)
     }
   }
 
   undo () {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
-      throw new Error('No current file open.')
+      throw new Error(t('editor.error.noFile'))
     }
     window.model = this.sessions[this.currentFilePath].model
     this.sessions[this.currentFilePath].model.undo()
@@ -120,14 +121,14 @@ class ModelSessionManager {
 
   redo () {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
-      throw new Error('No current file open.')
+      throw new Error(t('editor.error.noFile'))
     }
     this.sessions[this.currentFilePath].model.redo()
   }
 
   delete () {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
-      throw new Error('No current file open.')
+      throw new Error(t('editor.error.noFile'))
     }
     const model = this.sessions[this.currentFilePath].model
     if (this._editor) {
@@ -141,7 +142,7 @@ class ModelSessionManager {
 
   selectAll () {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
-      throw new Error('No current file open.')
+      throw new Error(t('editor.error.noFile'))
     }
     const model = this.sessions[this.currentFilePath].model
     this._editor?.setSelection(model.getFullModelRange())
