@@ -4,6 +4,7 @@ import {
   Modal,
   Badge,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import keypairManager from './keypairManager'
 
@@ -13,7 +14,7 @@ export default class RevealSecretModal extends PureComponent {
     this.state = { address: '', secret: '' }
     this.modal = React.createRef()
   }
-  
+
 
   async openModal (keypair) {
     this.setState({ address: keypair.address })
@@ -30,12 +31,12 @@ export default class RevealSecretModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={`View ${this.props.secretName}`}
-        textCancel='Close'
+        title={`${t('keypair.view')} ${this.props.secretName}`}
+        textCancel={t('button.close')}
       >
         <div className='row align-items-center'>
           <div className='col-2'>
-            <Badge pill color='info' className='ml-1'>Address</Badge>
+            <Badge pill color='info' className='ml-1'>{t('keypair.address')}</Badge>
           </div>
           <div className='col-10 pl-0'>
             <code className='user-select small'>{address}</code>

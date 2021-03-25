@@ -4,6 +4,7 @@ import {
   Modal,
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import keypairManager from './keypairManager'
 
@@ -20,7 +21,7 @@ export default class KeypairNameModal extends PureComponent {
     this.modal = React.createRef()
     this.input = React.createRef()
   }
-  
+
 
   openModal ({ address, name }) {
     this.modal.current.openModal()
@@ -44,17 +45,17 @@ export default class KeypairNameModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='Modify Keypair Name'
-        textConfirm='Save'
-        pending={this.state.saving && 'Saving...'}
+        title={t('keypair.modify.title')}
+        textConfirm={t('button.save')}
+        pending={this.state.saving && t('keypair.modify.saving')}
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name}
       >
         <DebouncedFormGroup
           ref={this.input}
-          label='Name'
+          label={t('keypair.input.name')}
           maxLength='200'
-          placeholder='Please enter a name for the keypair'
+          placeholder={t('keypair.input.placeholder')}
           value={this.state.name}
           onChange={name => this.setState({ name })}
         />

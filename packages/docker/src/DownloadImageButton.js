@@ -71,7 +71,7 @@ export default class DownloadImageButton extends PureComponent {
     }
 
     if (!versions.length) {
-      return <DropdownItem disabled>({t('docker.image.none')})</DropdownItem>
+      return <DropdownItem disabled>({t('none')})</DropdownItem>
     }
 
     return versions.map(({ name }) => (

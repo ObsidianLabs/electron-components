@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
@@ -61,11 +62,11 @@ export default class KeypairSelector extends PureComponent {
 
   renderItems = (iconComponent) => {
     if (this.state.loading) {
-      return <DropdownItem key='loading' disabled><i className='fas fa-spin fa-spinner mr-1' />Loading...</DropdownItem>
+      return <DropdownItem key='loading' disabled><i className='fas fa-spin fa-spinner mr-1' />{t('loading')}</DropdownItem>
     }
 
     if (!this.state.keypairs.length) {
-      const none = `(No ${this.props.noneName})`
+      const none = `(${t('keypair.no')} ${this.props.noneName})`
       return <DropdownItem key='none' disabled>{none}</DropdownItem>
     }
 

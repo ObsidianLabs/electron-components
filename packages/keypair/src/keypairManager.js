@@ -3,6 +3,7 @@ import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
 
 import { kp } from '@obsidians/sdk'
+import { t } from '@obsidians/i18n'
 
 class KeypairManager {
   constructor () {
@@ -68,7 +69,7 @@ class KeypairManager {
   async getKeypair (address) {
     const keypair = await this.channel.invoke('get', address)
     if (!keypair) {
-      throw new Error(`No keypair for <b>${address}</b>`)
+      throw new Error(t('keypair.error.noKeypair', { address }))
     }
     return keypair
   }
@@ -76,7 +77,7 @@ class KeypairManager {
   async getSecret (address, key = 'secret') {
     const keypair = await this.getKeypair(address)
     if (!keypair[key]) {
-      throw new Error(`No ${key} for <b>${address}</b>`)
+      throw new Error(t('keypair.error.noSecret', { key, address }))
     }
     return keypair[key]
   }

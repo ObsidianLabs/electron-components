@@ -1,6 +1,7 @@
 const translation = {
   loading: 'Loading...',
   loggingIn: 'Logging in...',
+  none: 'None',
   button: {
     save: 'Save',
     cancel: 'Cancel',
@@ -45,7 +46,6 @@ const translation = {
       manager: '{{name}} Manager',
       downloading: 'Downloading {{name}}',
       uninstallConfirm: 'Click again to uninstall',
-      none: 'None',
       availableVersions: 'Available Versions',
     },
     badge: {
@@ -84,7 +84,61 @@ const translation = {
   },
   ipc: {
     needLogin: 'Need login to perform this operation.'
-  }
+  },
+  keypair: {
+    title: 'Keypair',
+    name: 'Name',
+    address: 'Address',
+    private: 'Private Key',
+    no: 'No',
+    noKeypair: 'No keypairs',
+    reveal: 'Reveal {{name}}',
+    view: 'View',
+    create: {
+      title: 'Create Keypair',
+      confirm: 'Create',
+      creating: 'Creating...',
+      regenerate: 'Regenerate',
+      success: 'Create {{name}} Successful',
+      successMessage: 'A new {{name}} is created and saved in {{project}}.'
+    },
+    import: {
+      title: 'Import Keypair',
+      confirm: 'Import',
+      importing: 'Importing...',
+      label: 'Enter the {{name}} you want to import',
+      success: 'Import {{name}} Successful',
+      successMessage: 'The {{name}} is imported to {{project}}.'
+    },
+    delete: {
+      success: 'Delete {{name}} Successful',
+      successMessage: 'The {{name}} is removed from {{project}}.'
+    },
+    modify: {
+      title: 'Modify Keypair Name',
+      saving: 'Saving...',
+    },
+    manager: {
+      title: 'Keypair Manager',
+      doNot: 'DO NOT',
+      useOnMainnet: 'use on mainnet!',
+      forDevOnly: 'For development purpose only.',
+      saveUnencrypted: 'For convenience in development, the private keys are saved unencrypted.'
+    },
+    input: {
+      name: 'Name',
+      placeholder: 'Please enter a name for the keypair',
+    },
+    error: {
+      create: 'Create Keypair Failed',
+      import: 'Import Keypair Failed',
+      duplicateName: 'The keypair name <b>{{name}}</b> has already been used.',
+      duplicateKey: 'Keypair for <b>{{address}}</b> already exists.',
+      notValid: 'Not a valid {{secret}}',
+      noKeypair: 'No keypair for <b>{{address}}</b>',
+      noSecret: 'No {{key}} for <b>{{address}}</b>',
+    },
+  },
 }
 
 export default {

@@ -4,6 +4,7 @@ import {
   DropdownInput,
   Badge,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import keypairManager from './keypairManager'
 
@@ -76,7 +77,7 @@ export default class KeypairInputSelector extends PureComponent {
     const {
       size,
       label,
-      placeholder = '(No keypairs)',
+      placeholder = `(${t('keypair.noKeypair')})`,
       editable,
       maxLength,
       icon = 'fas fa-key',

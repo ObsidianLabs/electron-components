@@ -107,7 +107,7 @@ export default class DockerImageSelector extends PureComponent {
           style={{ maxWidth: 240 }}
         >
           {icon}
-          {this.props.title || this.imageName} ({this.props.selected?.toString() || t('docker.image.none')})
+          {this.props.title || this.imageName} ({this.props.selected?.toString() || t('none')})
         </DropdownToggle>
         <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
           {children}

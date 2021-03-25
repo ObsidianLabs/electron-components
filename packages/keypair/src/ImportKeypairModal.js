@@ -4,6 +4,7 @@ import {
   Modal,
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import notification from '@obsidians/notification'
 import { kp } from '@obsidians/sdk'
@@ -40,10 +41,10 @@ export default class ImportKeypairModal extends PureComponent {
         this.setState({
           keypair,
           valid: true,
-          feedback: `Address: ${keypair.address}`
+          feedback: `${t('keypair.address')}: ${keypair.address}`
         })
       } catch (e) {
-        this.setState({ keypair: null, valid: false, feedback: `Not a valid ${this.props.secretName.toLowerCase()}` })
+        this.setState({ keypair: null, valid: false, feedback: t('keypair.error.notValid', { secret: this.props.secretName.toLowerCase() }) })
       }
     }
   }
@@ -58,16 +59,16 @@ export default class ImportKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(kp => kp.name === name)) {
       notification.error(
-        `Import Keypair Failed`,
-        `The keypair name <b>${name}</b> has already been used.`
+        t('keypair.error.import'),
+        t('keypair.error.duplicateName', { name })
       )
       return
     }
 
     if (this.props.keypairs.find(kp => kp.address === keypair.address)) {
       notification.error(
-        `Import Keypair Failed`,
-        `Keypair for <b>${keypair.address}</b> already exists.`
+        t('keypair.error.import'),
+        t('keypair.error.duplicateKey', { address: keypair.address })
       )
       return
     }
@@ -90,20 +91,20 @@ export default class ImportKeypairModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='Import Keypair'
-        textConfirm='Import'
-        pending={this.state.pending && 'Importing...'}
+        title={t('keypair.import.title')}
+        textConfirm={t('keypair.import.confirm')}
+        pending={this.state.pending && t('keypair.import.importing')}
         onConfirm={this.onConfirm}
         confirmDisabled={!name || !valid}
       >
         <DebouncedFormGroup
-          label='Name'
+          label={t('keypair.input.name')}
           maxLength='200'
-          placeholder='Please enter a name for the keypair'
+          placeholder={t('keypair.input.placeholder')}
           onChange={name => this.setState({ name })}
         />
         <DebouncedFormGroup
-          label={`Enter the ${this.props.secretName.toLowerCase()} you want to import`}
+          label={t('keypair.import.label', { name: this.props.secretName.toLowerCase() })}
           maxLength='300'
           onChange={this.onChange}
           feedback={feedback}
