@@ -6,6 +6,7 @@ const translation = {
   creating: '创建中',
   deleting: '删除中',
   noOptions: '无选项',
+  error: '错误',
   button: {
     save: '保存',
     cancel: '取消',
