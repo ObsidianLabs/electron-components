@@ -3,11 +3,14 @@ const translation = {
   loggingIn: 'Logging in...',
   none: 'None',
   pending: 'Pending',
+  noOptions: 'No options',
   button: {
     save: 'Save',
     cancel: 'Cancel',
     dontSave: `Don't Save`,
     close: 'Close',
+    confirm: 'Confirm',
+    confirmDelete: 'Click again to delete',
   },
   welcome: {
     welcome: 'Welcome to {{projectName}}',
