@@ -6,6 +6,7 @@ import {
   LoadingScreen,
   CenterScreen,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
@@ -91,7 +92,7 @@ class UserHomepage extends PureComponent {
         color='success'
         onClick={() => actions.newProject()}
       >
-        <i className='fas fa-plus mr-1' />New
+        <i className='fas fa-plus mr-1' />{t('user.new')}
       </Button>
     )
   }
@@ -107,7 +108,7 @@ class UserHomepage extends PureComponent {
         onClick={() => actions.openProject()}
       >
         <i className='fas fa-folder-plus mr-1' />
-        Open
+        {t('user.open')}
       </Button>
     )
   }
@@ -129,7 +130,7 @@ class UserHomepage extends PureComponent {
     if (loading) {
       return <LoadingScreen />
     } else if (notfound) {
-      return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
+      return <CenterScreen>{t('user.user')} <kbd>{user}</kbd> {t('user.notFound')}</CenterScreen>
     }
 
     return (
@@ -141,7 +142,7 @@ class UserHomepage extends PureComponent {
           <div className='d-flex flex-row justify-content-between my-3'>
             <ButtonGroup>
               <h4 color='primary'>
-                <i className='fas fa-th-list mr-2' />Projects
+                <i className='fas fa-th-list mr-2' />{t('user.projects')}
               </h4>
             </ButtonGroup>
             <ButtonGroup>

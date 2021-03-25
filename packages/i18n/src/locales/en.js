@@ -145,10 +145,18 @@ const translation = {
   },
   user: {
     myProjects: 'My Projects',
+    noProject: 'No Project',
     login: 'Login',
     loginAs: 'Logged in as',
     loginProvider: 'Login {{provider}}',
     logout: 'Log out',
+    notLogin: 'not logged in',
+    new: 'New',
+    open: 'Open',
+    user: 'User',
+    notFound: 'Not Found',
+    projects: 'Projects',
+    noDescription: 'No description',
   },
   queue: {
     transaction: {

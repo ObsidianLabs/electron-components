@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import { Link } from 'react-router-dom'
 
 import { ProjectPath } from '@obsidians/workspace'
+import { t } from '@obsidians/i18n'
 
 export default class ProjectList extends PureComponent {
   renderProjectRow = (project, index) => {
@@ -35,7 +36,7 @@ export default class ProjectList extends PureComponent {
           <tbody>
             <tr key='no-project'>
               <td key='loading' align='middle' className='text-muted'>
-                <i className='fas fa-spin fa-spinner mr-1' />Loading...
+                <i className='fas fa-spin fa-spinner mr-1' />{t('loading')}
               </td>
             </tr>
           </tbody>
@@ -48,7 +49,7 @@ export default class ProjectList extends PureComponent {
         <table className='table table-hover table-striped'>
           <tbody>
             <tr key='no-project'>
-              <td align='middle' className='text-muted'>(No Project)</td>
+              <td align='middle' className='text-muted'>({t('user.noProject')})</td>
             </tr>
           </tbody>
         </table>
