@@ -7,6 +7,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@obsidians/ipc": "^0.3.0",
+    "@obsidians/i18n": "^0.3.0",
     "filehound": "^1.17.4",
     "fs-extra": "^9.1.0",
     "lodash": "^4.17.20",

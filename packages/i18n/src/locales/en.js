@@ -1,6 +1,11 @@
 const translation = {
   loading: 'Loading...',
   loggingIn: 'Logging in...',
+  button: {
+    save: 'Save',
+    cancel: 'Cancel',
+    dontSave: `Don't Save`,
+  },
   welcome: {
     welcome: 'Welcome to {{projectName}}',
     message: '{{projectName}} is a graphic IDE for developing smart contracts on the {{chainName}} blockchain. To get started, please install the prerequisite tools for {{projectName}}.',
@@ -57,10 +62,11 @@ const translation = {
       unknown: 'Something went wrong when starting Docker, please try again'
     }
   },
-  button: {
-    save: 'Save',
-    cancel: 'Cancel',
-    dontSave: `Don't Save`,
+  file: {
+    open: 'Open',
+    error: {
+      createFolder: 'Fail to create the folder',
+    },
   }
 }
 

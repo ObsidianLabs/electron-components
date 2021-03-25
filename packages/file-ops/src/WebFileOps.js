@@ -1,3 +1,5 @@
+import { t } from '@obsidians/i18n'
+
 import path from 'path-browserify'
 import FileOps from './FileOps'
 import AwsS3Fs from './AwsS3Fs'
@@ -29,7 +31,7 @@ export default class WebFileOps extends FileOps {
         // { name: 'all', extensions: ['cpp', 'hpp', 'wasm', 'abi', 'md', 'js', 'json', 'c', 'h', 'o'] }
       ]
     })
-  
+
     if (result && result.filePaths && result.filePaths[0]) {
       const filePath = result.filePaths[0]
       return { key: filePath, path: filePath }
@@ -40,7 +42,7 @@ export default class WebFileOps extends FileOps {
 
   async chooseFolder (defaultPath = this.workspace) {
     const result = await this.electron.remote.dialog.showOpenDialog({
-      buttonLabel: 'Open',
+      buttonLabel: t('file.open'),
       defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       properties: ['openDirectory', 'createDirectory']
     })
@@ -70,7 +72,7 @@ export default class WebFileOps extends FileOps {
     try {
       await this.fs.ensureDir(folderPath)
     } catch (e) {
-      throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+      throw new Error(`${t('file.error.createFolder')} <b>${folderPath}</b>.`)
     }
   }
 
