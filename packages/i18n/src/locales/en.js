@@ -139,6 +139,13 @@ const translation = {
       noSecret: 'No {{key}} for <b>{{address}}</b>',
     },
   },
+  user: {
+    myProjects: 'My Projects',
+    login: 'Login',
+    loginAs: 'Logged in as',
+    loginProvider: 'Login {{provider}}',
+    logout: 'Log out',
+  }
 }
 
 export default {

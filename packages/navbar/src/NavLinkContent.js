@@ -1,4 +1,5 @@
 import React from 'react'
+import { t } from '@obsidians/i18n'
 
 export default function (props) {
   const { title, selected, icon, Icon, width, noneIcon = 'fas fa-file-times' } = props
@@ -14,7 +15,7 @@ export default function (props) {
     subtitle = selected
   } else if (!selected) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
-    subtitle = '(None)'
+    subtitle = `(${t('none')})`
   } else {
     iconComponent = <span key={key} className={iconClassName}><i className={`w-100 h-100 ${icon}`} /></span>
     subtitle = selected

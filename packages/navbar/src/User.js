@@ -12,6 +12,7 @@ import { withRouter } from 'react-router'
 
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
+import { t } from '@obsidians/i18n'
 
 class User extends Component {
   state = {
@@ -67,7 +68,7 @@ class User extends Component {
       return (
         <DropdownMenu right>
           <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-            <i className='fas fa-th-list w-3 mr-2' />My Projects		
+            <i className='fas fa-th-list w-3 mr-2' />{t('user.myProjects')}
           </DropdownItem>
         </DropdownMenu>
       )
@@ -78,7 +79,7 @@ class User extends Component {
     if (username) {
       return (
         <DropdownMenu right>
-          <DropdownItem header>Logged in as</DropdownItem>
+          <DropdownItem header>{t('user.loginAs')}</DropdownItem>
           <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/${username}`)}>
             <i className='fas fa-user w-3 mr-2' />
             {username}
@@ -86,7 +87,7 @@ class User extends Component {
           {this.renderExtraLoggedInOptions()}
           <DropdownItem divider />
           <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
-            <i className='fas fa-sign-out w-3 mr-2' />Log out
+            <i className='fas fa-sign-out w-3 mr-2' />{t('user.logout')}
           </DropdownItem>
         </DropdownMenu>
       )
@@ -97,7 +98,7 @@ class User extends Component {
         {this.renderLoginButton()}
         <DropdownItem divider />
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-          <i className='fas fa-th-list w-3 mr-2' />My Projects
+          <i className='fas fa-th-list w-3 mr-2' />{t('user.myProjects')}
         </DropdownItem>
       </DropdownMenu>
     )
@@ -110,7 +111,7 @@ class User extends Component {
         key={`login-${provider}`}
         onClick={() => Auth.login(this.props.history, provider)}
       >
-        <i className='fas fa-sign-in w-3 mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
+        <i className='fas fa-sign-in w-3 mr-2' />{ providers.length > 1 ? t('user.loginProvider', { provider }) : t('user.login') }
       </DropdownItem>
     ))
   }
