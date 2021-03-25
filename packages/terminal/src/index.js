@@ -10,6 +10,7 @@ import chalk from 'chalk'
 import { getColor } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 import fileOps from '@obsidians/file-ops'
+import { t } from '@obsidians/i18n'
 
 import 'xterm/css/xterm.css'
 
@@ -156,7 +157,7 @@ export default class Terminal extends PureComponent {
           if (this.props.onCopied) {
             this.props.onCopied()
           }
-          notification.success('Copied', 'The selection content is copied to the clipboard.')
+          notification.success(t('terminal.copied'), t('terminal.copiedMesage'))
           this.term.clearSelection()
           this.focus()
         })

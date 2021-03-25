@@ -155,6 +155,10 @@ const translation = {
       recent: 'Recent Transactions',
     },
   },
+  terminal: {
+    copied: 'Copied',
+    copiedMesage: 'The selection content is copied to the clipboard.'
+  },
 }
 
 export default {
