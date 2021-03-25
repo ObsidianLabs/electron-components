@@ -7,6 +7,7 @@ const translation = {
   deleting: 'Deleting',
   noOptions: 'No options',
   error: 'Error',
+  success: 'Success',
   button: {
     save: 'Save',
     cancel: 'Cancel',
