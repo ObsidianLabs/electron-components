@@ -92,7 +92,7 @@ class UserHomepage extends PureComponent {
         color='success'
         onClick={() => actions.newProject()}
       >
-        <i className='fas fa-plus mr-1' />{t('user.new')}
+        <i className='fas fa-plus mr-1' />{t('workspace.new.title')}
       </Button>
     )
   }
@@ -108,7 +108,7 @@ class UserHomepage extends PureComponent {
         onClick={() => actions.openProject()}
       >
         <i className='fas fa-folder-plus mr-1' />
-        {t('user.open')}
+        {t('workspace.open.title')}
       </Button>
     )
   }

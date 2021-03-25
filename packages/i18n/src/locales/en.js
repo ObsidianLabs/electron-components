@@ -73,12 +73,6 @@ const translation = {
       unknown: 'Something went wrong when starting Docker, please try again'
     }
   },
-  file: {
-    open: 'Open',
-    error: {
-      createFolder: 'Fail to create the folder',
-    },
-  },
   global: {
     about: {
       title: 'About',
@@ -157,8 +151,6 @@ const translation = {
     loginProvider: 'Login {{provider}}',
     logout: 'Log out',
     notLogin: 'not logged in',
-    new: 'New',
-    open: 'Open',
     user: 'User',
     notFound: 'Not Found',
     projects: 'Projects',
@@ -186,6 +178,7 @@ const translation = {
     projectLoading: 'Loading Project',
     tempalte: 'Template',
     new: {
+      title: 'New',
       file: 'New File',
       folder: 'New Folder',
       project: 'Create Project',

@@ -34,7 +34,7 @@ if (platform.isDesktop) {
     { text: t('workspace.open.folder'), onClick: showInFinder },
     { text: t('workspace.open.terminal') , onClick: openInTerminal },
     null,
-    { text: t('workspace.button.delete'), onClick: node => handlers.deleteFile(node) },
+    { text: t('button.delete'), onClick: node => handlers.deleteFile(node) },
   ]
 } else {
   contextMenu = [
@@ -43,7 +43,7 @@ if (platform.isDesktop) {
     // null,
     // { text: 'Download' },
     null,
-    { text: t('workspace.button.delete'), onClick: node => handlers.deleteFile(node) },
+    { text: t('button.delete'), onClick: node => handlers.deleteFile(node) },
   ]
 }
 
