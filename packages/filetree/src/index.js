@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import fileOps from '@obsidians/file-ops'
+import { t } from '@obsidians/i18n'
 
 import { Treebeard, decorators, theme } from 'react-treebeard'
 
@@ -69,7 +70,7 @@ export default class FileTree extends PureComponent {
       this.loadTree(this.props.projectManager)
     }
   }
-  
+
   componentWillUnmount () {
     this.props.projectManager.offRefreshDirectory()
   }
@@ -184,7 +185,7 @@ export default class FileTree extends PureComponent {
     if (!Object.keys(this.state.treeData).length) {
       return (
         <span key='loading' className='mx-1 text-muted'>
-          <i className='fas fa-spin fa-spinner mr-1' />Loading...
+          <i className='fas fa-spin fa-spinner mr-1' />{t('loading')}
         </span>
       )
     }
