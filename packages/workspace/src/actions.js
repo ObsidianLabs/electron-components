@@ -3,6 +3,7 @@ import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
 import platform from '@obsidians/platform'
+import { t } from '@obsidians/i18n'
 
 import BaseProjectManager from './ProjectManager/BaseProjectManager'
 
@@ -79,7 +80,7 @@ export class ProjectActions {
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
-    notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)
+    notification.info(t('workspace.remove.success'), t('workspace.remove.successMessage', { name }))
   }
 }
 

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 
 import { Button } from '@obsidians/ui-components'
 import platform from '@obsidians/platform'
+import { t } from '@obsidians/i18n'
 
 import Workspace from './components/Workspace'
 import WorkspaceContext from './WorkspaceContext'
@@ -81,7 +82,7 @@ export default class WorkspaceLoader extends PureComponent {
           <Button
             color='secondary'
             onClick={() => this.removeProject(projectRoot)}
-          >Remove</Button>
+          >{t('workspace.remove.title')}</Button>
         </ProjectInvalid>
       )
     } else {

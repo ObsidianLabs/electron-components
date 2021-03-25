@@ -1,5 +1,6 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
+import { t } from '@obsidians/i18n'
 import actions from './actions'
 
 const projectContextMenus = id => {
@@ -13,16 +14,16 @@ const projectContextMenus = id => {
 
   return [
     {
-      text: `Open Containing Folder`,
+      text: t('workspace.open.folder'),
       onClick: project => fileOps.current.openItem(project.path),
     },
     {
-      text: `Open in Terminal`,
+      text: t('workspace.open.terminal'),
       onClick: project => fileOps.current.openInTerminal(project.path),
     },
     null,
     {
-      text: `Remove`,
+      text: t('workspace.remove.title'),
       onClick: project => actions.removeProject(project),
     },
   ]
@@ -38,14 +39,14 @@ export default function navbarItem (projects, selected, username) {
   if (platform.isDesktop) {
     projectDropdown.unshift({
       id: 'open-project',
-      name: 'Open Project...',
+      name: `${t('workspace.open.project')}...`,
       icon: 'fas fa-folder-plus',
       onClick: () => actions.openProject(),
     })
   }
   projectDropdown.unshift({
     id: 'new-project',
-    name: 'Create Project...',
+    name: `${t('workspace.new.project')}...`,
     icon: 'fas fa-plus',
     onClick: () => actions.newProject(),
   })

@@ -4,6 +4,7 @@ import {
   Modal,
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import notification from '@obsidians/notification'
 
@@ -36,14 +37,14 @@ export default class CreateFileOrFolderModals extends PureComponent {
       try {
         await this.props.projectManager.createNewFile(basePath, name)
       } catch (e) {
-        notification.error('Cannot Create File', e.message)
+        notification.error(t('workspace.error.createFile'), e.message)
         return
       }
     } else if (this.state.type === 'folder') {
       try {
         await this.props.projectManager.createNewFolder(basePath, name)
       } catch (e) {
-        notification.error('Cannot Create Folder', e.message)
+        notification.error(t('workspace.error.createFolder'), e.message)
         return
       }
     }
@@ -55,15 +56,15 @@ export default class CreateFileOrFolderModals extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={this.state.type === 'file' ? 'New File' : 'New Folder'}
-        textConfirm='Create'
-        pending={this.state.loading && 'Creating...'}
+        title={this.state.type === 'file' ? t('workspace.new.file') : t('workspace.new.folder')}
+        textConfirm={t('button.create')}
+        pending={this.state.loading && `${t('creating')}...`}
         confirmDisabled={!this.state.name}
         onConfirm={this.onCreate}
       >
         <DebouncedFormGroup
           label={<div>Create a new {this.state.type} in <kbd>{this.state.baseName}</kbd></div>}
-          placeholder={this.state.type === 'file' ? 'File name' : 'Folder name'}
+          placeholder={this.state.type === 'file' ? t('workspace.fileName') : t('workspace.folderName')}
           maxLength='50'
           value={this.state.name}
           onChange={name => this.setState({ name })}

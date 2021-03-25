@@ -4,6 +4,7 @@ import {
   Modal,
   Button,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import debounce from 'lodash/debounce'
 
@@ -42,14 +43,14 @@ class DeleteButton extends PureComponent {
     }
 
     return <>
-      <h4 className='mt-4'>Others</h4>
-      <Button color='danger' onClick={() => this.modal.current.openModal()}>Delete Project</Button>
+      <h4 className='mt-4'>{t('workspace.others')}</h4>
+      <Button color='danger' onClick={() => this.modal.current.openModal()}>{t('workspace.delete.project')}</Button>
       <Modal
         ref={this.modal}
-        title='Are you sure to delete this project?'
-        textConfirm='Delete'
+        title={t('workspace.delete.projectTitle')}
+        textConfirm={t('button.delete')}
         colorConfirm='danger'
-        pending={this.state.deleting && 'Deleting...'}
+        pending={this.state.deleting && `${t('deleting')}...`}
         onConfirm={this.deleteProject}
       />
     </>

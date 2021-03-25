@@ -44,7 +44,7 @@ export default class ElectronFileOps extends FileOps {
 
   async chooseFolder (defaultPath = this.workspace) {
     const result = await this.electron.remote.dialog.showOpenDialog({
-      buttonLabel: t('file.open'),
+      buttonLabel: t('workspace.open.title'),
       defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       properties: ['openDirectory', 'createDirectory']
     })

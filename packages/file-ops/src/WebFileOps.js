@@ -42,7 +42,7 @@ export default class WebFileOps extends FileOps {
 
   async chooseFolder (defaultPath = this.workspace) {
     const result = await this.electron.remote.dialog.showOpenDialog({
-      buttonLabel: t('file.open'),
+      buttonLabel: t('workspace.open.title'),
       defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       properties: ['openDirectory', 'createDirectory']
     })
@@ -72,7 +72,7 @@ export default class WebFileOps extends FileOps {
     try {
       await this.fs.ensureDir(folderPath)
     } catch (e) {
-      throw new Error(`${t('file.error.createFolder')} <b>${folderPath}</b>.`)
+      throw new Error(`${t('workspace.error.createFolder')} <b>${folderPath}</b>.`)
     }
   }
 

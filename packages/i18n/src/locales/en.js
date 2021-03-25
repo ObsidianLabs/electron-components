@@ -3,6 +3,8 @@ const translation = {
   loggingIn: 'Logging in...',
   none: 'None',
   pending: 'Pending',
+  creating: 'Creating',
+  deleting: 'Deleting',
   noOptions: 'No options',
   button: {
     save: 'Save',
@@ -11,6 +13,10 @@ const translation = {
     close: 'Close',
     confirm: 'Confirm',
     confirmDelete: 'Click again to delete',
+    delete: 'Delete',
+    create: 'Create',
+    choose: 'Choose',
+    trash: 'Move To Trash',
   },
   welcome: {
     welcome: 'Welcome to {{projectName}}',
@@ -169,6 +175,54 @@ const translation = {
   terminal: {
     copied: 'Copied',
     copiedMesage: 'The selection content is copied to the clipboard.'
+  },
+  workspace: {
+    others: 'Others',
+    fileName: 'File name',
+    folderName: 'Folder name',
+    projectName: 'Project name',
+    projectPath: 'project path',
+    projectLocation: 'Project location',
+    projectLoading: 'Loading Project',
+    tempalte: 'Template',
+    new: {
+      file: 'New File',
+      folder: 'New Folder',
+      project: 'Create Project',
+      projectTitle: 'Create a New Project',
+      success: 'Successful',
+      successMessage: 'New project <b>{{name}}</b> is created.',
+    },
+    open: {
+      title: 'Open',
+      folder: 'Open Containing Folder',
+      project: 'Open Project',
+      terminal: 'Open in Terminal',
+    },
+    delete: {
+      project: 'Delete Project',
+      projectTitle: 'Are you sure to delete this project?',
+      fileConfirm: 'Are you sure you want to delete {{file}}?',
+    },
+    remove: {
+      title: 'Remove',
+      success: 'Remove Project Successful',
+      successMessage: 'Project <b>{{name}}</b> is removed'
+    },
+    error: {
+      createFile: 'Cannot Create File',
+      createFolder: 'Cannot Create Folder',
+      createProject: 'Cannot Create the Project',
+      projectNotFound: 'Project Not Found',
+      projectNotFoundDetail: 'Cannot find the project',
+      noMainFile: 'No main file in project settings',
+      noProject: 'No Project',
+      noProjectMessage: 'Please open a project first.',
+      fileExists: 'File <b>{{file}}</b> already exists.',
+      folderExists: 'Folder <b>{{folder}}</b> already exists.',
+      createFileFailed: 'Fail to create the file <b>{{file}}</b>.',
+      createFolderFailed: 'Fail to create the folder <b>{{folder}}</b>.',
+    },
   },
 }
 
