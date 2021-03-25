@@ -79,7 +79,11 @@ const translation = {
       available: '{{project}} v{{version}} is now available',
       confirm: 'Restart and Update',
       cancel: 'Later',
+      message: 'You can restart and update to the new version. Do you want to do it right now?',
     }
+  },
+  ipc: {
+    needLogin: 'Need login to perform this operation.'
   }
 }
 

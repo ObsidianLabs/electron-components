@@ -8,6 +8,7 @@
   "browser": "src/index.js",
   "dependencies": {
     "@obsidians/auth": "^0.3.0",
+    "@obsidians/i18n": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
     "qs": "^6.9.6"
   },
