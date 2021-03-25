@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 
 import { Modal } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 
@@ -42,15 +43,15 @@ export default class AboutModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='About'
-        textCancel='Close'
+        title={t('global.about.title')}
+        textCancel={t('button.close')}
       >
         <div className='d-flex flex-column align-items-center justify-content-center'>
           <img src={this.props.icon} style={{ background: 'transparent', width: '100px' }} onClick={() => this.handleClick()}/>
           <p className='mt-3'><span className='h4'><b>{process.env.PROJECT_NAME}</b></span> v{fileOps.current.getAppVersion()}</p>
 
-          <h5 className='small-caps mt-4'>contact us</h5>
-          <p>Website: <a href='#' onClick={() => fileOps.current.openLink('https://www.obsidians.io')}>https://www.obsidians.io</a></p>
+          <h5 className='small-caps mt-4'>{t('global.about.contact')}</h5>
+          <p>{t('global.about.website')}: <a href='#' onClick={() => fileOps.current.openLink('https://www.obsidians.io')}>https://www.obsidians.io</a></p>
           {this.props.children}
         </div>
       </Modal>

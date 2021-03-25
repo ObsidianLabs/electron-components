@@ -5,6 +5,7 @@ const translation = {
     save: 'Save',
     cancel: 'Cancel',
     dontSave: `Don't Save`,
+    close: 'Close',
   },
   welcome: {
     welcome: 'Welcome to {{projectName}}',
@@ -67,6 +68,18 @@ const translation = {
     error: {
       createFolder: 'Fail to create the folder',
     },
+  },
+  global: {
+    about: {
+      title: 'About',
+      contact: 'Contact us',
+      website: 'Website',
+    },
+    update: {
+      available: '{{project}} v{{version}} is now available',
+      confirm: 'Restart and Update',
+      cancel: 'Later',
+    }
   }
 }
 
