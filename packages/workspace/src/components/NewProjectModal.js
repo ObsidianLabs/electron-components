@@ -11,6 +11,7 @@ import {
   DebouncedFormGroup,
   DropdownInput,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
@@ -89,12 +90,12 @@ export default class NewProjectModal extends PureComponent {
     try {
       const created = await BaseProjectManager.channel.invoke('post', '', options)
       if (notify) {
-        notification.success('Successful', `New project <b>${options.name}</b> is created.`)
+        notification.success(t('workspace.new.success'), t('workspace.new.successMessage', { name: options.name }))
       }
       return created
     } catch (e) {
       if (notify) {
-        notification.error('Cannot Create the Project', e.message)
+        notification.error(t('workspace.error.createProject'), e.message)
       }
       return false
     }
@@ -105,14 +106,14 @@ export default class NewProjectModal extends PureComponent {
       return null
     }
 
-    let placeholder = 'Project path'
+    let placeholder = t('workspace.projectPath')
     if (!this.state.projectRoot) {
       placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
     }
 
     return (
       <FormGroup>
-        <Label>Project location</Label>
+        <Label>{t('workspace.projectLocation')}</Label>
         <InputGroup>
           <Input
             placeholder={placeholder}
@@ -121,7 +122,7 @@ export default class NewProjectModal extends PureComponent {
           />
           <InputGroupAddon addonType='append'>
             <Button color='secondary' onClick={this.chooseProjectPath}>
-              Choose...
+              {t('button.choose')}...
             </Button>
           </InputGroupAddon>
         </InputGroup>
@@ -136,7 +137,7 @@ export default class NewProjectModal extends PureComponent {
     }
     return (
       <DropdownInput
-        label='Template'
+        label={t('workspace.template')}
         options={templates}
         value={this.state.template}
         onChange={(template, group) => this.setState({ template, group })}
@@ -156,15 +157,15 @@ export default class NewProjectModal extends PureComponent {
       <Modal
         ref={this.modal}
         overflow={!showTerminal}
-        title='Create a New Project'
-        textConfirm='Create Project'
+        title={t('workspace.new.projectTitle')}
+        textConfirm={t('workspace.new.project')}
         onConfirm={this.onCreateProject}
-        pending={creating && 'Creating...'}
+        pending={creating && `${t('creating')}...`}
         confirmDisabled={!name || invalid}
       >
         {this.renderLocation()}
         <DebouncedFormGroup
-          label='Project name'
+          label={t('workspace.projectName')}
           value={name}
           onChange={(name, invalid) => this.setState({ name, invalid })}
           {...projectNameProps}

@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import platform from '@obsidians/platform'
 
@@ -43,12 +44,12 @@ export default class DockerImageSelector extends PureComponent {
   renderItems = () => {
     if (this.state.loading) {
       return (
-        <DropdownItem key='images-loading' disabled><i className='fas fa-spin fa-spinner mr-1' />Loading...</DropdownItem>
+        <DropdownItem key='images-loading' disabled><i className='fas fa-spin fa-spinner mr-1' />{t('loading')}</DropdownItem>
       )
     }
 
     if (!this.state.versions.length) {
-      const none = `(No ${this.props.noneName || this.imageName} installed)`
+      const none = t('docker.image.noInstall', { name: this.props.noneName || this.imageName })
       return (
         <DropdownItem key='images-none' disabled>{none}</DropdownItem>
       )
@@ -87,9 +88,9 @@ export default class DockerImageSelector extends PureComponent {
 
     if (!HeaderDockerItems) {
       if (platform.isDesktop) {
-        HeaderDockerItems = <><i className='far fa-desktop mr-2' />Installed</>
+        HeaderDockerItems = <><i className='far fa-desktop mr-2' />{t('docker.installed')}</>
       } else {
-        HeaderDockerItems = <><i className='fas fa-code-merge mr-1' />Versions</>
+        HeaderDockerItems = <><i className='fas fa-code-merge mr-1' />{t('docker.image.versions')}</>
       }
     }
 
@@ -106,7 +107,7 @@ export default class DockerImageSelector extends PureComponent {
           style={{ maxWidth: 240 }}
         >
           {icon}
-          {this.props.title || this.imageName} ({this.props.selected?.toString() || 'none'})
+          {this.props.title || this.imageName} ({this.props.selected?.toString() || t('none')})
         </DropdownToggle>
         <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
           {children}

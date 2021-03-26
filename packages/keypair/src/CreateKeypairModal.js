@@ -5,6 +5,7 @@ import {
   Badge,
   DebouncedFormGroup,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import notification from '@obsidians/notification'
 
@@ -44,8 +45,8 @@ export default class CreateKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(kp => kp.name === name)) {
       notification.error(
-        `Create Keypair Failed`,
-        `The keypair name <b>${name}</b> has already been used.`
+        t('keypair.error.create'),
+        t('keypair.error.duplicateName', { name })
       )
       return
     }
@@ -67,24 +68,24 @@ export default class CreateKeypairModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='Create Keypair'
-        textConfirm='Create'
-        pending={this.state.pending && 'Creating...'}
+        title={t('keypair.create.title')}
+        textConfirm={t('keypair.create.confirm')}
+        pending={this.state.pending && t('keypair.create.creating')}
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name || !address}
         colorActions={['info']}
-        textActions={['Regenerate']}
+        textActions={[t('keypair.create.regenerate')]}
         onActions={[this.regenerateKeypair]}
       >
         <DebouncedFormGroup
-          label='Name'
+          label={t('keypair.input.name')}
           maxLength='200'
-          placeholder='Please enter a name for the keypair'
+          placeholder={t('keypair.input.placeholder')}
           onChange={name => this.setState({ name })}
         />
         <div className='row align-items-center'>
           <div className='col-2'>
-            <Badge pill color='info' className='ml-1'>Address</Badge>
+            <Badge pill color='info' className='ml-1'>{t('keypair.address')}</Badge>
           </div>
           <div className='col-10 pl-0'>
             <code className='user-select small'>{address}</code>

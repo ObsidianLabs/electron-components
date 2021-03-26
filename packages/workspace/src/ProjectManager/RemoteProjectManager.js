@@ -1,5 +1,6 @@
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 import BaseProjectManager from './BaseProjectManager'
 
@@ -75,7 +76,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     if (this.projectSettings?.get('main')) {
       return this.pathForProjectFile(this.projectSettings.get('main'))
     }
-    throw new Error('No main file in project settings')
+    throw new Error(t('workspace.error.noMainFile'))
   }
 
   async isMainValid () {
@@ -88,7 +89,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async checkSettings () {
     if (!this.project || !this.projectRoot) {
-      notification.error('No Project', 'Please open a project first.')
+      notification.error(t('workspace.error.noProject'), t('workspace.error.noProjectMessage'))
       return
     }
 
@@ -98,13 +99,13 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async createNewFile (basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
-      throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
+      throw new Error(t('workspace.error.fileExists', { file: this.pathInProject(filePath) }))
     }
-  
+
     try {
       await fileOps.current.fs.ensureFile(filePath)
     } catch (e) {
-      throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
+      throw new Error(t('workspace.error.createFileFailed', { file: this.pathInProject(filePath) }))
     }
 
     await this.refreshDirectory(basePath)
@@ -112,11 +113,11 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async createNewFolder (basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
-  
+
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
-      throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
+      throw new Error(t('workspace.error.createFolderFailed', { folder: this.pathInProject(folderPath) }))
     }
 
     await this.refreshDirectory(basePath)
@@ -124,8 +125,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async deleteFile (node) {
     const { response } = await fileOps.current.showMessageBox({
-      message: `Are you sure you want to delete ${node.pathInProject}?`,
-      buttons: ['Delete', 'Cancel']
+      message: t('workspace.delete.fileConfirm', { file: node.pathInProject }),
+      buttons: [t('button.delete'), t('button.cancel')]
     })
     if (response === 0) {
       if (node.children) {

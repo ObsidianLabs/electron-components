@@ -6,6 +6,8 @@ import {
   Tooltip,
 } from 'reactstrap'
 
+import { t } from '@obsidians/i18n'
+
 import IconButton from './IconButton'
 
 const deleteButtons = {}
@@ -52,7 +54,7 @@ export default class DeleteButton extends PureComponent {
   render () {
     const {
       color = 'danger',
-      textConfirm = 'Click again to delete',
+      textConfirm = t('button.confirmDelete'),
       icon = 'far fa-trash-alt',
       className = '',
     } = this.props

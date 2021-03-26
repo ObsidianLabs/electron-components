@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Tabs } from '@obsidians/ui-components'
 import fileOps from '@obsidians/file-ops'
+import { t } from '@obsidians/i18n'
 
 import MonacoEditorContainer from './MonacoEditor/MonacoEditorContainer'
 import modelSessionManager from './MonacoEditor/modelSessionManager'
@@ -83,8 +84,8 @@ export default class CodeEditorCollection extends Component {
 
     const { response } = await fileOps.current.showMessageBox({
       // title: `Do you want to save the changes you made for ${path}?`,
-      message: 'Your changes will be lost if you close this item without saving.',
-      buttons: ['Save', 'Cancel', `Don't Save`]
+      message: t('editor.lost'),
+      buttons: [t('button.save'), t('button.cancel'), t('button.dontSave')]
     })
     clicked = response
 

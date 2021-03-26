@@ -15,6 +15,8 @@ import {
   Badge,
 } from 'reactstrap'
 
+import { t } from '@obsidians/i18n'
+
 export default class DropdownInput extends PureComponent {
   constructor (props) {
     super(props)
@@ -160,7 +162,7 @@ export default class DropdownInput extends PureComponent {
     const { value, onChange, options = [] } = this.props
 
     if (!options.length) {
-      const { placeholder = '(No options)' } = this.props
+      const { placeholder = `(${t('noOptions')})` } = this.props
       return <DropdownItem disabled>{placeholder}</DropdownItem>
     }
 

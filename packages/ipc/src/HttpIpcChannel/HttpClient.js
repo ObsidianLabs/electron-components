@@ -1,5 +1,6 @@
 import qs from 'qs'
 import Auth from '@obsidians/auth'
+import { t } from '@obsidians/i18n'
 import BuildService from './BuildService'
 
 const PROJECT = process.env.PROJECT
@@ -130,7 +131,7 @@ export default class HttpClient {
     } catch (e) {}
 
     if (response.status === 401) {
-      throw new Error(result.message || 'Need login to perform this operation.')
+      throw new Error(result.message || t('ipc.needLogin'))
     } else if (response.status >= 400) {
       throw new Error(result.message || result)
     }

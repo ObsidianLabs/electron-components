@@ -7,6 +7,7 @@ import {
   DropdownItem,
   UncontrolledButtonDropdown
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import Terminal from '@obsidians/terminal'
 
@@ -64,13 +65,13 @@ export default class DownloadImageButton extends PureComponent {
     if (loading) {
       return (
         <DropdownItem key='icon-loading-versions'>
-          <i className='fas fa-spin fa-spinner mr-1' />Loading...
+          <i className='fas fa-spin fa-spinner mr-1' />{t('loading')}
         </DropdownItem>
       )
     }
 
     if (!versions.length) {
-      return <DropdownItem disabled>(None)</DropdownItem>
+      return <DropdownItem disabled>({t('none')})</DropdownItem>
     }
 
     return versions.map(({ name }) => (
@@ -81,8 +82,8 @@ export default class DownloadImageButton extends PureComponent {
   render () {
     const imageName = this.channel.imageName
     const {
-      installDropdownHeader = 'Available Versions',
-      downloadingTitle = `Downloading ${imageName}`,
+      installDropdownHeader = t('docker.image.availableVersions'),
+      downloadingTitle = t('docker.image.downloading', { name: imageName }),
       size,
       color = 'secondary',
       right,
@@ -102,7 +103,7 @@ export default class DownloadImageButton extends PureComponent {
           color={color}
           onClick={() => this.fetchRemoteVersions()}
         >
-          <i className='fas fa-download mr-1' />Install
+          <i className='fas fa-download mr-1' />{t('docker.install')}
         </DropdownToggle>
         <DropdownMenu right={right}>
           <DropdownItem header>{installDropdownHeader}</DropdownItem>

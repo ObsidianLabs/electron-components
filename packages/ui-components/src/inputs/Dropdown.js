@@ -7,13 +7,15 @@ import {
   DropdownItem,
 } from 'reactstrap'
 
+import { t } from '@obsidians/i18n'
+
 export default function Dropdown (props) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const toggleDropDown = () => setDropdownOpen(!dropdownOpen)
 
   let dropdownItems = null
   if (!props.items || !props.items.length) {
-    dropdownItems = <DropdownItem disabled>(None)</DropdownItem>
+    dropdownItems = <DropdownItem disabled>({t('none')})</DropdownItem>
   } else {
     dropdownItems = props.items.map(item => (
       <DropdownItem

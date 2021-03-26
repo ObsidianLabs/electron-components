@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 
 import { Modal } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import globalModalManager from './globalModalManager'
 
@@ -37,13 +38,13 @@ export default class AutoUpdateModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={`${process.env.PROJECT_NAME} v${this.state.version} is now available`}
-        textConfirm='Restart and Update'
+        title={t('global.update.available', { project: process.env.PROJECT_NAME, version: this.state.version })}
+        textConfirm={t('global.update.confirm')}
         onConfirm={this.confirm}
-        textCancel='Later'
+        textCancel={t('global.update.cancel')}
         onCancel={this.onCancel}
       >
-        You can restart and update to the new version. Do you want to do it right now?
+        {t('global.update.message')}
       </Modal>
     )
   }

@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import { ContextMenuTrigger } from 'react-contextmenu'
 
@@ -26,7 +27,7 @@ export default class NavDropdown extends Component {
   onToggle = event => {
     if (this.props.onToggle) {
       if (this.props.onToggle(event)) {
-        return        
+        return
       }
     }
     this.setState({ dropdown: !this.state.dropdown })
@@ -34,7 +35,7 @@ export default class NavDropdown extends Component {
 
   renderDropdownList = list => {
     if (!list.length) {
-      return <DropdownItem disabled>(None)</DropdownItem>
+      return <DropdownItem disabled>({t('none')})</DropdownItem>
     }
     return list.map(this.renderDropdownItem)
   }
@@ -45,7 +46,7 @@ export default class NavDropdown extends Component {
     } else if (item.header) {
       return <DropdownItem header key={`dropdown-item-header-${index}`}>{item.header}</DropdownItem>
     } else if (item.none) {
-      return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
+      return <DropdownItem disabled key={`dropdown-item-none-${index}`}>({t('none')})</DropdownItem>
     }
 
     const { id, name, icon } = item

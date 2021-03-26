@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { t } from '@obsidians/i18n'
 
 export default class Settings extends Component {
   render () {
@@ -6,7 +7,7 @@ export default class Settings extends Component {
       <div className='custom-tab bg2'>
         <div className='jumbotron bg-transparent text-body'>
           <div className='container'>
-            <h1>Project Settings</h1>
+            <h1>{t('editor.project.setting')}</h1>
           </div>
         </div>
       </div>

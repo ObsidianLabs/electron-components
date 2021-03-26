@@ -11,6 +11,8 @@ import {
   Alert
 } from 'reactstrap'
 
+import { t } from '@obsidians/i18n'
+
 export default class BaseModal extends PureComponent {
   static propTypes = {
     wide: PropTypes.bool,
@@ -63,7 +65,7 @@ export default class BaseModal extends PureComponent {
 
   toggle = () => this.closeModal()
 
-  renderConfirmButton = ({ onConfirm, colorConfirm = 'primary', confirmDisabled, textConfirm = 'Confirm', pending }) => {
+  renderConfirmButton = ({ onConfirm, colorConfirm = 'primary', confirmDisabled, textConfirm = t('button.confirm'), pending }) => {
     if (!onConfirm) {
       return null
     }
@@ -105,7 +107,7 @@ export default class BaseModal extends PureComponent {
       textActions,
       colorActions = [],
       onActions,
-      textCancel = 'Cancel',
+      textCancel = t('button.cancel'),
       colorCancel = 'default',
       noCancel,
       onAdditionAction,

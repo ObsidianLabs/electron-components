@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react'
 
+import { t } from '@obsidians/i18n'
+
 import KeypairManagerModal from './KeypairManagerModal'
 
 export default class KeypairButton extends PureComponent {
@@ -14,7 +16,7 @@ export default class KeypairButton extends PureComponent {
 
   render () {
     const {
-      secretName = 'Private Key',
+      secretName = t('keypair.private'),
       modifyNameDisabled,
       deletionDisabled,
     } = this.props

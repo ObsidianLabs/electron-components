@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import {
   DropdownInput,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import platform from '@obsidians/platform'
 
@@ -40,25 +41,25 @@ export default class DockerImageInputSelector extends PureComponent {
 
   badgeProps = selected => {
     if (this.state.loading) {
-      return { badge: <span key='loading'><i className='fas fa-spin fa-spinner mr-1' />Loading...</span> }
+      return { badge: <span key='loading'><i className='fas fa-spin fa-spinner mr-1' />{t('loading')}</span> }
     }
     if (!selected) {
       if (this.state.versions.length) {
-        return { badge: 'not selected', badgeColor: 'danger' }
+        return { badge: t('docker.badge.noSelect'), badgeColor: 'danger' }
       }
       return
     }
     if (!this.state.versions.find(v => v.id === selected) && !this.props.extraOptions?.find(i => i.id === selected)) {
-      return { badge: 'not installed', badgeColor: 'danger' }
+      return { badge: t('docker.badge.noInstall'), badgeColor: 'danger' }
     }
   }
 
   render () {
     let { versions } = this.state
 
-    let placeholder = `Select a version of ${this.props.noneName || this.imageName}`
+    let placeholder = t('docker.image.select', { name: this.props.noneName || this.imageName })
     if (!versions.length) {
-      placeholder = `(No ${this.props.noneName || this.imageName} installed)`
+      placeholder = t('docker.image.noInstall', { name: this.props.noneName || this.imageName })
       versions.push({ id: 'none', display: placeholder, disabled: true })
     }
 
@@ -66,7 +67,7 @@ export default class DockerImageInputSelector extends PureComponent {
     if (platform.isDesktop) {
       options = [
         {
-          group: <><i className='fas fa-download mr-1' />Installed</>,
+          group: <><i className='fas fa-download mr-1' />{t('docker.installed')}</>,
           children: this.state.versions,
         },
         {
@@ -78,7 +79,7 @@ export default class DockerImageInputSelector extends PureComponent {
     } else {
       options = [
         {
-          group: <><i className='fas fa-code-merge mr-1' />Versions</>,
+          group: <><i className='fas fa-code-merge mr-1' />{t('docker.image.versions')}</>,
           children: this.state.versions,
         }
       ]

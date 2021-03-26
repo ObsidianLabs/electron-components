@@ -22,6 +22,7 @@
     "@obsidians/file-ops": "^0.3.0",
     "@obsidians/filetree": "^0.3.0",
     "@obsidians/ipc": "^0.3.0",
+    "@obsidians/i18n": "^0.3.0",
     "@obsidians/notification": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
     "@obsidians/redux": "^0.3.0",

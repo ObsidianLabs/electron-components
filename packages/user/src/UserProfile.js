@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react'
 import {
   Media,
   Button,
-  IconButton,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
@@ -41,7 +41,7 @@ export default class UserProfile extends PureComponent {
     if (!profile?.username) {
       return <>
         <Media heading className='text-muted'>
-          (not logged in)
+          ({t('user.notLogin')})
         </Media>
         {/* <p className='break-line'>Log in to synchronize your projects on the cloud.</p> */}
         <p className='break-line'>{this.renderLoginButton()}</p>
@@ -72,7 +72,7 @@ export default class UserProfile extends PureComponent {
         key={`user-profile-login-${provider}`}
         onClick={() => Auth.login(this.props.history, provider)}
       >
-        <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
+        <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{ providers.length > 1 ? t('user.loginProvider', { provider }) : t('user.login') }
       </Button>
     ))
   }
@@ -81,7 +81,7 @@ export default class UserProfile extends PureComponent {
     if (desc) {
       return desc
     }
-    return <span className='text-muted'>(No description)</span>
+    return <span className='text-muted'>({t('user.noDescription')})</span>
   }
 
   render () {

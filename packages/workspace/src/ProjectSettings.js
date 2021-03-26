@@ -27,7 +27,7 @@ export default class ProjectSettings {
 
   async writeSettings(rawSettings) {
     const settings = this.trimSettings(rawSettings)
-    
+
     const settingsJson = JSON.stringify(settings, null, 2)
     await fileOps.current.writeFile(this.settingFilePath, settingsJson)
   }

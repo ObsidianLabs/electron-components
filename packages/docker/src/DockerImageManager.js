@@ -5,6 +5,7 @@ import {
   Modal,
   DeleteButton,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import DockerImageChannel from './DockerImageChannel'
 import DownloadImageButton from './DownloadImageButton'
@@ -67,14 +68,14 @@ export default class DockerImageManager extends PureComponent {
       return (
         <tr key='loading'>
           <td align='middle' colSpan={4}>
-            <i className='fas fa-spin fa-spinner mr-1' />Loading...
+            <i className='fas fa-spin fa-spinner mr-1' />{t('loading')}
           </td>
         </tr>
       )
     }
 
     if (!this.state.installed.length) {
-      const none = `(No ${this.props.noneName || this.props.imageName} installed)`
+      const none = t('docker.image.noInstall', { name: this.props.noneName || this.props.imageName })
       return (
         <tr>
           <td align='middle' colSpan={4}>{none}</td>
@@ -91,7 +92,7 @@ export default class DockerImageManager extends PureComponent {
           <td align='right'>
             <DeleteButton
               onConfirm={() => this.deleteVersion(v.Tag)}
-              textConfirm='Click again to uninstall'
+              textConfirm={t('docker.image.uninstallConfirm')}
             />
           </td>
         </tr>
@@ -102,8 +103,8 @@ export default class DockerImageManager extends PureComponent {
   render () {
     const imageName = this.channel.imageName
     const {
-      modalTitle = `${imageName} Manager`,
-      downloadingTitle = `Downloading ${imageName}`,
+      modalTitle = t('docker.image.manager', { name: imageName }),
+      downloadingTitle = t('docker.image.manager', { name: imageName }),
     } = this.props
 
     return (
@@ -123,9 +124,9 @@ export default class DockerImageManager extends PureComponent {
         <table className='table table-sm table-hover table-striped'>
           <thead>
             <tr>
-              <th style={{ width: '40%' }}>version</th>
-              <th style={{ width: '35%' }}>created</th>
-              <th style={{ width: '15%' }}>size</th>
+              <th style={{ width: '40%' }}>{t('docker.table.version')}</th>
+              <th style={{ width: '35%' }}>{t('docker.table.created')}</th>
+              <th style={{ width: '15%' }}>{t('docker.table.size')}</th>
               <th style={{ width: '10%' }} />
             </tr>
           </thead>

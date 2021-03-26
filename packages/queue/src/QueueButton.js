@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import BaseQueueManager from './BaseQueueManager'
 
@@ -43,7 +44,7 @@ export default class QueueButton extends PureComponent {
       pendingItems.push(<DropdownItem divider key='divider-pending' />)
       pendingItems.unshift(
         <DropdownItem header key='header-pending'>
-          <i className='fas fa-spin fa-spinner mr-1' />Pending
+          <i className='fas fa-spin fa-spinner mr-1' />{t('pending')}
         </DropdownItem>
       )
     }
@@ -54,19 +55,19 @@ export default class QueueButton extends PureComponent {
       </DropdownItem>
     )).slice(0, 15)
     if (!txsItems.length) {
-      txsItems.push(<DropdownItem disabled key='disable' >(None)</DropdownItem>)
+      txsItems.push(<DropdownItem disabled key='disable' >({t('none')})</DropdownItem>)
     }
     // txsItems.push(<DropdownItem divider />)
     txsItems.unshift(
       <DropdownItem header key='header-txs'>
-        <i className='far fa-history mr-1' />Recent Transactions
+        <i className='far fa-history mr-1' />{t('queue.transaction.recent')}
       </DropdownItem>
     )
 
     const allTransactions = (
       <DropdownItem onClick={this.openAllTransactionsModal}>
         <div className='d-inline-block w-3'><i className='fal fa-clipboard-list-check' /></div>
-        All Transactions...
+        {t('queue.transaction.all')}...
       </DropdownItem>
     )
 
@@ -86,7 +87,7 @@ export default class QueueButton extends PureComponent {
     return <>
       <UncontrolledButtonDropdown direction='up'>
         <DropdownToggle size='sm' color='default' className='rounded-0 px-2 text-muted'>
-          {icon}Transactions
+          {icon}{t('queue.transaction.transactions')}
         </DropdownToggle>
         <DropdownMenu className='dropdown-menu-sm'>
           {this.renderDropdownItems(BaseQueueManager.pending, txs?.toJS() || [], QueueItem)}
@@ -94,7 +95,7 @@ export default class QueueButton extends PureComponent {
       </UncontrolledButtonDropdown>
       <Modal
         ref={this.txModal}
-        title='Transaction'
+        title={t('queue.transaction.transaction')}
       >
         <TransactionDetails
           tx={this.state.tx}
@@ -103,7 +104,7 @@ export default class QueueButton extends PureComponent {
       </Modal>
       <Modal
         ref={this.allTxsModal}
-        title='All Transactions'
+        title={t('queue.transaction.all')}
       >
       </Modal>
     </>

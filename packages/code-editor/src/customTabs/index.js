@@ -1,3 +1,5 @@
+import { t } from '@obsidians/i18n'
+
 import modelSessionManager from '../MonacoEditor/modelSessionManager'
 
 import Markdown from './Markdown'
@@ -8,6 +10,6 @@ export function useBuiltinCustomTabs(tabs) {
     modelSessionManager.registerCustomTab('markdown', Markdown)
   }
   if (tabs.indexOf('settings') > -1) {
-    modelSessionManager.registerCustomTab('settings', Settings, 'Project Settings')
+    modelSessionManager.registerCustomTab('settings', Settings, t('editor.project.setting'))
   }
 }
