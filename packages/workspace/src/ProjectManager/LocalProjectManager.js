@@ -110,6 +110,18 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
+  async rename (oldPath, name) {
+    const { path, fs } = fileOps.current
+    const { dir } = path.parse(oldPath)
+    const newPath = path.join(dir, name)
+  
+    try {
+      await fs.rename(oldPath, newPath)
+    } catch (e) {
+      throw new Error(`Fail to rename <b>${oldPath}</b>.`)
+    }
+  }
+
   async deleteFile (node) {
     const { response } = await fileOps.current.showMessageBox({
       message: `Are you sure you want to delete ${node.path}?`,

@@ -16,9 +16,10 @@ const openInTerminal = node => {
   fileOps.current.openInTerminal(basePath)
 }
 
-export const registerHandlers = ({ newFile, newFolder, deleteFile }) => {
+export const registerHandlers = ({ newFile, newFolder, rename, deleteFile }) => {
   handlers.newFile = newFile
   handlers.newFolder = newFolder
+  handlers.rename = rename
   handlers.deleteFile = deleteFile
 }
 
@@ -33,6 +34,7 @@ if (platform.isDesktop) {
     { text: 'Open Containing Folder', onClick: showInFinder },
     { text: 'Open in Terminal', onClick: openInTerminal },
     null,
+    { text: 'Rename', onClick: node => handlers.rename(node) },
     { text: 'Delete', onClick: node => handlers.deleteFile(node) },
   ]
 } else {
@@ -42,6 +44,7 @@ if (platform.isDesktop) {
     // null,
     // { text: 'Download' },
     null,
+    { text: 'Rename', onClick: node => handlers.rename(node) },
     { text: 'Delete', onClick: node => handlers.deleteFile(node) },
   ]
 }

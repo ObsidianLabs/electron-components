@@ -122,6 +122,20 @@ export default class RemoteProjectManager extends BaseProjectManager {
     await this.refreshDirectory(basePath)
   }
 
+  async rename (oldPath, name) {
+    const { path, fs } = fileOps.current
+    const { dir } = path.parse(oldPath)
+    const newPath = path.join(dir, name)
+
+    try {
+      await fs.rename(oldPath, newPath)
+    } catch (e) {
+      throw new Error(`Fail to rename <b>${this.pathInProject(folderPath)}</b>.`)
+    }
+
+    await this.refreshDirectory(dir)
+  }
+
   async deleteFile (node) {
     const { response } = await fileOps.current.showMessageBox({
       message: `Are you sure you want to delete ${node.pathInProject}?`,

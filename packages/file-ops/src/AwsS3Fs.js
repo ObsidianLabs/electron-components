@@ -52,6 +52,11 @@ export default class AwsS3Fs {
     return this.writeFile(`${filePath}/.placeholder`)
   }
 
+  async rename (oldPath, newPath) {
+    // TODO: rename file
+    throw new Error()
+  }
+
   async deleteFile (filePath) {
     const params = {
       Bucket,

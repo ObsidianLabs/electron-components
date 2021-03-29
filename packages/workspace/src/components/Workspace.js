@@ -18,6 +18,7 @@ import actions from '../actions'
 import contextMenu, { registerHandlers } from './contextMenu'
 
 import CreateFileOrFolderModals from './CreateFileOrFolderModals'
+import RenameModal from './RenameModal'
 
 const getSizeUpdate = SplitPane.getSizeUpdate
 SplitPane.getSizeUpdate = (props, state) => {
@@ -36,7 +37,8 @@ export default class Workspace extends Component {
     super(props)
     this.filetree = React.createRef()
     this.codeEditor = React.createRef()
-    this.modal = React.createRef()
+    this.createModal = React.createRef()
+    this.renameModal = React.createRef()
     this.throttledDispatchResizeEvent = throttle(() => {
       window.dispatchEvent(new Event('resize'))
     }, 200)
@@ -51,6 +53,7 @@ export default class Workspace extends Component {
     registerHandlers({
       newFile: node => this.openCreateFileModal(node),
       newFolder: node => this.openCreateFolderModal(node),
+      rename: node => this.openRenameModal(node),
       deleteFile: node => this.context.projectManager.deleteFile(node),
     })
   }
@@ -100,7 +103,7 @@ export default class Workspace extends Component {
     if (platform.isWeb) {
       baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
     }
-    this.modal.current.openCreateFileModal({ baseName, basePath })
+    this.createModal.current.openCreateFileModal({ baseName, basePath })
   }
 
   openCreateFolderModal = node => {
@@ -110,7 +113,14 @@ export default class Workspace extends Component {
     if (platform.isWeb) {
       baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
     }
-    this.modal.current.openCreateFolderModal({ baseName, basePath })
+    this.createModal.current.openCreateFolderModal({ baseName, basePath })
+  }
+
+  openRenameModal = node => {
+    const activeNode = node || this.filetree.current.activeNode
+    const type = activeNode.children ? 'folder' : 'file'
+    const { base } = fileOps.current.path.parse(activeNode.path)
+    this.renameModal.current.openModal({ type, name: base, oldPath: activeNode.path })
   }
 
   saveAll = async () => {
@@ -216,7 +226,11 @@ export default class Workspace extends Component {
         </SplitPane>
       </SplitPane>
       <CreateFileOrFolderModals
-        ref={this.modal}
+        ref={this.createModal}
+        projectManager={this.context.projectManager}
+      />
+      <RenameModal
+        ref={this.renameModal}
         projectManager={this.context.projectManager}
       />
     </>
