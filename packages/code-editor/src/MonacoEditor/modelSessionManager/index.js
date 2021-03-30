@@ -9,7 +9,7 @@ export function defaultModeDetector (filePath) {
   if (filePath.startsWith('custom:')) {
     return filePath.substr(7)
   } else if (filePath.endsWith('.cpp') || filePath.endsWith('.hpp')) {
-    return 'cpp-eosio'
+    return 'cpp'
   } else if (filePath.endsWith('.js')) {
     return 'javascript'
   } else if (filePath.endsWith('.json') || filePath.endsWith('.abi')) {
