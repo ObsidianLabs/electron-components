@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react'
 
-import {
-  LoadingScreen,
-  TabsWithNavigationBar,
-} from '@obsidians/ui-components'
-
 import CacheRoute from 'react-router-cache-route'
+import TabsWithNavigationBar from './TabsWithNavigationBar'
+import LoadingScreen from '../Screen/LoadingScreen'
 
 export default class TabbedExplorer extends PureComponent {
   constructor (props) {

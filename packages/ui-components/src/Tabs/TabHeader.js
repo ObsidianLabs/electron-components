@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
+import { UncontrolledTooltip } from 'reactstrap'
+
 class TabHeaderItem extends PureComponent {
   static propTypes = {
     size: PropTypes.string,
@@ -83,7 +85,7 @@ export default class TabHeader extends PureComponent {
   }
 
   render () {
-    const { className, size, tabs, selected, getTabText, onSelectTab, onCloseTab } = this.props
+    const { className, size, tabs, selected, getTabText, onSelectTab, onCloseTab, ToolButtons = [] } = this.props
 
     return (
       <ul className={classnames('nav nav-tabs', className)}>
@@ -116,6 +118,21 @@ export default class TabHeader extends PureComponent {
               <i className='fas fa-plus' />
             </div>
           </li>
+        }
+        <div className='flex-grow-1'/>
+        {
+          ToolButtons.map((btn, index) => {
+            const id = `tab-btn-${index}`
+            return <li key={id}>
+              <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)} onClick={btn.onClick}>
+                <i className={btn.icon} />
+                <span>{btn.text}</span>
+              </div>
+              <UncontrolledTooltip delay={0} target={id} placement='bottom' >
+                {btn.tooltip}
+              </UncontrolledTooltip>
+            </li>
+          })
         }
       </ul>
     )

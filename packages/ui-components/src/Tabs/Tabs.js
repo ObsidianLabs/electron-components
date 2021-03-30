@@ -188,6 +188,7 @@ export default class Tabs extends PureComponent {
           getTabText={this.props.getTabText}
           onNewTab={this.props.createNewTab && this.onNewTab}
           onCloseTab={this.props.noCloseTab ? undefined : this.onCloseTab}
+          ToolButtons={this.props.ToolButtons}
         />
         <div className='d-flex flex-1 flex-column overflow-hidden p-relative'>
           {this.props.children}
