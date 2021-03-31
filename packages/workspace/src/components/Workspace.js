@@ -160,7 +160,7 @@ export default class Workspace extends Component {
       initial,
       ProjectToolbar,
       signer,
-      Terminal = <div></div>,
+      Terminal,
       defaultSize,
       readonly = false,
       makeContextMenu = x => x,
@@ -170,6 +170,44 @@ export default class Workspace extends Component {
       showTerminal,
       terminalSize,
     } = this.state
+    
+    let Editor = null
+    if (Terminal) {
+      Editor = (
+        <SplitPane
+          split='horizontal'
+          primary='second'
+          size={showTerminal ? terminalSize : 0}
+          minSize={0}
+          onChange={terminalSize => {
+            this.setState({ terminalSize })
+            this.throttledDispatchResizeEvent()
+          }}
+          onDragFinished={this.onDragTerminal}
+        >
+          <CodeEditorCollection
+            ref={this.codeEditor}
+            theme={theme}
+            initialTab={this.tabFromPath(initial.path, initial.remote)}
+            projectRoot={this.context.projectRoot}
+            onSelectTab={this.onSelectTab}
+            readonly={readonly}
+          />
+          {Terminal}
+        </SplitPane>
+      )
+    } else {
+      Editor = (
+        <CodeEditorCollection
+          ref={this.codeEditor}
+          theme={theme}
+          initialTab={this.tabFromPath(initial.path, initial.remote)}
+          projectRoot={this.context.projectRoot}
+          onSelectTab={this.onSelectTab}
+          readonly={readonly}
+        />
+      )
+    }
 
     return <>
       <SplitPane
@@ -203,27 +241,7 @@ export default class Workspace extends Component {
             contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />
         </div>
-        <SplitPane
-          split='horizontal'
-          primary='second'
-          size={showTerminal ? terminalSize : 0}
-          minSize={0}
-          onChange={terminalSize => {
-            this.setState({ terminalSize })
-            this.throttledDispatchResizeEvent()
-          }}
-          onDragFinished={this.onDragTerminal}
-        >
-          <CodeEditorCollection
-            ref={this.codeEditor}
-            theme={theme}
-            initialTab={this.tabFromPath(initial.path, initial.remote)}
-            projectRoot={this.context.projectRoot}
-            onSelectTab={this.onSelectTab}
-            readonly={readonly}
-          />
-          {Terminal}
-        </SplitPane>
+        {Editor}
       </SplitPane>
       <CreateFileOrFolderModals
         ref={this.createModal}

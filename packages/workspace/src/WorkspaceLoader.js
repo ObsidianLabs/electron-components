@@ -99,7 +99,7 @@ export default class WorkspaceLoader extends PureComponent {
       projectRoot,
       ProjectToolbar,
       signer,
-      CompilerTerminal = () => null,
+      CompilerTerminal,
     } = this.props
     const { terminal } = this.state
 
@@ -122,7 +122,7 @@ export default class WorkspaceLoader extends PureComponent {
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
           signer={signer}
-          Terminal={<CompilerTerminal active={terminal} cwd={projectRoot} />}
+          Terminal={CompilerTerminal ? <CompilerTerminal active={terminal} cwd={projectRoot} /> : null}
         />
       </WorkspaceContext.Provider>
     )
