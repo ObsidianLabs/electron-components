@@ -27,21 +27,21 @@ export default {
     return !!this.username
   },
 
-  async login (history, provider = 'github') {
+  async login (history, provider = 'github', state) {
     if (!providers[provider]) {
       return
     }
     if (platform.isDesktop) {
       const channel = new IpcChannel('auth')
       const loginUrl = providers[provider].loginUrl
-      const callbackUrl = await channel.invoke('login', { loginUrl, serverUrl })
+      const callbackUrl = await channel.invoke('login', { loginUrl, serverUrl, state })
       if (callbackUrl) {
         await this.handleCallback({ location: new URL(callbackUrl), provider, history })
       }
       this.updateProfile()
       await channel.invoke('close')
     } else {
-      providers[provider].login()
+      providers[provider].login(state)
     }
   },
 
