@@ -6,6 +6,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import actions from '../actions'
 
 export default class CreateFileOrFolderModals extends PureComponent {
   constructor(props) {
@@ -33,12 +34,16 @@ export default class CreateFileOrFolderModals extends PureComponent {
   onCreate = async () => {
     const { basePath, name } = this.state
     if (this.state.type === 'file') {
+      let filePath
       try {
-        await this.props.projectManager.createNewFile(basePath, name)
+        filePath = await this.props.projectManager.createNewFile(basePath, name)
       } catch (e) {
         notification.error('Cannot Create File', e.message)
         return
       }
+      setTimeout(() => {
+        actions.workspace.openFile({ path: filePath }, true)
+      }, 500)
     } else if (this.state.type === 'folder') {
       try {
         await this.props.projectManager.createNewFolder(basePath, name)

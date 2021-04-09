@@ -91,6 +91,7 @@ export default class LocalProjectManager extends BaseProjectManager {
         throw new Error(`Fail to create the file <b>${filePath}</b>.`)
       }
     }
+    return filePath
   }
 
   async createNewFolder (basePath, name) {

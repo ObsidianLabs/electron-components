@@ -108,6 +108,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     }
 
     await this.refreshDirectory(basePath)
+    return filePath
   }
 
   async createNewFolder (basePath, name) {
