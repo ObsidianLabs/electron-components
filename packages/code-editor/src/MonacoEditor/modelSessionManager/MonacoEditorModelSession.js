@@ -44,6 +44,8 @@ export default class MonacoEditorModelSession {
     this._decorations = decorations
     this._showCustomTab = true
     this._viewState = null
+    this._saved = true
+    this._topbar = null
   }
 
   get model () {
@@ -77,6 +79,9 @@ export default class MonacoEditorModelSession {
     }
   }
 
+  set saved (v) { this._saved = v }
+  get saved () { return this._saved }
+
   get readonly () {
     return this._readonly
   }
@@ -89,6 +94,16 @@ export default class MonacoEditorModelSession {
   }
   set viewState (viewState) {
     this._viewState = viewState
+  }
+
+  get topbar () {
+    return this._topbar
+  }
+  setTopbar (value) {
+    this._topbar = value
+  }
+  dismissTopbar () {
+    this._topbar = null
   }
 
   recoverInEditor(monacoEditor) {

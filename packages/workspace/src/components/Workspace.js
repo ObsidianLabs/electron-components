@@ -139,7 +139,7 @@ export default class Workspace extends Component {
   allUnsavedFiles = () => this.codeEditor.current.allUnsavedFiles();
 
   // fileSaved = (path, saveAsPath) => {
-  //   this.codeEditor.current.fileSaved(path, saveAsPath)
+  //   this.codeEditor.current.fileSaved(path, { saveAsPath })
   // }
 
   onDragTerminal = size => {

@@ -96,6 +96,7 @@ class ModelSessionManager {
     this._editorContainer.fileSaving(filePath)
     await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
     this._editorContainer.fileSaved(filePath)
+    this.sessions[filePath].saved = true
   }
 
   async saveCurrentFile () {
@@ -110,11 +111,21 @@ class ModelSessionManager {
     }
   }
 
+  async loadFile (filePath) {
+    if (!this.sessions[filePath]) {
+      throw new Error(`File "${filePath}" is not open in the current workspace.`)
+    }
+    // this._editorContainer.fileSaving(filePath)
+    const code = await fileOps.current.readFile(filePath)
+    // this.sessions[filePath].saved = true
+    // this._editorContainer.fileSaved(filePath)
+    this.sessions[filePath].refreshValue(code)
+  }
+
   undo () {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
       throw new Error('No current file open.')
     }
-    window.model = this.sessions[this.currentFilePath].model
     this.sessions[this.currentFilePath].model.undo()
   }
 
@@ -148,11 +159,27 @@ class ModelSessionManager {
   }
 
   refreshFile (data) {
-    if (!this.sessions[data.path]) {
+    const modelSession = this.sessions[data.path]
+    if (!modelSession) {
       return
     }
-    this.sessions[data.path].refreshValue(data.content)
-    this._editorContainer.fileSaved(data.path)
+    if (modelSession.saved) {
+      modelSession.refreshValue(data.content)
+      this._editorContainer.fileSaved(data.path)
+      modelSession.saved = true
+    } else {
+      modelSession.setTopbar({ type: 'external', actions: [{
+        text: 'Refresh',
+        onClick: async () => {
+          await this.loadFile(data.path)
+          this._editorContainer.fileSaved(data.path)
+          modelSession.saved = true
+          modelSession.dismissTopbar()
+          this._editorContainer.refresh()
+        },
+      }] })
+      this._editorContainer.refresh()
+    }
   }
 
   updateDecorations (decorationCollection) {
