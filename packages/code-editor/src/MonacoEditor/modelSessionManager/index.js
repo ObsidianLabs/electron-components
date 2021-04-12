@@ -182,32 +182,40 @@ class ModelSessionManager {
     }
   }
 
-  updateDecorations (decorationCollection) {
+  updateDecorations (decorations) {
+    const decorationCollection = {}
+    decorations.forEach(item => {
+      if (!decorationCollection[item.filePath]) {
+        decorationCollection[item.filePath] = []
+      }
+      decorationCollection[item.filePath].push(item)
+    })
+
     if (this.decorationCollection) {
-      Object.keys(this.decorationCollection).forEach(path => {
-        if (this.sessions[path]) {
-          this.sessions[path].decorations = decorationCollection[path]
+      Object.keys(this.decorationCollection).forEach(filePath => {
+        if (this.sessions[filePath]) {
+          this.sessions[filePath].decorations = decorationCollection[filePath]
         }
       })
     }
 
     this.decorationCollection = decorationCollection
-    Object.keys(decorationCollection).forEach(path => {
-      if (this.sessions[path]) {
-        this.sessions[path].decorations = decorationCollection[path]
+    Object.keys(decorationCollection).forEach(filePath => {
+      if (this.sessions[filePath]) {
+        this.sessions[filePath].decorations = decorationCollection[filePath]
       }
     })
   }
 
-  closeModelSession (path) {
-    if (this.sessions[path]) {
-      this.sessions[path].dispose()
-      this.sessions[path] = undefined
+  closeModelSession (filePath) {
+    if (this.sessions[filePath]) {
+      this.sessions[filePath].dispose()
+      this.sessions[filePath] = undefined
     }
   }
 
   closeAllModelSessions () {
-    Object.keys(this.sessions).forEach(path => this.closeModelSession(path))
+    Object.keys(this.sessions).forEach(filePath => this.closeModelSession(filePath))
   }
 }
 

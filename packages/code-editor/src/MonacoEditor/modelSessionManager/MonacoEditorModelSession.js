@@ -14,21 +14,21 @@ const decos = {
     note: 'bg-info-transparent'
   },
   glyphMarginClassNames: {
-    error: 'fas fa-times-circle text-danger p-half',
-    warning: 'fas fa-exclamation-triangle text-warning p-half',
-    note: 'fas fa-circle text-info p-half'
+    error: 'fas fa-times-circle text-danger p-1',
+    warning: 'fas fa-exclamation-triangle text-warning p-1',
+    note: 'fas fa-circle text-info p-1'
   }
 }
 
-function generateAnnotation ({ type, text, row, column }) {
+function generateAnnotation ({ type, text, row = 1, column = 1, length = 0 }) {
   return {
-    range: new monaco.Range(row, 0, row, 10000),
+    range: new monaco.Range(row, column, row, column + length),
     options: {
       isWholeLine: true,
       minimap: type !== 'note',
       // className: EditorSession.decos.classNames[type],
-      glyphMarginClassName: decos.glyphMarginClassNames[type]
-      // hoverMessage: { value: `\`\`\`\n${text}\n\`\`\`` }
+      glyphMarginClassName: decos.glyphMarginClassNames[type],
+      // hoverMessage: { value: text }
       // glyphMarginHoverMessage: { value: d.type }
     }
   }
@@ -41,11 +41,11 @@ export default class MonacoEditorModelSession {
     this._remote = remote
     this._CustomTab = CustomTab
     this._readonly = false
-    this._decorations = decorations
     this._showCustomTab = true
     this._viewState = null
     this._saved = true
     this._topbar = null
+    this.decorations = decorations
   }
 
   get model () {
@@ -141,54 +141,56 @@ export default class MonacoEditorModelSession {
     this._showCustomTab = !this._showCustomTab
   }
 
-  generateMarkers ({ type, text, row, column, notes }) {
+  generateMarkers ({ filePath, type, text, row, column, length, notes = [] }) {
     if (!this._model) {
       return
     }
     
-    const textLines = text.split('\n')
-    if (textLines.length === 4 || textLines.length === 3) {
-      const [spaces, tildes] = textLines[2].split('^')
+    // const textLines = text.split('\n')
+    // if (textLines.length === 4 || textLines.length === 3) {
+    //   const [spaces, tildes] = textLines[2].split('^')
 
-      let startColumn = column
-      let endColumn = column + tildes.length
-      if (tildes.length === 1) {
-        const wordAtPosition = this._model.getWordAtPosition({ lineNumber: row, column })
-        if (wordAtPosition) {
-          startColumn = wordAtPosition.startColumn
-          endColumn = wordAtPosition.endColumn
-        }
-      }
-
+    // let startColumn = column
+    // let endColumn = column + tildes.length
+    // if (tildes.length === 1) {
+    //   const wordAtPosition = this._model.getWordAtPosition({ lineNumber: row, column })
+    //   if (wordAtPosition) {
+    //     startColumn = wordAtPosition.startColumn
+    //     endColumn = wordAtPosition.endColumn
+    //   }
+    // }
+    
+    if (typeof row === 'number') {
       return {
-      // code: 'code',
-      // source: 'source',
+        // code: 'code',
+        // source: 'source',
         severity: SEVERITIES[type],
-        message: textLines[0],
+        message: text,
         startLineNumber: row,
-        startColumn,
+        startColumn: column,
         endLineNumber: row,
-        endColumn,
-        relatedInformation: notes.map(({ filePath, row, column, text }) => {
-          return {
-            resource: monaco.Uri.file(filePath),
-            message: text.split('\n')[0],
-            startLineNumber: row,
-            startColumn: column,
-            endLineNumber: row,
-            endColumn: column
-          }
-        })
+        endColumn: column + length,
+        relatedInformation: [
+          // {
+          //   resource: monaco.Uri.file(filePath),
+          //   message: text,
+          //   startLineNumber: row,
+          //   startColumn: column,
+          //   endLineNumber: row,
+          //   endColumn: column + length,
+          // }
+        ]
       }
     }
 
     return {
       severity: SEVERITIES[type],
       message: text,
-      startLineNumber: row,
+      startLineNumber: 1,
       startColumn: 0,
-      endLineNumber: row,
-      endColumn: 1000
+      endLineNumber: 1,
+      endColumn: 100,
+      relatedInformation: []
     }
   }
 
