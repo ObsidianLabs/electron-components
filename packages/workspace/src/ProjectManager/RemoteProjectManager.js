@@ -48,7 +48,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory () {
-    const result = await fileOps.current.fs.list(`${this.prefix}/${this.userId}/${this.projectId}`)
+    const result = await fileOps.current.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     return {
       name: this.projectName,
       root: true,
@@ -60,7 +60,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadDirectory (node) {
-    const result = await fileOps.current.fs.list(node.path)
+    const result = await fileOps.current.listFolder(node.path)
     return result.map(item => ({
       ...item,
       pathInProject: this.pathInProject(item.path)

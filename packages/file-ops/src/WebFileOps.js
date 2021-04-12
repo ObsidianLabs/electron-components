@@ -53,6 +53,10 @@ export default class WebFileOps extends FileOps {
     }
   }
 
+  async listFolder (folderPath) {
+    return await this.fs.list(folderPath)
+  }
+
   showMessageBox ({ message, buttons }) {
     const result = window.confirm(message)
     return { response: result ? 0 : 1 }

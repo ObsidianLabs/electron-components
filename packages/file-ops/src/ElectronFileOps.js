@@ -56,6 +56,10 @@ export default class ElectronFileOps extends FileOps {
     }
   }
 
+  async listFolder (folderPath) {
+    return await this.fs.readdir(folderPath)
+  }
+
   showOpenDialog (options) {
     return this.electron.remote.dialog.showOpenDialog(this.electron.remote.getCurrentWindow(), options)
   }
