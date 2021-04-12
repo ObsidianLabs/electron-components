@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 
+import { Base64 } from 'js-base64'
 import { Button } from '@obsidians/ui-components'
 import platform from '@obsidians/platform'
 
@@ -90,7 +91,7 @@ export default class WorkspaceLoader extends PureComponent {
   }
 
   removeProject = projectRoot => {
-    const id = btoa(projectRoot)
+    const id = Base64.encode(projectRoot)
     actions.removeProject({ id, name: projectRoot })
   }
 
