@@ -133,7 +133,22 @@ export default class BaseModal extends PureComponent {
         contentClassName={h100 && 'h-100'}
         onClosed={onClosed}
       >
-        <ModalHeader toggle={noCancel ? undefined : this.toggle}>{title}</ModalHeader>
+        <ModalHeader
+          toggle={noCancel ? undefined : this.toggle}
+          close={!noCancel &&
+            <Button
+              size='sm'
+              color='default'
+              className='text-muted'
+              tabIndex={-1}
+              onClick={this.toggle}
+            >
+              <i className='fas fa-times' />
+            </Button>
+          }
+        >
+          {title}
+        </ModalHeader>
         <ModalBody
           className={classnames('d-flex flex-column', !overflow && 'overflow-auto')}
         >

@@ -230,7 +230,9 @@ export default class DropdownInput extends PureComponent {
         {
           addon &&
             <InputGroupAddon addonType='prepend'>
-              <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}><div className='w-5'>{addon}</div></Button>
+              <Button color='secondary' tabIndex={-1} className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
+                <div className='w-5'>{addon}</div>
+              </Button>
             </InputGroupAddon>
         }
         <Dropdown
