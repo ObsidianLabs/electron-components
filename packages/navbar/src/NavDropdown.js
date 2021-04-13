@@ -89,7 +89,7 @@ export default class NavDropdown extends Component {
         >
           {children}
         </DropdownToggle>
-        <DropdownMenu right={right} style={{ top: 48, [right ? 'right' : 'left']: 4 }}>
+        <DropdownMenu right={right} style={{ width: 'fit-content', top: 48, [right ? 'right' : 'left']: 4 }}>
           {this.renderDropdownList(list)}
         </DropdownMenu>
       </ButtonDropdown>
