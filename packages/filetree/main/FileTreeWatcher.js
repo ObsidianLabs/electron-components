@@ -20,6 +20,7 @@ class FileTreeWatcher {
 
     this.debouncedRefreshDirectory = debounceByKey(dir => client.loadAndRefreshDirectory(dir), 200)
     this.debouncedFileModified = debounceByKey(filePath => this.refreshFile(filePath), 200)
+    this.debouncedFileDeleted = debounceByKey(filePath => this.deleteFile(filePath), 200)
   }
 
   dispose () {
@@ -51,6 +52,7 @@ class FileTreeWatcher {
 
   onFileMoved (details) {
     const { dir } = path.parse(details.path)
+    this.debouncedFileDeleted(details.path)
     this.debouncedRefreshDirectory(dir)
   }
 
@@ -67,6 +69,10 @@ class FileTreeWatcher {
   async refreshFile (filePath) {
     const content = await fs.promises.readFile(filePath, 'utf8')
     this.client.channel.send('refresh-file', { path: filePath, content })
+  }
+
+  async deleteFile (filePath) {
+    this.client.channel.send('delete-file', { path: filePath })
   }
 }
 

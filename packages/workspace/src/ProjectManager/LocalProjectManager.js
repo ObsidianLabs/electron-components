@@ -9,6 +9,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     super(project, projectRoot)
 
     BaseProjectManager.channel.on('refresh-file', this.onRefreshFile.bind(this))
+    BaseProjectManager.channel.on('delete-file', this.onDeleteFile.bind(this))
   }
 
   async prepareProject () {
@@ -138,6 +139,10 @@ export default class LocalProjectManager extends BaseProjectManager {
     if (data.path === this.settingsFilePath) {
       this.projectSettings?.update(data.content)
     }
+  }
+
+  onDeleteFile (data) {
+    modelSessionManager.deleteFile(data.path)
   }
 
   toggleTerminal (terminal) {

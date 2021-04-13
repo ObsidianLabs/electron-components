@@ -85,16 +85,12 @@ export default class MonacoEditorContainer extends PureComponent {
     if (modelSession.topbar) {
       topbar = (
         <small className='px-2 border-bottom-black text-muted'>
-          This file is modified outside {process.env.PROJECT_NAME}.
+          {modelSession.topbar.title}
           {modelSession.topbar.actions.map((action, index) => (
-            <a key={`action-${index}`} className='ml-3 cursor-pointer' onClick={action.onClick} >
+            <a key={`action-${index}`} className='ml-2 cursor-pointer' onClick={action.onClick} >
               {action.text}
             </a>
           ))}
-          <a onClick={() => {
-            modelSession.dismissTopbar()
-            this.forceUpdate()
-          }} className='ml-3 cursor-pointer'>Keep Current</a>
         </small>
       )
     }

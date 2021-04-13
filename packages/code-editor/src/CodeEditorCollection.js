@@ -60,6 +60,11 @@ export default class CodeEditorCollection extends Component {
     return tab => modelSessionManager.closeModelSession(tab.path)
   }
 
+  closeCurrentFile = () => {
+    const { onCloseTab, currentTab } = this.tabs.current
+    onCloseTab(currentTab)
+  }
+
   saveFile = async filePath => await modelSessionManager.saveFile(filePath)
 
   promptSave = async filePath => {

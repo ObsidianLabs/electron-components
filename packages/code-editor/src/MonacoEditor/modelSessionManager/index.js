@@ -168,18 +168,58 @@ class ModelSessionManager {
       this._editorContainer.fileSaved(data.path)
       modelSession.saved = true
     } else {
-      modelSession.setTopbar({ type: 'external', actions: [{
-        text: 'Refresh',
-        onClick: async () => {
-          await this.loadFile(data.path)
-          this._editorContainer.fileSaved(data.path)
-          modelSession.saved = true
-          modelSession.dismissTopbar()
-          this._editorContainer.refresh()
-        },
-      }] })
+      modelSession.setTopbar({
+        title: `This file is modified outside ${process.env.PROJECT_NAME}.`,
+        actions: [
+          {
+            text: 'Refresh',
+            onClick: async () => {
+              await this.loadFile(data.path)
+              this._editorContainer.fileSaved(data.path)
+              modelSession.saved = true
+              modelSession.dismissTopbar()
+              this._editorContainer.refresh()
+            },
+          },
+          {
+            text: 'Keep Current',
+            onClick: async () => {
+              modelSession.dismissTopbar()
+              this._editorContainer.refresh()
+            },
+          }
+        ]
+      })
       this._editorContainer.refresh()
     }
+  }
+
+  deleteFile (filePath) {
+    const modelSession = this.sessions[filePath]
+    if (!modelSession) {
+      return
+    }
+    
+    modelSession.setTopbar({
+      title: `This file is deleted.`,
+      actions: [
+        {
+          text: 'Keep',
+          onClick: async () => {
+            modelSession.dismissTopbar()
+            this._editorContainer.refresh()
+          },
+        },
+        {
+          text: 'Discard',
+          onClick: async () => {
+            modelSession.dismissTopbar()
+            this._editorContainer.closeCurrentFile()
+          },
+        }
+      ]
+    })
+    this._editorContainer.refresh()
   }
 
   updateDecorations (decorations) {
