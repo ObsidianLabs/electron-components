@@ -34,7 +34,7 @@ export default class TreeNodeContextMenu extends PureComponent {
 
     let contextMenu
     if (node.root) {
-      contextMenu = this.props.contextMenu.slice(0, -2)
+      contextMenu = this.props.contextMenu.slice(0, -3)
     } else {
       contextMenu = this.props.contextMenu
     }
