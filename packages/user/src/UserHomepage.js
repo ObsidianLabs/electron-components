@@ -158,3 +158,6 @@ class UserHomepage extends PureComponent {
 }
 
 export default connect(['profile', 'projects'])(UserHomepage)
+export {
+  UserHomepage as BaseUserHomepage,
+}
