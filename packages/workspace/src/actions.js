@@ -1,3 +1,4 @@
+import { Base64 } from 'js-base64'
 import Auth from '@obsidians/auth'
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
@@ -20,7 +21,7 @@ export class ProjectActions {
   async newProject () {
     const { _id, projectRoot, name } = await this.newProjectModal.openModal()
     const author = platform.isDesktop ? 'local' : Auth.username
-    const projectId = _id ? name : btoa(projectRoot)
+    const projectId = _id ? name : Base64.encode(projectRoot)
     redux.dispatch('ADD_PROJECT', {
       type: 'local',
       project: {
@@ -38,7 +39,7 @@ export class ProjectActions {
       const projectRoot = await fileOps.current.chooseFolder()
       const { base } = fileOps.current.path.parse(projectRoot)
       const author = 'local'
-      const projectId = btoa(projectRoot)
+      const projectId = Base64.encode(projectRoot)
       redux.dispatch('ADD_PROJECT', {
         type: 'local',
         project: {

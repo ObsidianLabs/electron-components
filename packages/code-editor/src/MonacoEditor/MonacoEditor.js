@@ -55,7 +55,10 @@ export default class MonacoEditor extends Component {
       glyphMargin: true
     })
     modelSessionManager.editor = monacoEditor
-    monacoEditor.onDidChangeModelContent(() => this.props.onChange())
+    monacoEditor.onDidChangeModelContent(() => {
+      this.props.onChange()
+      this.props.modelSession.saved = false
+    })
     monacoEditor.onDidChangeCursorPosition(({ position }) => {
       // $.bottomBar.updatePosition(position)
     })

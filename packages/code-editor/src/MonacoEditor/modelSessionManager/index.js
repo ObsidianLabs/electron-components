@@ -96,6 +96,7 @@ class ModelSessionManager {
     this._editorContainer.fileSaving(filePath)
     await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
     this._editorContainer.fileSaved(filePath)
+    this.sessions[filePath].saved = true
   }
 
   async saveCurrentFile () {
@@ -110,11 +111,21 @@ class ModelSessionManager {
     }
   }
 
+  async loadFile (filePath) {
+    if (!this.sessions[filePath]) {
+      throw new Error(`File "${filePath}" is not open in the current workspace.`)
+    }
+    // this._editorContainer.fileSaving(filePath)
+    const code = await fileOps.current.readFile(filePath)
+    // this.sessions[filePath].saved = true
+    // this._editorContainer.fileSaved(filePath)
+    this.sessions[filePath].refreshValue(code)
+  }
+
   undo () {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
       throw new Error('No current file open.')
     }
-    window.model = this.sessions[this.currentFilePath].model
     this.sessions[this.currentFilePath].model.undo()
   }
 
@@ -148,39 +159,103 @@ class ModelSessionManager {
   }
 
   refreshFile (data) {
-    if (!this.sessions[data.path]) {
+    const modelSession = this.sessions[data.path]
+    if (!modelSession) {
       return
     }
-    this.sessions[data.path].refreshValue(data.content)
-    this._editorContainer.fileSaved(data.path)
+    if (modelSession.saved) {
+      modelSession.refreshValue(data.content)
+      this._editorContainer.fileSaved(data.path)
+      modelSession.saved = true
+    } else {
+      modelSession.setTopbar({
+        title: `This file is modified outside ${process.env.PROJECT_NAME}.`,
+        actions: [
+          {
+            text: 'Refresh',
+            onClick: async () => {
+              await this.loadFile(data.path)
+              this._editorContainer.fileSaved(data.path)
+              modelSession.saved = true
+              modelSession.dismissTopbar()
+              this._editorContainer.refresh()
+            },
+          },
+          {
+            text: 'Keep Current',
+            onClick: async () => {
+              modelSession.dismissTopbar()
+              this._editorContainer.refresh()
+            },
+          }
+        ]
+      })
+      this._editorContainer.refresh()
+    }
   }
 
-  updateDecorations (decorationCollection) {
+  deleteFile (filePath) {
+    const modelSession = this.sessions[filePath]
+    if (!modelSession) {
+      return
+    }
+    
+    modelSession.setTopbar({
+      title: `This file is deleted.`,
+      actions: [
+        {
+          text: 'Keep',
+          onClick: async () => {
+            modelSession.dismissTopbar()
+            this._editorContainer.refresh()
+          },
+        },
+        {
+          text: 'Discard',
+          onClick: async () => {
+            modelSession.dismissTopbar()
+            this._editorContainer.closeCurrentFile()
+          },
+        }
+      ]
+    })
+    this._editorContainer.refresh()
+  }
+
+  updateDecorations (decorations) {
+    const decorationCollection = {}
+    decorations.forEach(item => {
+      if (!decorationCollection[item.filePath]) {
+        decorationCollection[item.filePath] = []
+      }
+      decorationCollection[item.filePath].push(item)
+    })
+
     if (this.decorationCollection) {
-      Object.keys(this.decorationCollection).forEach(path => {
-        if (this.sessions[path]) {
-          this.sessions[path].decorations = decorationCollection[path]
+      Object.keys(this.decorationCollection).forEach(filePath => {
+        if (this.sessions[filePath]) {
+          this.sessions[filePath].decorations = decorationCollection[filePath]
         }
       })
     }
 
     this.decorationCollection = decorationCollection
-    Object.keys(decorationCollection).forEach(path => {
-      if (this.sessions[path]) {
-        this.sessions[path].decorations = decorationCollection[path]
+    Object.keys(decorationCollection).forEach(filePath => {
+      if (this.sessions[filePath]) {
+        this.sessions[filePath].decorations = decorationCollection[filePath]
       }
     })
   }
 
-  closeModelSession (path) {
-    if (this.sessions[path]) {
-      this.sessions[path].dispose()
-      this.sessions[path] = undefined
+  closeModelSession (filePath) {
+    if (this.sessions[filePath]) {
+      this.sessions[filePath].dispose()
+      this.sessions[filePath] = undefined
     }
   }
 
   closeAllModelSessions () {
-    Object.keys(this.sessions).forEach(path => this.closeModelSession(path))
+    Object.keys(this.sessions).forEach(filePath => this.closeModelSession(filePath))
   }
 }
 

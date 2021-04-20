@@ -22,10 +22,15 @@ export default class CodeEditorCollection extends Component {
     }
     modelSessionManager.editorContainer = this
     this.tabs = React.createRef()
+    this.editorContainer = React.createRef()
   }
 
   shouldComponentUpdate (props, state) {
     return this.state.selectedTab !== state.selectedTab
+  }
+
+  refresh () {
+    this.editorContainer?.current.forceUpdate()
   }
 
   openTab = tab => {
@@ -53,6 +58,11 @@ export default class CodeEditorCollection extends Component {
       }
     }
     return tab => modelSessionManager.closeModelSession(tab.path)
+  }
+
+  closeCurrentFile = () => {
+    const { onCloseTab, currentTab } = this.tabs.current
+    onCloseTab(currentTab)
   }
 
   saveFile = async filePath => await modelSessionManager.saveFile(filePath)
@@ -105,10 +115,10 @@ export default class CodeEditorCollection extends Component {
 
   fileSaving = filePath => this.tabs.current.updateTab({ saving: true }, filePath)
 
-  fileSaved = async (filePath, saveAsPath) => {
-    const updates = { unsaved: false, saving: false }
+  fileSaved = async (filePath, { saveAsPath, unsaved = false } = {}) => {
+    const updates = { unsaved, saving: false }
     if (saveAsPath) {
-      await this.editorContainer.renameFile(filePath, saveAsPath)
+      await this.editorContainer.current?.renameFile(filePath, saveAsPath)
       updates.key = saveAsPath
       updates.path = saveAsPath
     }
@@ -162,7 +172,7 @@ export default class CodeEditorCollection extends Component {
           getTabText={tab => modelSessionManager.tabTitle(tab)}
         >
           <MonacoEditorContainer
-            ref={editorContainer => this.editorContainer = editorContainer}
+            ref={this.editorContainer}
             theme={this.props.theme}
             path={this.state.selectedTab.path}
             remote={this.state.selectedTab.remote}

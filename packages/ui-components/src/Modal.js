@@ -36,12 +36,18 @@ export default class BaseModal extends PureComponent {
     onClosed: PropTypes.func
   }
 
-  state = {
-    isOpen: false,
-    error: ''
+  constructor (props) {
+    super(props)
+    this.state = {
+      isOpen: false,
+      error: ''
+    }
+
+    this.modal = React.createRef()
   }
 
   async openModal () {
+    document.addEventListener('keydown', this.onKeyDown)
     return new Promise(resolve => {
       this.setState({ isOpen: true }, resolve)
     })
@@ -49,7 +55,20 @@ export default class BaseModal extends PureComponent {
 
   async closeModal () {
     if (!this.props.onCancel || await this.props.onCancel()) {
-      this.setState({ isOpen: false, error: '' })
+    document.removeEventListener('keydown', this.onKeyDown)
+    this.setState({ isOpen: false, error: '' })
+    }
+  }
+
+  onKeyDown = e => {
+    let isEsc = false
+    if (e.key) {
+      isEsc = e.key === 'Escape' || e.key === 'Esc'
+    } else {
+      e.keyCode === 27
+    }
+    if (isEsc) {
+      this.closeModal()
     }
   }
 
@@ -127,13 +146,29 @@ export default class BaseModal extends PureComponent {
 
     return (
       <Modal
+        ref={this.modal}
         isOpen={this.state.isOpen}
         style={{ userSelect: 'none', maxWidth: wide && '1000px' }}
         className={classnames({ 'modal-fullscreen': fullscreen, 'h-100': h100 }, className)}
         contentClassName={h100 && 'h-100'}
         onClosed={onClosed}
       >
-        <ModalHeader toggle={noCancel ? undefined : this.toggle}>{title}</ModalHeader>
+        <ModalHeader
+          toggle={noCancel ? undefined : this.toggle}
+          close={!noCancel &&
+            <Button
+              size='sm'
+              color='default'
+              className='text-muted'
+              tabIndex={-1}
+              onClick={this.toggle}
+            >
+              <i className='fas fa-times' />
+            </Button>
+          }
+        >
+          {title}
+        </ModalHeader>
         <ModalBody
           className={classnames('d-flex flex-column', !overflow && 'overflow-auto')}
         >

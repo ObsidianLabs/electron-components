@@ -81,7 +81,22 @@ export default class MonacoEditorContainer extends PureComponent {
 
     const { onCommand, onChange } = this.props
 
+    let topbar = null
+    if (modelSession.topbar) {
+      topbar = (
+        <small className='px-2 border-bottom-black text-muted'>
+          {modelSession.topbar.title}
+          {modelSession.topbar.actions.map((action, index) => (
+            <a key={`action-${index}`} className='ml-2 cursor-pointer' onClick={action.onClick} >
+              {action.text}
+            </a>
+          ))}
+        </small>
+      )
+    }
+
     return <>
+      {topbar}
       <MonacoEditor
         ref={editor => (this.editor = editor)}
         modelSession={modelSession}
