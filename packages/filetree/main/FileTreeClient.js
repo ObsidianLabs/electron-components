@@ -51,7 +51,7 @@ class FileTreeClient {
     // .ignoreHiddenFiles()
       .directory()
       .not()
-      .glob('node_modules', '.git')
+      .glob('node_modules', '.git', 'cache', '.cache')
       .depth(1)
       .find()
       .then(dirs => {
