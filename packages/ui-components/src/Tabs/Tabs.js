@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import find from 'lodash/find'
 import findIndex from 'lodash/findIndex'
 
+import Screen from '../Screen/Screen'
 import TabHeader from './TabHeader'
 
 export default class Tabs extends PureComponent {
@@ -150,9 +151,9 @@ export default class Tabs extends PureComponent {
     }
 
     // TODO: cannot close all tabs
-    if (this.state.tabs.length === 1) {
-      return
-    }
+    // if (this.state.tabs.length === 1) {
+    //   return
+    // }
 
     const index = this.findTabIndex(closingTab.key)
     if (index === -1) {
@@ -176,6 +177,20 @@ export default class Tabs extends PureComponent {
   }
 
   render () {
+    const { Bar = null, children } = this.props
+    const tabs = this.state.tabs
+    let content
+    if (tabs.length) {
+      content = children
+    } else {
+      content = (
+        <Screen>
+          <h4 className='display-4'>No Open Tab</h4>
+          <p></p>
+        </Screen>
+      )
+    }
+
     return (
       <div className={classnames(`d-flex flex-column w-100 h-100 overflow-hidden`, this.props.className)}>
         <TabHeader
@@ -191,7 +206,8 @@ export default class Tabs extends PureComponent {
           ToolButtons={this.props.ToolButtons}
         />
         <div className='d-flex flex-1 flex-column overflow-hidden p-relative'>
-          {this.props.children}
+          {Bar}
+          {content}
         </div>
       </div>
     )

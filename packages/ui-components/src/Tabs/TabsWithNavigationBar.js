@@ -99,18 +99,20 @@ export default class TabsWithNavigationBar extends PureComponent {
         createNewTab={this.createNewTab}
         tryCloseTab={() => this.onCloseTab}
         onTabsUpdated={this.onTabsUpdated}
+        Bar={
+          <NavigationBar
+            ref={this.navbar}
+            tab={tab}
+            starred={this.state.starredValues.has(tab.value)}
+            onEnter={this.props.onValue}
+            onRefresh={onRefresh}
+            updateTab={this.updateTab}
+            onToggleStar={this.onToggleStar}
+          >
+            {NavbarButtons}
+          </NavigationBar>
+        }
       >
-        <NavigationBar
-          ref={this.navbar}
-          tab={tab}
-          starred={this.state.starredValues.has(tab.value)}
-          onEnter={this.props.onValue}
-          onRefresh={onRefresh}
-          updateTab={this.updateTab}
-          onToggleStar={this.onToggleStar}
-        >
-          {NavbarButtons}
-        </NavigationBar>
         {children}
       </Tabs>
     )
