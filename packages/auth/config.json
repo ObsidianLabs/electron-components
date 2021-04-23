@@ -3,5 +3,6 @@
   "AWSRoleSessionName": "webide",
   "AWSRegion": "cn-north-1",
   "GithubClientId": "0719e502c798dd4bb376",
-  "TencentClientId": "100017401279"
+  "TencentClientId": "100017401279",
+  "BsnClientId": "hysbsn"
 }
