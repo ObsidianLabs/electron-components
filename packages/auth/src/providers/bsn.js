@@ -9,6 +9,6 @@ export default {
     window.location.href = this.loginUrl
   },
   get loginUrl() {
-    return `${process.env.REACT_APP_BSN_AUTH_SERVER_URL}?scope=all&client_id=${clientId}&response_type=code&redirect_url=${redirectUri}`
+    return `${process.env.REACT_APP_BSN_AUTH_SERVER_URL}?scope=all&client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}`
   }
 }
