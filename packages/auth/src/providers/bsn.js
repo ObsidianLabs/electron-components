@@ -2,7 +2,7 @@ import { BsnClientId } from '../../config.json'
 // const project = process.env.PROJECT
 // const serverUrl = process.env.REACT_APP_SERVER_URL
 const clientId = process.env.REACT_APP_BSN_CLIENT_ID || BsnClientId
-const redirectUri = `${process.env.REACT_APP_BSN_REDIRECT_URI}?provider=bsn` || 'https://app.obsidians.io/api/v1/auth/callback/bsn/bsn'
+const redirectUri = process.env.REACT_APP_BSN_REDIRECT_URI || 'https://app.obsidians.io/api/v1/auth/callback/bsn/bsn'
 
 export default {
   login () {
