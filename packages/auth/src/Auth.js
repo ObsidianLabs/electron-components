@@ -117,7 +117,11 @@ export default {
       if (code && provider) {
         url = `${serverUrl}/api/v1/auth/login`
         method = 'POST'
-        body = JSON.stringify({ code, provider })
+        body = JSON.stringify({
+          code,
+          provider,
+          project: process.env.PROJECT
+        })
       } else {
         url = `${serverUrl}/api/v1/auth/refresh-token`
         method = 'GET'
