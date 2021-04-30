@@ -14,8 +14,8 @@ if (platform.isDesktop) {
           className='d-inline-block hover-inline w-3 mr-1'
           onClick={() => fileOps.current.openItem(projectRoot)}
         >
-          <i className='fas fa-folder-open hover-show' />
-          <i className='fas fa-folder hover-hide' />
+          <i className='fas fa-folder-open hover-inline-show' />
+          <i className='fas fa-folder hover-inline-hide' />
         </span>
         {projectRoot}
       </kbd>
