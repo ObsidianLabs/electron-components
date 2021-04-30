@@ -9,7 +9,7 @@ import platform from '@obsidians/platform'
 import providers from './providers'
 import { AWSRoleArn, AWSRoleSessionName, AWSRegion } from '../config.json'
 
-const serverUrl = process.env.REACT_APP_SERVER_URL
+const authUrl = process.env.REACT_APP_AUTH_URL || process.env.REACT_APP_SERVER_URL
 const awsRoleArn = process.env.REACT_APP_AWS_ROLE_ARN || AWSRoleArn
 const awsRoleSessionName = process.env.REACT_APP_AWS_ROLE_SESSION_NAME || AWSRoleSessionName
 const awsRegion = process.env.REACT_APP_AWS_REGION || AWSRegion
@@ -34,7 +34,7 @@ export default {
     if (platform.isDesktop) {
       const channel = new IpcChannel('auth')
       const loginUrl = providers[provider].loginUrl
-      const callbackUrl = await channel.invoke('login', { loginUrl, serverUrl })
+      const callbackUrl = await channel.invoke('login', { loginUrl, authUrl })
       if (callbackUrl) {
         await this.handleCallback({ location: new URL(callbackUrl), provider, history })
       }
@@ -52,7 +52,7 @@ export default {
     redux.dispatch('CLEAR_USER_PROFILE')
 
     try {
-      await fetch(`${serverUrl}/api/v1/auth/logout`, {
+      await fetch(`${authUrl}/api/v1/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -115,7 +115,7 @@ export default {
       let method
       let body
       if (code && provider) {
-        url = `${serverUrl}/api/v1/auth/login`
+        url = `${authUrl}/api/v1/auth/login`
         method = 'POST'
         body = JSON.stringify({
           code,
@@ -123,7 +123,7 @@ export default {
           project: process.env.PROJECT
         })
       } else {
-        url = `${serverUrl}/api/v1/auth/refresh-token`
+        url = `${authUrl}/api/v1/auth/refresh-token`
         method = 'GET'
       }
 
