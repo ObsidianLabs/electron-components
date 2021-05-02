@@ -4,17 +4,20 @@ import {
   Modal,
   Badge,
   DebouncedFormGroup,
+  ButtonOptions,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { kp } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
 
 export default class CreateKeypairModal extends PureComponent {
   constructor (props) {
     super(props)
-
+    const defaultChain = props.chains && props.chains[0]
     this.state = {
+      chain: defaultChain,
       pending: false,
       name: '',
       keypair: null,
@@ -30,8 +33,14 @@ export default class CreateKeypairModal extends PureComponent {
   }
 
   regenerateKeypair = async () => {
-    const keypair = await keypairManager.newKeypair()
+    const keypair = await keypairManager.newKeypair(this.state.chain)
     this.setState({ keypair })
+  }
+
+  setChain = chain => {
+    const secret = this.state.keypair?.secret
+    const keypair = kp.importKeypair(secret, chain)
+    this.setState({ chain, keypair })
   }
 
   onConfirm = async () => {
@@ -59,6 +68,8 @@ export default class CreateKeypairModal extends PureComponent {
   }
 
   render () {
+    const { chains } = this.props
+    const { chain } = this.state
     const {
       address = '',
       secret = '',
@@ -82,6 +93,18 @@ export default class CreateKeypairModal extends PureComponent {
           placeholder='Please enter a name for the keypair'
           onChange={name => this.setState({ name })}
         />
+        {
+          chains &&
+          <div>
+            <ButtonOptions
+              size='sm'
+              className='mb-3'
+              options={chains.map(c => ({ key: c, text: c }))}
+              selected={chain}
+              onSelect={chain => this.setChain(chain)}
+            />
+          </div>
+        }
         <div className='row align-items-center'>
           <div className='col-2'>
             <Badge pill color='info' className='ml-1'>Address</Badge>

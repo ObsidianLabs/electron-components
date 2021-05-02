@@ -34,8 +34,8 @@ class KeypairManager {
     }
   }
 
-  async newKeypair () {
-    return kp.newKeypair()
+  async newKeypair (chain) {
+    return kp.newKeypair(chain)
   }
 
   async loadAndUpdateKeypairs () {

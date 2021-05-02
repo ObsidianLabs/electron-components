@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import {
   Modal,
   DebouncedFormGroup,
+  ButtonOptions,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -13,8 +14,9 @@ import keypairManager from './keypairManager'
 export default class ImportKeypairModal extends PureComponent {
   constructor (props) {
     super(props)
-
+    const defaultChain = props.chains && props.chains[0]
     this.state = {
+      chain: defaultChain,
       pending: false,
       name: '',
       valid: false,
@@ -35,16 +37,26 @@ export default class ImportKeypairModal extends PureComponent {
     if (!secret) {
       this.setState({ keypair: null, valid: false, feedback: '' })
     } else {
-      try {
-        const keypair = kp.importKeypair(secret)
-        this.setState({
-          keypair,
-          valid: true,
-          feedback: `Address: ${keypair.address}`
-        })
-      } catch (e) {
-        this.setState({ keypair: null, valid: false, feedback: `Not a valid ${this.props.secretName.toLowerCase()}` })
-      }
+      this.refreshKeypair(secret, this.state.chain)
+    }
+  }
+
+  setChain = chain => {
+    const secret = this.state.keypair?.secret
+    this.refreshKeypair(secret, chain)
+  }
+
+  refreshKeypair = (secret, chain) => {
+    try {
+      const keypair = kp.importKeypair(secret, chain)
+      this.setState({
+        chain,
+        keypair,
+        valid: true,
+        feedback: <span>Address: <code>{keypair.address}</code></span>
+      })
+    } catch (e) {
+      this.setState({ chain, keypair: null, valid: false, feedback: `Not a valid ${this.props.secretName.toLowerCase()}` })
     }
   }
 
@@ -81,7 +93,9 @@ export default class ImportKeypairModal extends PureComponent {
   }
 
   render () {
+    const { chains } = this.props
     const {
+      chain,
       name,
       valid,
       feedback,
@@ -102,6 +116,18 @@ export default class ImportKeypairModal extends PureComponent {
           placeholder='Please enter a name for the keypair'
           onChange={name => this.setState({ name })}
         />
+        {
+          chains &&
+          <div>
+            <ButtonOptions
+              size='sm'
+              className='mb-3'
+              options={chains.map(c => ({ key: c, text: c }))}
+              selected={chain}
+              onSelect={chain => this.setChain(chain)}
+            />
+          </div>
+        }
         <DebouncedFormGroup
           label={`Enter the ${this.props.secretName.toLowerCase()} you want to import`}
           maxLength='300'
