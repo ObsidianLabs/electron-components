@@ -24,8 +24,15 @@ export default class BaseQueueManager {
       tx.ts = moment().unix()
       tx.data = { ...tx.data, ...data }
 
-      const { network } = redux.getState()
-      redux.dispatch('ADD_TRANSACTION', { network, tx })
+      const { network, uiState } = redux.getState()
+      const localNetwork = uiState.get('localNetwork')
+      let networkId
+      if (localNetwork) {
+        networkId = localNetwork.params.id
+      } else {
+        networkId = network
+      }
+      redux.dispatch('ADD_TRANSACTION', { network: networkId, tx })
     }
 
     BaseQueueManager.button.forceUpdate()

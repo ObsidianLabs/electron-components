@@ -9,5 +9,8 @@ export default {
         return txs.unshift(Immutable.fromJS(payload.tx))
       })
     },
+    DELETE_INSTANCE: {
+      reducer: (state, { payload }) => state.remove(`dev.${payload.name}`)
+    },
   }
 }
