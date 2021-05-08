@@ -18,6 +18,7 @@ export default {
   profile: null,
   credentials: null,
   refreshPromise: null,
+  modal: null,
 
   get username () {
     return this.profile && this.profile.username
@@ -58,7 +59,9 @@ export default {
       });
     } catch (error) {}
 
-    history.replace('/')
+    if (history) {
+      history.replace('/')
+    }
   },
 
   async handleCallback ({ location, history, provider }) {
@@ -84,6 +87,14 @@ export default {
     this.profile = { username, avatar }
     this.credentials = { token, awsCredential }
     history.replace('/')
+  },
+
+  async handleError ({ status }) {
+    if (status === 401) {
+      await this.logout()
+    } else if (status === 403) {
+      this.modal && this.modal.openModal()
+    }
   },
 
   async refresh () {

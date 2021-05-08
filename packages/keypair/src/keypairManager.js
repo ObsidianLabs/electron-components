@@ -29,7 +29,7 @@ class KeypairManager {
       })
       return sorted
     } catch (e) {
-      notification.error('Error', e.message)
+      // notification.error('Error', e.message)
       return []
     }
   }
