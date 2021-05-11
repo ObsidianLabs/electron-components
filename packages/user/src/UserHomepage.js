@@ -60,12 +60,13 @@ class UserHomepage extends PureComponent {
       }
     }
     const res = await BaseProjectManager.channel.invoke('get', username)
-    const projects = res.map(p => ({
+    const projectFormatter = this.projectFormatter.bind(this, username) || (p => ({
       id: p.name,
       name: p.name,
       author: username,
       path: `${username}/${p.name}`,
     }))
+    const projects = res.map(projectFormatter)
 
     this.setState({
       loading: false,
@@ -112,6 +113,11 @@ class UserHomepage extends PureComponent {
     )
   }
 
+  renderProjectList = (projects) => {
+    const List = this.props.ProjectList || ProjectList
+    return <List projects={projects} />
+  }
+
   render () {
     const { profile } = this.props
     const { loading, notfound, user } = this.state
@@ -150,7 +156,7 @@ class UserHomepage extends PureComponent {
             </ButtonGroup>
           </div>
 
-          <ProjectList projects={projects} />
+          {this.renderProjectList(projects)}
         </div>
       </div>
     )
