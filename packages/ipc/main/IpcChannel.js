@@ -70,6 +70,12 @@ class IpcChannel {
     }
     return await new Promise((resolve, reject) => {
       const request = net.request(url)
+      request.on('error', err => {
+        if (err.message === 'net::ERR_INTERNET_DISCONNECTED') {
+          reject(new Error('Internet Disconnected'))
+        }
+        reject(err)
+      })
       request.on('response', (response) => {
         let body = ''
         response.on('data', chunk => {

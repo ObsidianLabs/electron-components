@@ -9,6 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import Terminal from '@obsidians/terminal'
+import notification from '@obsidians/notification'
 
 import DockerImageChannel from './DockerImageChannel'
 
@@ -39,6 +40,7 @@ export default class DownloadImageButton extends PureComponent {
       versions = await this.channel.remoteVersions()
     } catch (e) {
       this.setState({ loading: false })
+      notification.error(e.message)
       console.warn(e)
       return
     }
