@@ -147,7 +147,7 @@ export default class KeypairManagerModal extends PureComponent {
               color='primary'
               className='ml-1 hover-show'
               icon='far fa-eye'
-              textConfirm={`Reveal ${this.props.secretName.toLowerCase()}`}
+              textConfirm={`Click again to reveal ${this.props.secretName.toLowerCase()}`}
               onConfirm={() => this.revealSecret(keypair)}
             />
           </div>
