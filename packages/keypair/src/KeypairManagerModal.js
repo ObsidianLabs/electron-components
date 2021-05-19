@@ -2,9 +2,10 @@ import React, { PureComponent } from 'react'
 
 import {
   Modal,
+  ButtonOptions,
+  Table,
   IconButton,
   DeleteButton,
-  Table,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -39,14 +40,19 @@ export default class KeypairManagerModal extends PureComponent {
     this.keypairNameModal = React.createRef()
 
     this.state = {
+      chain: '',
       loading: false,
       keypairs: [],
+      keypairFilter: null,
       showPrivateKeys: false,
     }
   }
 
-  openModal = () => {
+  openModal = chain => {
     this.modal.current.openModal()
+    if (chain) {
+      this.setChain(chain)
+    }
     this.refresh()
   }
 
@@ -56,9 +62,21 @@ export default class KeypairManagerModal extends PureComponent {
     this.setState({ keypairs, loading: false })
   }
 
+  setChain = chain => {
+    this.setState({ chain })
+    if (!chain) {
+      this.setState({ keypairFilter: null })
+    } else {
+      const filter = this.props.chains.find(c => c.key === chain)?.filter
+      if (filter) {
+        this.setState({ keypairFilter: filter })
+      }
+    }
+  }
+
   createKeypair = async () => {
     const { keypairText } = this.props
-    const success = await this.createKeypairModal.current.openModal()
+    const success = await this.createKeypairModal.current.openModal(this.state.chain)
     if (success) {
       notification.success(
         `Create ${keypairText} Successful`,
@@ -70,7 +88,7 @@ export default class KeypairManagerModal extends PureComponent {
 
   importKeypair = async () => {
     const { keypairText } = this.props
-    const success = await this.importKeypairModal.current.openModal()
+    const success = await this.importKeypairModal.current.openModal(this.state.chain)
     if (success) {
       notification.success(
         `Import ${keypairText} Successful`,
@@ -94,8 +112,29 @@ export default class KeypairManagerModal extends PureComponent {
     this.revealSecretModal.current.openModal(keypair)
   }
 
+  renderChainOptions () {
+    const { chains } = this.props
+    const { chain } = this.state
+
+    if (!chains) {
+      return null
+    }
+    return (
+      <div>
+        <ButtonOptions
+          size='sm'
+          className='mb-2'
+          options={[...chains, { key: '', text: 'All' }]}
+          selected={chain}
+          onSelect={chain => this.setChain(chain)}
+        />
+      </div>
+    )
+  }
+
   renderKeypairTable = () => {
-    if (this.state.loading) {
+    let { loading, keypairs, keypairFilter, chain } = this.state
+    if (loading) {
       return (
         <tr key='keys-loading' >
           <td align='middle' colSpan={3}>
@@ -104,17 +143,22 @@ export default class KeypairManagerModal extends PureComponent {
         </tr>
       )
     }
-    if (!this.state.keypairs || !this.state.keypairs.length) {
-      const { keypairText } = this.props
-      return (
-        <tr key='keys-none' >
-          <td align='middle' colSpan={3}>
-            (No {`${keypairText.toLowerCase()}s`})
-          </td>
-        </tr>
-      )
+    if (keypairs && keypairFilter) {
+      keypairs = keypairs.filter(k => keypairFilter(k.address))
     }
-    return this.state.keypairs.map(this.renderKeypairRow)
+    if (!keypairs || !keypairs.length) {
+      const { keypairText } = this.props
+      let chainName
+      if (chain) {
+        chainName = this.props.chains.find(c => c.key === chain)?.text
+      }
+      let placeholder = `No ${keypairText.toLowerCase()}s`
+      if (chainName) {
+        placeholder += ` for ${chainName.toLowerCase()}`
+      }
+      return <tr key='keys-none' ><td align='middle' colSpan={3}>({placeholder})</td></tr>
+    }
+    return keypairs.map(this.renderKeypairRow)
   }
 
   editName = async keypair => {
@@ -181,7 +225,7 @@ export default class KeypairManagerModal extends PureComponent {
     let warningComponent = null
     if (warning) {
       warningComponent = (
-        <div className='d-flex flex-row align-items-center mb-2'>
+        <div className='d-flex flex-row align-items-center mb-3'>
           <div className='h4 m-0 mr-3'><i className='fas fa-exclamation-triangle text-warning' /></div>
           <div>
             <div><b>DO NOT</b> use on mainnet! For development purpose only.</div>
@@ -202,6 +246,7 @@ export default class KeypairManagerModal extends PureComponent {
         onActions={[this.createKeypair, this.importKeypair]}
       >
         {warningComponent}
+        {this.renderChainOptions()}
         <Table
           tableSm
           TableHead={(

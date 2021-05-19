@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import redux from '@obsidians/redux'
 
 import KeypairManagerModal from './KeypairManagerModal'
 
@@ -9,7 +10,13 @@ export default class KeypairButton extends PureComponent {
   }
 
   openModal = () => {
-    this.modal.current.openModal()
+    let chain
+    if (this.props.chains) {
+      const network = redux.getState().network
+      console.log(network)
+      chain = this.props.chains.find(c => c.network === network || c.key === network)?.key
+    }
+    this.modal.current.openModal(chain)
   }
 
   render () {

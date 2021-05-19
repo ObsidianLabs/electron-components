@@ -4,6 +4,7 @@ import {
   Modal,
   Badge,
   DebouncedFormGroup,
+  Label,
   ButtonOptions,
 } from '@obsidians/ui-components'
 
@@ -15,7 +16,7 @@ import keypairManager from './keypairManager'
 export default class CreateKeypairModal extends PureComponent {
   constructor (props) {
     super(props)
-    const defaultChain = props.chains && props.chains[0]
+    const defaultChain = props.chains && props.chains[0].key
     this.state = {
       chain: defaultChain,
       pending: false,
@@ -26,8 +27,11 @@ export default class CreateKeypairModal extends PureComponent {
     this.modal = React.createRef()
   }
 
-  openModal () {
+  openModal (chain) {
     this.modal.current.openModal()
+    if (chain) {
+      this.setState({ chain })
+    }
     setTimeout(() => this.regenerateKeypair(), 500)
     return new Promise(resolve => this.onResolve = resolve)
   }
@@ -67,9 +71,28 @@ export default class CreateKeypairModal extends PureComponent {
     this.onResolve(true)
   }
 
-  render () {
+  renderChainOptions () {
     const { chains } = this.props
     const { chain } = this.state
+
+    if (!chains) {
+      return null
+    }
+    return <>
+      <Label>The keypair can be used on</Label>
+      <div>
+        <ButtonOptions
+          size='sm'
+          className='mb-3'
+          options={chains}
+          selected={chain}
+          onSelect={chain => this.setChain(chain)}
+        />
+      </div>
+    </>
+  }
+
+  render () {
     const {
       address = '',
       secret = '',
@@ -93,18 +116,8 @@ export default class CreateKeypairModal extends PureComponent {
           placeholder='Please enter a name for the keypair'
           onChange={name => this.setState({ name })}
         />
-        {
-          chains &&
-          <div>
-            <ButtonOptions
-              size='sm'
-              className='mb-3'
-              options={chains.map(c => ({ key: c, text: c }))}
-              selected={chain}
-              onSelect={chain => this.setChain(chain)}
-            />
-          </div>
-        }
+        {this.renderChainOptions()}
+        <Label>Keypair info</Label>
         <div className='row align-items-center'>
           <div className='col-2'>
             <Badge pill color='info' className='ml-1'>Address</Badge>
