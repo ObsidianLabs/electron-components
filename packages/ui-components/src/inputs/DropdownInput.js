@@ -212,6 +212,7 @@ export default class DropdownInput extends PureComponent {
       bg,
       inputClassName,
       invalid,
+      onClick,
     } = this.props
 
     const selectedOption = this.findSelectedOption(options, value)
@@ -276,7 +277,15 @@ export default class DropdownInput extends PureComponent {
               ref={this.toggler}
               className={classnames('w-100 d-flex align-items-center justify-content-between overflow-hidden', size !== 'sm' && 'mr-1')}
             >
-              { !editable && <div className={classnames('text-overflow-dots', text ? '' : 'text-placeholder')}>{text || placeholder}</div> }
+              {
+                !editable &&
+                <div
+                  className={classnames('text-overflow-dots', text ? '' : 'text-placeholder')}
+                  onClick={onClick}
+                >
+                  {text || placeholder}
+                </div>
+              }
               <Badge color={badgeColor} className='ml-1' style={{ top: 0 }}>
                 {badge}
               </Badge>
