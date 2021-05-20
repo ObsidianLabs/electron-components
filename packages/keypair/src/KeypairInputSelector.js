@@ -78,7 +78,6 @@ export default class KeypairInputSelector extends PureComponent {
     const {
       size,
       label,
-      placeholder = '(No keys in keypair manager)',
       editable,
       maxLength,
       icon = 'fas fa-key',
@@ -99,6 +98,19 @@ export default class KeypairInputSelector extends PureComponent {
       }
       return this.mapKeypairToOption(item)
     })
+
+    let placeholder = this.props.placeholder
+    if (!placeholder) {
+      if (options.length || extraOptions.length) {
+        if (editable) {
+          placeholder = 'Select or type an address'
+        } else {
+          placeholder = 'Select an address'
+        }
+      } else {
+        placeholder = '(No keys in keypair manager)'
+      }
+    }
 
     const onClick = () => {
       if (!editable && !options.length && !extraOptions.length) {
