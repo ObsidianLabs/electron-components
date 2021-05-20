@@ -34,7 +34,7 @@ export default class ImportKeypairModal extends PureComponent {
     if (chain) {
       this.setState({ chain })
     }
-    this.setState({ name: '', keypair: null, valid: false, feedback: '' })
+    this.setState({ name: '', secret: '', keypair: null, valid: false, feedback: '' })
     return new Promise(resolve => this.onResolve = resolve)
   }
 
@@ -92,7 +92,7 @@ export default class ImportKeypairModal extends PureComponent {
 
     this.setState({ pending: true })
     await keypairManager.saveKeypair(name, keypair)
-    this.setState({ pending: false })
+    this.setState({ pending: false, secret: '' })
 
     this.modal.current.closeModal()
     this.onResolve(true)
