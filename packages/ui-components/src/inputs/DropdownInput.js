@@ -275,14 +275,12 @@ export default class DropdownInput extends PureComponent {
           >
             <div
               ref={this.toggler}
+              onClick={onClick}
               className={classnames('w-100 d-flex align-items-center justify-content-between overflow-hidden', size !== 'sm' && 'mr-1')}
             >
               {
                 !editable &&
-                <div
-                  className={classnames('text-overflow-dots', text ? '' : 'text-placeholder')}
-                  onClick={onClick}
-                >
+                <div className={classnames('text-overflow-dots', text ? '' : 'text-placeholder')}>
                   {text || placeholder}
                 </div>
               }
