@@ -60,7 +60,7 @@ class UserHomepage extends PureComponent {
       }
     }
     const res = await BaseProjectManager.channel.invoke('get', username)
-    const projectFormatter = this.projectFormatter.bind(this, username) || (p => ({
+    const projectFormatter = this.projectFormatter ? this.projectFormatter.bind(this, username) : (p => ({
       id: p.name,
       name: p.name,
       author: username,
