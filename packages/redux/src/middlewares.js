@@ -7,7 +7,9 @@ const track = store => next => action => {
   if (type === 'SET_VERSION') {
     if (process.env.REACT_APP_MIXPANEL_TOKEN) {
       mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN)
-      mixpanel.identify()
+      const distinctId = store.getState().profile.get('distinctId') || mixpanel.get_distinct_id()
+      mixpanel.identify(distinctId)
+      payload.distinctId = distinctId
       mixpanel.register({ project, version: payload.version })
       mixpanel.people.set({ project, version: payload.version })
     }
