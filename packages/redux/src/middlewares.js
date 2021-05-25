@@ -8,9 +8,9 @@ const track = store => next => action => {
     if (process.env.REACT_APP_MIXPANEL_TOKEN) {
       mixpanel.init(process.env.REACT_APP_MIXPANEL_TOKEN)
       mixpanel.identify()
+      mixpanel.register({ project, version: payload.version })
+      mixpanel.people.set({ project, version: payload.version })
     }
-    mixpanel.register({ project, version: payload.version })
-    mixpanel.people.set({ project, version: payload.version })
   }
   try {
     if (type.startsWith('persist/')) {
