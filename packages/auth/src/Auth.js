@@ -80,8 +80,8 @@ export default {
       return
     }
 
-    const { username, avatar } = decode(token)
-    this.profile = { username, avatar }
+    const { userId, username, avatar } = decode(token)
+    this.profile = { userId, username, avatar }
     this.credentials = { token, awsCredential }
     history.replace('/')
   },
@@ -103,8 +103,9 @@ export default {
       return
     }
 
-    const { username, avatar } = decode(token)
-    this.profile = { username, avatar }
+
+    const { userId, username, avatar } = decode(token)
+    this.profile = { userId, username, avatar }
     this.credentials = { token, awsCredential }
     this.updateProfile()
   },
