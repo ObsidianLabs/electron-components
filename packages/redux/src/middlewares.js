@@ -48,7 +48,6 @@ if (process.env.NODE_ENV === 'development') {
       stateTransformer: state => mapValues(state, s => (s.toJS ? s.toJS() : s))
     })
   )
-  middlewares.push(track)
 } else {
   middlewares.push(track)
 }
