@@ -88,9 +88,14 @@ export default class DownloadImageButton extends PureComponent {
       size,
       color = 'secondary',
       right,
+      extraFlags,
     } = this.props
 
     const logId = `terminal-docker-${imageName}`
+    let cmd = `docker pull ${imageName}:${this.state.downloadVersion}`
+    if (extraFlags) {
+      cmd = `${cmd} ${extraFlags}`
+    }
 
     const title = (
       <div key='icon-downloading'>
@@ -120,7 +125,7 @@ export default class DownloadImageButton extends PureComponent {
             active
             logId={logId}
             height='300px'
-            cmd={`docker pull ${imageName}:${this.state.downloadVersion}`}
+            cmd={cmd}
             onFinished={this.onDownloaded}
           />
         </div>
