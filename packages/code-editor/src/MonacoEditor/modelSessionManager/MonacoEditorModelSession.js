@@ -44,6 +44,7 @@ export default class MonacoEditorModelSession {
     this._showCustomTab = true
     this._viewState = null
     this._saved = true
+    this._saving = false
     this._topbar = null
     this.decorations = decorations
   }
@@ -81,6 +82,16 @@ export default class MonacoEditorModelSession {
 
   set saved (v) { this._saved = v }
   get saved () { return this._saved }
+
+  set saving (v) {
+    if (this._saving) {
+      clearTimeout(this._saving)
+    }
+    this._saving = setTimeout(() => {
+      this._saving = false
+    }, 1000)
+  }
+  get saving () { return Boolean(this._saving) }
 
   get readonly () {
     return this._readonly

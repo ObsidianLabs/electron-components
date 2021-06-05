@@ -94,6 +94,11 @@ class ModelSessionManager {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
     this._editorContainer.fileSaving(filePath)
+    this.sessions[filePath].saving = true
+    if (this.sessions[filePath].topbar) {
+      this.sessions[filePath].dismissTopbar()
+      this._editorContainer.refresh()
+    }
     await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
     this._editorContainer.fileSaved(filePath)
     this.sessions[filePath].saved = true
@@ -160,7 +165,7 @@ class ModelSessionManager {
 
   refreshFile (data) {
     const modelSession = this.sessions[data.path]
-    if (!modelSession) {
+    if (!modelSession || modelSession.saving) {
       return
     }
     if (modelSession.saved) {
