@@ -19,6 +19,7 @@ export default class DownloadImageButton extends PureComponent {
 
     this.state = {
       loading: false,
+      downloading: false,
       versions: [],
       downloadVersion: '',
     }
@@ -49,12 +50,14 @@ export default class DownloadImageButton extends PureComponent {
   }
 
   onSelectVersion = downloadVersion => {
-    this.setState({ downloadVersion })
+    this.setState({ downloadVersion, downloading: true })
     this.modal.current.openModal()
   }
 
   onDownloaded = ({ code }) => {
+    this.setState({ downloading: false })
     if (code) {
+      notification.info('Download Task Cancelled')
       return
     }
     this.modal.current.closeModal()
@@ -97,11 +100,19 @@ export default class DownloadImageButton extends PureComponent {
       cmd = `${cmd} ${extraFlags}`
     }
 
-    const title = (
-      <div key='icon-downloading'>
-        <i className='fas fa-spinner fa-spin mr-2' />{downloadingTitle} {this.state.downloadVersion}...
-      </div>
-    )
+    let title
+    
+    if (this.state.downloading) {
+      title = (
+        <div key='icon-downloading'>
+          <i className='fas fa-spinner fa-spin mr-2' />{downloadingTitle} {this.state.downloadVersion}...
+        </div>
+      )
+    } else {
+      title = (
+        <div>{downloadingTitle.replace('ing', '')} Cancelled</div>
+      )
+    }
     return <>
       <UncontrolledButtonDropdown size={size}>
         <DropdownToggle
@@ -116,17 +127,14 @@ export default class DownloadImageButton extends PureComponent {
           {this.renderVersions()}
         </DropdownMenu>
       </UncontrolledButtonDropdown>
-      <Modal
-        ref={this.modal}
-        title={title}
-      >
+      <Modal ref={this.modal} title={title}>
         <div className='rounded overflow-hidden'>
           <Terminal
             active
             logId={logId}
             height='300px'
             cmd={cmd}
-            onFinished={this.onDownloaded}
+            onCmdExecuted={this.onDownloaded}
           />
         </div>
       </Modal>

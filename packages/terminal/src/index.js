@@ -119,9 +119,7 @@ export default class Terminal extends PureComponent {
     this.term = term
 
     // this.term.attachCustomKeyEventHandler(this.keyboardHandler)
-    if (this.props.interactive) {
-      this.term.onData(this.onData)
-    }
+    this.term.onData(this.onData)
 
     if (this.props.onTermCreated) {
       this.props.onTermCreated(this.term)
@@ -144,7 +142,16 @@ export default class Terminal extends PureComponent {
   }
 
   onData = async data => {
-    await this.terminalChannel.invoke('write', data)
+    if (this.props.interactive) {
+      await this.terminalChannel.invoke('write', data)
+      return
+    }
+
+    const buf = Buffer.from(data)
+    if (buf.length === 1 && buf[0] === 3) {
+      await this.terminalChannel.invoke('write', data)
+      // await this.stop()
+    }
   }
 
   onMouseUpTerm = event => {
