@@ -17,11 +17,9 @@ export default function TableCardRow ({
   return (
     <tr>
       <td>
-        <div className='d-flex justify-content-between align-items-center'>
+        <div className='d-flex justify-content-between align-items-center flex-wrap'>
           <div className='d-flex flex-row'>
-            <div key={`icon-${icon}`}>
-              <i className={`w-3 mr-2 ${icon}`} />
-            </div>
+            {icon && <div key={`icon-${icon}`}><i className={`w-3 mr-2 ${icon}`} /></div>}
             {name}
           </div>
           <Badge

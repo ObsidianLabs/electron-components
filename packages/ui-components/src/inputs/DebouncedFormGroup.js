@@ -46,7 +46,7 @@ function DebouncedFormGroup (props, ref) {
 
   return (
     <FormGroup className={classnames(size === 'sm' && 'mb-2', formGroupClassName)}>
-      <Label className={classnames(size === 'sm' && 'mb-1 small font-weight-bold')}>{label}</Label>
+      <Label className={classnames(size === 'sm' && 'mb-1 small')}>{label}</Label>
       <LabelTooltip tooltip={props.tooltip} size={size} />
       {
         inputType === 'input' &&
