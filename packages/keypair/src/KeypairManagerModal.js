@@ -215,6 +215,7 @@ export default class KeypairManagerModal extends PureComponent {
       warning,
       head,
       chains,
+      mnemonic,
       actions,
       textActions,
       RevealSecretModal,
@@ -260,7 +261,13 @@ export default class KeypairManagerModal extends PureComponent {
           {this.renderKeypairTable()}
         </Table>
       </Modal>
-      <CreateKeypairModal ref={this.createKeypairModal} chains={chains} secretName={this.props.secretName} keypairs={this.state.keypairs} />
+      <CreateKeypairModal
+        ref={this.createKeypairModal}
+        chains={chains}
+        mnemonic={mnemonic}
+        secretName={this.props.secretName}
+        keypairs={this.state.keypairs}
+      />
       <ImportKeypairModal ref={this.importKeypairModal} chains={chains} secretName={this.props.secretName} keypairs={this.state.keypairs} />
       <RevealSecretModal ref={this.revealSecretModal} secretName={this.props.secretName}/>
       <KeypairNameModal ref={this.keypairNameModal} />

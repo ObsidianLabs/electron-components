@@ -6,6 +6,12 @@ import {
   DebouncedFormGroup,
   Label,
   ButtonOptions,
+  ButtonGroup,
+  Button,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -18,9 +24,10 @@ export default class CreateKeypairModal extends PureComponent {
     super(props)
     const defaultChain = props.chains && props.chains[0].key
     this.state = {
-      chain: defaultChain,
       pending: false,
       name: '',
+      chain: defaultChain,
+      secretType: 'privkey',
       keypair: null,
     }
 
@@ -37,7 +44,7 @@ export default class CreateKeypairModal extends PureComponent {
   }
 
   regenerateKeypair = async () => {
-    const keypair = await keypairManager.newKeypair(this.state.chain)
+    const keypair = await keypairManager.newKeypair(this.state.chain, this.state.secretType)
     this.setState({ keypair })
   }
 
@@ -71,7 +78,7 @@ export default class CreateKeypairModal extends PureComponent {
     this.onResolve(true)
   }
 
-  renderChainOptions () {
+  renderChainOptions = () => {
     const { chains } = this.props
     const { chain } = this.state
 
@@ -92,10 +99,34 @@ export default class CreateKeypairModal extends PureComponent {
     </>
   }
 
+  renderRegenerateBtn = () => {
+    if (this.props.mnemonic) {
+      return (
+        <ButtonGroup>
+          <Button color='success' onClick={this.regenerateKeypair}>Regenerate</Button>
+          <UncontrolledButtonDropdown>
+            <DropdownToggle color='success' className='pr-2 pl-1' caret />
+            <DropdownMenu>
+              <DropdownItem onClick={() => this.setState({ secretType: 'privkey' }, this.regenerateKeypair)}>
+                Regenerate from private key
+              </DropdownItem>
+              <DropdownItem onClick={() => this.setState({ secretType: 'mnemonic' }, this.regenerateKeypair)}>
+                Regenerate from mnemonic
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledButtonDropdown>
+        </ButtonGroup>
+      )
+    } else {
+      return <Button color='success' onClick={this.regenerateKeypair}>Regenerate</Button>
+    }
+  }
+
   render () {
     const {
       address = '',
       secret = '',
+      secretName = this.props.mnemonic ? '' : this.props.secretName,
     } = this.state.keypair || {}
 
     return (
@@ -107,8 +138,7 @@ export default class CreateKeypairModal extends PureComponent {
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name || !address}
         colorActions={['info']}
-        textActions={['Regenerate']}
-        onActions={[this.regenerateKeypair]}
+        ActionBtn={this.renderRegenerateBtn()}
       >
         <DebouncedFormGroup
           label='Name'
@@ -128,7 +158,7 @@ export default class CreateKeypairModal extends PureComponent {
         </div>
         <div className='row align-items-center'>
           <div className='col-2'>
-            <Badge pill color='success' className='ml-1'>{this.props.secretName}</Badge>
+            <Badge pill color='success' className='ml-1'>{secretName}</Badge>
           </div>
           <div className='col-10 pl-0'>
             <code className='user-select small'>{secret}</code>

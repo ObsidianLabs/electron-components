@@ -22,6 +22,7 @@ export default class KeypairButton extends PureComponent {
   render () {
     const {
       chains,
+      mnemonic,
       secretName = 'Private Key',
       modifyNameDisabled,
       deletionDisabled,
@@ -32,6 +33,7 @@ export default class KeypairButton extends PureComponent {
       <KeypairManagerModal
         ref={this.modal}
         chains={chains}
+        mnemonic={mnemonic}
         secretName={secretName}
         modifyNameDisabled={modifyNameDisabled}
         deletionDisabled={deletionDisabled}

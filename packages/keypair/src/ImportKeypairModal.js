@@ -62,6 +62,7 @@ export default class ImportKeypairModal extends PureComponent {
         feedback: <span>Address: <code>{keypair.address}</code></span>
       })
     } catch (e) {
+      console.warn(e)
       this.setState({ keypair: null, valid: false, feedback: `Not a valid ${this.props.secretName.toLowerCase()}` })
     }
   }

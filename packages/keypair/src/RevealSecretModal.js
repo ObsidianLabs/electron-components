@@ -5,12 +5,14 @@ import {
   Badge,
 } from '@obsidians/ui-components'
 
+import { kp } from '@obsidians/sdk'
+
 import keypairManager from './keypairManager'
 
 export default class RevealSecretModal extends PureComponent {
   constructor (props) {
     super(props)
-    this.state = { address: '', secret: '' }
+    this.state = { address: '', secret: '', secretName: this.props.secretName }
     this.modal = React.createRef()
   }
   
@@ -18,19 +20,22 @@ export default class RevealSecretModal extends PureComponent {
   async openModal (keypair) {
     this.setState({ address: keypair.address })
     try {
-      const secret = await keypairManager.getSecret(keypair.address)
-      this.setState({ secret })
-    } catch (e) {}
+      const rawSecret = await keypairManager.getSecret(keypair.address)
+      const { secret, secretName } = await kp.importKeypair(rawSecret)
+      this.setState({ secret, secretName })
+    } catch (e) {
+      console.warn(e)
+    }
     this.modal.current.openModal()
   }
 
   render () {
-    const { address, secret } = this.state
+    const { address, secret, secretName } = this.state
 
     return (
       <Modal
         ref={this.modal}
-        title={`View ${this.props.secretName}`}
+        title={`View ${secretName}`}
         textCancel='Close'
       >
         <div className='row align-items-center'>
@@ -43,7 +48,7 @@ export default class RevealSecretModal extends PureComponent {
         </div>
         <div className='row align-items-center'>
           <div className='col-2'>
-            <Badge pill color='success' className='ml-1'>{this.props.secretName}</Badge>
+            <Badge pill color='success' className='ml-1'>{secretName}</Badge>
           </div>
           <div className='col-10 pl-0'>
             <code className='user-select small'>{secret}</code>
