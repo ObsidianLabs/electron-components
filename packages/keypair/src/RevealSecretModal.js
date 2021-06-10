@@ -12,7 +12,7 @@ import keypairManager from './keypairManager'
 export default class RevealSecretModal extends PureComponent {
   constructor (props) {
     super(props)
-    this.state = { address: '', secret: '', secretName: this.props.secretName }
+    this.state = { address: '', secret: '', secretName: '' }
     this.modal = React.createRef()
   }
   
@@ -30,7 +30,8 @@ export default class RevealSecretModal extends PureComponent {
   }
 
   render () {
-    const { address, secret, secretName } = this.state
+    const { address, secret } = this.state
+    const secretName = this.state.secretName || this.props.secretName
 
     return (
       <Modal
