@@ -26,13 +26,13 @@ export default class AwsS3Fs {
     this.s3 = new AWS.S3()
   }
 
-  async readFile (filePath, encoding) {
+  async readFile (filePath, { encoding }) {
     const params = {
       Bucket,
       Key: filePath,
     }
     const result = await this.s3.getObject(params).promise()
-    return result.Body.toString()
+    return result.Body.toString(encoding)
   }
 
   async writeFile (filePath, content) {
