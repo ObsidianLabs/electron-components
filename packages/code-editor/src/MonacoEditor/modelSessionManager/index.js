@@ -66,8 +66,16 @@ class ModelSessionManager {
     }
   }
 
+  get projectRoot () {
+    return this._editorContainer.props.projectRoot
+  }
   get currentFilePath () {
     return this.currentModelSession?.filePath
+  }
+
+  openFile (relativePath) {
+    const filePath = fileOps.current.path.join(this.projectRoot, relativePath)
+    this._editorContainer.openTab({ key: filePath, path: filePath })
   }
 
   async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath)) {
