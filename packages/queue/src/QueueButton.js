@@ -76,7 +76,7 @@ export default class QueueButton extends PureComponent {
   render () {
     let icon = null
     if (BaseQueueManager.pending.length) {
-      icon = <div key='icon-peinding' className='d-inline-block w-3 mr-1'><i className='fas fa-spin fa-spinner' /></div>
+      icon = <div key='icon-pending' className='d-inline-block w-3 mr-1'><i className='fas fa-spin fa-spinner' /></div>
     } else {
       icon = <div key='icon-no-pending' className='d-inline-block w-3 mr-1'><i className='fas fa-receipt' /></div>
     }
