@@ -27,9 +27,9 @@ export default class RenameModal extends PureComponent {
   }
 
   onRename = async () => {
-    const { oldPath, name } = this.state
+    const { oldPath, name, type } = this.state
     try {
-      await this.props.projectManager.rename(oldPath, name)
+      await this.props.projectManager.rename(oldPath, name, { type })
     } catch (e) {
       notification.error('Cannot Rename File', e.message)
       return

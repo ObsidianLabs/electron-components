@@ -53,8 +53,40 @@ export default class AwsS3Fs {
   }
 
   async rename (oldPath, newPath) {
-    // TODO: rename file
-    throw new Error()
+    if (oldPath === newPath) {
+      return
+    }
+    const isFile = !oldPath.endsWith('/')
+
+    if (isFile) {
+      let fileExists = false
+      try {
+        await this.readFile(newPath, {})
+        fileExists = true
+      } catch (error) {
+        fileExists = false
+      }
+      if (fileExists) {
+        throw new Error(`${newPath} exists.`)
+      }
+
+      const oldParams = {
+        CopySource: `/${Bucket}/${oldPath}`,
+        Bucket,
+        Key: newPath,
+      }
+      await this.s3.copyObject(oldParams).promise()
+      await this.deleteFile(oldPath)
+    } else {
+      const listParams = {
+        Bucket,
+        Prefix: oldPath,
+        Delimiter: '/'
+      }
+      const listResult = await this.s3.listObjectsV2(listParams).promise()
+      const promises = listResult.Contents.map(async ({ Key }) => this.rename(Key, Key.replace(oldPath, newPath)))
+      return Promise.all(promises)
+    }
   }
 
   async deleteFile (filePath) {

@@ -100,7 +100,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     if (await fileOps.current.isFile(filePath)) {
       throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
     }
-  
+
     try {
       await fileOps.current.fs.ensureFile(filePath)
     } catch (e) {
@@ -113,7 +113,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async createNewFolder (basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
-  
+
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
@@ -123,15 +123,20 @@ export default class RemoteProjectManager extends BaseProjectManager {
     await this.refreshDirectory(basePath)
   }
 
-  async rename (oldPath, name) {
+  async rename (oldPath, name, options = {}) {
+
+    const { type } = options
+    const isFile = type === 'file'
+
     const { path, fs } = fileOps.current
     const { dir } = path.parse(oldPath)
-    const newPath = path.join(dir, name)
+    const newPath = isFile ? path.join(dir, name) : path.join(dir, name, '/')
+    const oldPathWithType = isFile ? oldPath : path.join(oldPath, '/')
 
     try {
-      await fs.rename(oldPath, newPath)
+      await fs.rename(oldPathWithType, newPath)
     } catch (e) {
-      throw new Error(`Fail to rename <b>${this.pathInProject(folderPath)}</b>.`)
+      throw new Error(`Fail to rename <b>${this.pathInProject(oldPath)}</b>.`)
     }
 
     await this.refreshDirectory(dir)
