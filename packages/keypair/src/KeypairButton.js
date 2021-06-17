@@ -13,8 +13,7 @@ export default class KeypairButton extends PureComponent {
     let chain
     if (this.props.chains) {
       const network = redux.getState().network
-      console.log(network)
-      chain = this.props.chains.find(c => c.network === network || c.key === network)?.key
+      chain = this.props.chains.find(c => c.network === network || network.startsWith(c.key))?.key
     }
     this.modal.current.openModal(chain)
   }
