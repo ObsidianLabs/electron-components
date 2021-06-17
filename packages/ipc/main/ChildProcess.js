@@ -7,7 +7,7 @@ class ChildProcess {
     let proc
     return new Promise((resolve, reject) => {
       proc = cp.spawn(cmd, [], {
-        shell: process.platform === 'win32' ? 'powershell2.exe' : true,
+        shell: process.platform === 'win32' ? 'powershell.exe' : true,
         ...config
       })
 
