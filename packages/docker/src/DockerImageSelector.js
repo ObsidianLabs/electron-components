@@ -61,13 +61,13 @@ export default class DockerImageSelector extends PureComponent {
         active={this.props.selected === v.Tag}
         onClick={() => this.props.onSelected(v.Tag)}
       >
-        {v.Tag}
+        {v.Name || v.Tag}
       </DropdownItem>
     ))
   }
 
   renderManagerItem = () => {
-    if (platform.isWeb) {
+    if (this.props.noManager || platform.isWeb) {
       return null
     }
     return <>
@@ -81,12 +81,13 @@ export default class DockerImageSelector extends PureComponent {
 
   render () {
     let {
+      noManager,
       HeaderDockerItems,
       children,
     } = this.props
 
     if (!HeaderDockerItems) {
-      if (platform.isDesktop) {
+      if (platform.isDesktop && !noManager) {
         HeaderDockerItems = <><i className='far fa-desktop mr-2' />Installed</>
       } else {
         HeaderDockerItems = <><i className='fas fa-code-merge mr-1' />Versions</>
@@ -97,6 +98,8 @@ export default class DockerImageSelector extends PureComponent {
     if (this.props.icon) {
       icon = <span key='icon' className='mr-1'><i className={this.props.icon} /></span>
     }
+
+    const selectedText = this.props.selectedText || this.props.selected?.toString() || 'none'
     return <>
       <UncontrolledButtonDropdown direction='up'>
         <DropdownToggle
@@ -106,7 +109,7 @@ export default class DockerImageSelector extends PureComponent {
           style={{ maxWidth: 240 }}
         >
           {icon}
-          {this.props.title || this.imageName} ({this.props.selected?.toString() || 'none'})
+          {this.props.title || this.imageName} ({selectedText})
         </DropdownToggle>
         <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
           {children}
