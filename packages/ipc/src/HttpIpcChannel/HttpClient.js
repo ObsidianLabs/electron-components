@@ -47,6 +47,10 @@ export default class HttpClient {
       return this.query(`${this.serverUrl}/user/${method}`, 'GET')
     }
 
+    if (method === 'fetch') {
+      return this.queryApiPath(channel, 'POST', { method, args }, true)
+    }
+
     if (method === 'list') {
       return []
     }
@@ -102,11 +106,11 @@ export default class HttpClient {
     }
   }
 
-  async queryApiPath (apiPath, method, params) {
-    return this.query(`${this.serverUrl}/${apiPath}`, method, params)
+  async queryApiPath (apiPath, method, params, skipParseJson) {
+    return this.query(`${this.serverUrl}/${apiPath}`, method, params, skipParseJson)
   }
 
-  async query (endpoint, method, params) {
+  async query (endpoint, method, params, skipParseJson) {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -125,9 +129,11 @@ export default class HttpClient {
     const response = await fetch(endpoint, opts)
 
     let result = await response.text()
-    try {
-      result = JSON.parse(result)
-    } catch (e) {}
+    if (!skipParseJson) {
+      try {
+        result = JSON.parse(result)
+      } catch (e) {}
+    }
 
     if (response.status === 401) {
       throw new Error(result.message || 'Need login to perform this operation.')
