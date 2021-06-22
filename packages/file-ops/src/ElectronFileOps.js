@@ -69,8 +69,11 @@ export default class ElectronFileOps extends FileOps {
     return this.electron.remote.dialog.showMessageBox({ message, buttons })
   }
 
-  openItem (filePath) {
-    return this.electron.shell.openPath(filePath)
+  async openItem (filePath) {
+    const result = await this.electron.shell.openPath(filePath)
+    if (result) {
+      throw new Error(`Cannot open <b>${filePath}</b>. Please make sure it exists.`)
+    }
   }
 
   showItemInFolder (filePath) {

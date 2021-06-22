@@ -62,13 +62,9 @@ export default class WebFileOps extends FileOps {
     return { response: result ? 0 : 1 }
   }
 
-  openItem (filePath) {
-    return this.electron.shell.openItem(filePath)
-  }
+  openItem (filePath) {}
 
-  showItemInFolder (filePath) {
-    return this.electron.shell.showItemInFolder(filePath)
-  }
+  showItemInFolder (filePath) {}
 
   async createNewFolder (folderPath) {
     try {
