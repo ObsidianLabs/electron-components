@@ -35,6 +35,10 @@ export default class LocalProjectManager extends BaseProjectManager {
     return this.projectRoot ? fileOps.current.path.join(this.projectRoot, relativePath) : ''
   }
 
+  pathInProject () {
+    return undefined
+  }
+
   async loadRootDirectory () {
     return await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
   }
