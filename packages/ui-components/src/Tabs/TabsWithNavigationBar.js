@@ -70,7 +70,7 @@ export default class TabsWithNavigationBar extends PureComponent {
     if (!value) {
       return 'New Tab'
     }
-    return this.props.getTabText({ value, temp })
+    return this.props.getTabText({ text, value, temp })
   }
 
   onTabsUpdated = tabs => {

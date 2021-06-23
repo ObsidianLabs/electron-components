@@ -124,6 +124,7 @@ export default class TabbedExplorer extends PureComponent {
               cacheLifecycles={props.cacheLifecycles}
               onDisplay={this.onPageDisplay}
               value={props.match.params.value}
+              tabs={this.tabs.current}
               {...otherProps}
             />
           )}
