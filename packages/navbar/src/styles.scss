@@ -73,12 +73,19 @@
 .token-icon-lg {
   width: 32px;
   height: 32px;
+  flex: none;
 }
 .token-icon {
   width: 24px;
   height: 24px;
+  flex: none;
 }
 .token-icon-xs {
   width: 18px;
   height: 18px;
+  flex: none;
+}
+.token-dropdown-item {
+  width: 344px;
+  overflow: hidden;
 }
