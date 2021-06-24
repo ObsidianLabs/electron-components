@@ -59,9 +59,9 @@ export default class TabbedExplorer extends PureComponent {
       const formatted = this.props.valueFormatter(value)
       if (formatted !== value) {
         value = formatted
-        this.tabs.current?.updateTab({ value })
       }
     }
+    this.tabs.current?.updateTab({ value, text: '' })
     this.setState({ value })
     return value
   }
@@ -104,6 +104,10 @@ export default class TabbedExplorer extends PureComponent {
         onValue={value => {
           const formatted = this.onValue(value)
           onValueUpdate && onValueUpdate(formatted)
+        }}
+        onChangeTab={value => {
+          this.setState({ value })
+          onValueUpdate && onValueUpdate(value)
         }}
         onTabsUpdated={onTabsUpdate}
         starred={starred}

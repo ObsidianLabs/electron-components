@@ -29,10 +29,11 @@ export default class TabsWithNavigationBar extends PureComponent {
   }
 
   onSelectTab = tab => {
-    this.setState({ tab })
-    if (this.props.onValue) {
-      this.props.onValue(tab.value || '')
-    }
+    this.setState({ tab }, () => {
+      if (this.props.onChangeTab) {
+        this.props.onChangeTab(tab.value || '')
+      }
+    })
   }
 
   onCloseTab = () => {
