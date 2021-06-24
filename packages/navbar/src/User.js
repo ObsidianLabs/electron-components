@@ -99,7 +99,7 @@ class User extends Component {
         </DropdownItem>
       )
       linkToOtherPlatformItem.push(
-        <DropdownItem key='github-repo' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/issues/new`)}>
+        <DropdownItem key='report-issue' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/issues/new`)}>
           <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
         </DropdownItem>
       )
