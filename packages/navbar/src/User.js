@@ -98,6 +98,11 @@ class User extends Component {
           <i className='fab fa-github w-3 mr-2' />GitHub Repo
         </DropdownItem>
       )
+      linkToOtherPlatformItem.push(
+        <DropdownItem key='github-repo' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/issues/new`)}>
+          <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
+        </DropdownItem>
+      )
     }
 
     const username = profile.get('username')
