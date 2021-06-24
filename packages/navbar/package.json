@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@obsidians/auth": "^0.3.0",
+    "@obsidians/file-ops": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
     "@obsidians/ui-components": "^0.3.0",
     "react-contextmenu": "^2.14.0"

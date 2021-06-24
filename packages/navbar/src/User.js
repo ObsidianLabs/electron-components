@@ -10,6 +10,7 @@ import {
 
 import { withRouter } from 'react-router'
 
+import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
@@ -63,43 +64,84 @@ class User extends Component {
   }
 
   renderDropdownMenus = profile => {
-    if (platform.isDesktop && !process.env.ENABLE_AUTH) {
-      return (
-        <DropdownMenu right>
-          <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-            <i className='fas fa-th-list w-3 mr-2' />My Projects		
+    let dropdownItems = []
+
+    const {
+      ENABLE_AUTH,
+      PROJECT_NAME,
+      PROJECT_WEB_URL,
+      PROJECT_DESKTOP_URL,
+      PROJECT_GITHUB_REPO,
+    } = process.env
+
+    let linkToOtherPlatformItem = []
+    if (platform.isDesktop) {
+      if (PROJECT_WEB_URL) {
+        linkToOtherPlatformItem = [
+          <DropdownItem key='divider2' divider />,
+          <DropdownItem key='project-web-url' onClick={() => fileOps.current.openLink(PROJECT_WEB_URL)}>
+            <i className='fad fa-browser w-3 mr-2' />{PROJECT_NAME} Web
           </DropdownItem>
-        </DropdownMenu>
+        ]
+      }
+    } else if (PROJECT_DESKTOP_URL) {
+      linkToOtherPlatformItem = [
+        <DropdownItem key='divider2' divider />,
+        <DropdownItem key='project-desktop-url' onClick={() => fileOps.current.openLink(`${PROJECT_DESKTOP_URL}/${platform.os}`)}>
+          <i className='fas fa-download w-3 mr-2' />Desktop App
+        </DropdownItem>
+      ]
+    }
+    if (PROJECT_GITHUB_REPO) {
+      linkToOtherPlatformItem.push(
+        <DropdownItem key='github-repo' onClick={() => fileOps.current.openLink(PROJECT_GITHUB_REPO)}>
+          <i className='fab fa-github w-3 mr-2' />GitHub Repo
+        </DropdownItem>
       )
     }
 
     const username = profile.get('username')
-
-    if (username) {
-      return (
-        <DropdownMenu right>
-          <DropdownItem header>Logged in as</DropdownItem>
-          <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/${username}`)}>
-            <i className='fas fa-user w-3 mr-2' />
-            {username}
-          </DropdownItem>
-          {this.renderExtraLoggedInOptions()}
-          <DropdownItem divider />
-          <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
-            <i className='fas fa-sign-out w-3 mr-2' />Log out
-          </DropdownItem>
-        </DropdownMenu>
-      )
-    }
-
-    return (
-      <DropdownMenu right>
-        {this.renderLoginButton()}
-        <DropdownItem divider />
+    if (platform.isDesktop && !ENABLE_AUTH) {
+      dropdownItems = [
+        <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
+          <i className='fas fa-th-list w-3 mr-2' />My Projects		
+        </DropdownItem>,
+        ...linkToOtherPlatformItem,
+      ]
+    } else if (username) {
+      dropdownItems = [
+        <DropdownItem key='header' header>Logged in as</DropdownItem>,
+        <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/${username}`)}>
+          <i className='fas fa-user w-3 mr-2' />
+          {username}
+        </DropdownItem>,
+        this.renderExtraLoggedInOptions(),
+        ...linkToOtherPlatformItem,
+        <DropdownItem key='divider' divider />,
+        <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
+          <i className='fas fa-sign-out w-3 mr-2' />Log out
+        </DropdownItem>,
+      ]
+    } else {
+      dropdownItems = [
+        ...this.renderLoginButton(),
+        <DropdownItem key='divider' divider />,
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
           <i className='fas fa-th-list w-3 mr-2' />My Projects
-        </DropdownItem>
-      </DropdownMenu>
+        </DropdownItem>,
+        this.renderExtraLoggedInOptions(),
+        ...linkToOtherPlatformItem,
+      ]
+    }
+
+    const isDropdownOpen = this.state.isDropdownOpen
+    return (
+      <div
+        className={classnames('dropdown-menu dropdown-menu-right', isDropdownOpen && 'show')}
+        style={{ right: 3, top: 48, width: 'fit-content' }}
+      >
+        {dropdownItems}
+      </div>
     )
   }
 
