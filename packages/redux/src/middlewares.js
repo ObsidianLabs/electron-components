@@ -2,6 +2,18 @@ import mixpanel from 'mixpanel-browser'
 import mapValues from 'lodash/mapValues'
 import platform from '@obsidians/platform'
 
+const trackedActions = [
+  'SET_VERSION',
+  'UPDATE_PROFILE',
+  'CLEAR_USER_PROFILE',
+  'ADD_TRANSACTION',
+  'ABI_ADD',
+  'ABI_UPDATE',
+  'SELECT_PROJECT',
+  'ADD_PROJECT',
+  'REMOVE_PROJECT',
+]
+
 let mixpanelInitialized
 const track = store => next => action => {
   if (process.env.REACT_APP_MIXPANEL_TOKEN) {
@@ -32,7 +44,7 @@ const track = store => next => action => {
   } else if (type === 'CLEAR_USER_PROFILE') {
     mixpanel.reset()
   }
-  if (!type.startsWith('persist/')) {
+  if (trackedActions.indexOf(type) > -1) {
     mixpanel.track(`${project}/${type}`, typeof payload !== 'object' ? { value: payload } : payload)
   }
 
