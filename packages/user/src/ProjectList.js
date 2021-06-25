@@ -6,6 +6,7 @@ import {
 
 import { Link } from 'react-router-dom'
 
+import platform from '@obsidians/platform'
 import { ProjectPath, actions } from '@obsidians/workspace'
 
 export default class ProjectList extends PureComponent {
@@ -30,12 +31,15 @@ export default class ProjectList extends PureComponent {
               <ProjectPath projectRoot={path} />
             </div>
           </div>
-          <div className='d-flex flex-row hover-show'>
-            <DeleteButton
-              textConfirm='Click again to remove'
-              onConfirm={() => this.removeProject(project)}
-            />
-          </div>
+          {
+            platform.isDesktop &&
+            <div className='d-flex flex-row hover-show'>
+              <DeleteButton
+                textConfirm='Click again to remove'
+                onConfirm={() => this.removeProject(project)}
+              />
+            </div>
+          }
         </td>
       </tr>
     )
