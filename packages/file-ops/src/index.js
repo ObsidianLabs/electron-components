@@ -5,6 +5,7 @@ class FileOpsManager {
   constructor () {
     this._fsType = null
     this._fileOps
+    this.web = new WebFileOps()
   }
 
   set fsType (fsType) {
@@ -14,7 +15,7 @@ class FileOpsManager {
       return
     } else if (fsType === 'web') {
       this._fsType = fsType
-      this._fileOps = new WebFileOps()
+      this._fileOps = this.web
       return
     }
     throw new Error(`Unknown fsType "${this.fsType}".`)

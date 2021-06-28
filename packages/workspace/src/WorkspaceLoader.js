@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import { Base64 } from 'js-base64'
 import { Button } from '@obsidians/ui-components'
 import platform from '@obsidians/platform'
+import redux from '@obsidians/redux'
 
 import Workspace from './components/Workspace'
 import WorkspaceContext from './WorkspaceContext'
@@ -57,6 +58,7 @@ export default class WorkspaceLoader extends PureComponent {
           projectSettings: result.projectSettings,
         }
       })
+      redux.dispatch('PROJECT_LOADED')
     }
   }
 

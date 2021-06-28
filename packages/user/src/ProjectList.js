@@ -6,7 +6,6 @@ import {
 
 import { Link } from 'react-router-dom'
 
-import platform from '@obsidians/platform'
 import { ProjectPath, actions } from '@obsidians/workspace'
 
 export default class ProjectList extends PureComponent {
@@ -15,7 +14,7 @@ export default class ProjectList extends PureComponent {
   }
 
   renderProjectRow = (project, index) => {
-    const { author = 'local', id, name, path } = project
+    const { remote, author = 'local', id, name, path } = project
     const url = `/${author}/${id}`
     return (
       <tr key={`project-row-${index}`}>
@@ -28,11 +27,11 @@ export default class ProjectList extends PureComponent {
             </div>
 
             <div className='mt-2 hover-off'>
-              <ProjectPath projectRoot={path} />
+              <ProjectPath projectRoot={path} remote={remote} />
             </div>
           </div>
           {
-            platform.isDesktop &&
+            !remote &&
             <div className='d-flex flex-row hover-show'>
               <DeleteButton
                 textConfirm='Click again to remove'
@@ -48,7 +47,7 @@ export default class ProjectList extends PureComponent {
   render () {
     const { loading, projects } = this.props
 
-    if (loading) {
+    if (loading && !projects) {
       return (
         <table className='table table-hover table-striped'>
           <tbody>

@@ -190,6 +190,7 @@ export default class Workspace extends Component {
             theme={theme}
             initialTab={this.tabFromPath(initial.path, initial.remote)}
             projectRoot={this.context.projectRoot}
+            projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readonly={readonly}
           />
@@ -203,6 +204,7 @@ export default class Workspace extends Component {
           theme={theme}
           initialTab={this.tabFromPath(initial.path, initial.remote)}
           projectRoot={this.context.projectRoot}
+          projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readonly={readonly}
         />

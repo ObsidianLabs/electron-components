@@ -26,7 +26,7 @@ class DeleteButton extends PureComponent {
     this.setState({ deleting: true })
     const { projectRoot, projectManager } = this.props.context
     const name = projectManager.projectName
-    await BaseProjectManager.channel.invoke('delete', projectRoot)
+    await projectManager.projectChannel.invoke('delete', projectRoot)
     await actions.removeProject({ id: name, name })
     this.setState({ deleting: false })
     this.modal.current.closeModal()

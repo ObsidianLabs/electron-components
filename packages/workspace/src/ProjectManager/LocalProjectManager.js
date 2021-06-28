@@ -48,7 +48,7 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async readProjectSettings () {
-    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
+    this.projectSettings = new BaseProjectManager.ProjectSettings(this, this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
@@ -114,6 +114,14 @@ export default class LocalProjectManager extends BaseProjectManager {
         throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
       }
     }
+  }
+
+  async readFile (filePath) {
+    return await fileOps.current.readFile(filePath)
+  }
+
+  async writeFile (filePath, content) {
+    await fileOps.current.writeFile(filePath, content)
   }
 
   async rename (oldPath, name) {

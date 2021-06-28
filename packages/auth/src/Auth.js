@@ -178,9 +178,8 @@ export default {
       const profile = redux.getState().profile
       this.profile = profile.toJS()
     }
-    // Only for web
-    if (platform.isWeb && this.credentials && this.credentials.awsCredential) {
-      fileOps.current.fs.updateCredential(this.credentials.awsCredential)
+    if (this.credentials && this.credentials.awsCredential) {
+      fileOps.web.fs.updateCredential(this.credentials.awsCredential)
       BuildService.updateCredential(this.credentials.awsCredential)
     }
   },

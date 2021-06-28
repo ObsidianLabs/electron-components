@@ -1,5 +1,6 @@
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
+import { HttpIpcChannel } from '@obsidians/ipc'
 
 import BaseProjectManager from './BaseProjectManager'
 
@@ -7,13 +8,15 @@ export default class RemoteProjectManager extends BaseProjectManager {
   constructor (project, projectRoot) {
     super(project, projectRoot)
 
+    this.remote = true
     this.prefix = 'private'
+    this.projectChannel = new HttpIpcChannel('project')
   }
 
   async prepareProject () {
     let project
     try {
-      project = await BaseProjectManager.channel.invoke('get', this.projectRoot)
+      project = await this.projectChannel.invoke('get', this.projectRoot)
     } catch (e) {
       return { error: e.message }
     }
@@ -34,7 +37,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   pathForProjectFile (relativePath) {
-    return fileOps.current.path.join(`${this.prefix}/${this.userId}/${this.projectId}`, relativePath)
+    return fileOps.web.path.join(`${this.prefix}/${this.userId}/${this.projectId}`, relativePath)
   }
 
   pathInProject (filePath = '') {
@@ -42,13 +45,13 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async readProjectSettings () {
-    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
+    this.projectSettings = new BaseProjectManager.ProjectSettings(this, this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
 
   async loadRootDirectory () {
-    const result = await fileOps.current.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
+    const result = await fileOps.web.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     return {
       name: this.projectName,
       root: true,
@@ -60,7 +63,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadDirectory (node) {
-    const result = await fileOps.current.listFolder(node.path)
+    const result = await fileOps.web.listFolder(node.path)
     return result.map(item => ({
       ...item,
       pathInProject: this.pathInProject(item.path)
@@ -80,7 +83,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async isMainValid () {
     try {
-      return await fileOps.current.isFile(this.mainFilePath)
+      return await fileOps.web.isFile(this.mainFilePath)
     } catch (e) {
       return false
     }
@@ -96,13 +99,13 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async createNewFile (basePath, name) {
-    const filePath = fileOps.current.path.join(basePath, name)
-    if (await fileOps.current.isFile(filePath)) {
+    const filePath = fileOps.web.path.join(basePath, name)
+    if (await fileOps.web.isFile(filePath)) {
       throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
     }
   
     try {
-      await fileOps.current.fs.ensureFile(filePath)
+      await fileOps.web.fs.ensureFile(filePath)
     } catch (e) {
       throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
     }
@@ -112,10 +115,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async createNewFolder (basePath, name) {
-    const folderPath = fileOps.current.path.join(basePath, name)
+    const folderPath = fileOps.web.path.join(basePath, name)
   
     try {
-      await fileOps.current.fs.ensureDir(folderPath)
+      await fileOps.web.fs.ensureDir(folderPath)
     } catch (e) {
       throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
     }
@@ -123,8 +126,16 @@ export default class RemoteProjectManager extends BaseProjectManager {
     await this.refreshDirectory(basePath)
   }
 
+  async readFile (filePath) {
+    return await fileOps.web.readFile(filePath)
+  }
+  
+  async writeFile (filePath, content) {
+    await fileOps.web.writeFile(filePath, content)
+  }
+
   async rename (oldPath, name) {
-    const { path, fs } = fileOps.current
+    const { path, fs } = fileOps.web
     const { dir } = path.parse(oldPath)
     const newPath = path.join(dir, name)
 
@@ -144,13 +155,13 @@ export default class RemoteProjectManager extends BaseProjectManager {
     })
     if (response === 0) {
       if (node.children) {
-        await fileOps.current.fs.deleteFolder(node.path)
+        await fileOps.web.fs.deleteFolder(node.path)
       } else {
-        await fileOps.current.fs.deleteFile(node.path)
+        await fileOps.web.fs.deleteFile(node.path)
       }
     }
 
-    const { dir } = fileOps.current.path.parse(node.path)
+    const { dir } = fileOps.web.path.parse(node.path)
     await this.refreshDirectory(dir)
   }
 

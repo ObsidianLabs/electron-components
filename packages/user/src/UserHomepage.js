@@ -3,25 +3,28 @@ import React, { PureComponent } from 'react'
 import {
   ButtonGroup,
   Button,
+  ButtonOptions,
   LoadingScreen,
   CenterScreen,
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
-import { IpcChannel } from '@obsidians/ipc'
-import { BaseProjectManager, actions } from '@obsidians/workspace'
+import { HttpIpcChannel } from '@obsidians/ipc'
+import { actions } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
 
-const userChannel = new IpcChannel('user')
+const userChannel = new HttpIpcChannel('user')
+const projectChannel = new HttpIpcChannel('project')
 
 class UserHomepage extends PureComponent {
   state = {
     notfound: false,
     loading: true,
     user: null,
-    projects: [],
+    section: 'local',
+    projects: null,
   }
 
   componentDidMount () {
@@ -38,17 +41,17 @@ class UserHomepage extends PureComponent {
   }
 
   getProjectList = async username => {
-    if (platform.isDesktop) {
-      this.setState({ loading: false, notfound: false, user: null })
-      return
-    }
+    // if (platform.isDesktop) {
+    //   this.setState({ loading: false, notfound: false, user: null })
+    //   return
+    // }
 
     if (username === 'local') {
-      this.setState({ loading: false, notfound: false, user: null, projects: [] })
+      this.setState({ loading: false, notfound: false, user: null, projects: null })
       return
     }
 
-    this.setState({ loading: true, notfound: false })
+    this.setState({ loading: true, notfound: false, projects: null })
 
     let user
     if (!this.isSelf()) {
@@ -59,8 +62,9 @@ class UserHomepage extends PureComponent {
         return
       }
     }
-    const res = await BaseProjectManager.channel.invoke('get', username)
+    const res = await projectChannel.invoke('get', username)
     const projects = res.map(p => ({
+      remote: true,
       id: p.name,
       name: p.name,
       author: username,
@@ -72,9 +76,9 @@ class UserHomepage extends PureComponent {
       user,
       projects,
     })
-    if (this.isSelf()) {
-      redux.dispatch('UPDATE_PROJECT_LIST', projects)
-    }
+    // if (this.isSelf()) {
+    //   redux.dispatch('UPDATE_PROJECT_LIST', projects)
+    // }
   }
 
   isSelf = () => {
@@ -82,7 +86,7 @@ class UserHomepage extends PureComponent {
     return platform.isDesktop || match.params.username === profile.get('username')
   }
 
-  renderCreateNewProjectButton = () => {
+  renderCreateButton = () => {
     if (!this.isSelf()) {
       return null
     }
@@ -96,8 +100,8 @@ class UserHomepage extends PureComponent {
     )
   }
 
-  renderOpenProjectButton = () => {
-    if (!this.isSelf() || platform.isWeb) {
+  renderOpenButton = () => {
+    if (!this.isSelf()) {
       return null
     }
     return (
@@ -112,12 +116,53 @@ class UserHomepage extends PureComponent {
     )
   }
 
+  renderSectionOptions = () => {
+    if (platform.isDesktop && this.props.profile?.get('username')) {
+      return (
+        <ButtonOptions
+          className='mb-0'
+          options={[
+            { key: 'local', text: 'Local', icon: 'far fa-desktop mr-1' },
+            { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' },
+          ]}
+          selected={this.state.section}
+          onSelect={section => this.setState({ section })}
+        />
+      )
+    } else {
+      return (
+        <ButtonGroup>
+          <h4 color='primary'>
+            <i className='fas fa-th-list mr-2' />Projects
+          </h4>
+        </ButtonGroup>
+      )
+    }
+  }
+
+  renderActionButtons = () => {
+    if (platform.isDesktop) {
+      if (this.state.section === 'local') {
+        return (
+          <ButtonGroup>
+            {this.renderCreateButton()}
+            {this.renderOpenButton()}
+          </ButtonGroup>
+        )
+      } else {
+        return this.renderCreateButton()
+      }
+    } else {
+      return this.renderCreateButton()
+    }
+  }
+
   render () {
     const { profile } = this.props
-    const { loading, notfound, user } = this.state
+    const { loading, notfound, user, section } = this.state
 
     let projects
-    if (platform.isDesktop) {
+    if (platform.isDesktop && section === 'local') {
       projects = this.props.projects.get('local').toJS().map(p => {
         delete p.author
         return p
@@ -126,10 +171,12 @@ class UserHomepage extends PureComponent {
       projects = this.state.projects
     }
 
-    if (loading) {
-      return <LoadingScreen />
-    } else if (notfound) {
-      return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
+    if (!this.isSelf()) {
+      if (loading) {
+        return <LoadingScreen />
+      } else if (notfound) {
+        return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
+      }
     }
 
     return (
@@ -139,18 +186,10 @@ class UserHomepage extends PureComponent {
             profile={this.isSelf() ? profile.toJS() : user}
           />
           <div className='d-flex flex-row justify-content-between my-3'>
-            <ButtonGroup>
-              <h4 color='primary'>
-                <i className='fas fa-th-list mr-2' />Projects
-              </h4>
-            </ButtonGroup>
-            <ButtonGroup>
-              {this.renderCreateNewProjectButton()}
-              {this.renderOpenProjectButton()}
-            </ButtonGroup>
+            {this.renderSectionOptions()}
+            {this.renderActionButtons()}
           </div>
-
-          <ProjectList projects={projects} />
+          <ProjectList projects={projects} loading={loading} />
         </div>
       </div>
     )

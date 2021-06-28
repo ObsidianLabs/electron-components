@@ -1,10 +1,9 @@
-import fileOps from '@obsidians/file-ops'
-
 import set from 'lodash/set'
 import get from 'lodash/get'
 
 export default class ProjectSettings {
-  constructor (settingFilePath, channel) {
+  constructor (projectManager, settingFilePath, channel) {
+    this.projectManager = projectManager
     this.settingFilePath = settingFilePath
     this.channel = channel
     channel.off('current-value')
@@ -12,13 +11,12 @@ export default class ProjectSettings {
 
     this.invalid = false
     this.settings = {}
-    this.path = fileOps.current.path
   }
 
   async readSettings () {
     let settingsJson
     try {
-      settingsJson = await fileOps.current.readFile(this.settingFilePath)
+      settingsJson = await this.projectManager.readFile(this.settingFilePath)
     } catch (e) {}
 
     this.update(settingsJson)
@@ -29,7 +27,7 @@ export default class ProjectSettings {
     const settings = this.trimSettings(rawSettings)
     
     const settingsJson = JSON.stringify(settings, null, 2)
-    await fileOps.current.writeFile(this.settingFilePath, settingsJson)
+    await this.projectManager.writeFile(this.settingFilePath, settingsJson)
   }
 
   update (settingsJson) {
