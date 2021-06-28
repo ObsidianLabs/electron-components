@@ -5,11 +5,19 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import BaseProjectManager from './BaseProjectManager'
 
 export default class LocalProjectManager extends BaseProjectManager {
+  static async createProject (options) {
+    return await BaseProjectManager.channel.invoke('post', '', options)
+  }
+
   constructor (project, projectRoot) {
     super(project, projectRoot)
 
     BaseProjectManager.channel.on('refresh-file', this.onRefreshFile.bind(this))
     BaseProjectManager.channel.on('delete-file', this.onDeleteFile.bind(this))
+  }
+
+  get path () {
+    return fileOps.current.path
   }
 
   async prepareProject () {
@@ -37,6 +45,10 @@ export default class LocalProjectManager extends BaseProjectManager {
 
   pathInProject () {
     return undefined
+  }
+
+  async listFolder (folderPath) {
+    return await fileOps.current.listFolder(folderPath)
   }
 
   async loadRootDirectory () {
@@ -81,6 +93,18 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await this.projectSettings.readSettings()
   }
 
+  async ensureFile (filePath) {
+    return await fileOps.current.fs.ensureFile(filePath)
+  }
+
+  async readFile (filePath) {
+    return await fileOps.current.readFile(filePath)
+  }
+
+  async writeFile (filePath, content) {
+    await fileOps.current.writeFile(filePath, content)
+  }
+
   async createNewFile (basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
@@ -88,7 +112,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   
     try {
-      await fileOps.current.fs.ensureFile(filePath)
+      await this.ensureFile(filePath)
     } catch (e) {
       if (e.code === 'EISDIR') {
         throw new Error(`Folder <b>${filePath}</b> already exists.`)
@@ -114,14 +138,6 @@ export default class LocalProjectManager extends BaseProjectManager {
         throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
       }
     }
-  }
-
-  async readFile (filePath) {
-    return await fileOps.current.readFile(filePath)
-  }
-
-  async writeFile (filePath, content) {
-    await fileOps.current.writeFile(filePath, content)
   }
 
   async rename (oldPath, name) {

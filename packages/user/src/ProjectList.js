@@ -2,10 +2,13 @@ import React, { PureComponent } from 'react'
 
 import {
   DeleteButton,
+  IconButton,
 } from '@obsidians/ui-components'
 
 import { Link } from 'react-router-dom'
 
+import platform from '@obsidians/platform'
+import fileOps from '@obsidians/file-ops'
 import { ProjectPath, actions } from '@obsidians/workspace'
 
 export default class ProjectList extends PureComponent {
@@ -25,23 +28,42 @@ export default class ProjectList extends PureComponent {
                 <h5 className='mb-0'>{name}</h5>
               </Link>
             </div>
-
             <div className='mt-2 hover-off'>
               <ProjectPath projectRoot={path} remote={remote} />
             </div>
           </div>
-          {
-            !remote &&
-            <div className='d-flex flex-row hover-show'>
-              <DeleteButton
-                textConfirm='Click again to remove'
-                onConfirm={() => this.removeProject(project)}
-              />
-            </div>
-          }
+          <div className='d-flex flex-row align-items-start hover-show'>
+            {this.renderRightButton(project)}
+          </div>
         </td>
       </tr>
     )
+  }
+
+  renderRightButton = project => {
+    if (!project.remote) {
+      return (
+        <DeleteButton
+          textConfirm='Click again to remove'
+          onConfirm={() => this.removeProject(project)}
+        />
+      )
+    }
+
+    if (platform.isDesktop) {
+      return (
+        <IconButton
+          key={`open-in-browser-${project.id}`}
+          color='transparent'
+          className='text-muted'
+          icon='fas fa-external-link'
+          tooltip='Open in Browser'
+          onClick={() => fileOps.current.openLink(`${process.env.PROJECT_WEB_URL}/${project.path}`)}
+        />
+      )
+    }
+
+    return null
   }
 
   render () {

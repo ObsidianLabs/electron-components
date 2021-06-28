@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 import {
   Button,
+  UncontrolledTooltip,
 } from 'reactstrap'
 
 export default function IconButton (props) {
@@ -10,14 +11,21 @@ export default function IconButton (props) {
     color,
     id,
     icon = 'far fa-trash-alt',
+    tooltip,
+    tooltipPlacement = 'top',
     className,
     onClick,
     children = null,
   } = props
 
   const [iconId] = useState(id || `icon-button-${Math.floor(Math.random() * 10000)}`)
+  const tooltipComponent = tooltip && (
+    <UncontrolledTooltip trigger='hover' delay={0} placement={tooltipPlacement} target={iconId}>
+      {tooltip}
+    </UncontrolledTooltip>
+  )
 
-  return (
+  return <>
     <Button
       size='sm'
       color={color}
@@ -30,5 +38,6 @@ export default function IconButton (props) {
       <i className={icon} />
       {children}
     </Button>
-  )
+    {tooltipComponent}
+  </>
 }

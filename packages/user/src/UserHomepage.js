@@ -9,7 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
-import redux, { connect } from '@obsidians/redux'
+import { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
 import { actions } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
@@ -23,7 +23,7 @@ class UserHomepage extends PureComponent {
     notfound: false,
     loading: true,
     user: null,
-    section: 'local',
+    remote: platform.isWeb,
     projects: null,
   }
 
@@ -93,7 +93,7 @@ class UserHomepage extends PureComponent {
     return (
       <Button
         color='success'
-        onClick={() => actions.newProject()}
+        onClick={() => actions.newProject(this.state.remote)}
       >
         <i className='fas fa-plus mr-1' />New
       </Button>
@@ -116,7 +116,7 @@ class UserHomepage extends PureComponent {
     )
   }
 
-  renderSectionOptions = () => {
+  renderProjectListOptions = () => {
     if (platform.isDesktop && this.props.profile?.get('username')) {
       return (
         <ButtonOptions
@@ -125,8 +125,8 @@ class UserHomepage extends PureComponent {
             { key: 'local', text: 'Local', icon: 'far fa-desktop mr-1' },
             { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' },
           ]}
-          selected={this.state.section}
-          onSelect={section => this.setState({ section })}
+          selected={this.state.remote ? 'cloud' : 'local'}
+          onSelect={key => this.setState({ remote: key === 'cloud' })}
         />
       )
     } else {
@@ -142,7 +142,7 @@ class UserHomepage extends PureComponent {
 
   renderActionButtons = () => {
     if (platform.isDesktop) {
-      if (this.state.section === 'local') {
+      if (!this.state.remote) {
         return (
           <ButtonGroup>
             {this.renderCreateButton()}
@@ -159,10 +159,10 @@ class UserHomepage extends PureComponent {
 
   render () {
     const { profile } = this.props
-    const { loading, notfound, user, section } = this.state
+    const { loading, notfound, user, remote } = this.state
 
     let projects
-    if (platform.isDesktop && section === 'local') {
+    if (!remote) {
       projects = this.props.projects.get('local').toJS().map(p => {
         delete p.author
         return p
@@ -186,7 +186,7 @@ class UserHomepage extends PureComponent {
             profile={this.isSelf() ? profile.toJS() : user}
           />
           <div className='d-flex flex-row justify-content-between my-3'>
-            {this.renderSectionOptions()}
+            {this.renderProjectListOptions()}
             {this.renderActionButtons()}
           </div>
           <ProjectList projects={projects} loading={loading} />

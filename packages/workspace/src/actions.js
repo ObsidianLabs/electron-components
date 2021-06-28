@@ -18,19 +18,23 @@ export class ProjectActions {
     return this.workspace?.codeEditor?.current
   }
 
-  async newProject () {
-    const { _id, projectRoot, name } = await this.newProjectModal.openModal()
-    const author = platform.isDesktop ? 'local' : Auth.username
+  async newProject (remote) {
+    const created = await this.newProjectModal.openModal(remote)
+    const { _id, projectRoot, name } = created
+    const author = _id ? Auth.username : 'local'
     const projectId = _id ? name : Base64.encode(projectRoot)
-    redux.dispatch('ADD_PROJECT', {
-      type: 'local',
-      project: {
-        id: projectId,
-        author,
-        name,
-        path: projectRoot,
-      }
-    })
+    if (!_id) {
+      redux.dispatch('ADD_PROJECT', {
+        type: 'local',
+        project: {
+          id: projectId,
+          author,
+          name,
+          path: projectRoot,
+        }
+      })
+    }
+    console.log(`/${author}/${projectId}`)
     this.history.push(`/${author}/${projectId}`)
   }
 
@@ -76,7 +80,7 @@ export class ProjectActions {
     const selected = redux.getState().projects.get('selected')
     if (selected && selected.get('id') === id) {
       redux.dispatch('SELECT_PROJECT', { project: undefined })
-      const author = platform.isDesktop ? 'local' : Auth.username
+      const author = Auth.username || 'local'
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })

@@ -4,19 +4,28 @@ import { HttpIpcChannel } from '@obsidians/ipc'
 
 import BaseProjectManager from './BaseProjectManager'
 
+const projectChannel = new HttpIpcChannel('project')
+
 export default class RemoteProjectManager extends BaseProjectManager {
+  static async createProject (options) {
+    return await projectChannel.invoke('post', '', options)
+  }
+
   constructor (project, projectRoot) {
     super(project, projectRoot)
 
     this.remote = true
     this.prefix = 'private'
-    this.projectChannel = new HttpIpcChannel('project')
+  }
+
+  get path () {
+    return fileOps.web.path
   }
 
   async prepareProject () {
     let project
     try {
-      project = await this.projectChannel.invoke('get', this.projectRoot)
+      project = await projectChannel.invoke('get', this.projectRoot)
     } catch (e) {
       return { error: e.message }
     }
@@ -36,8 +45,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return { initial: { path: this.pathForProjectFile('README.md'), remote: true }, projectSettings }
   }
 
+  async deleteProject () {
+    return await projectChannel.invoke('delete', this.projectRoot)
+  }
+
   pathForProjectFile (relativePath) {
-    return fileOps.web.path.join(`${this.prefix}/${this.userId}/${this.projectId}`, relativePath)
+    return this.path.join(`${this.prefix}/${this.userId}/${this.projectId}`, relativePath)
   }
 
   pathInProject (filePath = '') {
@@ -50,8 +63,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return this.projectSettings
   }
 
+  async listFolder (folderPath) {
+    return await fileOps.web.listFolder(folderPath)
+  }
+
   async loadRootDirectory () {
-    const result = await fileOps.web.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
+    const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     return {
       name: this.projectName,
       root: true,
@@ -63,7 +80,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadDirectory (node) {
-    const result = await fileOps.web.listFolder(node.path)
+    const result = await this.listFolder(node.path)
     return result.map(item => ({
       ...item,
       pathInProject: this.pathInProject(item.path)
@@ -98,32 +115,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return await this.projectSettings.readSettings()
   }
 
-  async createNewFile (basePath, name) {
-    const filePath = fileOps.web.path.join(basePath, name)
-    if (await fileOps.web.isFile(filePath)) {
-      throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
-    }
-  
-    try {
-      await fileOps.web.fs.ensureFile(filePath)
-    } catch (e) {
-      throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
-    }
-
-    await this.refreshDirectory(basePath)
-    return filePath
-  }
-
-  async createNewFolder (basePath, name) {
-    const folderPath = fileOps.web.path.join(basePath, name)
-  
-    try {
-      await fileOps.web.fs.ensureDir(folderPath)
-    } catch (e) {
-      throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
-    }
-
-    await this.refreshDirectory(basePath)
+  async ensureFile (filePath) {
+    return await fileOps.web.fs.ensureFile(filePath)
   }
 
   async readFile (filePath) {
@@ -134,13 +127,40 @@ export default class RemoteProjectManager extends BaseProjectManager {
     await fileOps.web.writeFile(filePath, content)
   }
 
+  async createNewFile (basePath, name) {
+    const filePath = this.path.join(basePath, name)
+    if (await fileOps.web.isFile(filePath)) {
+      throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
+    }
+  
+    try {
+      await this.ensureFile(filePath)
+    } catch (e) {
+      throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
+    }
+
+    await this.refreshDirectory(basePath)
+    return filePath
+  }
+
+  async createNewFolder (basePath, name) {
+    const folderPath = this.path.join(basePath, name)
+  
+    try {
+      await fileOps.web.fs.ensureDir(folderPath)
+    } catch (e) {
+      throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
+    }
+
+    await this.refreshDirectory(basePath)
+  }
+
   async rename (oldPath, name) {
-    const { path, fs } = fileOps.web
-    const { dir } = path.parse(oldPath)
-    const newPath = path.join(dir, name)
+    const { dir } = this.path.parse(oldPath)
+    const newPath = this.path.join(dir, name)
 
     try {
-      await fs.rename(oldPath, newPath)
+      await fileOps.web.fs.rename(oldPath, newPath)
     } catch (e) {
       throw new Error(`Fail to rename <b>${this.pathInProject(folderPath)}</b>.`)
     }

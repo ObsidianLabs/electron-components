@@ -104,28 +104,31 @@ export default class WorkspaceLoader extends PureComponent {
       signer,
       CompilerTerminal,
     } = this.props
-    const { terminal } = this.state
+    const { loading, invalid, initial, terminal, context } = this.state
 
-    if (this.state.loading) {
+    if (loading) {
       return <ProjectLoading projectRoot={projectRoot} />
     }
 
-    if (this.state.invalid) {
+    if (invalid) {
       return this.renderInvalidProject(projectRoot)
     }
 
     return (
-      <WorkspaceContext.Provider value={this.state.context}>
+      <WorkspaceContext.Provider value={context}>
         <Workspace
           ref={this.workspace}
           theme={this.props.theme}
-          initial={this.state.initial}
+          initial={initial}
           terminal={terminal}
           defaultSize={272}
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
           signer={signer}
-          Terminal={CompilerTerminal ? <CompilerTerminal active={terminal} cwd={projectRoot} /> : null}
+          Terminal={
+            CompilerTerminal &&
+            <CompilerTerminal projectManager={context.projectManager} active={terminal} cwd={projectRoot} />
+          }
         />
       </WorkspaceContext.Provider>
     )
