@@ -12,6 +12,7 @@ export default class ElectronFileOps extends FileOps {
     this.trash = window.require('trash')
 
     this.homePath = this.electron.remote.app.getPath('home')
+    this.appPath = this.electron.remote.app.getAppPath()
     this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
     this.ensureDirectory(this.workspace)
   }
