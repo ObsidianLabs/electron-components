@@ -6,10 +6,12 @@ import {
   IconButton,
 } from '@obsidians/ui-components'
 
+import { withRouter } from 'react-router'
+
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
-export default class UserProfile extends PureComponent {
+class UserProfile extends PureComponent {
   renderAvatar = () => {
     const { profile } = this.props
 
@@ -101,3 +103,5 @@ export default class UserProfile extends PureComponent {
     )
   }
 }
+
+export default withRouter(UserProfile)

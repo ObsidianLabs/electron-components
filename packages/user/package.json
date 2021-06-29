@@ -47,7 +47,8 @@
   "peerDependencies": {
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "react-router-dom": "^5.1.2"
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
   },
   "eslintConfig": {
     "extends": "react-app"
