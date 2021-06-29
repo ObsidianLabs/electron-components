@@ -81,7 +81,7 @@ export default class QueueButton extends PureComponent {
       icon = <div key='icon-no-pending' className='d-inline-block w-3 mr-1'><i className='fas fa-receipt' /></div>
     }
 
-    const { txs, QueueItem, TransactionDetails } = this.props
+    const { txs, QueueItem, TransactionDetails, ...otherProps } = this.props
 
     return <>
       <UncontrolledButtonDropdown direction='up'>
@@ -97,6 +97,7 @@ export default class QueueButton extends PureComponent {
         title='Transaction'
       >
         <TransactionDetails
+          {...otherProps}
           tx={this.state.tx}
           closeModal={() => this.txModal.current.closeModal()}
         />
