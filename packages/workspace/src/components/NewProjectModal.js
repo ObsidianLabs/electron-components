@@ -15,6 +15,7 @@ import {
 
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
+import Auth from '@obsidians/auth'
 import notification from '@obsidians/notification'
 import Terminal from '@obsidians/terminal'
 
@@ -110,7 +111,7 @@ export default class NewProjectModal extends PureComponent {
   }
 
   renderLocation = () => {
-    if (platform.isDesktop) {
+    if (platform.isDesktop && Auth.username) {
       return (
         <div>
           <ButtonOptions
