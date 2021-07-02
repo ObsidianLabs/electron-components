@@ -22,6 +22,10 @@ export default class MonacoEditor extends Component {
 
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')
+
+    if (this.props.onEditorReady) {
+      this.props.onEditorReady(this.monacoEditor, this)
+    }
   }
 
   shouldComponentUpdate (props) {

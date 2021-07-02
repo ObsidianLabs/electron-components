@@ -178,6 +178,7 @@ export default class CodeEditorCollection extends Component {
             remote={this.state.selectedTab.remote}
             mode={this.state.selectedTab.mode}
             readonly={this.props.readonly}
+            onEditorReady={this.props.onEditorReady}
             onChange={this.setCurrentTabUnsaved}
             onCommand={this.onCommand}
           />

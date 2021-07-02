@@ -172,25 +172,36 @@ export default class MonacoEditorModelSession {
     // }
     
     if (typeof row === 'number') {
+      if (length) {
+        return {
+          // code: 'code',
+          // source: 'source',
+          severity: SEVERITIES[type],
+          message: text,
+          startLineNumber: row,
+          startColumn: column,
+          endLineNumber: row,
+          endColumn: column + length,
+          relatedInformation: [
+            // {
+            //   resource: monaco.Uri.file(filePath),
+            //   message: text,
+            //   startLineNumber: row,
+            //   startColumn: column,
+            //   endLineNumber: row,
+            //   endColumn: column + length,
+            // }
+          ]
+        }
+      }
+      const word = this.model.getWordAtPosition({ column, lineNumber: row })
       return {
-        // code: 'code',
-        // source: 'source',
         severity: SEVERITIES[type],
         message: text,
         startLineNumber: row,
-        startColumn: column,
+        startColumn: word ? word.startColumn : column,
         endLineNumber: row,
-        endColumn: column + length,
-        relatedInformation: [
-          // {
-          //   resource: monaco.Uri.file(filePath),
-          //   message: text,
-          //   startLineNumber: row,
-          //   startColumn: column,
-          //   endLineNumber: row,
-          //   endColumn: column + length,
-          // }
-        ]
+        endColumn: word ? word.startColumn : column + 1,
       }
     }
 

@@ -101,6 +101,7 @@ export default class MonacoEditorContainer extends PureComponent {
         ref={editor => (this.editor = editor)}
         modelSession={modelSession}
         theme={this.props.theme}
+        onEditorReady={this.props.onEditorReady}
         onCommand={onCommand}
         onChange={() => onChange(true)}
       />
