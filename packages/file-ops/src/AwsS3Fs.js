@@ -28,6 +28,9 @@ export default class AwsS3Fs {
   }
 
   async readFile (filePath, encoding) {
+    if (filePath.startsWith('/')) {
+      filePath = filePath.substr(1)
+    }
     const params = {
       Bucket,
       Key: filePath,
@@ -99,12 +102,15 @@ export default class AwsS3Fs {
   }
 
   async stat (fileOrDirPath) {
+    if (fileOrDirPath.startsWith('/')) {
+      fileOrDirPath = fileOrDirPath.substr(1)
+    }
     const { dir, base } = path.parse(fileOrDirPath)
     const list = await this.list(dir)
     const match = list.find(item => item.name === base)
     return {
-      isDirectory: match && match.children,
-      isFile: match && !match.children,
+      isDirectory: () => match && !!match.children,
+      isFile: () => match && !match.children,
     }
   }
 

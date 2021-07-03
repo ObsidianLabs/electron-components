@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import * as monaco from 'monaco-editor'
 import throttle from 'lodash/throttle'
 
+import premiumEditor from '@obsidians/premium-editor'
+
 import modelSessionManager from './modelSessionManager'
 import registerThemes from './languages/registerThemes'
 
@@ -61,7 +63,7 @@ export default class MonacoEditor extends Component {
       fontSize: '13px',
       scrollBeyondLastLine: false,
       glyphMargin: true
-    })
+    }, premiumEditor.overrides)
     modelSessionManager.editor = monacoEditor
     monacoEditor.onDidChangeModelContent(() => {
       this.props.onChange()

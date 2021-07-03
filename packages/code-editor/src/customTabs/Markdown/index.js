@@ -135,7 +135,7 @@ export default class Markdown extends Component {
   }
 
   openLink = link => {
-    fileOps.current.openLink(props.href)
+    fileOps.current.openLink(link)
   }
 
   openFile = async filePath => {

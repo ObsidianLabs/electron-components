@@ -48,7 +48,6 @@ class ModelSessionManager {
   }
 
   set currentModelSession (modelSession) {
-    console.log(modelSession.filePath)
     if (modelSession.filePath.indexOf('node_modules') > -1) {
       modelSession.setTopbar({ title: `This file is a dependency and changes may have a great impact on the project. Make sure you know what you are doing before making changes.` })
       this._editorContainer.refresh()
@@ -90,11 +89,11 @@ class ModelSessionManager {
     return this.currentModelSession?.filePath
   }
 
-  openFile (filePath) {
+  openFile (filePath, remote = this.projectManager.remote) {
     if (!fileOps.current.path.isAbsolute(filePath)) {
       filePath = fileOps.current.path.join(this.projectRoot, filePath)
     }
-    this._editorContainer.openTab({ key: filePath, path: filePath })
+    this._editorContainer.openTab({ key: filePath, path: filePath, remote })
   }
 
   async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath)) {
