@@ -6,6 +6,8 @@ import {
   Button,
 } from '@obsidians/ui-components'
 
+import notification from '@obsidians/notification'
+
 import ReactMarkdown from 'react-markdown'
 import Highlight from 'react-highlight'
 
@@ -132,6 +134,27 @@ export default class Markdown extends Component {
     )
   }
 
+  openLink = link => {
+    fileOps.current.openLink(props.href)
+  }
+
+  openFile = async filePath => {
+    const path = modelSessionManager.projectManager.path
+    let openningPath
+    if (path.isAbsolute(filePath)) {
+      openningPath = filePath
+    } else {
+      const { dir } = path.parse(this.filePath)
+      openningPath = path.join(dir, filePath)
+    }
+
+    if (await modelSessionManager.projectManager.isFile(openningPath)) {
+      modelSessionManager.openFile(openningPath)
+    } else {
+      notification.error('File not exists', `There is no file at <b>${openningPath}</b>.`)
+    }
+  }
+
   render () {
     if (!this.display) {
       return this.renderHovers()
@@ -154,21 +177,21 @@ export default class Markdown extends Component {
                 link: props => {
                   if (props.href.startsWith('http://') || props.href.startsWith('https://')) {
                     return (
-                      <span className='link' onClick={() => fileOps.current.openLink(props.href)}>{props.children}</span>
+                      <span className='link' onClick={() => this.openLink(props.href)}>{props.children}</span>
                     )
                   }
-                  return <span className='link' onClick={() => modelSessionManager.openFile(props.href)}>{props.children}</span>
+                  return <span className='link' onClick={() => this.openFile(props.href)}>{props.children}</span>
                 },
                 linkReference: props => {
                   try {
                     const { value, children } = props.children[0].props
                     if (value.startsWith('http://') || value.startsWith('https://')) {
                       return (
-                        <span className='link' onClick={() => fileOps.current.openLink(value)}>{children}</span>
+                        <span className='link' onClick={() => this.openLink(value)}>{children}</span>
                       )
                     }
                   } catch (e) {}
-                  return <span className='link' onClick={() => modelSessionManager.openFile(props.href)}>{props.children}</span>
+                  return <span className='link' onClick={() => this.openFile(props.href)}>{props.children}</span>
                 },
                 inlineCode: props => <kbd>{props.children}</kbd>,
                 code: props => (

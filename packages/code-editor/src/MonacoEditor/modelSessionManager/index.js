@@ -30,7 +30,7 @@ class ModelSessionManager {
     this.CustomTabs = {}
     this.customTabTitles = {}
 
-    this.currentModelSession = null
+    this._currentModelSession = null
     this.sessions = {}
     this.decorationCollection = {}
   }
@@ -45,6 +45,19 @@ class ModelSessionManager {
   
   get projectManager () {
     return this._editorContainer.props.projectManager
+  }
+
+  set currentModelSession (modelSession) {
+    console.log(modelSession.filePath)
+    if (modelSession.filePath.indexOf('node_modules') > -1) {
+      modelSession.setTopbar({ title: `This file is a dependency and changes may have a great impact on the project. Make sure you know what you are doing before making changes.` })
+      this._editorContainer.refresh()
+    }
+    this._currentModelSession = modelSession
+  }
+
+  get currentModelSession () {
+    return this._currentModelSession
   }
 
   registerModeDetector (modeDetector) {
@@ -77,8 +90,10 @@ class ModelSessionManager {
     return this.currentModelSession?.filePath
   }
 
-  openFile (relativePath) {
-    const filePath = fileOps.current.path.join(this.projectRoot, relativePath)
+  openFile (filePath) {
+    if (!fileOps.current.path.isAbsolute(filePath)) {
+      filePath = fileOps.current.path.join(this.projectRoot, filePath)
+    }
     this._editorContainer.openTab({ key: filePath, path: filePath })
   }
 
@@ -96,7 +111,11 @@ class ModelSessionManager {
         } catch (e) {
           console.warn(e)
         }
-        model = monaco.editor.createModel(content, mode, monaco.Uri.file(filePath))
+        const uri = monaco.Uri.file(filePath)
+        model = monaco.editor.getModel(uri)
+        if (!model) {
+          model = monaco.editor.createModel(content, mode, uri)
+        }
       }
       this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationCollection[filePath] || [])
     }

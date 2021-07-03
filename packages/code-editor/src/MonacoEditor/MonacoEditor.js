@@ -23,8 +23,8 @@ export default class MonacoEditor extends Component {
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')
 
-    if (this.props.onEditorReady) {
-      this.props.onEditorReady(this.monacoEditor, this)
+    if (modelSessionManager.projectManager.onEditorReady) {
+      modelSessionManager.projectManager.onEditorReady(this.monacoEditor, this)
     }
   }
 
@@ -40,6 +40,10 @@ export default class MonacoEditor extends Component {
     }
 
     return false
+  }
+
+  componentWillUnmount () {
+    this.monacoEditor.dispose()
   }
 
   layoutEditor = () => {

@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk'
+import path from 'path-browserify'
 
 import { AWSS3Region, AWSBucket } from './config.json'
 
@@ -97,15 +98,14 @@ export default class AwsS3Fs {
     }
   }
 
-  stat (path) {
+  async stat (fileOrDirPath) {
+    const { dir, base } = path.parse(fileOrDirPath)
+    const list = await this.list(dir)
+    const match = list.find(item => item.name === base)
     return {
-      isDirectory: () => this.isDirectory(path),
-      isFile: () => false,
+      isDirectory: match && match.children,
+      isFile: match && !match.children,
     }
-  }
-
-  isDirectory (path) {
-    return true
   }
 
   async list (dirPath) {

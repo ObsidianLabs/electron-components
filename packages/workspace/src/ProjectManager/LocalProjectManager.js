@@ -93,6 +93,10 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await this.projectSettings.readSettings()
   }
 
+  async isFile (filePath) {
+    return await fileOps.current.isFile(filePath)
+  }
+
   async ensureFile (filePath) {
     return await fileOps.current.fs.ensureFile(filePath)
   }

@@ -115,6 +115,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return await this.projectSettings.readSettings()
   }
 
+  async isFile (filePath) {
+    return await fileOps.web.isFile(filePath)
+  }
+
   async ensureFile (filePath) {
     return await fileOps.web.fs.ensureFile(filePath)
   }

@@ -28,6 +28,9 @@ export default class WorkspaceLoader extends PureComponent {
 
   componentDidMount () {
     this.prepareProject(this.props)
+    if (this.props.addLanguages) {
+      this.props.addLanguages()
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -121,7 +124,6 @@ export default class WorkspaceLoader extends PureComponent {
           initial={initial}
           terminal={terminal}
           defaultSize={272}
-          onEditorReady={this.props.addLanguages}
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
           signer={signer}

@@ -164,7 +164,6 @@ export default class Workspace extends Component {
       defaultSize,
       readonly = false,
       makeContextMenu = x => x,
-      onEditorReady,
     } = this.props
 
     const {
@@ -188,13 +187,13 @@ export default class Workspace extends Component {
         >
           <CodeEditorCollection
             ref={this.codeEditor}
+            key={this.context.projectRoot}
             theme={theme}
             initialTab={this.tabFromPath(initial.path, initial.remote)}
             projectRoot={this.context.projectRoot}
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readonly={readonly}
-            onEditorReady={onEditorReady}
           />
           {Terminal}
         </SplitPane>
@@ -203,13 +202,13 @@ export default class Workspace extends Component {
       Editor = (
         <CodeEditorCollection
           ref={this.codeEditor}
+          key={this.context.projectRoot}
           theme={theme}
           initialTab={this.tabFromPath(initial.path, initial.remote)}
           projectRoot={this.context.projectRoot}
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readonly={readonly}
-          onEditorReady={onEditorReady}
         />
       )
     }
