@@ -12,6 +12,8 @@ export default class BaseProjectManager {
     this.projectRoot = projectRoot
   }
 
+  dispose () {}
+
   get settingsFilePath () {
     throw new Error('ProjectManager.settingsFilePath is not implemented.')
   }

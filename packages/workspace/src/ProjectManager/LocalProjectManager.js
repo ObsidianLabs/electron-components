@@ -16,6 +16,11 @@ export default class LocalProjectManager extends BaseProjectManager {
     BaseProjectManager.channel.on('delete-file', this.onDeleteFile.bind(this))
   }
 
+  dispose () {
+    BaseProjectManager.channel.off('refresh-file')
+    BaseProjectManager.channel.off('delete-file')
+  }
+
   get path () {
     return fileOps.current.path
   }
