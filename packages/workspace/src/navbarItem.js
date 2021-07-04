@@ -47,7 +47,7 @@ export default function navbarItem (projects, selected, username) {
     id: 'new-project',
     name: 'Create Project...',
     icon: 'fas fa-plus',
-    onClick: () => actions.newProject(),
+    onClick: () => actions.newProject(platform.isWeb),
   })
 
   return {
