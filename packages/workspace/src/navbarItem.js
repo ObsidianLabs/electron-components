@@ -29,6 +29,17 @@ const projectContextMenus = id => {
 }
 
 export default function navbarItem (projects, selected, username) {
+  if (platform.isWeb && username === 'local') {
+    return {
+      route: 'local',
+      title: 'Project',
+      icon: 'fas fa-file-code',
+      selected,
+      dropdown: [{ none: true }],
+      contextMenu: projectContextMenus,
+    }
+  }
+
   const projectDropdown = [
     { divider: true },
     { header: 'projects' },

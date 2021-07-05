@@ -54,6 +54,7 @@ export default class NewProjectModal extends PureComponent {
       creating: false,
       showTerminal: false,
     })
+    this.forceUpdate()
     this.modal.current.openModal()
     return new Promise(resolve => { this.onConfirm = resolve })
   }
