@@ -15,7 +15,6 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { kp } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
 
@@ -44,13 +43,13 @@ export default class CreateKeypairModal extends PureComponent {
   }
 
   regenerateKeypair = async () => {
-    const keypair = await keypairManager.newKeypair(this.state.chain, this.state.secretType)
+    const keypair = await keypairManager.newKeypair(this.props.kp, this.state.chain, this.state.secretType)
     this.setState({ keypair })
   }
 
   setChain = chain => {
     const secret = this.state.keypair?.secret
-    const keypair = kp.importKeypair(secret, chain)
+    const keypair = this.props.kp.importKeypair(secret, chain)
     this.setState({ chain, keypair })
   }
 
@@ -62,7 +61,7 @@ export default class CreateKeypairModal extends PureComponent {
       return
     }
 
-    if (this.props.keypairs.find(kp => kp.name === name)) {
+    if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
         `Create Keypair Failed`,
         `The keypair name <b>${name}</b> has already been used.`

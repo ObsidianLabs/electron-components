@@ -8,7 +8,6 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { kp } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
 
@@ -55,7 +54,7 @@ export default class ImportKeypairModal extends PureComponent {
       return
     }
     try {
-      const keypair = kp.importKeypair(secret, chain)
+      const keypair = this.props.kp.importKeypair(secret, chain)
       this.setState({
         keypair,
         valid: true,
@@ -75,7 +74,7 @@ export default class ImportKeypairModal extends PureComponent {
       return
     }
 
-    if (this.props.keypairs.find(kp => kp.name === name)) {
+    if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
         `Import Keypair Failed`,
         `The keypair name <b>${name}</b> has already been used.`
@@ -83,7 +82,7 @@ export default class ImportKeypairModal extends PureComponent {
       return
     }
 
-    if (this.props.keypairs.find(kp => kp.address === keypair.address)) {
+    if (this.props.keypairs.find(k => k.address === keypair.address)) {
       notification.error(
         `Import Keypair Failed`,
         `Keypair for <b>${keypair.address}</b> already exists.`

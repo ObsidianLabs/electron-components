@@ -5,8 +5,6 @@ import {
   Badge,
 } from '@obsidians/ui-components'
 
-import { kp } from '@obsidians/sdk'
-
 import keypairManager from './keypairManager'
 
 export default class RevealSecretModal extends PureComponent {
@@ -21,7 +19,7 @@ export default class RevealSecretModal extends PureComponent {
     this.setState({ address: keypair.address })
     try {
       const rawSecret = await keypairManager.getSecret(keypair.address)
-      const { secret, secretName } = await kp.importKeypair(rawSecret)
+      const { secret, secretName } = await this.props.kp.importKeypair(rawSecret)
       this.setState({ secret, secretName })
     } catch (e) {
       console.warn(e)

@@ -263,13 +263,24 @@ export default class KeypairManagerModal extends PureComponent {
       </Modal>
       <CreateKeypairModal
         ref={this.createKeypairModal}
+        kp={keypairManager.kp}
         chains={chains}
         mnemonic={mnemonic}
         secretName={this.props.secretName}
         keypairs={this.state.keypairs}
       />
-      <ImportKeypairModal ref={this.importKeypairModal} chains={chains} secretName={this.props.secretName} keypairs={this.state.keypairs} />
-      <RevealSecretModal ref={this.revealSecretModal} secretName={this.props.secretName}/>
+      <ImportKeypairModal
+        ref={this.importKeypairModal}
+        kp={keypairManager.kp}
+        chains={chains}
+        secretName={this.props.secretName}
+        keypairs={this.state.keypairs}
+      />
+      <RevealSecretModal
+        ref={this.revealSecretModal}
+        kp={keypairManager.kp}
+        secretName={this.props.secretName}
+      />
       <KeypairNameModal ref={this.keypairNameModal} />
     </>
   }
