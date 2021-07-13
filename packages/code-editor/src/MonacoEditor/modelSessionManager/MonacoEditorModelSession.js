@@ -1,6 +1,8 @@
 import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
 
+const delay = ms => new Promise(res => setTimeout(res, ms))
+
 const SEVERITIES = {
   note: 2,
   warning: 4,
@@ -117,10 +119,12 @@ export default class MonacoEditorModelSession {
     this._topbar = null
   }
 
-  recoverInEditor(monacoEditor) {
+  async recoverInEditor (monacoEditor) {
     if (!this._model) {
       return
     }
+
+    await delay(10)
 
     monacoEditor.setModel(this._model)
 
