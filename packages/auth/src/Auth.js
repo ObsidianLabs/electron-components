@@ -33,14 +33,30 @@ export default {
       return
     }
     if (platform.isDesktop) {
-      const channel = new IpcChannel('auth')
-      const loginUrl = providers[provider].loginUrl
-      const callbackUrl = await channel.invoke('login', { loginUrl, authUrl })
-      if (callbackUrl) {
-        await this.handleCallback({ location: new URL(callbackUrl), provider, history })
+      if (provider === 'bsn') {
+        const channel = new IpcChannel('bsn')
+        const loginUrl = providers[provider].loginUrl
+        const { username } = await channel.invoke('login', {
+          loginUrl,
+          clientId: process.env.REACT_APP_BSN_CLIENT_ID,
+          clientSecret: process.env.REACT_APP_BSN_CLIENT_SECRET
+        })
+        if (username) {
+          this.profile = { username }
+          this.updateProfile()
+          location.reload()
+        }
+        await channel.invoke('close')
+      } else {
+        const channel = new IpcChannel('auth')
+        const loginUrl = providers[provider].loginUrl
+        const callbackUrl = await channel.invoke('login', { loginUrl, authUrl })
+        if (callbackUrl) {
+          await this.handleCallback({ location: new URL(callbackUrl), provider, history })
+        }
+        this.updateProfile()
+        await channel.invoke('close')
       }
-      this.updateProfile()
-      await channel.invoke('close')
     } else {
       providers[provider].login()
     }
