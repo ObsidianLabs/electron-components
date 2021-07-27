@@ -131,7 +131,7 @@ class ModelSessionManager {
       this.sessions[filePath].dismissTopbar()
       this._editorContainer.refresh()
     }
-    await this.projectManager.writeFile(filePath, this.sessions[filePath].value)
+    await this.projectManager.saveFile(filePath, this.sessions[filePath].value)
     this._editorContainer.fileSaved(filePath)
     this.sessions[filePath].saved = true
   }

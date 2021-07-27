@@ -110,7 +110,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await fileOps.current.readFile(filePath)
   }
 
-  async writeFile (filePath, content) {
+  async saveFile (filePath, content) {
     await fileOps.current.writeFile(filePath, content)
   }
 

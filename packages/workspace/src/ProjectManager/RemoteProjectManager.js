@@ -127,7 +127,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return await fileOps.web.readFile(filePath)
   }
   
-  async writeFile (filePath, content) {
+  async saveFile (filePath, content) {
     await fileOps.web.writeFile(filePath, content)
   }
 

@@ -27,7 +27,7 @@ export default class ProjectSettings {
     const settings = this.trimSettings(rawSettings)
     
     const settingsJson = JSON.stringify(settings, null, 2)
-    await this.projectManager.writeFile(this.settingFilePath, settingsJson)
+    await this.projectManager.saveFile(this.settingFilePath, settingsJson)
   }
 
   update (settingsJson) {
