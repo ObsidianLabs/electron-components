@@ -131,6 +131,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
     await fileOps.web.writeFile(filePath, content)
   }
 
+  onFileChanged () {}
+
   async createNewFile (basePath, name) {
     const filePath = this.path.join(basePath, name)
     if (await fileOps.web.isFile(filePath)) {

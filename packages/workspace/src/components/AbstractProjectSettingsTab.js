@@ -7,7 +7,6 @@ import {
 
 import debounce from 'lodash/debounce'
 
-import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
 import actions from '../actions'

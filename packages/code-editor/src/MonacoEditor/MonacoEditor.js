@@ -68,6 +68,7 @@ export default class MonacoEditor extends Component {
     monacoEditor.onDidChangeModelContent(() => {
       this.props.onChange()
       this.props.modelSession.saved = false
+      modelSessionManager.projectManager.onFileChanged()
     })
     monacoEditor.onDidChangeCursorPosition(({ position }) => {
       // $.bottomBar.updatePosition(position)

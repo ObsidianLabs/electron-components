@@ -114,6 +114,8 @@ export default class LocalProjectManager extends BaseProjectManager {
     await fileOps.current.writeFile(filePath, content)
   }
 
+  onFileChanged () {}
+
   async createNewFile (basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
