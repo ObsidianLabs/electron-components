@@ -142,6 +142,9 @@ export default class Markdown extends Component {
 
   scrollTo = id => {
     const el = window.document.querySelector(id)
+    if (!el) {
+      return
+    }
     el.scrollIntoViewIfNeeded()
     el.style.background = 'var(--color-secondary)'
     setTimeout(() => {
