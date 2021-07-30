@@ -79,7 +79,7 @@ export default class MonacoEditorContainer extends PureComponent {
       return <LoadingScreen />
     }
 
-    const { onCommand, onChange } = this.props
+    const { theme, editorConfig, onCommand, onChange } = this.props
 
     let topbar = null
     if (modelSession.topbar) {
@@ -100,7 +100,8 @@ export default class MonacoEditorContainer extends PureComponent {
       <MonacoEditor
         ref={editor => (this.editor = editor)}
         modelSession={modelSession}
-        theme={this.props.theme}
+        theme={theme}
+        editorConfig={editorConfig}
         onCommand={onCommand}
         onChange={() => onChange(true)}
       />

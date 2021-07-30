@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import { Tabs } from '@obsidians/ui-components'
@@ -7,7 +7,7 @@ import fileOps from '@obsidians/file-ops'
 import MonacoEditorContainer from './MonacoEditor/MonacoEditorContainer'
 import modelSessionManager from './MonacoEditor/modelSessionManager'
 
-export default class CodeEditorCollection extends Component {
+export default class CodeEditorCollection extends PureComponent {
   static propTypes = {
     initialTab: PropTypes.object.isRequired,
     onSelectTab: PropTypes.func.isRequired,
@@ -23,10 +23,6 @@ export default class CodeEditorCollection extends Component {
     modelSessionManager.editorContainer = this
     this.tabs = React.createRef()
     this.editorContainer = React.createRef()
-  }
-
-  shouldComponentUpdate (props, state) {
-    return this.state.selectedTab !== state.selectedTab
   }
 
   refresh () {
@@ -159,25 +155,34 @@ export default class CodeEditorCollection extends Component {
   }
 
   render () {
+    const {
+      theme,
+      editorConfig,
+      projectRoot,
+      initialTab,
+      readonly,
+    } = this.props
+
     return (
       <div className='d-flex w-100 h-100 overflow-hidden bg2'>
         <Tabs
           ref={this.tabs}
           size='sm'
           headerClassName='nav-tabs-dark-active'
-          initialSelected={this.props.initialTab}
+          initialSelected={initialTab}
           onSelectTab={this.onSelectTab}
           tryCloseTab={this.tryCloseTab}
-          createNewTab={() => fileOps.current.openNewFile(this.props.projectRoot)}
+          createNewTab={() => fileOps.current.openNewFile(projectRoot)}
           getTabText={tab => modelSessionManager.tabTitle(tab)}
         >
           <MonacoEditorContainer
             ref={this.editorContainer}
-            theme={this.props.theme}
+            theme={theme}
+            editorConfig={editorConfig}
             path={this.state.selectedTab.path}
             remote={this.state.selectedTab.remote}
             mode={this.state.selectedTab.mode}
-            readonly={this.props.readonly}
+            readonly={readonly}
             onChange={this.setCurrentTabUnsaved}
             onCommand={this.onCommand}
           />

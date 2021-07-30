@@ -41,6 +41,15 @@ export default class MonacoEditor extends Component {
       // $.bottomBar.updatePosition(this.monacoEditor.getPosition())
     }
 
+    if (props.editorConfig !== this.props.editorConfig) {
+      const { fontFamily, fontSize, ligatures } = this.props.editorConfig
+      this.monacoEditor.updateOptions({
+        fontFamily: fontFamily || 'Hack',
+        fontSize: fontSize || '13px',
+        fontLigatures: Boolean(ligatures),
+      })
+    }
+
     return false
   }
 
@@ -55,12 +64,14 @@ export default class MonacoEditor extends Component {
   }
 
   createEditorWith (model) {
+    const { theme, editorConfig = {} } = this.props
     const monacoEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
       model,
-      theme: this.props.theme || 'vs',
+      theme: theme || 'vs',
       wordwrap: 'wordWrapColumn',
-      fontFamily: 'Hack',
-      fontSize: '13px',
+      fontFamily: editorConfig.fontFamily || 'Hack',
+      fontSize: editorConfig.fontSize || '13px',
+      fontLigatures: Boolean(editorConfig.ligatures),
       scrollBeyondLastLine: false,
       glyphMargin: true
     }, premiumEditor.overrides)
