@@ -31,20 +31,39 @@ export default {
     },
     REMOVE_PROJECT: {
       reducer: (state, { payload }) => {
-        const { type = 'local', id } = payload
-        let index = findIndex(state, id, type)
-        if (index === -1) {
+        const { id } = payload
+        let index = findIndex(state, id, 'local')
+        if (index > -1) {
           return state
+            .update('local', (projects = List()) => projects.remove(index))
+            .update('selected', selected => {
+              if (selected && selected.get('id') === id) {
+                return
+              }
+              return selected
+            })
         }
+
+        index = findIndex(state, id, 'remote')
+        if (index > -1) {
+          return state
+            .update('remote', (projects = List()) => projects.remove(index))
+            .update('selected', selected => {
+              if (selected && selected.get('id') === id) {
+                return
+              }
+              return selected
+            })
+        }
+
         return state
-          .update(type, (projects = List()) => projects.remove(index))
-          .update('selected', selected => {
-            if (selected && selected.get('id') === id) {
-              return
-            }
-            return selected
-          })
       }
+    },
+    UPDATE_LOCAL_PROJECT_LIST: {
+      reducer: (state, { payload }) => state.set('local', Immutable.fromJS(payload))
+    },
+    UPDATE_REMOTE_PROJECT_LIST: {
+      reducer: (state, { payload }) => state.set('remote', Immutable.fromJS(payload))
     },
     // UPDATE_PROJECT_PATH: {
     //   reducer: (state, { payload }) => {
@@ -59,8 +78,5 @@ export default {
     //       .update('local', data => data.filter((d, i) => i === index || d.get('path') !== payload.newPath))
     //   }
     // },
-    UPDATE_PROJECT_LIST: {
-      reducer: (state, { payload }) => state.set('local', Immutable.fromJS(payload))
-    },
   }
 }

@@ -40,11 +40,42 @@ export default function navbarItem (projects, selected, username) {
     }
   }
 
-  const projectDropdown = [
-    { divider: true },
-    { header: 'projects' },
-    ...(projects.length ? projects.map(p => ({ ...p, route: p.author })) : [{ none: true }]),
-  ]
+  const localProjects = projects.get('local')?.toJS() || []
+  const remoteProjects = projects.get('remote')?.toJS() || []
+  let projectDropdown
+  if (platform.isDesktop) {
+    projectDropdown = [
+      { divider: true },
+      { header: username === 'local' ? 'projects' : 'local projects' },
+    ]
+    if (localProjects.length) {
+      projectDropdown = projectDropdown.concat(localProjects.map(p => ({ ...p, route: p.author })))
+    } else {
+      projectDropdown.push({ none: true })
+    }
+
+    if (username !== 'local') {
+      projectDropdown = projectDropdown.concat([
+        { divider: true },
+        { header: 'remote projects' },
+      ])
+      if (remoteProjects.length) {
+        projectDropdown = projectDropdown.concat(remoteProjects.map(p => ({ ...p, route: p.author })))
+      } else {
+        projectDropdown.push({ none: true })
+      }
+    }
+  } else {
+    projectDropdown = [
+      { divider: true },
+      { header: 'projects' },
+    ]
+    if (remoteProjects.length) {
+      projectDropdown = projectDropdown.concat(remoteProjects.map(p => ({ ...p, route: p.author })))
+    } else {
+      projectDropdown.push({ none: true })
+    }
+  }
 
   if (platform.isDesktop) {
     projectDropdown.unshift({

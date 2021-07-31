@@ -3,7 +3,6 @@ import Auth from '@obsidians/auth'
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
-import platform from '@obsidians/platform'
 
 import BaseProjectManager from './ProjectManager/BaseProjectManager'
 
@@ -23,18 +22,15 @@ export class ProjectActions {
     const { _id, projectRoot, name } = created
     const author = _id ? Auth.username : 'local'
     const projectId = _id ? name : Base64.encode(projectRoot)
-    if (!_id) {
-      redux.dispatch('ADD_PROJECT', {
-        type: 'local',
-        project: {
-          id: projectId,
-          author,
-          name,
-          path: projectRoot,
-        }
-      })
-    }
-    console.log(`/${author}/${projectId}`)
+    redux.dispatch('ADD_PROJECT', {
+      type: _id ? 'remote' : 'local',
+      project: {
+        id: projectId,
+        author,
+        name,
+        path: projectRoot,
+      }
+    })
     this.history.push(`/${author}/${projectId}`)
   }
 
@@ -83,7 +79,7 @@ export class ProjectActions {
       const author = Auth.username || 'local'
       this.history.replace(`/${author}`)
     }
-    redux.dispatch('REMOVE_PROJECT', { id, type: 'local' })
+    redux.dispatch('REMOVE_PROJECT', { id })
     notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)
   }
 }

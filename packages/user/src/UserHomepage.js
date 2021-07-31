@@ -9,7 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
-import { connect } from '@obsidians/redux'
+import redux, { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
 import { actions } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
@@ -41,11 +41,6 @@ class UserHomepage extends PureComponent {
   }
 
   getProjectList = async username => {
-    // if (platform.isDesktop) {
-    //   this.setState({ loading: false, notfound: false, user: null })
-    //   return
-    // }
-
     if (username === 'local') {
       this.setState({ loading: false, notfound: false, user: null, projects: null })
       return
@@ -71,14 +66,10 @@ class UserHomepage extends PureComponent {
       path: `${username}/${p.name}`,
     }))
 
-    this.setState({
-      loading: false,
-      user,
-      projects,
-    })
-    // if (this.isSelf()) {
-    //   redux.dispatch('UPDATE_PROJECT_LIST', projects)
-    // }
+    this.setState({ loading: false, user, projects })
+    if (this.isSelf()) {
+      redux.dispatch('UPDATE_REMOTE_PROJECT_LIST', projects)
+    }
   }
 
   isSelf = () => {
@@ -110,8 +101,7 @@ class UserHomepage extends PureComponent {
         className='border-left-gray'
         onClick={() => actions.openProject()}
       >
-        <i className='fas fa-folder-plus mr-1' />
-        Open
+        <i className='fas fa-folder-plus mr-1' />Open
       </Button>
     )
   }
@@ -182,9 +172,7 @@ class UserHomepage extends PureComponent {
     return (
       <div className='d-flex w-100 h-100' style={{ overflow: 'auto' }}>
         <div className='container py-5'>
-          <UserProfile
-            profile={this.isSelf() ? profile.toJS() : user}
-          />
+          <UserProfile profile={this.isSelf() ? profile.toJS() : user} />
           <div className='d-flex flex-row justify-content-between my-3'>
             {this.renderProjectListOptions()}
             {this.renderActionButtons()}
