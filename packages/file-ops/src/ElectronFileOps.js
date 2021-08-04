@@ -58,8 +58,12 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async listFolder (folderPath) {
-    const files = await this.fs.readdir(folderPath)
-    return files.map(file => ({ name: file, path: this.path.join(folderPath, file)}))
+    const children = await this.fs.readdir(folderPath)
+    return await Promise.all(children.map(async name => {
+      const childPath = this.path.join(folderPath, name)
+      const type = await this.isDirectory(childPath) ? 'folder' : 'file'
+      return { type, name, path: childPath }
+    }))
   }
 
   showOpenDialog (options) {

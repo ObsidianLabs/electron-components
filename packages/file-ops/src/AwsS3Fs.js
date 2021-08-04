@@ -125,12 +125,12 @@ export default class AwsS3Fs {
     const folders = result.CommonPrefixes.map(item => {
       const path = item.Prefix.slice(0, -1)
       const name = path.replace(`${dirPath}/`, '')
-      return { name, path, children: [], loading: true, remote: true }
+      return { type: 'folder', name, path, children: [], loading: true, remote: true }
     }).filter(item => item.name)
     const files = result.Contents.map(item => {
       let path = item.Key
       const name = path.replace(`${dirPath}/`, '')
-      return { name, path, remote: true }
+      return { type: 'file', name, path, remote: true }
     }).filter(item => item.name && item.name !== '.placeholder')
     return [...folders, ...files]
   }
