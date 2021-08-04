@@ -48,8 +48,8 @@ export default class LocalProjectManager extends BaseProjectManager {
     return this.projectRoot ? fileOps.current.path.join(this.projectRoot, relativePath) : ''
   }
 
-  pathInProject () {
-    return undefined
+  pathInProject (filePath) {
+    return this.path.relative(this.projectRoot, filePath)
   }
 
   async listFolder (folderPath) {
