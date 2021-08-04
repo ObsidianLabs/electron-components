@@ -28,6 +28,28 @@ export default class BaseProjectManager {
 
   refreshDirectory () {}
 
+  async listFolderRecursively (folderPath, stopCriteria = child => child.type === 'file') {
+    const children = await this._listFolderRecursively(folderPath, stopCriteria)
+    return children.map(child => {
+      child.relative = this.path.relative(folderPath, child.path)
+      return child
+    })
+  }
+
+  async _listFolderRecursively (folderPath, stopCriteria) {
+    const children = await this.listFolder(folderPath)
+    const traversed = await Promise.all(children.map(async child => {
+      if (stopCriteria(child)) {
+        return child
+      }
+      if (child.type === 'file') {
+        return
+      }
+      return await this._listFolderRecursively(child.path, stopCriteria)
+    }))
+    return traversed.flat().filter(Boolean)
+  }
+
   static effect (evt, callback) {
     return () => {
       const dispose = BaseProjectManager.channel.on(evt, callback)
