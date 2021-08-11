@@ -69,7 +69,7 @@ export default class Header extends PureComponent {
   }
 
   render () {
-    const { profile, navbarLeft, navbarCenter, navbarRight, extraLoggedInOptions } = this.props
+    const { profile, navbarLeft, navbarRight, extraLoggedInOptions, children } = this.props
     const username = profile.get('username') || 'local'
 
     return (
@@ -77,7 +77,7 @@ export default class Header extends PureComponent {
         <Nav navbar className='navbar-left'>
           {this.renderLeftNavbar(navbarLeft)}
         </Nav>
-        {navbarCenter}
+        {children}
         <Nav navbar className='ml-auto navbar-nav-scroll navbar-right'>
           {this.renderRightNavbar(navbarRight)}
           <NavLink
