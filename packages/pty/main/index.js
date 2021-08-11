@@ -48,7 +48,11 @@ class Pty {
 
     proc.onExit(e => {
       this.proc = null
-      resolve({ code: e.exitCode, logs })
+      if (config.returnCodeOnly ) {
+        resolve({ code: e.exitCode })
+      } else {
+        resolve({ code: e.exitCode, logs })
+      }
     })
 
     return proc

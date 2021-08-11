@@ -5,6 +5,8 @@ import {
   Badge,
 } from '@obsidians/ui-components'
 
+import notification from '@obsidians/notification'
+
 import keypairManager from './keypairManager'
 
 export default class KeypairInputSelector extends PureComponent {
@@ -76,7 +78,6 @@ export default class KeypairInputSelector extends PureComponent {
     const {
       size,
       label,
-      placeholder = '(No keypairs)',
       editable,
       maxLength,
       icon = 'fas fa-key',
@@ -98,6 +99,25 @@ export default class KeypairInputSelector extends PureComponent {
       return this.mapKeypairToOption(item)
     })
 
+    let placeholder = this.props.placeholder
+    if (!placeholder) {
+      if (options.length || extraOptions.length) {
+        if (editable) {
+          placeholder = 'Select or type an address'
+        } else {
+          placeholder = 'Select an address'
+        }
+      } else {
+        placeholder = '(No keys in keypair manager)'
+      }
+    }
+
+    const onClick = () => {
+      if (!editable && !options.length && !extraOptions.length) {
+        notification.error('No Available Keypiar', 'Please create or import a keypair in the keypair manager first.')
+      }
+    }
+
     return (
       <DropdownInput
         size={size}
@@ -109,10 +129,11 @@ export default class KeypairInputSelector extends PureComponent {
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
         options={[...options, ...extraOptions]}
-        renderText={!editable && (option => <code>{option?.id}</code>)}
+        renderText={!editable && (option => option ? <code>{option.id}</code> : null)}
         value={value}
         onChange={onChange}
         invalid={invalid}
+        onClick={onClick}
       />
     )
   }

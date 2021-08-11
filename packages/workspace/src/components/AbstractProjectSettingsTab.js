@@ -7,10 +7,8 @@ import {
 
 import debounce from 'lodash/debounce'
 
-import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
-import BaseProjectManager from '../ProjectManager/BaseProjectManager'
 import actions from '../actions'
 
 class DeleteButton extends PureComponent {
@@ -24,20 +22,22 @@ class DeleteButton extends PureComponent {
 
   deleteProject = async () => {
     this.setState({ deleting: true })
-    const { projectRoot, projectManager } = this.props.context
+    const { projectManager } = this.props.context
     const name = projectManager.projectName
-    await BaseProjectManager.channel.invoke('delete', projectRoot)
+    await projectManager.deleteProject()
     await actions.removeProject({ id: name, name })
     this.setState({ deleting: false })
-    this.modal.current.closeModal()
+    this.modal.current?.closeModal()
   }
 
   render () {
-    if (platform.isDesktop) {
+    const { projectManager, projectRoot } = this.props.context
+
+    if (!projectManager.remote) {
       return null
     }
 
-    if (!this.props.context.projectRoot.startsWith(`${Auth.username}/`)) {
+    if (!projectRoot.startsWith(`${Auth.username}/`)) {
       return null
     }
 

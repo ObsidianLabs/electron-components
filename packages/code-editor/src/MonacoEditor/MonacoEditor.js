@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import * as monaco from 'monaco-editor'
 import throttle from 'lodash/throttle'
 
+import premiumEditor from '@obsidians/premium-editor'
+
 import modelSessionManager from './modelSessionManager'
 import registerThemes from './languages/registerThemes'
 
@@ -22,6 +24,10 @@ export default class MonacoEditor extends Component {
 
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')
+
+    if (modelSessionManager.projectManager.onEditorReady) {
+      modelSessionManager.projectManager.onEditorReady(this.monacoEditor, this)
+    }
   }
 
   shouldComponentUpdate (props) {
@@ -35,7 +41,20 @@ export default class MonacoEditor extends Component {
       // $.bottomBar.updatePosition(this.monacoEditor.getPosition())
     }
 
+    if (props.editorConfig !== this.props.editorConfig) {
+      const { fontFamily, fontSize, ligatures } = this.props.editorConfig
+      this.monacoEditor.updateOptions({
+        fontFamily: fontFamily || 'Hack',
+        fontSize: fontSize || '13px',
+        fontLigatures: Boolean(ligatures),
+      })
+    }
+
     return false
+  }
+
+  componentWillUnmount () {
+    this.monacoEditor.dispose()
   }
 
   layoutEditor = () => {
@@ -45,19 +64,22 @@ export default class MonacoEditor extends Component {
   }
 
   createEditorWith (model) {
+    const { theme, editorConfig = {} } = this.props
     const monacoEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
       model,
-      theme: this.props.theme || 'vs',
+      theme: theme || 'vs',
       wordwrap: 'wordWrapColumn',
-      fontFamily: 'Hack',
-      fontSize: '13px',
+      fontFamily: editorConfig.fontFamily || 'Hack',
+      fontSize: editorConfig.fontSize || '13px',
+      fontLigatures: Boolean(editorConfig.ligatures),
       scrollBeyondLastLine: false,
       glyphMargin: true
-    })
+    }, premiumEditor.overrides)
     modelSessionManager.editor = monacoEditor
     monacoEditor.onDidChangeModelContent(() => {
       this.props.onChange()
       this.props.modelSession.saved = false
+      modelSessionManager.projectManager.onFileChanged()
     })
     monacoEditor.onDidChangeCursorPosition(({ position }) => {
       // $.bottomBar.updatePosition(position)

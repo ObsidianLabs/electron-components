@@ -24,15 +24,15 @@
   display: none !important;
 }
 
-.hover-inline .hover-show {
+.hover-inline .hover-inline-show {
   display: none;
 }
-.hover-inline .hover-hide {
+.hover-inline .hover-inline-hide {
   display: inline-block;
 }
-.hover-inline:hover .hover-show {
+.hover-inline:hover .hover-inline-show {
   display: inline-block;
 }
-.hover-inline:hover .hover-hide {
+.hover-inline:hover .hover-inline-hide {
   display: none;
 }

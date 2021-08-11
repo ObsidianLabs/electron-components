@@ -30,7 +30,7 @@ export default class DockerImageInputSelector extends PureComponent {
     }
     this.setState({
       loading: false,
-      versions: versions.map(v => ({ id: v.Tag, display: v.Tag })),
+      versions: versions.map(v => ({ id: v.Tag, display: v.Name || v.Tag })),
     })
   }
 
@@ -62,26 +62,22 @@ export default class DockerImageInputSelector extends PureComponent {
       versions.push({ id: 'none', display: placeholder, disabled: true })
     }
 
-    let options
-    if (platform.isDesktop) {
-      options = [
-        {
-          group: <><i className='fas fa-download mr-1' />Installed</>,
-          children: this.state.versions,
-        },
-        {
-          id: 'manager',
-          display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
-          onClick: this.openManager,
-        }
-      ]
+    let group
+    if (platform.isDesktop && !this.props.noManager) {
+      group = <><i className='fas fa-download mr-1' />Installed</>
     } else {
-      options = [
-        {
-          group: <><i className='fas fa-code-merge mr-1' />Versions</>,
-          children: this.state.versions,
-        }
-      ]
+      group = <><i className='fas fa-download mr-1' />Versions</>
+    }
+    let options = [{
+      group,
+      children: this.state.versions,
+    }]
+    if (platform.isDesktop && !this.props.noManager) {
+      options.push({
+        id: 'manager',
+        display: <span key='manager'><i className='fas fa-cog mr-1' />{this.props.modalTitle}...</span>,
+        onClick: this.openManager,
+      })
     }
     if (this.props.extraOptions) {
       options = [...this.props.extraOptions, ...options]

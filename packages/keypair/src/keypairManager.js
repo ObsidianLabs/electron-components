@@ -2,14 +2,16 @@ import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
 
-import { kp } from '@obsidians/sdk'
-
 class KeypairManager {
   constructor () {
     this.channel = new IpcChannel('keypair')
     this.onKeypairUpdated = null
     this.eventTarget = new EventTarget()
+    this._kp = null
   }
+
+  set kp (kp) { this._kp = kp }
+  get kp () { return this._kp }
 
   onUpdated (callback) {
     const eventHandler = event => callback(event.detail)
@@ -20,7 +22,7 @@ class KeypairManager {
     try {
       const keypairs = await this.channel.invoke('get')
       const names = redux.getState().keypairs
-      const unsorted = keypairs.map(kp => ({ address: kp.address, name: kp.name || names.get(kp.address) }))
+      const unsorted = keypairs.map(k => ({ address: k.address, name: k.name || names.get(k.address) }))
       const sorted = unsorted.sort((a, b) => {
         if (!a.name || !b.name) {
           return 0
@@ -34,8 +36,8 @@ class KeypairManager {
     }
   }
 
-  async newKeypair () {
-    return kp.newKeypair()
+  async newKeypair (kp, chain, secretType) {
+    return kp.newKeypair(chain, secretType)
   }
 
   async loadAndUpdateKeypairs () {

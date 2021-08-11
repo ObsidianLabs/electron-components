@@ -10,5 +10,13 @@ export default {
     CLEAR_USER_PROFILE: {
       reducer: () => Map({})
     },
+    SET_VERSION: {
+      reducer: (state, { payload }) => {
+        if (payload.distinctId) {
+          return state.merge({ distinctId: payload.distinctId })
+        }
+        return state
+      }
+    }
   }
 }

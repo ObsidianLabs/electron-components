@@ -29,11 +29,53 @@ const projectContextMenus = id => {
 }
 
 export default function navbarItem (projects, selected, username) {
-  const projectDropdown = [
-    { divider: true },
-    { header: 'projects' },
-    ...(projects.length ? projects.map(p => ({ ...p, route: p.author })) : [{ none: true }]),
-  ]
+  if (platform.isWeb && username === 'local') {
+    return {
+      route: 'local',
+      title: 'Project',
+      icon: 'fas fa-file-code',
+      selected,
+      dropdown: [{ none: true }],
+      contextMenu: projectContextMenus,
+    }
+  }
+
+  const localProjects = projects.get('local')?.toJS() || []
+  const remoteProjects = projects.get('remote')?.toJS() || []
+  let projectDropdown
+  if (platform.isDesktop) {
+    projectDropdown = [
+      { divider: true },
+      { header: username === 'local' ? 'projects' : 'local projects' },
+    ]
+    if (localProjects.length) {
+      projectDropdown = projectDropdown.concat(localProjects.map(p => ({ ...p, route: p.author })))
+    } else {
+      projectDropdown.push({ none: true })
+    }
+
+    if (username !== 'local') {
+      projectDropdown = projectDropdown.concat([
+        { divider: true },
+        { header: 'remote projects' },
+      ])
+      if (remoteProjects.length) {
+        projectDropdown = projectDropdown.concat(remoteProjects.map(p => ({ ...p, route: p.author })))
+      } else {
+        projectDropdown.push({ none: true })
+      }
+    }
+  } else {
+    projectDropdown = [
+      { divider: true },
+      { header: 'projects' },
+    ]
+    if (remoteProjects.length) {
+      projectDropdown = projectDropdown.concat(remoteProjects.map(p => ({ ...p, route: p.author })))
+    } else {
+      projectDropdown.push({ none: true })
+    }
+  }
 
   if (platform.isDesktop) {
     projectDropdown.unshift({
@@ -47,7 +89,7 @@ export default function navbarItem (projects, selected, username) {
     id: 'new-project',
     name: 'Create Project...',
     icon: 'fas fa-plus',
-    onClick: () => actions.newProject(),
+    onClick: () => actions.newProject(platform.isWeb),
   })
 
   return {

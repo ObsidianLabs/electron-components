@@ -6,9 +6,14 @@ import {
   Button,
 } from '@obsidians/ui-components'
 
+import notification from '@obsidians/notification'
+
 import ReactMarkdown from 'react-markdown'
+import gfm from 'remark-gfm'
+import slug from 'remark-slug'
 import Highlight from 'react-highlight'
-import { Link } from 'react-router-dom'
+
+import modelSessionManager from '../../MonacoEditor/modelSessionManager'
 
 import './styles.scss'
 
@@ -131,6 +136,39 @@ export default class Markdown extends Component {
     )
   }
 
+  openLink = link => {
+    fileOps.current.openLink(link)
+  }
+
+  scrollTo = id => {
+    const el = window.document.querySelector(id)
+    if (!el) {
+      return
+    }
+    el.scrollIntoViewIfNeeded()
+    el.style.background = 'var(--color-secondary)'
+    setTimeout(() => {
+      el.style.background = ''
+    }, 1000)
+  }
+
+  openFile = async filePath => {
+    const path = modelSessionManager.projectManager.path
+    let openningPath
+    if (path.isAbsolute(filePath)) {
+      openningPath = filePath
+    } else {
+      const { dir } = path.parse(this.filePath)
+      openningPath = path.join(dir, filePath)
+    }
+
+    if (await modelSessionManager.projectManager.isFile(openningPath)) {
+      modelSessionManager.openFile(openningPath)
+    } else {
+      notification.error('File not exists', `There is no file at <b>${openningPath}</b>.`)
+    }
+  }
+
   render () {
     if (!this.display) {
       return this.renderHovers()
@@ -147,45 +185,40 @@ export default class Markdown extends Component {
           <div className='container'>
             <ReactMarkdown
               className='user-select'
-              source={value}
-              escapeHtml={false}
-              renderers={{
-                link: props => {
-                  if (props.href.startsWith('http://') || props.href.startsWith('https://')) {
-                    return (
-                      <span className='link' onClick={() => fileOps.current.openLink(props.href)}>{props.children}</span>
-                    )
+              remarkPlugins={[gfm, slug]}
+              components={{
+                a: props => {
+                  if (props.href.startsWith('#')) {
+                    return <span className='link' onClick={() => this.scrollTo(props.href)}>{props.children}</span>
                   }
-                  return <Link className='link' to={props.href}>{props.children}</Link>
+                  if (props.href.startsWith('http://') || props.href.startsWith('https://')) {
+                    return <span className='link' onClick={() => this.openLink(props.href)}>{props.children}</span>
+                  }
+                  return <span className='link' onClick={() => this.openFile(props.href)}>{props.children}</span>
                 },
-                linkReference: props => {
-                  try {
-                    const { value, children } = props.children[0].props
-                    if (value.startsWith('http://') || value.startsWith('https://')) {
-                      return (
-                        <span className='link' onClick={() => fileOps.current.openLink(value)}>{children}</span>
-                      )
-                    }
-                  } catch (e) {}
-                  return <Link className='link' to={props.href}>{props.children}</Link>
+                code: props => {
+                  if (props.inline) {
+                    return <kbd>{props.children}</kbd>
+                  }
+                  return (
+                    <Highlight
+                      language={props.language}
+                      className='pre-box pre-wrap break-all bg-secondary text-body'
+                      element='pre'
+                    >
+                      {props.children}
+                    </Highlight>
+                  )
                 },
-                inlineCode: props => <kbd>{props.children}</kbd>,
-                code: props => (
-                  <Highlight
-                    language={props.language}
-                    className='pre-box pre-wrap break-all bg-secondary'
-                    element='pre'
-                  >
-                    {props.value}
-                  </Highlight>
-                ),
                 table: props => (
-                  <table className='table table-sm table-striped bg-background'>
+                  <table className='table table-sm table-hover table-striped mb-4'>
                     {props.children}
                   </table>
                 )
               }}
-            />
+            >
+              {value}
+            </ReactMarkdown>
           </div>
           {this.renderHovers()}
         </div>

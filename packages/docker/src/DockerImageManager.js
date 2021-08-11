@@ -104,6 +104,7 @@ export default class DockerImageManager extends PureComponent {
     const {
       modalTitle = `${imageName} Manager`,
       downloadingTitle = `Downloading ${imageName}`,
+      extraFlags,
     } = this.props
 
     return (
@@ -116,6 +117,7 @@ export default class DockerImageManager extends PureComponent {
             imageName={imageName}
             channel={this.channel}
             downloadingTitle={downloadingTitle}
+            extraFlags={extraFlags}
             onDownloaded={this.fetchVersions}
           />
         }

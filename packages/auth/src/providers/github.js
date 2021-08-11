@@ -1,8 +1,13 @@
 import { GithubClientId } from '../../config.json'
 
-const project = process.env.PROJECT
-const serverUrl = process.env.REACT_APP_SERVER_URL
-const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || GithubClientId
+const {
+  NODE_ENV,
+  PROJECT,
+  REACT_APP_SERVER_URL: serverUrl,
+  REACT_APP_GITHUB_CLIENT_ID: clientId = GithubClientId,
+} = process.env
+
+const project = NODE_ENV === 'development' ? 'local' : PROJECT
 const redirectUri = `${serverUrl}/api/v1/auth/callback/${project}/github`
 
 export default {

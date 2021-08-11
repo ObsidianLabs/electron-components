@@ -3,25 +3,28 @@ import React, { PureComponent } from 'react'
 import {
   ButtonGroup,
   Button,
+  ButtonOptions,
   LoadingScreen,
   CenterScreen,
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
-import { IpcChannel } from '@obsidians/ipc'
-import { BaseProjectManager, actions } from '@obsidians/workspace'
+import { HttpIpcChannel } from '@obsidians/ipc'
+import { actions } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
 
-const userChannel = new IpcChannel('user')
+const userChannel = new HttpIpcChannel('user')
+const projectChannel = new HttpIpcChannel('project')
 
 class UserHomepage extends PureComponent {
   state = {
     notfound: false,
     loading: true,
     user: null,
-    projects: [],
+    remote: platform.isWeb,
+    projects: null,
   }
 
   componentDidMount () {
@@ -38,17 +41,12 @@ class UserHomepage extends PureComponent {
   }
 
   getProjectList = async username => {
-    if (platform.isDesktop) {
-      this.setState({ loading: false, notfound: false, user: null })
-      return
-    }
-
     if (username === 'local') {
-      this.setState({ loading: false, notfound: false, user: null, projects: [] })
+      this.setState({ loading: false, notfound: false, user: null, projects: null })
       return
     }
 
-    this.setState({ loading: true, notfound: false })
+    this.setState({ loading: true, notfound: false, projects: null })
 
     let user
     if (!this.isSelf()) {
@@ -59,22 +57,21 @@ class UserHomepage extends PureComponent {
         return
       }
     }
+
     const res = await BaseProjectManager.channel.invoke('get', username)
-    const projectFormatter = this.projectFormatter ? this.projectFormatter.bind(this, username) : (p => ({
+    const projectFormatter = this.projectFormatter ? this.projectFormatter.bind(this, username) : p => ({
+      remote: true,
       id: p.name,
       name: p.name,
       author: username,
       path: `${username}/${p.name}`,
-    }))
+    })
+
     const projects = res.map(projectFormatter)
 
-    this.setState({
-      loading: false,
-      user,
-      projects,
-    })
+    this.setState({ loading: false, user, projects })
     if (this.isSelf()) {
-      redux.dispatch('UPDATE_PROJECT_LIST', projects)
+      redux.dispatch('UPDATE_REMOTE_PROJECT_LIST', projects)
     }
   }
 
@@ -83,22 +80,22 @@ class UserHomepage extends PureComponent {
     return platform.isDesktop || match.params.username === profile.get('username')
   }
 
-  renderCreateNewProjectButton = () => {
+  renderCreateButton = () => {
     if (!this.isSelf()) {
       return null
     }
     return (
       <Button
         color='success'
-        onClick={() => actions.newProject()}
+        onClick={() => actions.newProject(this.state.remote)}
       >
         <i className='fas fa-plus mr-1' />New
       </Button>
     )
   }
 
-  renderOpenProjectButton = () => {
-    if (!this.isSelf() || platform.isWeb) {
+  renderOpenButton = () => {
+    if (!this.isSelf()) {
       return null
     }
     return (
@@ -107,23 +104,64 @@ class UserHomepage extends PureComponent {
         className='border-left-gray'
         onClick={() => actions.openProject()}
       >
-        <i className='fas fa-folder-plus mr-1' />
-        Open
+        <i className='fas fa-folder-plus mr-1' />Open
       </Button>
     )
   }
 
+
   renderProjectList = (projects) => {
     const List = this.props.ProjectList || ProjectList
-    return <List projects={projects} />
+    return <List projects={projects} loading={loading}/>
   }
+
+  renderProjectListOptions = () => {
+    if (platform.isDesktop && this.props.profile?.get('username')) {
+      return (
+        <ButtonOptions
+          className='mb-0'
+          options={[
+            { key: 'local', text: 'Local', icon: 'far fa-desktop mr-1' },
+            { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' },
+          ]}
+          selected={this.state.remote ? 'cloud' : 'local'}
+          onSelect={key => this.setState({ remote: key === 'cloud' })}
+        />
+      )
+    } else {
+      return (
+        <ButtonGroup>
+          <h4 color='primary'>
+            <i className='fas fa-th-list mr-2' />Projects
+          </h4>
+        </ButtonGroup>
+      )
+    }
+  }
+
+  renderActionButtons = () => {
+    if (platform.isDesktop) {
+      if (!this.state.remote) {
+        return (
+          <ButtonGroup>
+            {this.renderCreateButton()}
+            {this.renderOpenButton()}
+          </ButtonGroup>
+        )
+      } else {
+        return this.renderCreateButton()
+      }
+    } else {
+      return this.renderCreateButton()
+    }
+
 
   render () {
     const { profile } = this.props
-    const { loading, notfound, user } = this.state
+    const { loading, notfound, user, remote } = this.state
 
     let projects
-    if (platform.isDesktop) {
+    if (!remote) {
       projects = this.props.projects.get('local').toJS().map(p => {
         delete p.author
         return p
@@ -132,30 +170,22 @@ class UserHomepage extends PureComponent {
       projects = this.state.projects
     }
 
-    if (loading) {
-      return <LoadingScreen />
-    } else if (notfound) {
-      return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
+    if (!this.isSelf()) {
+      if (loading) {
+        return <LoadingScreen />
+      } else if (notfound) {
+        return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
+      }
     }
 
     return (
       <div className='d-flex w-100 h-100' style={{ overflow: 'auto' }}>
         <div className='container py-5'>
-          <UserProfile
-            profile={this.isSelf() ? profile.toJS() : user}
-          />
+          <UserProfile profile={this.isSelf() ? profile.toJS() : user} />
           <div className='d-flex flex-row justify-content-between my-3'>
-            <ButtonGroup>
-              <h4 color='primary'>
-                <i className='fas fa-th-list mr-2' />Projects
-              </h4>
-            </ButtonGroup>
-            <ButtonGroup>
-              {this.renderCreateNewProjectButton()}
-              {this.renderOpenProjectButton()}
-            </ButtonGroup>
+            {this.renderProjectListOptions()}
+            {this.renderActionButtons()}
           </div>
-
           {this.renderProjectList(projects)}
         </div>
       </div>

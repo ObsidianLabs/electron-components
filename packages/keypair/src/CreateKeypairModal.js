@@ -4,6 +4,14 @@ import {
   Modal,
   Badge,
   DebouncedFormGroup,
+  Label,
+  ButtonOptions,
+  ButtonGroup,
+  Button,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -13,25 +21,36 @@ import keypairManager from './keypairManager'
 export default class CreateKeypairModal extends PureComponent {
   constructor (props) {
     super(props)
-
+    const defaultChain = props.chains && props.chains[0].key
     this.state = {
       pending: false,
       name: '',
+      chain: defaultChain,
+      secretType: 'privkey',
       keypair: null,
     }
 
     this.modal = React.createRef()
   }
 
-  openModal () {
+  openModal (chain) {
     this.modal.current.openModal()
+    if (chain) {
+      this.setState({ chain })
+    }
     setTimeout(() => this.regenerateKeypair(), 500)
     return new Promise(resolve => this.onResolve = resolve)
   }
 
   regenerateKeypair = async () => {
-    const keypair = await keypairManager.newKeypair()
+    const keypair = await keypairManager.newKeypair(this.props.kp, this.state.chain, this.state.secretType)
     this.setState({ keypair })
+  }
+
+  setChain = chain => {
+    const secret = this.state.keypair?.secret
+    const keypair = this.props.kp.importKeypair(secret, chain)
+    this.setState({ chain, keypair })
   }
 
   onConfirm = async () => {
@@ -42,7 +61,7 @@ export default class CreateKeypairModal extends PureComponent {
       return
     }
 
-    if (this.props.keypairs.find(kp => kp.name === name)) {
+    if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
         `Create Keypair Failed`,
         `The keypair name <b>${name}</b> has already been used.`
@@ -58,10 +77,55 @@ export default class CreateKeypairModal extends PureComponent {
     this.onResolve(true)
   }
 
+  renderChainOptions = () => {
+    const { chains } = this.props
+    const { chain } = this.state
+
+    if (!chains) {
+      return null
+    }
+    return <>
+      <Label>The keypair can be used on</Label>
+      <div>
+        <ButtonOptions
+          size='sm'
+          className='mb-3'
+          options={chains}
+          selected={chain}
+          onSelect={chain => this.setChain(chain)}
+        />
+      </div>
+    </>
+  }
+
+  renderRegenerateBtn = () => {
+    if (this.props.mnemonic) {
+      return (
+        <ButtonGroup>
+          <Button color='success' onClick={this.regenerateKeypair}>Regenerate</Button>
+          <UncontrolledButtonDropdown>
+            <DropdownToggle color='success' className='pr-2 pl-1' caret />
+            <DropdownMenu>
+              <DropdownItem onClick={() => this.setState({ secretType: 'privkey' }, this.regenerateKeypair)}>
+                Regenerate from private key
+              </DropdownItem>
+              <DropdownItem onClick={() => this.setState({ secretType: 'mnemonic' }, this.regenerateKeypair)}>
+                Regenerate from mnemonic
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledButtonDropdown>
+        </ButtonGroup>
+      )
+    } else {
+      return <Button color='success' onClick={this.regenerateKeypair}>Regenerate</Button>
+    }
+  }
+
   render () {
     const {
       address = '',
       secret = '',
+      secretName = this.props.mnemonic ? '' : this.props.secretName,
     } = this.state.keypair || {}
 
     return (
@@ -73,8 +137,7 @@ export default class CreateKeypairModal extends PureComponent {
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name || !address}
         colorActions={['info']}
-        textActions={['Regenerate']}
-        onActions={[this.regenerateKeypair]}
+        ActionBtn={this.renderRegenerateBtn()}
       >
         <DebouncedFormGroup
           label='Name'
@@ -82,6 +145,8 @@ export default class CreateKeypairModal extends PureComponent {
           placeholder='Please enter a name for the keypair'
           onChange={name => this.setState({ name })}
         />
+        {this.renderChainOptions()}
+        <Label>Keypair info</Label>
         <div className='row align-items-center'>
           <div className='col-2'>
             <Badge pill color='info' className='ml-1'>Address</Badge>
@@ -92,7 +157,7 @@ export default class CreateKeypairModal extends PureComponent {
         </div>
         <div className='row align-items-center'>
           <div className='col-2'>
-            <Badge pill color='success' className='ml-1'>{this.props.secretName}</Badge>
+            <Badge pill color='success' className='ml-1'>{secretName}</Badge>
           </div>
           <div className='col-10 pl-0'>
             <code className='user-select small'>{secret}</code>

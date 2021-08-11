@@ -5,11 +5,24 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import BaseProjectManager from './BaseProjectManager'
 
 export default class LocalProjectManager extends BaseProjectManager {
+  static async createProject (options) {
+    return await BaseProjectManager.channel.invoke('post', '', options)
+  }
+
   constructor (project, projectRoot) {
     super(project, projectRoot)
 
     BaseProjectManager.channel.on('refresh-file', this.onRefreshFile.bind(this))
     BaseProjectManager.channel.on('delete-file', this.onDeleteFile.bind(this))
+  }
+
+  dispose () {
+    BaseProjectManager.channel.off('refresh-file')
+    BaseProjectManager.channel.off('delete-file')
+  }
+
+  get path () {
+    return fileOps.current.path
   }
 
   async prepareProject () {
@@ -35,6 +48,14 @@ export default class LocalProjectManager extends BaseProjectManager {
     return this.projectRoot ? fileOps.current.path.join(this.projectRoot, relativePath) : ''
   }
 
+  pathInProject (filePath) {
+    return this.path.relative(this.projectRoot, filePath)
+  }
+
+  async listFolder (folderPath) {
+    return await fileOps.current.listFolder(folderPath)
+  }
+
   async loadRootDirectory () {
     return await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
   }
@@ -44,7 +65,7 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async readProjectSettings () {
-    this.projectSettings = new BaseProjectManager.ProjectSettings(this.settingsFilePath, BaseProjectManager.channel)
+    this.projectSettings = new BaseProjectManager.ProjectSettings(this, this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
@@ -77,6 +98,24 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await this.projectSettings.readSettings()
   }
 
+  async isFile (filePath) {
+    return await fileOps.current.isFile(filePath)
+  }
+
+  async ensureFile (filePath) {
+    return await fileOps.current.fs.ensureFile(filePath)
+  }
+
+  async readFile (filePath) {
+    return await fileOps.current.readFile(filePath)
+  }
+
+  async saveFile (filePath, content) {
+    await fileOps.current.writeFile(filePath, content)
+  }
+
+  onFileChanged () {}
+
   async createNewFile (basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
@@ -84,7 +123,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   
     try {
-      await fileOps.current.fs.ensureFile(filePath)
+      await this.ensureFile(filePath)
     } catch (e) {
       if (e.code === 'EISDIR') {
         throw new Error(`Folder <b>${filePath}</b> already exists.`)

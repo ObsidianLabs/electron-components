@@ -3,20 +3,23 @@ import React, { PureComponent } from 'react'
 import {
   Modal,
   DebouncedFormGroup,
+  ButtonOptions,
+  Label,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { kp } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
 
 export default class ImportKeypairModal extends PureComponent {
   constructor (props) {
     super(props)
-
+    const defaultChain = props.chains && props.chains[0].key
     this.state = {
+      chain: defaultChain,
       pending: false,
       name: '',
+      secret: '',
       valid: false,
       feedback: '',
       keypair: null,
@@ -25,26 +28,41 @@ export default class ImportKeypairModal extends PureComponent {
     this.modal = React.createRef()
   }
 
-  openModal () {
+  openModal (chain) {
     this.modal.current.openModal()
-    this.setState({ name: '', keypair: null, valid: false, feedback: '' })
+    if (chain) {
+      this.setState({ chain })
+    }
+    this.setState({ name: '', secret: '', keypair: null, valid: false, feedback: '' })
     return new Promise(resolve => this.onResolve = resolve)
   }
 
   onChange = secret => {
+    this.setState({ secret })
+    this.refreshKeypair(secret, this.state.chain)
+  }
+
+  setChain = chain => {
+    const secret = this.state.secret
+    this.setState({ chain })
+    this.refreshKeypair(secret, chain)
+  }
+
+  refreshKeypair = (secret, chain) => {
     if (!secret) {
       this.setState({ keypair: null, valid: false, feedback: '' })
-    } else {
-      try {
-        const keypair = kp.importKeypair(secret)
-        this.setState({
-          keypair,
-          valid: true,
-          feedback: `Address: ${keypair.address}`
-        })
-      } catch (e) {
-        this.setState({ keypair: null, valid: false, feedback: `Not a valid ${this.props.secretName.toLowerCase()}` })
-      }
+      return
+    }
+    try {
+      const keypair = this.props.kp.importKeypair(secret, chain)
+      this.setState({
+        keypair,
+        valid: true,
+        feedback: <span>Address: <code>{keypair.address}</code></span>
+      })
+    } catch (e) {
+      console.warn(e)
+      this.setState({ keypair: null, valid: false, feedback: `Not a valid ${this.props.secretName.toLowerCase()}` })
     }
   }
 
@@ -56,7 +74,7 @@ export default class ImportKeypairModal extends PureComponent {
       return
     }
 
-    if (this.props.keypairs.find(kp => kp.name === name)) {
+    if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
         `Import Keypair Failed`,
         `The keypair name <b>${name}</b> has already been used.`
@@ -64,7 +82,7 @@ export default class ImportKeypairModal extends PureComponent {
       return
     }
 
-    if (this.props.keypairs.find(kp => kp.address === keypair.address)) {
+    if (this.props.keypairs.find(k => k.address === keypair.address)) {
       notification.error(
         `Import Keypair Failed`,
         `Keypair for <b>${keypair.address}</b> already exists.`
@@ -74,15 +92,37 @@ export default class ImportKeypairModal extends PureComponent {
 
     this.setState({ pending: true })
     await keypairManager.saveKeypair(name, keypair)
-    this.setState({ pending: false })
+    this.setState({ pending: false, secret: '' })
 
     this.modal.current.closeModal()
     this.onResolve(true)
   }
 
+  renderChainOptions () {
+    const { chains } = this.props
+    const { chain } = this.state
+
+    if (!chains) {
+      return null
+    }
+    return <>
+      <Label>The keypair can be used on</Label>
+      <div>
+        <ButtonOptions
+          size='sm'
+          className='mb-3'
+          options={chains}
+          selected={chain}
+          onSelect={chain => this.setChain(chain)}
+        />
+      </div>
+    </>
+  }
+
   render () {
     const {
       name,
+      secret,
       valid,
       feedback,
     } = this.state
@@ -102,9 +142,11 @@ export default class ImportKeypairModal extends PureComponent {
           placeholder='Please enter a name for the keypair'
           onChange={name => this.setState({ name })}
         />
+        {this.renderChainOptions()}
         <DebouncedFormGroup
           label={`Enter the ${this.props.secretName.toLowerCase()} you want to import`}
           maxLength='300'
+          value={secret}
           onChange={this.onChange}
           feedback={feedback}
           valid={valid}

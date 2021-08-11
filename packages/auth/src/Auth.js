@@ -99,8 +99,8 @@ export default {
       return
     }
 
-    const { username, avatar } = decode(token)
-    this.profile = { username, avatar }
+    const { userId, username, avatar } = decode(token)
+    this.profile = { userId, username, avatar }
     this.credentials = { token, awsCredential }
     history.replace('/')
   },
@@ -130,8 +130,9 @@ export default {
       return
     }
 
-    const { username, avatar } = decode(token)
-    this.profile = { username, avatar }
+
+    const { userId, username, avatar } = decode(token)
+    this.profile = { userId, username, avatar }
     this.credentials = { token, awsCredential }
     this.updateProfile()
   },
@@ -208,9 +209,8 @@ export default {
       const profile = redux.getState().profile
       this.profile = profile.toJS()
     }
-    // Only for web
-    if (platform.isWeb && this.credentials && this.credentials.awsCredential) {
-      fileOps.current.fs.updateCredential(this.credentials.awsCredential)
+    if (this.credentials && this.credentials.awsCredential) {
+      fileOps.web.fs.updateCredential(this.credentials.awsCredential)
       BuildService.updateCredential(this.credentials.awsCredential)
     }
   },

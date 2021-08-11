@@ -9,6 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import Terminal from '@obsidians/terminal'
+import notification from '@obsidians/notification'
 
 import DockerImageChannel from './DockerImageChannel'
 
@@ -18,6 +19,7 @@ export default class DownloadImageButton extends PureComponent {
 
     this.state = {
       loading: false,
+      downloading: false,
       versions: [],
       downloadVersion: '',
     }
@@ -39,6 +41,7 @@ export default class DownloadImageButton extends PureComponent {
       versions = await this.channel.remoteVersions()
     } catch (e) {
       this.setState({ loading: false })
+      notification.error(e.message)
       console.warn(e)
       return
     }
@@ -47,12 +50,14 @@ export default class DownloadImageButton extends PureComponent {
   }
 
   onSelectVersion = downloadVersion => {
-    this.setState({ downloadVersion })
+    this.setState({ downloadVersion, downloading: true })
     this.modal.current.openModal()
   }
 
   onDownloaded = ({ code }) => {
+    this.setState({ downloading: false })
     if (code) {
+      notification.info('Download Task Cancelled')
       return
     }
     this.modal.current.closeModal()
@@ -86,15 +91,28 @@ export default class DownloadImageButton extends PureComponent {
       size,
       color = 'secondary',
       right,
+      extraFlags,
     } = this.props
 
     const logId = `terminal-docker-${imageName}`
+    let cmd = `docker pull ${imageName}:${this.state.downloadVersion}`
+    if (extraFlags) {
+      cmd = `${cmd} ${extraFlags}`
+    }
 
-    const title = (
-      <div key='icon-downloading'>
-        <i className='fas fa-spinner fa-spin mr-2' />{downloadingTitle} {this.state.downloadVersion}...
-      </div>
-    )
+    let title
+    
+    if (this.state.downloading) {
+      title = (
+        <div key='icon-downloading'>
+          <i className='fas fa-spinner fa-spin mr-2' />{downloadingTitle} {this.state.downloadVersion}...
+        </div>
+      )
+    } else {
+      title = (
+        <div>{downloadingTitle.replace('ing', '')} Cancelled</div>
+      )
+    }
     return <>
       <UncontrolledButtonDropdown size={size}>
         <DropdownToggle
@@ -109,17 +127,14 @@ export default class DownloadImageButton extends PureComponent {
           {this.renderVersions()}
         </DropdownMenu>
       </UncontrolledButtonDropdown>
-      <Modal
-        ref={this.modal}
-        title={title}
-      >
+      <Modal ref={this.modal} title={title}>
         <div className='rounded overflow-hidden'>
           <Terminal
             active
             logId={logId}
             height='300px'
-            cmd={`docker pull ${imageName}:${this.state.downloadVersion}`}
-            onFinished={this.onDownloaded}
+            cmd={cmd}
+            onCmdExecuted={this.onDownloaded}
           />
         </div>
       </Modal>

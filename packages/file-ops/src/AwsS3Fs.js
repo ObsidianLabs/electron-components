@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk'
+import path from 'path-browserify'
 
 import { AWSS3Region, AWSBucket } from './config.json'
 
@@ -26,7 +27,10 @@ export default class AwsS3Fs {
     this.s3 = new AWS.S3()
   }
 
-  async readFile (filePath, { encoding }) {
+  async readFile (filePath, { encoding } = {}) {
+    if (filePath.startsWith('/')) {
+      filePath = filePath.substr(1)
+    }
     const params = {
       Bucket,
       Key: filePath,
@@ -129,15 +133,17 @@ export default class AwsS3Fs {
     }
   }
 
-  stat (path) {
-    return {
-      isDirectory: () => this.isDirectory(path),
-      isFile: () => false,
+  async stat (fileOrDirPath) {
+    if (fileOrDirPath.startsWith('/')) {
+      fileOrDirPath = fileOrDirPath.substr(1)
     }
-  }
-
-  isDirectory (path) {
-    return true
+    const { dir, base } = path.parse(fileOrDirPath)
+    const list = await this.list(dir)
+    const match = list.find(item => item.name === base)
+    return {
+      isDirectory: () => match && !!match.children,
+      isFile: () => match && !match.children,
+    }
   }
 
   async list (dirPath) {
@@ -151,12 +157,12 @@ export default class AwsS3Fs {
     const folders = result.CommonPrefixes.map(item => {
       const path = item.Prefix.slice(0, -1)
       const name = path.replace(`${dirPath}/`, '')
-      return { name, path, children: [], loading: true, remote: true }
+      return { type: 'folder', name, path, children: [], loading: true, remote: true }
     }).filter(item => item.name)
     const files = result.Contents.map(item => {
       let path = item.Key
       const name = path.replace(`${dirPath}/`, '')
-      return { name, path, remote: true }
+      return { type: 'file', name, path, remote: true }
     }).filter(item => item.name && item.name !== '.placeholder')
     return [...folders, ...files]
   }

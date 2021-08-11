@@ -23,7 +23,10 @@
     "color-convert": "^2.0.1",
     "lodash": "^4.17.20",
     "react-highlight": "^0.13.0",
-    "react-markdown": "^5.0.3"
+    "react-markdown": "^6.0.2",
+    "remark-autolink-headings": "^6.0.1",
+    "remark-gfm": "^1.0.0",
+    "remark-slug": "^6.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -47,9 +50,9 @@
   },
   "peerDependencies": {
     "monaco-editor": "^0.20.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-router-dom": "^5.1.2"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^5.2.0"
   },
   "eslintConfig": {
     "extends": "react-app"

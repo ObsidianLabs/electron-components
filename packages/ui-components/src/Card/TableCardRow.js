@@ -7,6 +7,7 @@ import {
 export default function TableCardRow ({
   name,
   icon,
+  right,
   badge,
   badgeColor = 'secondary',
   tooltip = null,
@@ -17,20 +18,21 @@ export default function TableCardRow ({
   return (
     <tr>
       <td>
-        <div className='d-flex justify-content-between align-items-center'>
+        <div className='d-flex justify-content-between align-items-center flex-wrap'>
           <div className='d-flex flex-row'>
-            <div key={`icon-${icon}`}>
-              <i className={`w-3 mr-2 ${icon}`} />
-            </div>
+            {icon && <div key={`icon-${icon}`}><i className={`w-3 mr-2 ${icon}`} /></div>}
             {name}
           </div>
-          <Badge
-            pill
-            id={id}
-            color={badgeColor}
-            style={{ cursor: tooltip ? 'pointer' : undefined }}
-            onClick={onClickBadge}
-          >{badge}</Badge>
+          {
+            right ||
+            <Badge
+              pill
+              id={id}
+              color={badgeColor}
+              style={{ cursor: tooltip ? 'pointer' : undefined }}
+              onClick={onClickBadge}
+            >{badge}</Badge>
+          }
           {
             tooltip &&
             <UncontrolledTooltip delay={0} target={id} placement='top' >

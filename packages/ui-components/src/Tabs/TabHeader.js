@@ -62,7 +62,11 @@ class TabHeaderItem extends PureComponent {
           onMouseUp={e => e.button === 1 && onCloseTab && onCloseTab(tab)}
         >
           <div className='nav-item-content d-flex flex-row'>
-            <div className='nav-item-text'><span>{tabText}</span></div>
+            <div className='nav-item-text'>
+              <div key={tab.key} className='d-flex flex-row align-items-center'>
+                {tabText}
+              </div>
+            </div>
           </div>
           {this.renderCloseBtn()}
         </div>

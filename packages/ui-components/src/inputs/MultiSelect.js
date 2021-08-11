@@ -22,7 +22,8 @@ export default class MultiSelect extends PureComponent {
     switch (change.action) {
       case 'select-option':
         try {
-          const value = await change.option.getValue()
+          const option = change.option
+          const value = option.getValue ? await option.getValue() : option
           this.props.onChange([...this.props.value, value])
         } catch (e) {
           console.warn(e)
@@ -48,7 +49,7 @@ export default class MultiSelect extends PureComponent {
   }
 
   render () {
-    const { size, addon, value, options, placeholder } = this.props
+    const { size, prepend, append, onClick, value, options, placeholder } = this.props
     
     return (
       <Select
@@ -58,23 +59,34 @@ export default class MultiSelect extends PureComponent {
         className='react-select-container flex-1'
         classNamePrefix='react-select'
         components={{
-          Control: props => (
-            <div onMouseDown={props.innerProps.onMouseDown} className='input-group input-group-sm'>
-              { addon
-                ? <InputGroupAddon addonType='prepend'>
-                    <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
-                      <div className='w-5'>{addon}</div>
-                    </Button>
-                  </InputGroupAddon>
-                : null
-              }
-              {props.children}
-            </div>
-          ),
+          Control: props => {
+            const onMouseDown = onClick ? async () => props.selectOption(await onClick()) : props.innerProps.onMouseDown
+            return (
+              <div onMouseDown={onMouseDown} className='input-group input-group-sm'>
+                { prepend
+                  ? <InputGroupAddon addonType='prepend'>
+                      <Button color='secondary' className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
+                        <div className='w-5'>{prepend}</div>
+                      </Button>
+                    </InputGroupAddon>
+                  : null
+                }
+                {props.children}
+                { append
+                  ? <InputGroupAddon addonType='append'>
+                      <Button color='secondary'>
+                        {append}
+                      </Button>
+                    </InputGroupAddon>
+                  : null
+                }
+              </div>
+            )
+          },
           ValueContainer: props => <div className='form-control h-auto'><components.ValueContainer {...props} className='p-0' /></div>,
           MultiValueLabel: props => <div {...props.innerProps} onClick={() => this.onClickLabel(props.data)} onMouseDown={event => event.stopPropagation()}>{props.children}</div>,
-          IndicatorsContainer: props => <div className='input-group-append'>{props.children}</div>,
-          DropdownIndicator: () => <button className="dropdown-toggle btn btn-secondary" />,
+          IndicatorsContainer: props => options ? <div className='input-group-append'>{props.children}</div> : null,
+          DropdownIndicator: () => <button className='dropdown-toggle btn btn-secondary' />,
           IndicatorSeparator: () => null,
           Menu: props => <div {...props.innerProps} ref={props.ref} className='dropdown-menu dropdown-menu-right show' style={{ boxShadow: 'none', width: 'auto' }}>{props.children}</div>,
           MenuList: props => <components.MenuList {...props} className='p-0' />,

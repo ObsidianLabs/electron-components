@@ -13,6 +13,7 @@ import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
 import WorkspaceContext from '../WorkspaceContext'
+import BaseProjectManager from '../ProjectManager/BaseProjectManager'
 import actions from '../actions'
 
 import contextMenu, { registerHandlers } from './contextMenu'
@@ -44,9 +45,15 @@ export default class Workspace extends Component {
     }, 200)
 
     this.state = {
+      editorConfig: {},
       showTerminal: !!props.terminal,
       terminalSize: 160,
     }
+
+    const effect = BaseProjectManager.effect(`settings:editor`, editorConfig => {
+      this.setState({ editorConfig })
+    })
+    this.disposable = effect()
 
     actions.workspace = this
 
@@ -56,6 +63,11 @@ export default class Workspace extends Component {
       rename: node => this.openRenameModal(node),
       deleteFile: node => this.context.projectManager.deleteFile(node),
     })
+  }
+
+  componentDidMount () {
+    const editorConfig = this.context.projectSettings.get('editor')
+    this.setState({ editorConfig })
   }
 
   async componentDidUpdate (prevProps) {
@@ -70,6 +82,10 @@ export default class Workspace extends Component {
       }
       window.dispatchEvent(new Event('resize'))
     }
+  }
+
+  componentWillUnmount () {
+    this.disposable()
   }
 
   tabFromPath = (filePath, remote) => ({ path: filePath, key: filePath, remote })
@@ -167,10 +183,11 @@ export default class Workspace extends Component {
     } = this.props
 
     const {
+      editorConfig,
       showTerminal,
       terminalSize,
     } = this.state
-    
+
     let Editor = null
     if (Terminal) {
       Editor = (
@@ -187,9 +204,12 @@ export default class Workspace extends Component {
         >
           <CodeEditorCollection
             ref={this.codeEditor}
+            key={this.context.projectRoot}
             theme={theme}
+            editorConfig={editorConfig}
             initialTab={this.tabFromPath(initial.path, initial.remote)}
             projectRoot={this.context.projectRoot}
+            projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readonly={readonly}
           />
@@ -200,9 +220,12 @@ export default class Workspace extends Component {
       Editor = (
         <CodeEditorCollection
           ref={this.codeEditor}
+          key={this.context.projectRoot}
           theme={theme}
+          editorConfig={editorConfig}
           initialTab={this.tabFromPath(initial.path, initial.remote)}
           projectRoot={this.context.projectRoot}
+          projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readonly={readonly}
         />

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 
 import {
   Modal,
+  ButtonOptions,
   FormGroup,
   Label,
   InputGroup,
@@ -14,10 +15,11 @@ import {
 
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
+import Auth from '@obsidians/auth'
 import notification from '@obsidians/notification'
 import Terminal from '@obsidians/terminal'
 
-import BaseProjectManager from '../ProjectManager/BaseProjectManager'
+import ProjectManager from '../ProjectManager'
 import actions from '../actions'
 
 export default class NewProjectModal extends PureComponent {
@@ -25,6 +27,7 @@ export default class NewProjectModal extends PureComponent {
     super(props)
 
     this.state = {
+      remote: platform.isWeb,
       name: '',
       invalid: false,
       projectRoot: '',
@@ -42,9 +45,16 @@ export default class NewProjectModal extends PureComponent {
     actions.newProjectModal = this
   }
 
-  openModal () {
+  openModal (remote) {
     const { defaultTemplate, defaultGroup } = this.props
-    this.setState({ template: defaultTemplate, group: defaultGroup, creating: false, showTerminal: false })
+    this.setState({
+      remote,
+      template: defaultTemplate,
+      group: defaultGroup,
+      creating: false,
+      showTerminal: false,
+    })
+    this.forceUpdate()
     this.modal.current.openModal()
     return new Promise(resolve => { this.onConfirm = resolve })
   }
@@ -61,10 +71,10 @@ export default class NewProjectModal extends PureComponent {
   onCreateProject = async () => {
     this.setState({ creating: true })
 
-    const { name, template, group } = this.state
+    const { remote, name, template, group } = this.state
 
     let projectRoot
-    if (platform.isDesktop) {
+    if (!remote) {
       if (!this.state.projectRoot) {
         projectRoot = this.path.join(fileOps.current.workspace, name)
       } else if (!this.path.isAbsolute(this.state.projectRoot)) {
@@ -87,7 +97,8 @@ export default class NewProjectModal extends PureComponent {
 
   async createProject ({ notify = true, ...options }) {
     try {
-      const created = await BaseProjectManager.channel.invoke('post', '', options)
+      const Manager = this.state.remote ? ProjectManager.Remote : ProjectManager.Local
+      const created = await Manager.createProject(options)
       if (notify) {
         notification.success('Successful', `New project <b>${options.name}</b> is created.`)
       }
@@ -101,7 +112,26 @@ export default class NewProjectModal extends PureComponent {
   }
 
   renderLocation = () => {
-    if (platform.isWeb) {
+    if (platform.isDesktop && Auth.username) {
+      return (
+        <div>
+          <ButtonOptions
+            className='mb-3'
+            options={[
+              { key: 'local', text: 'Local', icon: 'far fa-desktop mr-1' },
+              { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' },
+            ]}
+            selected={this.state.remote ? 'cloud' : 'local'}
+            onSelect={key => this.setState({ remote: key === 'cloud' })}
+          />
+        </div>
+      )
+    }
+    return null
+  }
+
+  renderProjectPath = () => {
+    if (this.state.remote) {
       return null
     }
 
@@ -131,14 +161,16 @@ export default class NewProjectModal extends PureComponent {
 
   renderTemplate = () => {
     const { noTemplate, templates } = this.props
+    const { remote, template } = this.state
     if (noTemplate) {
       return null
     }
     return (
       <DropdownInput
         label='Template'
-        options={templates}
-        value={this.state.template}
+        options={templates.filter(t => !remote || !t.local)}
+        placeholder='(Please select a template)'
+        value={template}
         onChange={(template, group) => this.setState({ template, group })}
       />
     )
@@ -163,6 +195,7 @@ export default class NewProjectModal extends PureComponent {
         confirmDisabled={!name || invalid}
       >
         {this.renderLocation()}
+        {this.renderProjectPath()}
         <DebouncedFormGroup
           label='Project name'
           value={name}

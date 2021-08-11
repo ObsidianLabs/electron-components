@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import { Base64 } from 'js-base64'
 import { Button } from '@obsidians/ui-components'
 import platform from '@obsidians/platform'
+import redux from '@obsidians/redux'
 
 import Workspace from './components/Workspace'
 import WorkspaceContext from './WorkspaceContext'
@@ -26,8 +27,10 @@ export default class WorkspaceLoader extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.addLanguages && this.props.addLanguages()
     this.prepareProject(this.props)
+    if (this.props.addLanguages) {
+      this.props.addLanguages()
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -35,6 +38,9 @@ export default class WorkspaceLoader extends PureComponent {
       window.dispatchEvent(new Event('resize'))
     }
     if (this.props.projectRoot !== prevProps.projectRoot) {
+      if (this.state.context.projectManager) {
+        this.state.context.projectManager.dispose()
+      }
       this.prepareProject(this.props)
     }
   }
@@ -57,6 +63,7 @@ export default class WorkspaceLoader extends PureComponent {
           projectSettings: result.projectSettings,
         }
       })
+      redux.dispatch('PROJECT_LOADED')
     }
   }
 
@@ -102,28 +109,31 @@ export default class WorkspaceLoader extends PureComponent {
       signer,
       CompilerTerminal,
     } = this.props
-    const { terminal } = this.state
+    const { loading, invalid, initial, terminal, context } = this.state
 
-    if (this.state.loading) {
+    if (loading) {
       return <ProjectLoading projectRoot={projectRoot} />
     }
 
-    if (this.state.invalid) {
+    if (invalid) {
       return this.renderInvalidProject(projectRoot)
     }
 
     return (
-      <WorkspaceContext.Provider value={this.state.context}>
+      <WorkspaceContext.Provider value={context}>
         <Workspace
           ref={this.workspace}
           theme={this.props.theme}
-          initial={this.state.initial}
+          initial={initial}
           terminal={terminal}
           defaultSize={272}
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
           signer={signer}
-          Terminal={CompilerTerminal ? <CompilerTerminal active={terminal} cwd={projectRoot} /> : null}
+          Terminal={
+            CompilerTerminal &&
+            <CompilerTerminal projectManager={context.projectManager} active={terminal} cwd={projectRoot} />
+          }
         />
       </WorkspaceContext.Provider>
     )

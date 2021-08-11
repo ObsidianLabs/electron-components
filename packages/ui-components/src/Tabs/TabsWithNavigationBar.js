@@ -29,10 +29,11 @@ export default class TabsWithNavigationBar extends PureComponent {
   }
 
   onSelectTab = tab => {
-    this.setState({ tab })
-    if (this.props.onValue) {
-      this.props.onValue(tab.value || '')
-    }
+    this.setState({ tab }, () => {
+      if (this.props.onChangeTab) {
+        this.props.onChangeTab(tab.value || '')
+      }
+    })
   }
 
   onCloseTab = () => {
@@ -70,7 +71,7 @@ export default class TabsWithNavigationBar extends PureComponent {
     if (!value) {
       return 'New Tab'
     }
-    return this.props.getTabText({ value, temp })
+    return this.props.getTabText({ text, value, temp })
   }
 
   onTabsUpdated = tabs => {
@@ -99,18 +100,20 @@ export default class TabsWithNavigationBar extends PureComponent {
         createNewTab={this.createNewTab}
         tryCloseTab={() => this.onCloseTab}
         onTabsUpdated={this.onTabsUpdated}
+        Bar={
+          <NavigationBar
+            ref={this.navbar}
+            tab={tab}
+            starred={this.state.starredValues.has(tab.value)}
+            onEnter={this.props.onValue}
+            onRefresh={onRefresh}
+            updateTab={this.updateTab}
+            onToggleStar={this.onToggleStar}
+          >
+            {NavbarButtons}
+          </NavigationBar>
+        }
       >
-        <NavigationBar
-          ref={this.navbar}
-          tab={tab}
-          starred={this.state.starredValues.has(tab.value)}
-          onEnter={this.props.onValue}
-          onRefresh={onRefresh}
-          updateTab={this.updateTab}
-          onToggleStar={this.onToggleStar}
-        >
-          {NavbarButtons}
-        </NavigationBar>
         {children}
       </Tabs>
     )

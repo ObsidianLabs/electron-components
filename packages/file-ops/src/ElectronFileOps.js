@@ -12,6 +12,7 @@ export default class ElectronFileOps extends FileOps {
     this.trash = window.require('trash')
 
     this.homePath = this.electron.remote.app.getPath('home')
+    this.appPath = this.electron.remote.app.getAppPath()
     this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
     this.ensureDirectory(this.workspace)
   }
@@ -57,8 +58,12 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async listFolder (folderPath) {
-    const files = await this.fs.readdir(folderPath)
-    return files.map(file => ({ name: file, path: this.path.join(folderPath, file)}))
+    const children = await this.fs.readdir(folderPath)
+    return await Promise.all(children.map(async name => {
+      const childPath = this.path.join(folderPath, name)
+      const type = await this.isDirectory(childPath) ? 'folder' : 'file'
+      return { type, name, path: childPath }
+    }))
   }
 
   showOpenDialog (options) {
@@ -69,8 +74,11 @@ export default class ElectronFileOps extends FileOps {
     return this.electron.remote.dialog.showMessageBox({ message, buttons })
   }
 
-  openItem (filePath) {
-    return this.electron.shell.openPath(filePath)
+  async openItem (filePath) {
+    const result = await this.electron.shell.openPath(filePath)
+    if (result) {
+      throw new Error(`Cannot open <b>${filePath}</b>. Please make sure it exists.`)
+    }
   }
 
   showItemInFolder (filePath) {

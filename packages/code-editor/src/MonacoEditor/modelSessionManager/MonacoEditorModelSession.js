@@ -1,6 +1,8 @@
 import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
 
+const delay = ms => new Promise(res => setTimeout(res, ms))
+
 const SEVERITIES = {
   note: 2,
   warning: 4,
@@ -44,6 +46,7 @@ export default class MonacoEditorModelSession {
     this._showCustomTab = true
     this._viewState = null
     this._saved = true
+    this._saving = false
     this._topbar = null
     this.decorations = decorations
   }
@@ -82,6 +85,16 @@ export default class MonacoEditorModelSession {
   set saved (v) { this._saved = v }
   get saved () { return this._saved }
 
+  set saving (v) {
+    if (this._saving) {
+      clearTimeout(this._saving)
+    }
+    this._saving = setTimeout(() => {
+      this._saving = false
+    }, 1000)
+  }
+  get saving () { return Boolean(this._saving) }
+
   get readonly () {
     return this._readonly
   }
@@ -106,10 +119,12 @@ export default class MonacoEditorModelSession {
     this._topbar = null
   }
 
-  recoverInEditor(monacoEditor) {
+  async recoverInEditor (monacoEditor) {
     if (!this._model) {
       return
     }
+
+    await delay(10)
 
     monacoEditor.setModel(this._model)
 
@@ -161,25 +176,36 @@ export default class MonacoEditorModelSession {
     // }
     
     if (typeof row === 'number') {
+      if (length) {
+        return {
+          // code: 'code',
+          // source: 'source',
+          severity: SEVERITIES[type],
+          message: text,
+          startLineNumber: row,
+          startColumn: column,
+          endLineNumber: row,
+          endColumn: column + length,
+          relatedInformation: [
+            // {
+            //   resource: monaco.Uri.file(filePath),
+            //   message: text,
+            //   startLineNumber: row,
+            //   startColumn: column,
+            //   endLineNumber: row,
+            //   endColumn: column + length,
+            // }
+          ]
+        }
+      }
+      const word = this.model.getWordAtPosition({ column, lineNumber: row })
       return {
-        // code: 'code',
-        // source: 'source',
         severity: SEVERITIES[type],
         message: text,
         startLineNumber: row,
-        startColumn: column,
+        startColumn: word ? word.startColumn : column,
         endLineNumber: row,
-        endColumn: column + length,
-        relatedInformation: [
-          // {
-          //   resource: monaco.Uri.file(filePath),
-          //   message: text,
-          //   startLineNumber: row,
-          //   startColumn: column,
-          //   endLineNumber: row,
-          //   endColumn: column + length,
-          // }
-        ]
+        endColumn: word ? word.startColumn : column + 1,
       }
     }
 

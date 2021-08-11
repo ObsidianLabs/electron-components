@@ -68,6 +68,9 @@ class FileTreeWatcher {
 
   async refreshFile (filePath) {
     const content = await fs.promises.readFile(filePath, 'utf8')
+    if (!content) {
+      return
+    }
     this.client.channel.send('refresh-file', { path: filePath, content })
   }
 

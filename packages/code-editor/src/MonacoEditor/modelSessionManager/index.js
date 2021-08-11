@@ -23,14 +23,14 @@ export function defaultModeDetector (filePath) {
 
 class ModelSessionManager {
   constructor () {
-    this._editorContainer = undefined
-    this._editor = undefined
+    this._editorContainer = null
+    this._editor = null
     
     this.modeDetector = defaultModeDetector
     this.CustomTabs = {}
     this.customTabTitles = {}
 
-    this.currentModelSession = null
+    this._currentModelSession = null
     this.sessions = {}
     this.decorationCollection = {}
   }
@@ -41,6 +41,22 @@ class ModelSessionManager {
 
   set editor (editor) {
     this._editor = editor
+  }
+  
+  get projectManager () {
+    return this._editorContainer.props.projectManager
+  }
+
+  set currentModelSession (modelSession) {
+    if (modelSession.filePath.indexOf('node_modules') > -1) {
+      modelSession.setTopbar({ title: `This file is a dependency and changes may have a great impact on the project. Make sure you know what you are doing before making changes.` })
+      this._editorContainer.refresh()
+    }
+    this._currentModelSession = modelSession
+  }
+
+  get currentModelSession () {
+    return this._currentModelSession
   }
 
   registerModeDetector (modeDetector) {
@@ -66,8 +82,18 @@ class ModelSessionManager {
     }
   }
 
+  get projectRoot () {
+    return this._editorContainer.props.projectRoot
+  }
   get currentFilePath () {
     return this.currentModelSession?.filePath
+  }
+
+  openFile (filePath, remote = this.projectManager.remote) {
+    if (!fileOps.current.path.isAbsolute(filePath)) {
+      filePath = fileOps.current.path.join(this.projectRoot, filePath)
+    }
+    this._editorContainer.openTab({ key: filePath, path: filePath, remote })
   }
 
   async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath)) {
@@ -78,11 +104,17 @@ class ModelSessionManager {
     if (!this.sessions[filePath]) {
       let model = null
       if (!filePath.startsWith('custom:')) {
-        let code = ''
+        let content = ''
         try {
-          code = await fileOps.current.readFile(filePath)
-        } catch (e) {}
-        model = monaco.editor.createModel(code, mode, monaco.Uri.file(filePath))
+          content = await this.projectManager.readFile(filePath)
+        } catch (e) {
+          console.warn(e)
+        }
+        const uri = monaco.Uri.file(filePath)
+        model = monaco.editor.getModel(uri)
+        if (!model) {
+          model = monaco.editor.createModel(content, mode, uri)
+        }
       }
       this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationCollection[filePath] || [])
     }
@@ -94,7 +126,12 @@ class ModelSessionManager {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
     this._editorContainer.fileSaving(filePath)
-    await fileOps.current.writeFile(filePath, this.sessions[filePath].value)
+    this.sessions[filePath].saving = true
+    if (this.sessions[filePath].topbar) {
+      this.sessions[filePath].dismissTopbar()
+      this._editorContainer.refresh()
+    }
+    await this.projectManager.saveFile(filePath, this.sessions[filePath].value)
     this._editorContainer.fileSaved(filePath)
     this.sessions[filePath].saved = true
   }
@@ -116,10 +153,10 @@ class ModelSessionManager {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
     // this._editorContainer.fileSaving(filePath)
-    const code = await fileOps.current.readFile(filePath)
+    const content = await this.projectManager.readFile(filePath)
     // this.sessions[filePath].saved = true
     // this._editorContainer.fileSaved(filePath)
-    this.sessions[filePath].refreshValue(code)
+    this.sessions[filePath].refreshValue(content)
   }
 
   undo () {
@@ -160,7 +197,7 @@ class ModelSessionManager {
 
   refreshFile (data) {
     const modelSession = this.sessions[data.path]
-    if (!modelSession) {
+    if (!modelSession || modelSession.saving) {
       return
     }
     if (modelSession.saved) {
