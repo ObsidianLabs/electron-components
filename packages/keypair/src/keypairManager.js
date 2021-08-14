@@ -16,6 +16,7 @@ class KeypairManager {
   onUpdated (callback) {
     const eventHandler = event => callback(event.detail)
     this.eventTarget.addEventListener('updated', eventHandler)
+    return () => this.eventTarget.removeEventListener('updated', eventHandler)
   }
 
   async loadAllKeypairs () {
