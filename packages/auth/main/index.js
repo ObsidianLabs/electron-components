@@ -8,31 +8,42 @@ class AuthManager extends IpcChannel {
     super('auth')
     this.win = null
   }
-  
-  async login({ loginUrl, serverUrl }) {
-    return new Promise((resolve) => {
+
+  async request({ loginUrl, filterUrl }) {
+    const callbackUrl = await new Promise((resolve) => {
       this.createWindow(resolve)
       this.win.loadURL(loginUrl)
 
       const { session: { webRequest } } = this.win.webContents
       const filter = {
-        urls: [`${serverUrl}/api/v1/auth*`]
+        urls: [`${filterUrl}*`]
       }
 
       webRequest.onBeforeRequest(filter, ({ url }, callback) => {
-        if (url.startsWith(`${serverUrl}/api/v1/auth/callback?error`)) {
+        if (url.startsWith(`${filterUrl}/callback?error`)) {
           callback({ cancel: true })
           resolve()
           this.loading()
-        } else if (url.startsWith(`${serverUrl}/api/v1/auth/callback`)) {
+        } else if (url.startsWith(`${filterUrl}/callback`)) {
           callback({ cancel: true })
           resolve(url)
           this.loading()
         } else {
           callback({ cancel: false })
+          resolve()
         }
       })
     })
+
+    if (!callbackUrl) {
+      return
+    }
+
+    // extrat code from callbackUrl
+    const location = new URL(callbackUrl)
+    const query = new URLSearchParams(location.search)
+    const code = query.get('code')
+    return code
   }
 
   createWindow(resolve) {

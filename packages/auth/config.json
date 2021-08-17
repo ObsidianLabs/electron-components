@@ -1,7 +1,0 @@
-{
-  "AWSRoleArn": "arn:aws-cn:iam::494443934921:role/Cognito_webIDE_UserIdentity_Pool_Auth_Role",
-  "AWSRoleSessionName": "webide",
-  "AWSRegion": "cn-north-1",
-  "GithubClientId": "0719e502c798dd4bb376",
-  "TencentClientId": "100017401279"
-}
