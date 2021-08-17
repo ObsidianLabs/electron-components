@@ -95,18 +95,18 @@ export default class NewProjectModal extends PureComponent {
     }
   }
 
-  async createProject ({ notify = true, ...options }) {
+  async createProject ({ notify = true, ...options }, stage = '') {
     try {
       const Manager = this.state.remote ? ProjectManager.Remote : ProjectManager.Local
-      const created = await Manager.createProject(options)
+      const created = await Manager.createProject(options, stage)
       if (notify) {
         notification.success('Successful', `New project <b>${options.name}</b> is created.`)
       }
       return created
     } catch (e) {
-      if (notify) {
-        notification.error('Cannot Create the Project', e.message)
-      }
+      // if (notify) {
+      notification.error('Cannot Create the Project', e.message)
+      // }
       return false
     }
   }
