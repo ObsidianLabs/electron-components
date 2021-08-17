@@ -8,7 +8,8 @@ class ChildProcess {
     return new Promise((resolve, reject) => {
       proc = cp.spawn(cmd, [], {
         shell: process.platform === 'win32' ? 'powershell.exe' : true,
-        ...config
+        ...config,
+        env: { ...process.env, ...config.env },
       })
 
       let logs = ''

@@ -23,13 +23,13 @@ class Pty {
     }
 
     const proc = pty.spawn(shell, switches, {
-      env: process.env,
       name: this.ipcChannel.channelName,
       cols: this.cols || 87,
       rows: this.rows || 1,
       useConpty: false,
       cwd: this.cwd,
       ...config,
+      env: { ...process.env, ...config.env },
     })
 
     let logs = ''
