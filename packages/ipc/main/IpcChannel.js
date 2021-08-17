@@ -10,6 +10,7 @@ class IpcChannel {
     this.channel = channel
     this.uid = uid
     this.cp = new ChildProcess()
+    this.callbacks = new Map()
     this.start()
   }
 
@@ -55,6 +56,29 @@ class IpcChannel {
 
   send (method, ...data) {
     this.ipc.send(this.channelResponse, method, ...data)
+  }
+
+  async call (req) {
+    this.send(req.method, req.id, ...req.params)
+    const callback = {}
+    const promise = new Promise((resolve, reject) => {
+      callback.resolve = resolve
+      callback.reject = reject
+    })
+    this.callbacks.set(req.id, callback)
+    return promise
+  }
+  
+  async callback (id, error, result) {
+    const callback = this.callbacks.get(id)
+    if (callback) {
+      if (error) {
+        callback.reject(new Error(error))
+      } else {
+        callback.resolve(result)
+      }
+      this.callbacks.delete(id)
+    }
   }
 
   async exec (command, config) {
