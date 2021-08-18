@@ -1,4 +1,4 @@
-import { BsnClientId } from '../../config.json'
+// import { BsnClientId } from '../../config.json'
 // const project = process.env.PROJECT
 // const serverUrl = process.env.REACT_APP_SERVER_URL
 const clientId = process.env.REACT_APP_BSN_CLIENT_ID || BsnClientId
