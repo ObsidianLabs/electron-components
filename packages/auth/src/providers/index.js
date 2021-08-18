@@ -1,7 +1,7 @@
-import github from './github'
+import GithubProvider from './github'
 import tencent from './tencent'
 
 export default {
-  github,
+  github: new GithubProvider(),
   tencent
 }

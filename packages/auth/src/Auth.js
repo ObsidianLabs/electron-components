@@ -1,23 +1,13 @@
 import redux from '@obsidians/redux'
 import decode from 'jwt-decode'
-import AWS from 'aws-sdk'
-
-import fileOps from '@obsidians/file-ops'
-import { BuildService, IpcChannel } from '@obsidians/ipc'
-import platform from '@obsidians/platform'
-
 import providers from './providers'
-import { AWSRoleArn, AWSRoleSessionName, AWSRegion } from '../config.json'
-
-const serverUrl = process.env.REACT_APP_SERVER_URL
-const awsRoleArn = process.env.REACT_APP_AWS_ROLE_ARN || AWSRoleArn
-const awsRoleSessionName = process.env.REACT_APP_AWS_ROLE_SESSION_NAME || AWSRoleSessionName
-const awsRegion = process.env.REACT_APP_AWS_REGION || AWSRegion
 
 export default {
   profile: null,
   credentials: null,
   refreshPromise: null,
+  provider: null,
+  history: null,
 
   get username () {
     return this.profile && this.profile.username
@@ -27,139 +17,63 @@ export default {
     return !!this.username
   },
 
+  get shouldRefresh () {
+    if (!this.isLogin) {
+      return false
+    }
+    if (!this.credentials || !this.credentials.token) {
+      return true
+    }
+    return this.provider.shouldRefresh(this.credentials.token)
+  },
+
   async login (history, provider = 'github') {
-    if (!providers[provider]) {
+    this.history = history
+    this.provider = providers[provider]
+    if (!this.provider) {
+      this.redirect()
       return
     }
-    if (platform.isDesktop) {
-      const channel = new IpcChannel('auth')
-      const loginUrl = providers[provider].loginUrl
-      const callbackUrl = await channel.invoke('login', { loginUrl, serverUrl })
-      if (callbackUrl) {
-        await this.handleCallback({ location: new URL(callbackUrl), provider, history })
-      }
-      this.updateProfile()
-      await channel.invoke('close')
-    } else {
-      providers[provider].login()
+
+    const code = await this.provider.request()
+    if (!code) {
+      return
     }
+
+    await this.grant(code)
+
+    await this.provider.done()
+  },
+
+  async callback ({ location, history }) {
+    const query = new URLSearchParams(location.search);
+    const code = query.get('code')
+    const provider = query.get('provider')
+
+    this.history = history
+    this.provider = providers[provider]
+    if (!this.provider) {
+      this.redirect()
+      return
+    }
+
+    await this.grant(code)
+
+    this.redirect()
   },
 
   async logout (history) {
-    this.profile = {}
-    this.credentials = {}
+    this.profile = null
+    this.credentials = null
     this.refreshPromise = null
     redux.dispatch('CLEAR_USER_PROFILE')
 
-    try {
-      await fetch(`${serverUrl}/api/v1/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-    } catch (error) {}
+    await this.provider.logout()
 
-    history.replace('/')
-  },
+    this.provider = null
 
-  async handleCallback ({ location, history, provider }) {
-    const query = new URLSearchParams(location.search);
-    const code = query.get('code')
-    const loginProvider = provider || query.get('provider')
-
-    const tokens = await this.fetchTokens(code, loginProvider)
-    if (!tokens) {
-      history.replace('/')
-      return
-    }
-
-    const { token, awsToken } = tokens
-
-    const awsCredential = await this.fetchAwsCredential(awsToken)
-    if (!awsCredential) {
-      history.replace('/')
-      return
-    }
-
-    const { userId, username, avatar } = decode(token)
-    this.profile = { userId, username, avatar }
-    this.credentials = { token, awsCredential }
-    history.replace('/')
-  },
-
-  async refresh () {
-    if (!this.shouldRefresh()) {
-      return
-    }
-
-    const tokens = await this.fetchTokens()
-    if (!tokens) {
-      return
-    }
-
-    const { token, awsToken } = tokens
-
-    const awsCredential = await this.fetchAwsCredential(awsToken)
-    if (!awsCredential) {
-      return
-    }
-
-
-    const { userId, username, avatar } = decode(token)
-    this.profile = { userId, username, avatar }
-    this.credentials = { token, awsCredential }
-    this.updateProfile()
-  },
-
-  async fetchTokens (code, provider) {
-    try {
-      let url
-      let method
-      let body
-      if (code && provider) {
-        url = `${serverUrl}/api/v1/auth/login`
-        method = 'POST'
-        body = JSON.stringify({ code, provider })
-      } else {
-        url = `${serverUrl}/api/v1/auth/refresh-token`
-        method = 'GET'
-      }
-
-      const response = await fetch(url, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        method,
-        body,
-      });
-
-      const { token, awsToken } = await response.json()
-      return { token, awsToken }
-    } catch (error) {
-      return
-    }
-  },
-
-  async fetchAwsCredential(awsToken) {
-    AWS.config.update({
-      region: awsRegion,
-    })
-    const sts = new AWS.STS()
-    const params = {
-      WebIdentityToken: awsToken,
-      RoleArn: awsRoleArn,
-      RoleSessionName: awsRoleSessionName,
-      DurationSeconds: 3600,
-    }
-    try {
-      const awsCredential = await new Promise((resolve, reject) => {
-        sts.assumeRoleWithWebIdentity(params, (err, data) => err ? reject(err) : resolve(data))
-      })
-      return awsCredential
-    } catch (error) {
-      return
-    }
+    this.history = history
+    this.redirect()
   },
 
   async getToken () {
@@ -171,28 +85,59 @@ export default {
     return this.credentials && this.credentials.token
   },
 
-  updateProfile () {
-    if (this.profile) {
-      redux.dispatch('UPDATE_PROFILE', this.profile)
-    } else {
-      const profile = redux.getState().profile
-      this.profile = profile.toJS()
+  async grant (code) {
+    if (!this.provider) {
+      return
     }
-    if (this.credentials && this.credentials.awsCredential) {
-      fileOps.web.fs.updateCredential(this.credentials.awsCredential)
-      BuildService.updateCredential(this.credentials.awsCredential)
+    const credentials = await this.provider.grant(code)
+    if (!credentials) {
+      return
+    }
+
+    this.credentials = credentials
+    this.profile = decode(credentials.token)
+
+    this.update()
+  },
+
+  // Update profile to redux, update credentials to provder
+  async update () {
+    if (!redux.store) {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      await this.update()
+    } else if (this.profile) {
+      redux.dispatch('UPDATE_PROFILE', this.profile)
+    }
+    if (this.credentials && this.provider) {
+      this.provider.update(this.credentials)
     }
   },
 
-  shouldRefresh () {
-    if (!this.isLogin) {
-      return false
+  // Restore profile from redux
+  restore () {
+    if (!this.profile) {
+      try {
+        const profile = redux.getState().profile
+        this.profile = profile.toJS()
+        this.provider = providers[this.profile.provider]
+      } catch (error) {
+        this.profile = null
+        this.provider = null
+        console.warn('Restore failed', error)
+      }
     }
-    if (!this.credentials || !this.credentials.token) {
-      return true
-    }
-    const { exp } = decode(this.credentials.token)
-    const currentTs = Math.floor(Date.now() / 1000)
-    return exp - currentTs < 60
   },
+
+  async refresh () {
+    if (this.shouldRefresh) {
+      this.restore()
+      await this.grant()
+    }
+  },
+
+  redirect(path = '/') {
+    if (this.history) {
+      this.history.replace(path)
+    }
+  }
 }
