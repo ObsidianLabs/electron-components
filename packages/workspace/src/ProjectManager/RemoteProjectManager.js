@@ -7,8 +7,8 @@ import BaseProjectManager from './BaseProjectManager'
 const projectChannel = new HttpIpcChannel('project')
 
 export default class RemoteProjectManager extends BaseProjectManager {
-  static async createProject (options) {
-    return await projectChannel.invoke('post', '', options)
+  static async createProject (options, stage = '') {
+    return await projectChannel.invoke('post', stage, options)
   }
 
   constructor (project, projectRoot) {

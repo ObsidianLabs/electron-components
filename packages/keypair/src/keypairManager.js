@@ -1,3 +1,4 @@
+import React from 'react'
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
@@ -8,6 +9,9 @@ class KeypairManager {
     this.onKeypairUpdated = null
     this.eventTarget = new EventTarget()
     this._kp = null
+
+    this.signReqModal = React.createRef()
+    this.channel.on('signTransaction', this.signTransaction.bind(this))
   }
 
   set kp (kp) { this._kp = kp }
@@ -16,6 +20,7 @@ class KeypairManager {
   onUpdated (callback) {
     const eventHandler = event => callback(event.detail)
     this.eventTarget.addEventListener('updated', eventHandler)
+    return () => this.eventTarget.removeEventListener('updated', eventHandler)
   }
 
   async loadAllKeypairs () {
@@ -81,6 +86,15 @@ class KeypairManager {
       throw new Error(`No ${key} for <b>${address}</b>`)
     }
     return keypair[key]
+  }
+
+  async signTransaction (id, tx) {
+    try {
+      const modified = await this.signReqModal.current?.openModal(tx)
+      this.channel.invoke('callback', id, null, modified)
+    } catch {
+      this.channel.invoke('callback', id, 'User rejected the transaction.')
+    }
   }
 }
 

@@ -5,8 +5,8 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import BaseProjectManager from './BaseProjectManager'
 
 export default class LocalProjectManager extends BaseProjectManager {
-  static async createProject (options) {
-    return await BaseProjectManager.channel.invoke('post', '', options)
+  static async createProject (options, stage = '') {
+    return await BaseProjectManager.channel.invoke('post', stage, options)
   }
 
   constructor (project, projectRoot) {

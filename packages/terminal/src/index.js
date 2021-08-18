@@ -214,8 +214,16 @@ export default class Terminal extends PureComponent {
     return result
   }
 
+  getDefaultConfig = async () => {
+    const config = { cwd: this.props.cwd }
+    if (typeof this.props.getEnv === 'function') {
+      config.env = await this.props.getEnv()
+    }
+    return config
+  }
+
   execAsChildProcess = async (cmd, config) => {
-    const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
+    const mergedConfig = Object.assign(await this.getDefaultConfig(), config)
     await this.terminalChannel.invoke('exec', cmd, mergedConfig)
   }
 
@@ -230,7 +238,7 @@ export default class Terminal extends PureComponent {
   runCommand = async (cmd, config) => {
     this.scrollToBottom()
 
-    const mergedConfig = Object.assign({ cwd: this.props.cwd }, config)
+    const mergedConfig = Object.assign(await this.getDefaultConfig(), config)
     this.writeCmdToTerminal(cmd)
     return await this.terminalChannel.invoke('run', cmd, mergedConfig)
   }

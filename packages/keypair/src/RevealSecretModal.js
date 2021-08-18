@@ -13,7 +13,6 @@ export default class RevealSecretModal extends PureComponent {
     this.state = { address: '', secret: '', secretName: '' }
     this.modal = React.createRef()
   }
-  
 
   async openModal (keypair) {
     this.setState({ address: keypair.address })
