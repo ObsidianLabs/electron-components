@@ -135,11 +135,20 @@ export default class HttpClient {
       } catch (e) {}
     }
 
-    if (response.status === 401) {
-      throw new Error(result.message || 'Need login to perform this operation.')
-    } else if (response.status >= 400) {
-      throw new Error(result.message || result)
+    if (response.status >= 400) {
+      Auth.handleError({
+        status: response.status
+      })
+
+      let message = result.message
+      if (response.status === 401) {
+        message = result.message || 'Need login to perform this operation.'
+      } else if (response.status === 403) {
+        message = result.message || 'Need authenticate to perform this operation.'
+      }
+      throw new Error(message || result)
     }
+
     return result
   }
 

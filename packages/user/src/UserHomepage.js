@@ -57,14 +57,17 @@ class UserHomepage extends PureComponent {
         return
       }
     }
-    const res = await projectChannel.invoke('get', username)
-    const projects = res.map(p => ({
+
+    const res = await BaseProjectManager.channel.invoke('get', username)
+    const projectFormatter = this.projectFormatter ? this.projectFormatter.bind(this, username) : p => ({
       remote: true,
       id: p.name,
       name: p.name,
       author: username,
       path: `${username}/${p.name}`,
-    }))
+    })
+
+    const projects = res.map(projectFormatter)
 
     this.setState({ loading: false, user, projects })
     if (this.isSelf()) {
@@ -106,6 +109,12 @@ class UserHomepage extends PureComponent {
     )
   }
 
+
+  renderProjectList = (projects) => {
+    const List = this.props.ProjectList || ProjectList
+    return <List projects={projects} loading={loading}/>
+  }
+
   renderProjectListOptions = () => {
     if (platform.isDesktop && this.props.profile?.get('username')) {
       return (
@@ -145,7 +154,7 @@ class UserHomepage extends PureComponent {
     } else {
       return this.renderCreateButton()
     }
-  }
+
 
   render () {
     const { profile } = this.props
@@ -177,7 +186,7 @@ class UserHomepage extends PureComponent {
             {this.renderProjectListOptions()}
             {this.renderActionButtons()}
           </div>
-          <ProjectList projects={projects} loading={loading} />
+          {this.renderProjectList(projects)}
         </div>
       </div>
     )
@@ -185,3 +194,6 @@ class UserHomepage extends PureComponent {
 }
 
 export default connect(['profile', 'projects'])(UserHomepage)
+export {
+  UserHomepage as BaseUserHomepage,
+}

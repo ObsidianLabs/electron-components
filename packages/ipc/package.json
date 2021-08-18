@@ -9,7 +9,8 @@
   "dependencies": {
     "@obsidians/auth": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
-    "qs": "^6.9.6"
+    "qs": "^6.9.6",
+    "side-channel": "^1.0.4"
   },
   "peerDependencies": {
     "aws-sdk": "^2.830.0",

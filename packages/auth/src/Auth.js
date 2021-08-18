@@ -6,6 +6,7 @@ export default {
   profile: null,
   credentials: null,
   refreshPromise: null,
+  modal: null,
   provider: null,
   history: null,
 
@@ -26,6 +27,7 @@ export default {
     }
     return this.provider.shouldRefresh(this.credentials.token)
   },
+
 
   async login (history, provider = 'github') {
     this.history = history
