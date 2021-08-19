@@ -110,9 +110,9 @@ class UserHomepage extends PureComponent {
   }
 
 
-  renderProjectList = (projects) => {
+  renderProjectList = (projects, loading) => {
     const List = this.props.ProjectList || ProjectList
-    return <List projects={projects} loading={loading}/>
+    return <List projects={projects} loading={loading} />
   }
 
   renderProjectListOptions = () => {
@@ -186,7 +186,7 @@ class UserHomepage extends PureComponent {
             {this.renderProjectListOptions()}
             {this.renderActionButtons()}
           </div>
-          {this.renderProjectList(projects)}
+          {this.renderProjectList(projects, loading)}
         </div>
       </div>
     )
