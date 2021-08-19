@@ -58,7 +58,7 @@ class UserHomepage extends PureComponent {
       }
     }
 
-    const res = await BaseProjectManager.channel.invoke('get', username)
+    const res = await projectChannel.invoke('get', username)
     const projectFormatter = this.projectFormatter ? this.projectFormatter.bind(this, username) : p => ({
       remote: true,
       id: p.name,
