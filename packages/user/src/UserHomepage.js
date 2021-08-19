@@ -154,7 +154,7 @@ class UserHomepage extends PureComponent {
     } else {
       return this.renderCreateButton()
     }
-
+  }
 
   render () {
     const { profile } = this.props
