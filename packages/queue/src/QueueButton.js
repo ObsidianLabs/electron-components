@@ -95,6 +95,7 @@ export default class QueueButton extends PureComponent {
       <Modal
         ref={this.txModal}
         title='Transaction'
+        textCancel='Close'
       >
         <TransactionDetails
           {...otherProps}
