@@ -1,12 +1,17 @@
 import React, { PureComponent } from 'react'
 import redux from '@obsidians/redux'
 
+import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
 
 export default class KeypairButton extends PureComponent {
   constructor (props) {
     super(props)
     this.modal = React.createRef()
+  }
+
+  componentDidMount () {
+    keypairManager.loadAndUpdateKeypairs()
   }
 
   openModal = () => {

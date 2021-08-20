@@ -1,7 +1,6 @@
 import React from 'react'
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
-import notification from '@obsidians/notification'
 
 class KeypairManager {
   constructor () {
@@ -9,6 +8,8 @@ class KeypairManager {
     this.onKeypairUpdated = null
     this.eventTarget = new EventTarget()
     this._kp = null
+
+    this.keypairNames = {}
 
     this.signReqModal = React.createRef()
     this.channel.on('signTransaction', this.signTransaction.bind(this))
@@ -47,6 +48,9 @@ class KeypairManager {
 
   async loadAndUpdateKeypairs () {
     const keypairs = await this.loadAllKeypairs()
+    this.keypairNames = {}
+    keypairs.forEach(k => this.keypairNames[k.address] = k.name)
+
     const event = new CustomEvent('updated', { detail: keypairs })
     this.eventTarget.dispatchEvent(event)
   }
@@ -62,14 +66,16 @@ class KeypairManager {
     redux.dispatch('UPDATE_KEYPAIR_NAME', { address, name })
     await this.channel.invoke('put', address, { name })
     await this.loadAndUpdateKeypairs()
-
   }
 
   async deleteKeypair (keypair) {
     await this.channel.invoke('delete', keypair.address)
     redux.dispatch('REMOVE_KEYPAIR_NAME', { address: keypair.address })
     await this.loadAndUpdateKeypairs()
+  }
 
+  getName (address) {
+    return this.keypairNames[address]
   }
 
   async getKeypair (address) {
