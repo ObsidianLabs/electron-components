@@ -36,9 +36,10 @@ export default class CreateKeypairModal extends PureComponent {
   openModal (chain) {
     this.modal.current.openModal()
     if (chain) {
-      this.setState({ chain })
+      this.setState({ chain }, this.regenerateKeypair)
+    } else {
+      this.regenerateKeypair()
     }
-    setTimeout(() => this.regenerateKeypair(), 500)
     return new Promise(resolve => this.onResolve = resolve)
   }
 
