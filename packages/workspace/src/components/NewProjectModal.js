@@ -159,7 +159,7 @@ export default class NewProjectModal extends PureComponent {
     )
   }
 
-  renderTemplate = () => {
+  renderTemplate () {
     const { noTemplate, templates } = this.props
     const { remote, template } = this.state
     if (noTemplate) {
@@ -176,9 +176,7 @@ export default class NewProjectModal extends PureComponent {
     )
   }
 
-  renderOtherOptions = () => {
-    return null
-  }
+  renderOtherOptions = () => null
 
   render () {
     const { projectNameProps, templates } = this.props
@@ -187,7 +185,7 @@ export default class NewProjectModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        overflow={!showTerminal}
+        overflow={false}
         title='Create a New Project'
         textConfirm='Create Project'
         onConfirm={this.onCreateProject}
