@@ -82,6 +82,8 @@ export default class QueueButton extends PureComponent {
     }
 
     const { txs, QueueItem, TransactionDetails, ...otherProps } = this.props
+    const { tx = {} } = this.state
+    const title = tx.data?.title || tx.data?.name
 
     return <>
       <UncontrolledButtonDropdown direction='up'>
@@ -94,12 +96,12 @@ export default class QueueButton extends PureComponent {
       </UncontrolledButtonDropdown>
       <Modal
         ref={this.txModal}
-        title='Transaction'
+        title={title || 'Transaction'}
         textCancel='Close'
       >
         <TransactionDetails
           {...otherProps}
-          tx={this.state.tx}
+          tx={tx}
           closeModal={() => this.txModal.current.closeModal()}
         />
       </Modal>
