@@ -19,10 +19,12 @@ export default class RenameModal extends PureComponent {
       basePath: '',
     }
     this.modal = React.createRef()
+    this.input = React.createRef()
   }
 
   openModal = ({ type, name, oldPath }) => {
     this.setState({ type, name, oldName: name, loading: false, oldPath })
+    setTimeout(() => this.input.current?.focus(), 100)
     this.modal.current.openModal()
   }
 
@@ -49,6 +51,7 @@ export default class RenameModal extends PureComponent {
         onConfirm={this.onRename}
       >
         <DebouncedFormGroup
+          ref={this.input}
           label={<div>Rename <kbd>{this.state.oldName}</kbd> to</div>}
           placeholder='New name'
           maxLength='50'

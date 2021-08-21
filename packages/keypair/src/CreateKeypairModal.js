@@ -31,6 +31,7 @@ export default class CreateKeypairModal extends PureComponent {
     }
 
     this.modal = React.createRef()
+    this.input = React.createRef()
   }
 
   openModal (chain) {
@@ -40,6 +41,7 @@ export default class CreateKeypairModal extends PureComponent {
     } else {
       this.regenerateKeypair()
     }
+    setTimeout(() => this.input.current?.focus(), 100)
     return new Promise(resolve => this.onResolve = resolve)
   }
 
@@ -141,6 +143,7 @@ export default class CreateKeypairModal extends PureComponent {
         ActionBtn={this.renderRegenerateBtn()}
       >
         <DebouncedFormGroup
+          ref={this.input}
           label='Name'
           maxLength='200'
           placeholder='Please enter a name for the keypair'

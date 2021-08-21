@@ -26,6 +26,7 @@ export default class ImportKeypairModal extends PureComponent {
     }
 
     this.modal = React.createRef()
+    this.input = React.createRef()
   }
 
   openModal (chain) {
@@ -34,6 +35,7 @@ export default class ImportKeypairModal extends PureComponent {
       this.setState({ chain })
     }
     this.setState({ name: '', secret: '', keypair: null, valid: false, feedback: '' })
+    setTimeout(() => this.input.current?.focus(), 100)
     return new Promise(resolve => this.onResolve = resolve)
   }
 
@@ -137,6 +139,7 @@ export default class ImportKeypairModal extends PureComponent {
         confirmDisabled={!name || !valid}
       >
         <DebouncedFormGroup
+          ref={this.input}
           label='Name'
           maxLength='200'
           placeholder='Please enter a name for the keypair'
