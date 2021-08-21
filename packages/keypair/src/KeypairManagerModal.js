@@ -252,8 +252,8 @@ export default class KeypairManagerModal extends PureComponent {
           tableSm
           TableHead={(
             <tr>
-              <th style={{ width: '20%' }}>{head[0]}</th>
-              <th style={{ width: '60%' }}>{head[1]}</th>
+              <th style={{ width: '25%' }}>{head[0]}</th>
+              <th style={{ width: '50%' }}>{head[1]}</th>
               <th></th>
             </tr>
           )}
