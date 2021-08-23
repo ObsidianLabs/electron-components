@@ -17,26 +17,38 @@ export default class ProjectList extends PureComponent {
   }
 
   renderProjectRow = (project, index) => {
-    const { remote, author = 'local', id, name, path } = project
-    const url = `/${author}/${id}`
     return (
       <tr key={`project-row-${index}`}>
-        <td className='d-flex flex-row justify-content-between hover-flex'>
-          <div className='flex-colume'>
-            <div className='mb-1 flex-row-center'>
-              <Link to={url} className='text-white'>
-                <h5 className='mb-0'>{name}</h5>
-              </Link>
-            </div>
-            <div className='mt-2 hover-off'>
-              <ProjectPath projectRoot={path} remote={remote} />
-            </div>
-          </div>
-          <div className='d-flex flex-row align-items-start hover-show'>
-            {this.renderRightButton(project)}
-          </div>
-        </td>
+        {this.renderProjectListItem(project)}
       </tr>
+    )
+  }
+
+  renderProjectListItem = (project) => {
+    const { ListItem } = this.props
+    if (ListItem) {
+      return <ListItem project={project} />
+    }
+
+    const { remote, author = 'local', id, name, path } = project
+    const url = `/${author}/${id}`
+
+    return (
+      <td className='d-flex flex-row justify-content-between hover-flex'>
+        <div className='flex-colume'>
+          <div className='mb-1 flex-row-center'>
+            <Link to={url} className='text-white'>
+              <h5 className='mb-0'>{name}</h5>
+            </Link>
+          </div>
+          <div className='mt-2 hover-off'>
+            <ProjectPath projectRoot={path} remote={remote} />
+          </div>
+        </div>
+        <div className='d-flex flex-row align-items-start hover-show'>
+          {this.renderRightButton(project)}
+        </div>
+      </td>
     )
   }
 

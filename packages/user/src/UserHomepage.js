@@ -59,15 +59,13 @@ class UserHomepage extends PureComponent {
     }
 
     const res = await projectChannel.invoke('get', username)
-    const projectFormatter = this.projectFormatter ? this.projectFormatter.bind(this, username) : p => ({
+    const projects = res.map(p => ({
       remote: true,
       id: p.name,
       name: p.name,
       author: username,
       path: `${username}/${p.name}`,
-    })
-
-    const projects = res.map(projectFormatter)
+    }))
 
     this.setState({ loading: false, user, projects })
     if (this.isSelf()) {
@@ -107,12 +105,6 @@ class UserHomepage extends PureComponent {
         <i className='fas fa-folder-plus mr-1' />Open
       </Button>
     )
-  }
-
-
-  renderProjectList = (projects, loading) => {
-    const List = this.props.ProjectList || ProjectList
-    return <List projects={projects} loading={loading} />
   }
 
   renderProjectListOptions = () => {
@@ -157,7 +149,7 @@ class UserHomepage extends PureComponent {
   }
 
   render () {
-    const { profile } = this.props
+    const { profile, ProjectListItem } = this.props
     const { loading, notfound, user, remote } = this.state
 
     let projects
@@ -186,7 +178,11 @@ class UserHomepage extends PureComponent {
             {this.renderProjectListOptions()}
             {this.renderActionButtons()}
           </div>
-          {this.renderProjectList(projects, loading)}
+          <ProjectList
+            projects={projects}
+            loading={loading}
+            ListItem={ProjectListItem}
+          />
         </div>
       </div>
     )
