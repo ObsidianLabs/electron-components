@@ -142,7 +142,6 @@ export default class CodeEditorCollection extends PureComponent {
         modelSessionManager.selectAll()
         return
       case 'close-current-tab':
-        console.log('close-current-tab')
         return
       case 'project-settings':
         return
