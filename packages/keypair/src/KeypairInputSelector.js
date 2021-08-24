@@ -32,9 +32,6 @@ export default class KeypairInputSelector extends PureComponent {
     this.allKeypairs = allKeypairs
     const keypairs = this.props.filter ? allKeypairs.filter(this.props.filter) : allKeypairs
     if (!this.props.editable) {
-      if (!this.state.keypairs.length && keypairs.length) {
-        this.props.onChange(keypairs[0].address)
-      }
       if (this.state.keypairs.length && !keypairs.length) {
         this.props.onChange()
       }
