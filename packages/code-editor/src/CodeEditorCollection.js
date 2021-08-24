@@ -33,7 +33,7 @@ export default class CodeEditorCollection extends PureComponent {
     this.tabs.current.currentTab = tab
   }
 
-  onSelectTab = tab => {
+  onSelectTab = (tab = { path: '' }) => {
     this.setState({ selectedTab: tab })
     this.props.onSelectTab(tab)
   }

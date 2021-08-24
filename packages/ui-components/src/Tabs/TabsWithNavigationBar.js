@@ -7,6 +7,7 @@ export default class TabsWithNavigationBar extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
+      noTab: false,
       tab: this.props.initialSelected,
       starredValues: new Set(this.props.starred),
     }
@@ -28,7 +29,7 @@ export default class TabsWithNavigationBar extends PureComponent {
     }
   }
 
-  onSelectTab = tab => {
+  onSelectTab = (tab = {}) => {
     this.setState({ tab }, () => {
       if (this.props.onChangeTab) {
         this.props.onChangeTab(tab.value || '')
@@ -76,11 +77,12 @@ export default class TabsWithNavigationBar extends PureComponent {
 
   onTabsUpdated = tabs => {
     const tabValues = tabs.map(({ value }) => value)
+    this.setState({ noTab: !tabs.length })
     this.props.onTabsUpdated(tabValues)
   }
 
   render () {
-    const tab = this.state.tab
+    const { noTab, tab } = this.state
 
     const {
       initialTabs,
@@ -104,7 +106,8 @@ export default class TabsWithNavigationBar extends PureComponent {
           <NavigationBar
             ref={this.navbar}
             tab={tab}
-            starred={this.state.starredValues.has(tab.value)}
+            disabled={noTab}
+            starred={this.state.starredValues.has(tab?.value)}
             onEnter={this.props.onValue}
             onRefresh={onRefresh}
             updateTab={this.updateTab}

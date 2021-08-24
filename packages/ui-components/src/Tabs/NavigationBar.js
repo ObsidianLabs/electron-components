@@ -23,7 +23,7 @@ export default class NavigationBar extends PureComponent {
     prevProps.tab.selection = this.selection
 
     const { value, temp } = this.props.tab
-    this.setState({ value: temp || value })
+    this.setState({ value: temp || value || '' })
     setTimeout(this.fixFocus, 10)
   }
 
@@ -144,7 +144,7 @@ export default class NavigationBar extends PureComponent {
   }
 
   render () {
-    const { size = 'md', maxLength, children } = this.props
+    const { size = 'md', maxLength, disabled, children } = this.props
 
     return (
       <div className='d-flex align-items-center border-bottom-1 '>
@@ -167,6 +167,7 @@ export default class NavigationBar extends PureComponent {
             className='navbar-input btn-sm code'
             maxLength={maxLength}
             value={this.state.value}
+            disabled={disabled}
             onChange={this.onChange}
             onKeyPress={this.onKeyPress}
             onMouseDown={this.onMouseDown}

@@ -57,6 +57,11 @@ export default class Tabs extends PureComponent {
 
 
   set currentTab (tab) {
+    if (!tab) {
+      this.props.onSelectTab()
+      return
+    }
+
     const selected = this.tabObj(tab)
     if (this.tabKey() === selected.key) {
       return
@@ -164,7 +169,11 @@ export default class Tabs extends PureComponent {
     newTabs.splice(index, 1)
 
     if (closingTab.key === this.tabKey()) {
-      this.currentTab = newTabs[index ? index - 1 : 0]
+      if (newTabs.length) {
+        this.currentTab = newTabs[index ? index - 1 : 0]
+      } else {
+        this.currentTab = null
+      }
     }
     this.setState({ tabs: newTabs }, this.onTabsUpdated)
     closeTabHandler && closeTabHandler(closingTab)
@@ -185,7 +194,7 @@ export default class Tabs extends PureComponent {
     } else {
       content = (
         <Screen>
-          <h4 className='display-4'>No Open Tab</h4>
+          <h4 className='display-4'>No Opened Tab</h4>
           <p></p>
         </Screen>
       )

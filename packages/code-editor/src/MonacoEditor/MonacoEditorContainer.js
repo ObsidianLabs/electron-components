@@ -47,8 +47,11 @@ export default class MonacoEditorContainer extends PureComponent {
 
   async loadFile ({ path, remote, mode, readonly = false }) {
     this.setState({ loading: true })
-    const modelSession = await this.modelSessionFromFile({ path, remote, mode, readonly })
-    this.setState({ initialized: true, loading: false, modelSession })
+    try {
+      const modelSession = await this.modelSessionFromFile({ path, remote, mode, readonly })
+      this.setState({ initialized: true, loading: false, modelSession })
+    } catch {}
+    this.setState({ loading: false })
   }
 
   async modelSessionFromFile ({ path, remote, mode, readonly }) {
