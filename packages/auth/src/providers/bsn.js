@@ -19,7 +19,7 @@ class BsnProvider extends BaseProvider {
   }
 
   get redirectUri () {
-    return process.env.REACT_APP_OAUTH_BSN_REDIRECT_URI
+    return `${process.env.REACT_APP_OAUTH_BSN_REDIRECT_URI}?provider=bsn`
   }
 
   get loginUrl () {
