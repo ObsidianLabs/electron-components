@@ -77,6 +77,10 @@ class BaseProvider {
   async logout () {
     // Clear token
   }
+
+  handleError ({ status, modal }) {
+    // Handle Error
+  }
 }
 
 export default BaseProvider

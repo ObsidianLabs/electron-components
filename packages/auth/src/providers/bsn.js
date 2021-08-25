@@ -123,6 +123,16 @@ class BsnProvider extends BaseProvider {
       return
     }
   }
+
+  handleError({ status, modal }) {
+    if (!modal) {
+      return
+    }
+
+    if (status === 403) {
+      modal.openModal()
+    }
+  }
 }
 
 export default BsnProvider

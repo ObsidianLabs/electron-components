@@ -29,9 +29,9 @@ export default {
   },
 
 
-  async login (history, provider = 'github') {
+  async login (history, provider) {
     this.history = history
-    this.provider = providers[provider]
+    this.provider = providers[provider] || this.provider
     if (!this.provider) {
       this.redirect()
       return
@@ -141,5 +141,12 @@ export default {
     if (this.history) {
       this.history.replace(path)
     }
+  },
+
+  handleError({ status }) {
+    if (!this.provider) {
+      return
+    }
+    this.provider.handleError({ status, modal: this.modal })
   }
 }
