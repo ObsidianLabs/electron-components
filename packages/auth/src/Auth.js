@@ -50,10 +50,11 @@ export default {
   async callback ({ location, history }) {
     const query = new URLSearchParams(location.search);
     const code = query.get('code')
+    const state = query.get('state')
     const provider = query.get('provider')
 
     this.history = history
-    this.provider = providers[provider]
+    this.provider = providers[provider] || this.provider
     if (!this.provider) {
       this.redirect()
       return
@@ -61,7 +62,8 @@ export default {
 
     await this.grant(code)
 
-    this.redirect()
+    const { path } = this.provider.handleState(state, this.profile)
+    this.redirect(path)
   },
 
   async logout (history) {

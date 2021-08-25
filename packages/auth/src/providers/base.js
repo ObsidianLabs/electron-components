@@ -81,6 +81,12 @@ class BaseProvider {
   handleError ({ status, modal }) {
     // Handle Error
   }
+
+  handleState(state, profile) {
+    return {
+      path: '/'
+    }
+  }
 }
 
 export default BaseProvider

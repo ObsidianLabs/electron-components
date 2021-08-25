@@ -133,6 +133,27 @@ class BsnProvider extends BaseProvider {
       modal.openModal()
     }
   }
+
+  handleState(state, profile) {
+    let path = '/'
+
+    try {
+      const {
+        urlCode,
+        projectId,
+        orgCode,
+        appTypeId,
+        appTypeFrameName,
+      } = JSON.parse(atob(decodeURIComponent(state)))
+      path = `${profile.username}?networkId=${appTypeId}&projectId=${projectId}`
+    } catch (error) {
+      path = '/'
+    }
+
+    return {
+      path
+    }
+  }
 }
 
 export default BsnProvider
