@@ -1,8 +1,9 @@
 import GithubProvider from './github'
+import BsnProvider from './bsn'
 import tencent from './tencent'
-import bsn from './bsn'
 
 export default {
   github: new GithubProvider(),
+  bsn: new BsnProvider(),
   tencent
 }
