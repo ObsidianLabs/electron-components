@@ -200,7 +200,7 @@ export default class NewProjectModal extends PureComponent {
           onChange={(name, invalid) => this.setState({ name, invalid })}
           {...projectNameProps}
         />
-        {this.renderTemplate()}
+        {this.renderTemplate(true)}
         {this.renderOtherOptions()}
         <div style={{ display: showTerminal ? 'block' : 'none'}}>
           <Terminal
