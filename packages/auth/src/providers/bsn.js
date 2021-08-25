@@ -81,7 +81,8 @@ class BsnProvider extends BaseProvider {
         body = JSON.stringify({
           code,
           provider: this.name,
-          project: this.project
+          project: this.project,
+          redirectUri: this.redirectUri,
         })
       } else {
         url = `${this.serverUrl}/api/v1/auth/refresh-token`
