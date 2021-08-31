@@ -85,6 +85,7 @@ export default class DockerImageInputSelector extends PureComponent {
 
     return <>
       <DropdownInput
+        size={this.props.size}
         label={this.props.label || this.imageName}
         options={options}
         disableAutoSelection={this.props.disableAutoSelection}
