@@ -47,11 +47,11 @@ export default {
     await this.provider.done()
   },
 
-  async callback ({ location, history }) {
+  async callback ({ location, history, provider: providerName }) {
     const query = new URLSearchParams(location.search);
     const code = query.get('code')
     const state = query.get('state')
-    const provider = query.get('provider')
+    const provider = query.get('provider') || providerName
 
     this.history = history
     this.provider = providers[provider] || this.provider
