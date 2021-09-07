@@ -1,5 +1,8 @@
 let type, os, appleSilicon
+console.group('debug')
+console.trace()
 if (window.require) {
+  console.log('desktop')
   type = 'desktop'
   const { OS_IS_WINDOWS, OS_IS_MAC, OS_IS_LINUX } = process.env
   const cpus = window.require('electron').remote.require('os').cpus()
@@ -13,6 +16,7 @@ if (window.require) {
     os = 'linux'
   }
 } else {
+  console.log('web')
   type = 'web'
   const appVersion = navigator.appVersion
   if (appVersion.indexOf('Win') > -1) {
@@ -23,6 +27,7 @@ if (window.require) {
     os = 'linux'
   }
 }
+console.groupEnd()
 
 export default {
   get type () { return type },
