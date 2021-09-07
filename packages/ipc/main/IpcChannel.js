@@ -88,12 +88,19 @@ class IpcChannel {
     return await this.cp.exec(command.trim(), config)
   }
 
-  async fetch (url, params) {
-    if (params) {
-      url = url + `?` + qs.stringify(params)
+  async fetch (url, params, method = 'GET') {
+    let body
+    if (method === 'GET') {
+      if (params) {
+        url = url + `?` + qs.stringify(params)
+      }
+    } else {
+      body = JSON.stringify(params)
     }
+    
     return await new Promise((resolve, reject) => {
-      const request = net.request(url)
+      const request = net.request({ url, method })
+      request.setHeader('Content-Type', 'application/json;charset=UTF-8')
       request.on('error', err => {
         if (err.message === 'net::ERR_INTERNET_DISCONNECTED') {
           reject(new Error('Internet Disconnected'))
@@ -107,6 +114,9 @@ class IpcChannel {
         })
         response.on('end', () => resolve(body))
       })
+      if (body) {
+        request.write(body)
+      }
       request.end()
     })
   }
