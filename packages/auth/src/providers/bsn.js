@@ -1,6 +1,8 @@
 import AWS from 'aws-sdk'
 import fileOps from '@obsidians/file-ops'
-import { BuildService } from '@obsidians/ipc'
+import platform from '@obsidians/platform'
+import decode from 'jwt-decode'
+import { BuildService, IpcChannel } from '@obsidians/ipc'
 
 import BaseProvider from './base'
 
@@ -8,6 +10,14 @@ class BsnProvider extends BaseProvider {
   constructor () {
     super('bsn')
     AWS.config.update({ region: this.awsConfig.region })
+  }
+
+  get channel () {
+    if (!this._channel) {
+      const name = platform.isDesktop ? 'bsn' : 'auth'
+      this._channel = new IpcChannel(name)
+    }
+    return this._channel
   }
 
   get providerUrl () {
@@ -38,23 +48,53 @@ class BsnProvider extends BaseProvider {
     }
   }
 
+  async request () {
+    if (platform.isDesktop) {
+      const code = await this.channel.invoke('request', {
+        loginUrl: this.loginUrl,
+        filterUrl: process.env.REACT_APP_OAUTH_BSN_REDIRECT_URI
+      })
+      return code
+    } else {
+      window.location.href = this.loginUrl
+    }
+  }
+
   async grant (code) {
-    const tokens = await this.fetchTokens(code)
-    if (!tokens) {
-      return
-    }
-    const { token, awsToken } = tokens
+    if (platform.isDesktop) {
+      const { token, profile } = await this.channel.invoke('grant', {
+        code,
+        redirectUrl: this.redirectUri
+      })
+      const credentials = { token }
 
-    const awsCredential = await this.fetchAwsCredential(awsToken)
-    if (!awsCredential) {
-      return
-    }
+      return { credentials, profile }
+    } else {
+      const tokens = await this.fetchTokens(code)
+      if (!tokens) {
+        return
+      }
+      const { token, awsToken } = tokens
 
-    const credentials = { token, awsCredential }
-    return credentials
+      const awsCredential = await this.fetchAwsCredential(awsToken)
+      if (!awsCredential) {
+        return
+      }
+
+      const credentials = { token, awsCredential }
+      const profile = decode(token)
+
+      return { credentials, profile }
+    }
   }
 
   async logout () {
+    if (platform.isDesktop) {
+      await this.channel.invoke('logout')
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      location.reload()
+      return
+    }
     try {
       await fetch(`${this.serverUrl}/api/v1/auth/logout`, {
         method: 'POST',
@@ -63,10 +103,31 @@ class BsnProvider extends BaseProvider {
     } catch (error) {}
   }
 
+  async done () {
+    if (platform.isDesktop) {
+      await this.channel.invoke('close')
+      location.reload()
+    }
+  }
+
   async update (credentials) {
-    if (credentials && credentials.awsCredential) {
-      fileOps.web.fs.updateCredential(credentials.awsCredential)
-      BuildService.updateCredential(credentials.awsCredential)
+    if (platform.isDesktop) {
+      if (credentials && credentials.token) {
+        await this.channel.invoke('updateToken', {
+          token: credentials.token
+        })
+      }
+    } else {
+      if (credentials && credentials.awsCredential) {
+        fileOps.web.fs.updateCredential(credentials.awsCredential)
+        BuildService.updateCredential(credentials.awsCredential)
+      }
+    }
+  }
+
+  async restore (profile) {
+    if (platform.isDesktop) {
+      await this.channel.invoke('updateLogin', { isLogin: !!(profile && profile.username) })
     }
   }
 
@@ -125,6 +186,7 @@ class BsnProvider extends BaseProvider {
   }
 
   handleError({ status, modal }) {
+    console.log(status, modal)
     if (!modal) {
       return
     }

@@ -1,5 +1,4 @@
 import redux from '@obsidians/redux'
-import decode from 'jwt-decode'
 import providers from './providers'
 
 export default {
@@ -72,7 +71,9 @@ export default {
     this.refreshPromise = null
     redux.dispatch('CLEAR_USER_PROFILE')
 
-    await this.provider.logout()
+    if (this.provider) {
+      await this.provider.logout()
+    }
 
     this.provider = null
 
@@ -93,13 +94,13 @@ export default {
     if (!this.provider) {
       return
     }
-    const credentials = await this.provider.grant(code)
+    const { credentials, profile } = await this.provider.grant(code)
     if (!credentials) {
       return
     }
 
     this.credentials = credentials
-    this.profile = decode(credentials.token)
+    this.profile = profile
 
     this.update()
   },
@@ -129,6 +130,9 @@ export default {
         this.provider = null
         console.warn('Restore failed', error)
       }
+    }
+    if (this.provider) {
+      this.provider.restore(this.profile)
     }
   },
 

@@ -49,10 +49,14 @@ class BaseProvider {
   }
 
   async grant (code) {
-    return
+    return { credentials: {}, profile: '' }
   }
 
   async update (credentials) {
+    return
+  }
+
+  async restore (profile) {
     return
   }
 

@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk'
 import fileOps from '@obsidians/file-ops'
+import decode from 'jwt-decode'
 import { BuildService } from '@obsidians/ipc'
 
 import BaseProvider from './base'
@@ -51,7 +52,9 @@ class GithubProvider extends BaseProvider {
     }
 
     const credentials = { token, awsCredential }
-    return credentials
+    const profile = decode(token)
+
+    return { credentials, profile }
   }
 
   async logout () {
