@@ -58,19 +58,25 @@ class UserHomepage extends PureComponent {
       }
     }
 
-    const res = await projectChannel.invoke('get', username)
-    const projects = res.map(p => ({
-      remote: true,
-      id: p.name,
-      name: p.name,
-      author: username,
-      path: `${username}/${p.name}`,
-    }))
+    let projects
+    try {
+      const res = await projectChannel.invoke('get', username)
+      projects = res.map(p => ({
+        remote: true,
+        id: p.name,
+        name: p.name,
+        author: username,
+        path: `${username}/${p.name}`,
+      }))
+
+      if (this.isSelf()) {
+        redux.dispatch('UPDATE_REMOTE_PROJECT_LIST', projects)
+      }
+    } catch (error) {
+      console.warn(error)
+    }
 
     this.setState({ loading: false, user, projects })
-    if (this.isSelf()) {
-      redux.dispatch('UPDATE_REMOTE_PROJECT_LIST', projects)
-    }
   }
 
   isSelf = () => {
