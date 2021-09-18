@@ -88,8 +88,14 @@ export default class AwsS3Fs {
         Delimiter: '/'
       }
       const listResult = await this.s3.listObjectsV2(listParams).promise()
-      const promises = listResult.Contents.map(async ({ Key }) => this.rename(Key, Key.replace(oldPath, newPath)))
-      return Promise.all(promises)
+      const promises = listResult.Contents.map(async ({ Key }) => {
+        if (Key === oldPath) {
+          return
+        }
+        return this.rename(Key, Key.replace(oldPath, newPath))
+      })
+      await Promise.all(promises)
+      await this.deleteFolder(oldPath)
     }
   }
 

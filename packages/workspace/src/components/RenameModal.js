@@ -30,6 +30,7 @@ export default class RenameModal extends PureComponent {
 
   onRename = async () => {
     const { oldPath, name, type } = this.state
+    this.setState({ loading: true })
     try {
       await this.props.projectManager.rename(oldPath, name, { type })
     } catch (e) {
