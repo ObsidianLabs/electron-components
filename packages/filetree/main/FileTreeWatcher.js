@@ -29,6 +29,7 @@ class FileTreeWatcher {
 
   watchDirectory (rootDir) {
     const watcher = chokidar.watch(rootDir, {
+      ignored: p => p.includes('node_modules'),
       ignoreInitial: true
     })
     watcher
