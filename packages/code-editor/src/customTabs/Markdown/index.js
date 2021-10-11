@@ -148,7 +148,7 @@ export default class Markdown extends Component {
             <ReactMarkdown
               className='user-select'
               source={value}
-              escapeHtml={false}
+              escapeHtml={true}
               renderers={{
                 link: props => {
                   if (props.href.startsWith('http://') || props.href.startsWith('https://')) {
