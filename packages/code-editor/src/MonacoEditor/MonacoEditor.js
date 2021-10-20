@@ -52,7 +52,8 @@ export default class MonacoEditor extends Component {
       fontFamily: 'Hack',
       fontSize: '13px',
       scrollBeyondLastLine: false,
-      glyphMargin: true
+      glyphMargin: true,
+      links: false,
     })
     modelSessionManager.editor = monacoEditor
     monacoEditor.onDidChangeModelContent(() => {
