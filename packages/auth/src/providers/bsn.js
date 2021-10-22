@@ -72,13 +72,13 @@ class BsnProvider extends BaseProvider {
     } else {
       const tokens = await this.fetchTokens(code)
       if (!tokens) {
-        return
+        return {}
       }
       const { token, awsToken } = tokens
 
       const awsCredential = await this.fetchAwsCredential(awsToken)
       if (!awsCredential) {
-        return
+        return {}
       }
 
       const credentials = { token, awsCredential }
@@ -201,13 +201,14 @@ class BsnProvider extends BaseProvider {
 
     try {
       const {
-        urlCode,
-        projectId,
-        orgCode,
-        appTypeId,
-        appTypeFrameName,
+        urlCode = '',
+        appTypeId = '',
+        projectId = '',
+        orgCode = '',
+        appTypeFrameName = '',
+        chainCodeId = '',
       } = JSON.parse(atob(decodeURIComponent(state)))
-      path = `${profile.username}?networkId=${appTypeId}&projectId=${projectId}`
+      path = `${profile.username}?urlCode=${urlCode}&networkId=${appTypeId}&projectId=${projectId}&organizationId=${orgCode}&networkName=${appTypeFrameName}&chaincodeId=${chainCodeId}`
     } catch (error) {
       path = '/'
     }

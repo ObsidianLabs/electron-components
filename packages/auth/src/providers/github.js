@@ -42,13 +42,13 @@ class GithubProvider extends BaseProvider {
   async grant (code) {
     const tokens = await this.fetchTokens(code)
     if (!tokens) {
-      return
+      return {}
     }
     const { token, awsToken } = tokens
 
     const awsCredential = await this.fetchAwsCredential(awsToken)
     if (!awsCredential) {
-      return
+      return {}
     }
 
     const credentials = { token, awsCredential }
