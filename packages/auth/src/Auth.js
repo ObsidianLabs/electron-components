@@ -51,7 +51,7 @@ export default {
     const code = query.get('code')
     const state = query.get('state')
     const envProviders = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : []
-    const provider = query.get('provider') || providerName|| (envProviders.length && envProviders[0])
+    const provider = query.get('provider') || providerName || (envProviders.length && envProviders[0])
 
     this.history = history
     this.provider = providers[provider] || this.provider
