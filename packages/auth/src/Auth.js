@@ -53,7 +53,8 @@ export default {
     const provider = query.get('provider') || providerName
 
     this.history = history
-    this.provider = providers[provider] || this.provider
+    const envProviders = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : []
+    this.provider = providers[provider] || this.provider || (envProviders.length && envProviders[0])
     if (!this.provider) {
       this.redirect()
       return
