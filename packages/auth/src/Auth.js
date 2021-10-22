@@ -50,11 +50,11 @@ export default {
     const query = new URLSearchParams(location.search);
     const code = query.get('code')
     const state = query.get('state')
-    const provider = query.get('provider') || providerName
+    const envProviders = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : []
+    const provider = query.get('provider') || providerName|| (envProviders.length && envProviders[0])
 
     this.history = history
-    const envProviders = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : []
-    this.provider = providers[provider] || this.provider || (envProviders.length && envProviders[0])
+    this.provider = providers[provider] || this.provider
     if (!this.provider) {
       this.redirect()
       return
