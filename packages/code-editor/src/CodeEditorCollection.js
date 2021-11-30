@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-
+import platform from '@obsidians/platform'
 import { Tabs } from '@obsidians/ui-components'
 import fileOps from '@obsidians/file-ops'
 
@@ -30,21 +30,21 @@ export default class CodeEditorCollection extends PureComponent {
       },
       {
         text: 'Close Others',
-        onClick: () => {}
+        onClick: this.closeOtherFiles
       },
       {
         text: 'Close All',
         onClick: this.closeAll
       },
+      null,
       {
         text: 'Copy Path',
-        onClick: () => {}
+        onClick: this.copyPath
       },
-      ,
-      {
+      ...platform.isDesktop ? [{
         text: 'Reveal In Finder',
-        onClick: () => {}
-      }
+        onClick: this.showInFinder
+      }] : []
     ]
   }
 
@@ -65,6 +65,14 @@ export default class CodeEditorCollection extends PureComponent {
     this.tabs.current.updateTab({ unsaved })
   }
 
+  showInFinder = tab => {
+    fileOps.current.showItemInFolder(tab.path)
+  }
+
+  // TODO
+  copyPath = tab => {
+  }
+
   allUnsavedFiles = () => this.tabs.current.allTabs
     .filter(({ path, unsaved }) => path && unsaved)
     .map(({ path }) => path);
@@ -82,6 +90,16 @@ export default class CodeEditorCollection extends PureComponent {
   closeCurrentFile = () => {
     const { onCloseTab, currentTab } = this.tabs.current
     onCloseTab(currentTab)
+  }
+
+  // MARK: may can define a batch delete in the Tabs component
+  closeOtherFiles = () => {
+    const { onCloseTab, currentTab, allTabs } = this.tabs.current;
+    const shouldCloseTabs = allTabs.filter(tab => tab.key !== currentTab.key);
+
+    shouldCloseTabs.forEach(tab => {
+      onCloseTab(tab)
+    })
   }
 
   saveFile = async filePath => await modelSessionManager.saveFile(filePath)
