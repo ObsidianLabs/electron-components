@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-
+import { ContextMenuTrigger } from 'react-contextmenu'
+import TabContextMenu from './TabContextMenu'
 import { UncontrolledTooltip } from 'reactstrap'
 
 class TabHeaderItem extends PureComponent {
@@ -12,10 +13,11 @@ class TabHeaderItem extends PureComponent {
     active: PropTypes.bool.isRequired,
     onSelectTab: PropTypes.func.isRequired,
     onCloseTab: PropTypes.func,
+    contextMenu: PropTypes.array,
   }
 
-  renderCloseBtn () {
-    const { tab, unsaved, saving, onCloseTab } = this.props
+  renderCloseBtn() {
+    const { tab, unsaved, saving, onCloseTab, contextMenu } = this.props
     if (!onCloseTab) {
       return null
     }
@@ -51,25 +53,47 @@ class TabHeaderItem extends PureComponent {
     )
   }
 
-  render () {
-    const { size, tab, tabText, active, onSelectTab, onCloseTab } = this.props
+  render() {
+    const { size, tab, tabText, active, onSelectTab, onCloseTab, contextMenu } = this.props
 
     return (
       <li className={classnames('nav-item', { active })}>
+
         <div
           className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
-          onMouseDown={e => e.button === 0 && onSelectTab(tab)}
-          onMouseUp={e => e.button === 1 && onCloseTab && onCloseTab(tab)}
         >
           <div className='nav-item-content d-flex flex-row'>
-            <div className='nav-item-text'>
-              <div key={tab.key} className='d-flex flex-row align-items-center'>
-                {tabText}
+            <ContextMenuTrigger
+              id={`${tab.key}/tab-item`}
+              ref={ref => { this.clickableRef = ref }}
+              attributes={{
+                onClick: e => e.preventDefault()
+              }}
+            >
+              <div className='nav-item-text' onMouseDown={e => {
+                console.log(e)
+                e.button === 0 && onSelectTab(tab)
+
+              }}
+                onMouseUp={e => {
+                  console.log(e)
+                  e.button === 1 && onCloseTab && onCloseTab(tab)
+                }}>
+                <div key={tab.key} className='d-flex flex-row align-items-center'>
+                  {tabText}
+                </div>
               </div>
-            </div>
+              <TabContextMenu
+                node={tab}
+                contextMenu={contextMenu}
+              />
+            </ContextMenuTrigger>
+
           </div>
           {this.renderCloseBtn()}
+
         </div>
+
       </li>
     )
   }
@@ -86,10 +110,11 @@ export default class TabHeader extends PureComponent {
     onSelectTab: PropTypes.func.isRequired,
     onCloseTab: PropTypes.func,
     onNewTab: PropTypes.func,
+    contextMenu: PropTypes.array,
   }
 
-  render () {
-    const { className, size, tabs, selected, getTabText, onSelectTab, onCloseTab, ToolButtons = [] } = this.props
+  render() {
+    const { className, size, tabs, selected, getTabText, onSelectTab, onCloseTab, ToolButtons = [], contextMenu } = this.props
 
     return (
       <ul className={classnames('nav nav-tabs', className)}>
@@ -107,6 +132,7 @@ export default class TabHeader extends PureComponent {
                 active={selected.key === tab.key}
                 onSelectTab={onSelectTab}
                 onCloseTab={onCloseTab}
+                contextMenu={contextMenu}
               />
             )
           })
@@ -123,7 +149,7 @@ export default class TabHeader extends PureComponent {
             </div>
           </li>
         }
-        <div className='flex-grow-1'/>
+        <div className='flex-grow-1' />
         {
           ToolButtons.map((btn, index) => {
             const id = `tab-btn-${index}`

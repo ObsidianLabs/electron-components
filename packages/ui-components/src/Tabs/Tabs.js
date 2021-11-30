@@ -13,6 +13,7 @@ export default class Tabs extends PureComponent {
     size: PropTypes.string,
     headerClassName: PropTypes.string,
     initialTabs: PropTypes.array,
+    tabContextMenu: PropTypes.array,
     initialSelected: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.object
@@ -213,6 +214,7 @@ export default class Tabs extends PureComponent {
           onNewTab={this.props.createNewTab && this.onNewTab}
           onCloseTab={this.props.noCloseTab ? undefined : this.onCloseTab}
           ToolButtons={this.props.ToolButtons}
+          contextMenu={this.props.tabContextMenu}
         />
         <div className='d-flex flex-1 flex-column overflow-hidden p-relative'>
           {Bar}

@@ -23,6 +23,29 @@ export default class CodeEditorCollection extends PureComponent {
     modelSessionManager.editorContainer = this
     this.tabs = React.createRef()
     this.editorContainer = React.createRef()
+    this.tabContextMenu = [
+      {
+        text: 'Close',
+        onClick: this.closeCurrentFile
+      },
+      {
+        text: 'Close Others',
+        onClick: () => {}
+      },
+      {
+        text: 'Close All',
+        onClick: this.closeAll
+      },
+      {
+        text: 'Copy Path',
+        onClick: () => {}
+      },
+      ,
+      {
+        text: 'Reveal In Finder',
+        onClick: () => {}
+      }
+    ]
   }
 
   refresh () {
@@ -166,13 +189,15 @@ export default class CodeEditorCollection extends PureComponent {
       <div className='d-flex w-100 h-100 overflow-hidden bg2'>
         <Tabs
           ref={this.tabs}
-          size='sm'
+          size='xl'
+          asd='1'
           headerClassName='nav-tabs-dark-active'
           initialSelected={initialTab}
           onSelectTab={this.onSelectTab}
           tryCloseTab={this.tryCloseTab}
           createNewTab={() => fileOps.current.openNewFile(projectRoot)}
           getTabText={tab => modelSessionManager.tabTitle(tab)}
+          tabContextMenu={this.tabContextMenu}
         >
           <MonacoEditorContainer
             ref={this.editorContainer}
