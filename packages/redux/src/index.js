@@ -1,14 +1,20 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-
+import Immutable from 'immutable';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import immutableTransform from 'redux-persist-transform-immutable'
 import configureRedux from 'redux-config'
-
+import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import middlewares from './middlewares'
 
 export { Provider } from 'react-redux'
 export { connect } from './connect'
+
+const composeEnhancers = composeWithDevTools({
+  serialize: {
+    immutable: Immutable,
+  }
+});
 
 class Redux {
   constructor () {
@@ -31,7 +37,7 @@ class Redux {
         },
         combineReducers(reducers)
       ),
-      applyMiddleware(...middlewares)
+      composeEnhancers(applyMiddleware(...middlewares))
     )
 
     return new Promise(resolve => {
