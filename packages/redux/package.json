@@ -28,6 +28,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.13.8",
     "@babel/preset-env": "^7.7.5",
     "babel-eslint": "^10.1.0",
-    "cross-env": "^6.0.3"
+    "cross-env": "^6.0.3",
+    "redux-devtools-extension": "^2.13.9"
   }
 }
