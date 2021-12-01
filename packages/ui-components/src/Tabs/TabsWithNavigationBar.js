@@ -88,6 +88,7 @@ export default class TabsWithNavigationBar extends PureComponent {
       initialTabs,
       onRefresh,
       NavbarButtons = null,
+      tabContextMenu = [],
       children,
     } = this.props
 
@@ -97,6 +98,7 @@ export default class TabsWithNavigationBar extends PureComponent {
         size='sm'
         initialSelected={tab}
         initialTabs={initialTabs}
+        tabContextMenu={tabContextMenu}
         getTabText={this.getTabText}
         onSelectTab={this.onSelectTab}
         createNewTab={this.createNewTab}

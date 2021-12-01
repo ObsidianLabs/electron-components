@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-
+import platform, { ClipBoardService } from '@obsidians/platform'
 import { Tabs } from '@obsidians/ui-components'
 import fileOps from '@obsidians/file-ops'
 
@@ -23,6 +23,29 @@ export default class CodeEditorCollection extends PureComponent {
     modelSessionManager.editorContainer = this
     this.tabs = React.createRef()
     this.editorContainer = React.createRef()
+    this.tabContextMenu = [
+      {
+        text: 'Close',
+        onClick: this.closeCurrentFile
+      },
+      {
+        text: 'Close Others',
+        onClick: this.closeOtherFiles
+      },
+      {
+        text: 'Close All',
+        onClick: this.closeAll
+      },
+      null,
+      {
+        text: 'Copy Path',
+        onClick: this.copyPath
+      },
+      ...platform.isDesktop ? [{
+        text: 'Open Containing Folder',
+        onClick: this.showInFinder
+      }] : []
+    ]
   }
 
   refresh () {
@@ -42,6 +65,15 @@ export default class CodeEditorCollection extends PureComponent {
     this.tabs.current.updateTab({ unsaved })
   }
 
+  showInFinder = tab => {
+    fileOps.current.showItemInFolder(tab.path)
+  }
+
+  copyPath = ({pathInProject}) => {
+    const clipboard = new ClipBoardService()
+    clipboard.writeText(pathInProject)
+  }
+
   allUnsavedFiles = () => this.tabs.current.allTabs
     .filter(({ path, unsaved }) => path && unsaved)
     .map(({ path }) => path);
@@ -59,6 +91,16 @@ export default class CodeEditorCollection extends PureComponent {
   closeCurrentFile = () => {
     const { onCloseTab, currentTab } = this.tabs.current
     onCloseTab(currentTab)
+  }
+
+  // MARK: may can define a batch delete in the Tabs component
+  closeOtherFiles = () => {
+    const { onCloseTab, currentTab, allTabs } = this.tabs.current;
+    const shouldCloseTabs = allTabs.filter(tab => tab.key !== currentTab.key);
+
+    shouldCloseTabs.forEach(tab => {
+      onCloseTab(tab)
+    })
   }
 
   saveFile = async filePath => await modelSessionManager.saveFile(filePath)
@@ -166,13 +208,15 @@ export default class CodeEditorCollection extends PureComponent {
       <div className='d-flex w-100 h-100 overflow-hidden bg2'>
         <Tabs
           ref={this.tabs}
-          size='sm'
+          size='xl'
+          asd='1'
           headerClassName='nav-tabs-dark-active'
           initialSelected={initialTab}
           onSelectTab={this.onSelectTab}
           tryCloseTab={this.tryCloseTab}
           createNewTab={() => fileOps.current.openNewFile(projectRoot)}
           getTabText={tab => modelSessionManager.tabTitle(tab)}
+          tabContextMenu={this.tabContextMenu}
         >
           <MonacoEditorContainer
             ref={this.editorContainer}

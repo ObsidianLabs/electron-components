@@ -88,10 +88,10 @@ export default class Workspace extends Component {
     this.disposable()
   }
 
-  tabFromPath = (filePath, remote) => ({ path: filePath, key: filePath, remote })
+  tabFromPath = (filePath, remote, pathInProject) => ({ path: filePath, key: filePath, remote, pathInProject })
 
-  openFile = ({ path, remote }, setTreeActive) => {
-    this.codeEditor.current.openTab(this.tabFromPath(path, remote))
+  openFile = ({ path, remote, pathInProject }, setTreeActive) => {
+    this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject))
 
     if (path.startsWith('custom:')) {
       this.filetree.current.setNoActive()
@@ -207,7 +207,7 @@ export default class Workspace extends Component {
             key={this.context.projectRoot}
             theme={theme}
             editorConfig={editorConfig}
-            initialTab={this.tabFromPath(initial.path, initial.remote)}
+            initialTab={this.tabFromPath(initial.path, initial.remote, initial.pathInProject)}
             projectRoot={this.context.projectRoot}
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
@@ -223,7 +223,7 @@ export default class Workspace extends Component {
           key={this.context.projectRoot}
           theme={theme}
           editorConfig={editorConfig}
-          initialTab={this.tabFromPath(initial.path, initial.remote)}
+          initialTab={this.tabFromPath(initial.path, initial.remote, initial.pathInProject)}
           projectRoot={this.context.projectRoot}
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}

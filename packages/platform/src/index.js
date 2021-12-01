@@ -31,3 +31,5 @@ export default {
   get os() { return os },
   get isAppleSilicon () { return appleSilicon },
 }
+
+export { default as ClipBoardService} from "./clipboard"
