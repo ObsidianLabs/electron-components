@@ -35,13 +35,13 @@ export default class LocalProjectManager extends BaseProjectManager {
       projectSettings = await this.readProjectSettings()
     } catch (e) {
       console.warn(e)
-      return { initial: { path: this.settingsFilePath }, projectSettings: null }
+      return { initial: { path: this.settingsFilePath, pathInProject: this.settingsFilePath }, projectSettings: null }
     }
 
     if (await this.isMainValid()) {
-      return { initial: { path: this.mainFilePath }, projectSettings }
+      return { initial: { path: this.mainFilePath, pathInProject: this.mainFilePath }, projectSettings }
     }
-    return { initial: { path: this.settingsFilePath }, projectSettings }
+    return { initial: { path: this.settingsFilePath, pathInProject: this.settingsFilePath }, projectSettings }
   }
 
   pathForProjectFile (relativePath) {

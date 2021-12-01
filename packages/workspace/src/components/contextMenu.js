@@ -1,4 +1,4 @@
-import platform from '@obsidians/platform'
+import platform, { ClipBoardService } from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 const handlers = {}
@@ -9,6 +9,13 @@ const showInFinder = node => {
   } else {
     fileOps.current.showItemInFolder(node.path)
   }
+}
+
+const copyPath = ({ path, pathInProject }) => {
+  const filePath = pathInProject || path
+  const clipboard = new ClipBoardService()
+
+  clipboard.writeText(filePath)
 }
 
 const openInTerminal = node => {
@@ -34,6 +41,8 @@ if (platform.isDesktop) {
     { text: 'Open Containing Folder', onClick: showInFinder },
     { text: 'Open in Terminal', onClick: openInTerminal },
     null,
+    { text: 'Copy Path', onClick: copyPath },
+    null,
     { text: 'Rename', onClick: node => handlers.rename(node) },
     { text: 'Delete', onClick: node => handlers.deleteFile(node) },
   ]
@@ -43,6 +52,8 @@ if (platform.isDesktop) {
     { text: 'New Folder', onClick: node => handlers.newFolder(node) },
     // null,
     // { text: 'Download' },
+    null,
+    { text: 'Copy Path', onClick: copyPath },
     null,
     { text: 'Rename', onClick: node => handlers.rename(node) },
     { text: 'Delete', onClick: node => handlers.deleteFile(node) },

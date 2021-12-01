@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import platform from '@obsidians/platform'
+import platform, { ClipBoardService } from '@obsidians/platform'
 import { Tabs } from '@obsidians/ui-components'
 import fileOps from '@obsidians/file-ops'
 
@@ -42,7 +42,7 @@ export default class CodeEditorCollection extends PureComponent {
         onClick: this.copyPath
       },
       ...platform.isDesktop ? [{
-        text: 'Reveal In Finder',
+        text: 'Open Containing Folder',
         onClick: this.showInFinder
       }] : []
     ]
@@ -69,8 +69,9 @@ export default class CodeEditorCollection extends PureComponent {
     fileOps.current.showItemInFolder(tab.path)
   }
 
-  // TODO
-  copyPath = tab => {
+  copyPath = ({pathInProject}) => {
+    const clipboard = new ClipBoardService()
+    clipboard.writeText(pathInProject)
   }
 
   allUnsavedFiles = () => this.tabs.current.allTabs

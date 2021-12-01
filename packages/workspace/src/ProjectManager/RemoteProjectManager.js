@@ -39,10 +39,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
       projectSettings = await this.readProjectSettings()
     } catch (e) {
       console.warn(e)
-      return { initial: { path: this.pathForProjectFile('README.md'), remote: true }, projectSettings: null }
+      return { initial: { path: this.pathForProjectFile('README.md'), remote: true, pathInProject: this.pathInProject(this.pathForProjectFile('README.md')) }, projectSettings: null }
     }
 
-    return { initial: { path: this.pathForProjectFile('README.md'), remote: true }, projectSettings }
+    return { initial: { path: this.pathForProjectFile('README.md'), remote: true, pathInProject: this.pathInProject(this.pathForProjectFile('README.md')) }, projectSettings }
   }
 
   async deleteProject () {
