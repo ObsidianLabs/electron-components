@@ -59,6 +59,7 @@ export default class Tabs extends PureComponent {
   set currentTab (tab) {
     if (!tab) {
       this.props.onSelectTab()
+      this.setState({ selected: [], tabs: [] })
       return
     }
 
@@ -92,7 +93,8 @@ export default class Tabs extends PureComponent {
 
   set allTabs (tabs) {
     this.setState({
-      tabs: [...tabs.map(this.tabObj)]
+      tabs: [...tabs.map(this.tabObj)],
+      selected: tabs.length === 0 ? [] : this.state.selected
     }, this.onTabsUpdated)
   }
 
@@ -169,7 +171,7 @@ export default class Tabs extends PureComponent {
     newTabs.splice(index, 1)
 
     if (closingTab.key === this.tabKey()) {
-      if (newTabs.length) {
+      if (newTabs.length > 0) {
         this.currentTab = newTabs[index ? index - 1 : 0]
       } else {
         this.currentTab = null
