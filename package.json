@@ -12,7 +12,9 @@
   },
   "devDependencies": {
     "electron": "11.3.0",
-    "electron-rebuild": "^2.3.5"
+    "electron-rebuild": "^2.3.5",
+    "standard": "^16.0.4",
+    "standard-react": "^4.0.0"
   },
   "workspaces": [
     "packages/*"
