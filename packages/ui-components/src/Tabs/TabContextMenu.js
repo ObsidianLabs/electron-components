@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { ContextMenu, MenuItem } from 'react-contextmenu'
 
+// TODO: set the default props only once, and need consider to deprecate the lib, This repository has been archived by the owner.
 ContextMenu.defaultProps.className = 'dropdown-menu dropdown-menu-sm show'
 MenuItem.defaultProps.className = 'dropdown-item'
 
