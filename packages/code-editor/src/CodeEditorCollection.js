@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import platform, { ClipBoardService } from '@obsidians/platform'
+import platform from '@obsidians/platform'
 import { Tabs } from '@obsidians/ui-components'
 import fileOps from '@obsidians/file-ops'
+import { ClipBoardService } from '@obsidians/filetree';
 
 import MonacoEditorContainer from './MonacoEditor/MonacoEditorContainer'
 import modelSessionManager from './MonacoEditor/modelSessionManager'
@@ -208,8 +209,7 @@ export default class CodeEditorCollection extends PureComponent {
       <div className='d-flex w-100 h-100 overflow-hidden bg2'>
         <Tabs
           ref={this.tabs}
-          size='xl'
-          asd='1'
+          size='sm'
           headerClassName='nav-tabs-dark-active'
           initialSelected={initialTab}
           onSelectTab={this.onSelectTab}

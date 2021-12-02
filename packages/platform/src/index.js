@@ -32,4 +32,3 @@ export default {
   get isAppleSilicon () { return appleSilicon },
 }
 
-export { default as ClipBoardService} from "./clipboard"

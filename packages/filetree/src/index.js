@@ -46,7 +46,7 @@ theme.tree.node.subtree = {
   paddingLeft: '12px'
 }
 
-export default class FileTree extends PureComponent {
+class FileTree extends PureComponent {
   static propTypes = {
     onSelect: PropTypes.func
   }
@@ -215,3 +215,7 @@ export default class FileTree extends PureComponent {
     )
   }
 }
+
+export default FileTree;
+
+export { default as ClipBoardService} from "./clipboard"

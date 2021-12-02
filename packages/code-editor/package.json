@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@obsidians/file-ops": "^0.3.0",
+    "@obsidians/filetree": "^0.3.0",
     "@obsidians/notification": "^0.3.0",
     "@obsidians/ui-components": "^0.3.0",
     "color-convert": "^2.0.1",
