@@ -45,7 +45,7 @@ export default class TabContextMenu extends PureComponent {
     }
 
     return (
-      <ContextMenu id={`${node.key}/tab-item`}>
+      <ContextMenu id={`${node.key}/tab-item`} preventHideOnContextMenu={false}>
         {contextMenu.map(this.renderMenuItem)}
       </ContextMenu>
     )
