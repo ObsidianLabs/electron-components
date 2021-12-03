@@ -1,6 +1,6 @@
-import platform, { ClipBoardService } from '@obsidians/platform'
+import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
-
+import { ClipBoardService } from '@obsidians/filetree';
 const handlers = {}
 
 const showInFinder = node => {

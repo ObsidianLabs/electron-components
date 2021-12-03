@@ -71,12 +71,10 @@ class TabHeaderItem extends PureComponent {
               }}
             >
               <div className='nav-item-text' onMouseDown={e => {
-                console.log(e)
                 e.button === 0 && onSelectTab(tab)
 
               }}
                 onMouseUp={e => {
-                  console.log(e)
                   e.button === 1 && onCloseTab && onCloseTab(tab)
                 }}>
                 <div key={tab.key} className='d-flex flex-row align-items-center'>
