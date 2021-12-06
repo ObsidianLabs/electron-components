@@ -34,6 +34,10 @@ export default class CodeEditorCollection extends PureComponent {
         onClick: this.closeOtherFiles
       },
       {
+        text: 'Close Saved',
+        onClick: this.closeSaved
+      },
+      {
         text: 'Close All',
         onClick: this.closeAll
       },
@@ -98,6 +102,15 @@ export default class CodeEditorCollection extends PureComponent {
   closeOtherFiles = () => {
     const { onCloseTab, currentTab, allTabs } = this.tabs.current;
     const shouldCloseTabs = allTabs.filter(tab => tab.key !== currentTab.key);
+
+    shouldCloseTabs.forEach(tab => {
+      onCloseTab(tab)
+    })
+  }
+
+  closeSaved = () => {
+    const { onCloseTab, allTabs } = this.tabs.current;
+    const shouldCloseTabs = allTabs.filter(tab => !tab.unsaved);
 
     shouldCloseTabs.forEach(tab => {
       onCloseTab(tab)
