@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-
 import find from 'lodash/find'
 import findIndex from 'lodash/findIndex'
-
+import cloneDeep from 'lodash/cloneDeep'
 import Screen from '../Screen/Screen'
 import TabHeader from './TabHeader'
 
@@ -133,6 +132,15 @@ export default class Tabs extends PureComponent {
     return target
   }
 
+  dragMoveTab(dragIndex, hoverIndex) {
+    const tabs = cloneDeep(this.state.tabs)
+
+    tabs[dragIndex] = tabs.splice(hoverIndex, 1, tabs[dragIndex])[0]
+    this.setState({
+      tabs
+    })
+  }
+
   changeCurrentTab = tab => {
     const found = this.findTab(this.tabKey(tab))
     if (found) {
@@ -215,6 +223,7 @@ export default class Tabs extends PureComponent {
           getTabText={this.props.getTabText}
           onNewTab={this.props.createNewTab && this.onNewTab}
           onCloseTab={this.props.noCloseTab ? undefined : this.onCloseTab}
+          onDragTab={this.dragMoveTab.bind(this)}
           ToolButtons={this.props.ToolButtons}
           contextMenu={this.props.tabContextMenu}
         />
