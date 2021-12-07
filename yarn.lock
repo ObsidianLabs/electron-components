@@ -88,7 +88,7 @@
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.16.0"
     regexpu-core "^4.7.1"
-A
+
 "@babel/helper-define-polyfill-provider@^0.3.0":
   version "0.3.0"
   resolved "https://registry.npmmirror.com/@babel/helper-define-polyfill-provider/download/@babel/helper-define-polyfill-provider-0.3.0.tgz?cache=0&sync_timestamp=1636799716380&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40babel%2Fhelper-define-polyfill-provider%2Fdownload%2F%40babel%2Fhelper-define-polyfill-provider-0.3.0.tgz#c5b10cf4b324ff840140bb07e05b8564af2ae971"
