@@ -8,13 +8,15 @@ export default class ElectronFileOps extends FileOps {
     const path = window.require('path')
     super(fs, path)
 
+    this.channel = new IpcChannel('file-ops')
     this.electron = window.require('electron')
-    this.trash = window.require('trash')
 
-    this.homePath = this.electron.remote.app.getPath('home')
-    this.appPath = this.electron.remote.app.getAppPath()
-    this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
-    this.ensureDirectory(this.workspace)
+    this.channel.invoke('getPaths').then(result => {
+      this.homePath = result.homePath
+      this.appPath = result.appPath
+      this.workspace = result.workspace
+      this.ensureDirectory(this.workspace)
+    })
   }
 
   onFocus (handler) {
@@ -26,7 +28,7 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async openNewFile (defaultPath = this.workspace) {
-    const result = await this.electron.remote.dialog.showOpenDialog({
+    const result = await this.channel.invoke('showOpenDialog', {
       properties: ['openFile'],
       defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       filters: [
@@ -43,7 +45,7 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async chooseFolder (defaultPath = this.workspace) {
-    const result = await this.electron.remote.dialog.showOpenDialog({
+    const result = await this.channel.invoke('showOpenDialog', {
       buttonLabel: 'Open',
       defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
       properties: ['openDirectory', 'createDirectory']
@@ -67,45 +69,37 @@ export default class ElectronFileOps extends FileOps {
   }
 
   showOpenDialog (options) {
-    return this.electron.remote.dialog.showOpenDialog(this.electron.remote.getCurrentWindow(), options)
+    return this.channel.invoke('showOpenDialog', options)
   }
 
-  showMessageBox ({ message, buttons }) {
-    return this.electron.remote.dialog.showMessageBox({ message, buttons })
+  async showMessageBox ({ message, buttons }) {
+    return await this.channel.invoke('showMessageBox', { message, buttons })
   }
 
   async openItem (filePath) {
-    const result = await this.electron.shell.openPath(filePath)
+    const result = await this.channel.invoke('openItem', filePath)
     if (result) {
       throw new Error(`Cannot open <b>${filePath}</b>. Please make sure it exists.`)
     }
   }
 
-  showItemInFolder (filePath) {
-    return this.electron.shell.showItemInFolder(filePath)
+  async getAppVersion () {
+    return await this.channel.invoke('getAppVersion')
   }
 
-  getAppVersion () {
-    return this.electron.remote.app.getVersion()
+  async showItemInFolder (filePath) {
+    return await this.channel.invoke('showItemInFolder', filePath)
   }
 
-  openLink (href) {
-    return this.electron.shell.openExternal(href)
+  async openLink (href) {
+    return await this.channel.invoke('openLink', href)
   }
 
-  openInTerminal (filePath) {
-    const os = window.require('os')
-    const channel = new IpcChannel()
-    if (os.type() === 'Darwin') {
-      channel.invoke('exec', `open -a Terminal "${filePath}"`)
-    } else if (os.type() === 'Windows_NT') {
-      channel.invoke('exec', `invoke-expression 'cmd /c start powershell -NoExit -Command { Set-Location "${filePath}" }'`)
-    } else {
-      channel.invoke('exec', `gnome-terminal --working-directory=${filePath}`)
-    }
+  async openInTerminal (filePath) {
+    return await this.channel.invoke('openInTerminal', filePath)
   }
 
-  deleteFile (filePath) {
-    return this.trash([filePath])
+  async deleteFile (filePath) {
+    return await this.channel.invoke('deleteFile', filePath)
   }
 }

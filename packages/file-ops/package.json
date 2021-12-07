@@ -4,7 +4,8 @@
   "description": "File Operations",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
-  "main": "src/index.js",
+  "main": "main/index.js",
+  "browser": "src/index.js",
   "dependencies": {
     "@obsidians/ipc": "^0.3.0",
     "filehound": "^1.17.4",
