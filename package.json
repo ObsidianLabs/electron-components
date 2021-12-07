@@ -2,6 +2,9 @@
   "name": "@obsidians/electron-components",
   "license": "GPL-3.0",
   "private": true,
+  "engines": {
+    "node": "16"
+  },
   "scripts": {
     "postinstall": "electron-rebuild",
     "build": "node init.js"
@@ -15,6 +18,9 @@
     "electron-rebuild": "^3.2.5",
     "standard": "^16.0.4",
     "standard-react": "^4.0.0"
+  },
+  "resolutions": {
+    "node-abi": "^3.5.0"
   },
   "workspaces": [
     "packages/*"
