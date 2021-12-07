@@ -14,7 +14,7 @@
   },
   "peerDependencies": {
     "aws-sdk": "^2.830.0",
-    "electron": "^11.0.0",
+    "electron": "*",
     "socket.io-client": "^2.4.0"
   }
 }

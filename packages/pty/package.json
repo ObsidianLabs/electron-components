@@ -12,6 +12,6 @@
     "strip-ansi": "^6.0.0"
   },
   "peerDependencies": {
-    "electron": "^11.0.0"
+    "electron": "*"
   }
 }
