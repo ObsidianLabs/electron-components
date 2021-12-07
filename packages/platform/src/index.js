@@ -1,9 +1,9 @@
 let type, os, appleSilicon
+
 if (window.require) {
   type = 'desktop'
   const { OS_IS_WINDOWS, OS_IS_MAC, OS_IS_LINUX } = process.env
-  const cpus = window.require('electron').remote.require('os').cpus()
-  appleSilicon = Boolean(cpus.find(cpu => cpu.model.startsWith('Apple M')))
+  appleSilicon = false // TODO: need a way to test apple silicon
 
   if (OS_IS_WINDOWS) {
     os = 'win'
@@ -26,9 +26,8 @@ if (window.require) {
 
 export default {
   get type () { return type },
-  get isDesktop() { return type === 'desktop' },
-  get isWeb() { return type === 'web' },
-  get os() { return os },
-  get isAppleSilicon () { return appleSilicon },
+  get isDesktop () { return type === 'desktop' },
+  get isWeb () { return type === 'web' },
+  get os () { return os },
+  get isAppleSilicon () { return appleSilicon }
 }
-
