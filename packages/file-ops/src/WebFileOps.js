@@ -22,35 +22,11 @@ export default class WebFileOps extends FileOps {
   }
 
   async openNewFile (defaultPath = this.workspace) {
-    const result = await this.electron.remote.dialog.showOpenDialog({
-      properties: ['openFile'],
-      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
-      filters: [
-        // { name: 'all', extensions: ['cpp', 'hpp', 'wasm', 'abi', 'md', 'js', 'json', 'c', 'h', 'o'] }
-      ]
-    })
-  
-    if (result && result.filePaths && result.filePaths[0]) {
-      const filePath = result.filePaths[0]
-      return { key: filePath, path: filePath }
-    } else {
-      throw new Error()
-    }
+    // TODO
   }
 
   async chooseFolder (defaultPath = this.workspace) {
-    const result = await this.electron.remote.dialog.showOpenDialog({
-      buttonLabel: 'Open',
-      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
-      properties: ['openDirectory', 'createDirectory']
-    })
-
-    if (result && result.filePaths && result.filePaths[0]) {
-      const filePath = result.filePaths[0]
-      return filePath
-    } else {
-      throw new Error()
-    }
+    // TODO
   }
 
   async listFolder (folderPath) {

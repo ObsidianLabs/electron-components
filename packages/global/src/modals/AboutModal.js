@@ -11,19 +11,22 @@ export default class AboutModal extends PureComponent {
     super(props)
     this.modal = React.createRef()
     this.state = {
-      debugCounter: 0
+      debugCounter: 0,
+      appVersion: ''
     }
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     globalModalManager.aboutModal = this
+    const appVersion = await fileOps.current.getAppVersion()
+    this.setState({ appVersion })
   }
 
   openModal () {
     this.modal.current.openModal()
   }
 
-  handleClick() {
+  handleClick () {
     if (platform.isWeb) {
       return
     }
@@ -39,6 +42,8 @@ export default class AboutModal extends PureComponent {
   }
 
   render () {
+    const { appVersion } = this.state
+
     return (
       <Modal
         ref={this.modal}
@@ -46,8 +51,8 @@ export default class AboutModal extends PureComponent {
         textCancel='Close'
       >
         <div className='d-flex flex-column align-items-center justify-content-center'>
-          <img src={this.props.icon} style={{ background: 'transparent', width: '100px' }} onClick={() => this.handleClick()}/>
-          <p className='mt-3'><span className='h4'><b>{process.env.PROJECT_NAME}</b></span> v{fileOps.current.getAppVersion()}</p>
+          <img src={this.props.icon} style={{ background: 'transparent', width: '100px' }} onClick={() => this.handleClick()} />
+          <p className='mt-3'><span className='h4'><b>{process.env.PROJECT_NAME}</b></span> v{appVersion}</p>
 
           <h5 className='small-caps mt-4'>contact us</h5>
           <p>Website: <a href='#' onClick={() => fileOps.current.openLink('https://www.obsidians.io')}>https://www.obsidians.io</a></p>
