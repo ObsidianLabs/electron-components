@@ -33,7 +33,7 @@ export default class AboutModal extends PureComponent {
     if (this.state.debugCounter > 20) {
       try {
         console.info('Dev Tools Toggled')
-        window.require('electron').remote.getCurrentWindow().toggleDevTools()
+        window.require('electron').BrowserWindow.getFocusedWindow().toggleDevTools()
       } catch (e) {}
       this.setState({ debugCounter: 0 })
     } else {

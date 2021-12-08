@@ -1,5 +1,5 @@
 const { IpcChannel } = require('@obsidians/ipc')
-const { app, dialog, shell, getCurrentWindow } = require('electron')
+const { app, dialog, shell, BrowserWindow } = require('electron')
 const path = require('path')
 const os = require('os')
 const trash = require('trash')
@@ -22,7 +22,7 @@ class FileOpsChannel extends IpcChannel {
   }
 
   async showOpenDialog (options) {
-    return dialog.showOpenDialog(getCurrentWindow(), options)
+    return dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), options)
   }
 
   showMessageBox ({ message, buttons }) {
