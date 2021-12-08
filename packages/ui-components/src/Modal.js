@@ -170,7 +170,7 @@ export default class BaseModal extends PureComponent {
           {title}
         </ModalHeader>
         <ModalBody
-          className={classnames('d-flex flex-column')}
+          className={classnames('d-flex flex-column', !overflow && 'overflow-auto')}
         >
           {children}
           {errorComponent}
