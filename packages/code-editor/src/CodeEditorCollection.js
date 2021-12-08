@@ -73,10 +73,14 @@ export default class CodeEditorCollection extends PureComponent {
   showInFinder = tab => {
     fileOps.current.showItemInFolder(tab.path)
   }
-
-  copyPath = ({pathInProject}) => {
+  
+  // NOTE: there is no pathInProject props return in the local project, while will return it in remote project
+  // see: packages/workspace/src/ProjectManager/LocalProjectManager.js
+  // see: packages/workspace/src/ProjectManager/RemoteProjectManager.js
+  copyPath = ({ pathInProject, path}) => {
+    const filePath =  pathInProject || path
     const clipboard = new ClipBoardService()
-    clipboard.writeText(pathInProject)
+    clipboard.writeText(filePath)
   }
 
   allUnsavedFiles = () => this.tabs.current.allTabs
