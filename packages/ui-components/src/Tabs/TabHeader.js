@@ -119,11 +119,12 @@ class TabHeaderItem extends PureComponent {
   }
 
   render() {
-    const { size, tab, tabText, active, onSelectTab, onCloseTab, contextMenu, connectDragSource, connectDropTarget } = this.props
+    const { size, tab, active, tabText, isDragging, onSelectTab, onCloseTab, contextMenu, connectDragSource, connectDropTarget } = this.props
+    const opacity = isDragging ? 0 : 1
 
     return connectDragSource(
       connectDropTarget(
-        <li className={classnames('nav-item', { active })}>
+        <li className={classnames('nav-item', { active })} style={{opacity}}>
 
           <div
             className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
