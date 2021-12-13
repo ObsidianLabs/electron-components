@@ -7,6 +7,7 @@ import TabContextMenu from './TabContextMenu'
 import { UncontrolledTooltip } from 'reactstrap'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import platform from '@obsidians/platform'
 
 const Types = {
   TAB: 'tab'
@@ -124,7 +125,7 @@ class TabHeaderItem extends PureComponent {
 
     return connectDragSource(
       connectDropTarget(
-        <li className={classnames('nav-item', { active })} style={{opacity}}>
+        <li className={classnames('nav-item', { active })} style={{ opacity }}>
 
           <div
             className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
@@ -187,56 +188,57 @@ export default class TabHeader extends PureComponent {
 
     return (
       <DndProvider backend={HTML5Backend}>
-        <ul className={classnames('nav nav-tabs', className)}>
-          {
-            tabs.map((tab, index) => {
-              const tabText = getTabText ? getTabText(tab) : tab.text
-              return (
-                <SortableTab
-                  key={tab.key}
-                  size={size}
-                  tab={tab}
-                  index={index}
-                  unsaved={tab.unsaved}
-                  saving={tab.saving}
-                  tabText={tabText}
-                  active={selected.key === tab.key}
-                  onSelectTab={onSelectTab}
-                  onCloseTab={onCloseTab}
-                  onDrag={onDragTab}
-                  contextMenu={contextMenu}
-                />
-              )
-            })
-          }
-          {
-            this.props.onNewTab &&
-            <li className='nav-item nav-item-add'>
-              <div
+        <div className='nav-tab-wrap'>
+          <ul className={classnames('nav nav-tabs', className)}>
+            {
+              tabs.map((tab, index) => {
+                const tabText = getTabText ? getTabText(tab) : tab.text
+                return (
+                  <SortableTab
+                    key={tab.key}
+                    size={size}
+                    tab={tab}
+                    index={index}
+                    unsaved={tab.unsaved}
+                    saving={tab.saving}
+                    tabText={tabText}
+                    active={selected.key === tab.key}
+                    onSelectTab={onSelectTab}
+                    onCloseTab={onCloseTab}
+                    onDrag={onDragTab}
+                    contextMenu={contextMenu}
+                  />
+                )
+              })
+            }
+            <div className='flex-grow-1' />
+            {
+              ToolButtons.map((btn, index) => {
+                const id = `tab-btn-${index}`
+                return <li key={id}>
+                  <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)} onClick={btn.onClick}>
+                    <i className={btn.icon} />
+                    <span>{btn.text}</span>
+                  </div>
+                  <UncontrolledTooltip delay={0} target={id} placement='bottom' >
+                    {btn.tooltip}
+                  </UncontrolledTooltip>
+                </li>
+              })
+            }
+          </ul>
+          <div className='nav-actions'>
+            {this.props.onNewTab && platform.isDesktop &&
+              <span
                 key='nav-item-add'
                 className={classnames('btn border-0', size && `btn-${size}`)}
                 onMouseDown={e => e.button === 0 && this.props.onNewTab()}
               >
                 <i className='fas fa-plus' />
-              </div>
-            </li>
-          }
-          <div className='flex-grow-1' />
-          {
-            ToolButtons.map((btn, index) => {
-              const id = `tab-btn-${index}`
-              return <li key={id}>
-                <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)} onClick={btn.onClick}>
-                  <i className={btn.icon} />
-                  <span>{btn.text}</span>
-                </div>
-                <UncontrolledTooltip delay={0} target={id} placement='bottom' >
-                  {btn.tooltip}
-                </UncontrolledTooltip>
-              </li>
-            })
-          }
-        </ul>
+              </span>
+            }
+          </div>
+        </div>
       </DndProvider>
     )
   }
