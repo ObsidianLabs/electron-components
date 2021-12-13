@@ -59,18 +59,18 @@ class FileTree extends PureComponent {
   loaded = false
   loadedCallback = null
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadTree(this.props.projectManager)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.projectManager !== this.props.projectManager) {
       prevProps.projectManager.offRefreshDirectory()
       this.loadTree(this.props.projectManager)
     }
   }
-  
-  componentWillUnmount () {
+
+  componentWillUnmount() {
     this.props.projectManager.offRefreshDirectory()
   }
 
@@ -116,9 +116,12 @@ class FileTree extends PureComponent {
   }
 
   loadDirectory = async node => {
+    node.loading = true
+    await this.forceUpdate()
     const children = await this.props.projectManager.loadDirectory(node)
     node.loading = false
     node.children = children
+    await this.forceUpdate()
   }
 
   findNode = async (path, nodes) => {
@@ -167,26 +170,30 @@ class FileTree extends PureComponent {
       this.state.cursor.active = false
     }
     node.active = true
+    this.setState({ cursor: node })
+
     if (node.children) {
       node.toggled = toggled
       if (toggled) {
         await this.loadDirectory(node)
       }
     }
-    this.setState({ cursor: node })
-    await this.forceUpdate()
     if (!node.children && this.props.onSelect) {
       this.props.onSelect(node)
     }
   }
 
-  render () {
+  renderNodeLoading = () => {
+    return (
+      <span key='loading' className='mx-1 text-muted'>
+        <i className='fas fa-spin fa-spinner mr-1' />Loading...
+      </span>
+    )
+  }
+
+  render() {
     if (!Object.keys(this.state.treeData).length) {
-      return (
-        <span key='loading' className='mx-1 text-muted'>
-          <i className='fas fa-spin fa-spinner mr-1' />Loading...
-        </span>
-      )
+      return this.renderNodeLoading()
     }
 
     decorators.Container = props => {
@@ -201,6 +208,10 @@ class FileTree extends PureComponent {
           readonly={this.props.readonly}
         />
       )
+    }
+
+    decorators.Loading = () => {
+      return this.renderNodeLoading();
     }
 
     return (
@@ -218,4 +229,4 @@ class FileTree extends PureComponent {
 
 export default FileTree;
 
-export { default as ClipBoardService} from "./clipboard"
+export { default as ClipBoardService } from "./clipboard"
