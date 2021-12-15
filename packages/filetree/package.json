@@ -23,6 +23,7 @@
     "chokidar": "^3.5.1",
     "filehound": "^1.17.4",
     "lodash": "^4.17.20",
+    "rc-tree": "^5.3.3",
     "react-contextmenu": "github:ObsidianLabs/react-contextmenu.git#patch",
     "react-treebeard": "^3.2.4",
     "velocity-react": "^1.4.3"

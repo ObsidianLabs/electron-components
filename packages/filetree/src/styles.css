@@ -1,12 +1,130 @@
-.filetree-item {
-  white-space: nowrap;
-  user-select: none;
+.tree-wrap {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 6px;
 }
-.filetree-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 100%;
+
+.rc-tree {
+  margin: 0;
+  border: 1px solid transparent;
+}
+
+.rc-tree .rc-tree-treenode {
+  margin: 0;
+  padding: 0;
+  line-height: 24px;
+  white-space: nowrap;
+  list-style: none;
+  outline: 0;
+  cursor: pointer;
+}
+
+.rc-tree .rc-tree-treenode.drop-target ~ .rc-tree-treenode {
+  border-left: none;
+}
+
+.rc-tree .rc-tree-treenode ul {
+  margin: 0;
+  padding: 0 0 0 18px;
+}
+
+.rc-tree .rc-tree-treenode .rc-tree-node-content-wrapper {
+  position: relative;
+  display: inline-block;
   height: 24px;
-  background-color: inherit;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  vertical-align: top;
+  cursor: pointer;
+}
+.rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-icon__customize, .rc-tree .rc-tree-treenode span.rc-tree-checkbox.rc-tree-icon__customize, .rc-tree .rc-tree-treenode span.rc-tree-iconEle.rc-tree-icon__customize {
+  background-image: none;
+}
+.rc-tree .rc-tree-treenode span.rc-tree-switcher {
+  margin-right: 4px;
+  display: inline-block;
+  width: 17.5px;
+}
+.rc-tree .rc-tree-treenode span.rc-tree-icon_loading {
+  margin-right: 2px;
+  vertical-align: top;
+  background: url('data:image/gif;base64,R0lGODlhEAAQAKIGAMLY8YSx5HOm4Mjc88/g9Ofw+v///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgAGACwAAAAAEAAQAAADMGi6RbUwGjKIXCAA016PgRBElAVlG/RdLOO0X9nK61W39qvqiwz5Ls/rRqrggsdkAgAh+QQFCgAGACwCAAAABwAFAAADD2hqELAmiFBIYY4MAutdCQAh+QQFCgAGACwGAAAABwAFAAADD1hU1kaDOKMYCGAGEeYFCQAh+QQFCgAGACwKAAIABQAHAAADEFhUZjSkKdZqBQG0IELDQAIAIfkEBQoABgAsCgAGAAUABwAAAxBoVlRKgyjmlAIBqCDCzUoCACH5BAUKAAYALAYACgAHAAUAAAMPaGpFtYYMAgJgLogA610JACH5BAUKAAYALAIACgAHAAUAAAMPCAHWFiI4o1ghZZJB5i0JACH5BAUKAAYALAAABgAFAAcAAAMQCAFmIaEp1motpDQySMNFAgA7') no-repeat scroll 0 0 transparent;
+}
+.rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher-noop {
+  cursor: auto;
+}
+.rc-tree .rc-tree-treenode span.rc-tree-switcher .svg-inline--fa {
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -ms-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+}
+
+.rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher_close {
+  background-position: -75px -56px;
+}
+
+.rc-tree:not(.rc-tree-show-line) .rc-tree-treenode .rc-tree-switcher-noop {
+  background: none;
+}
+
+.rc-tree-child-tree {
+  display: none;
+}
+
+.rc-tree-child-tree-open {
+  display: block;
+}
+
+.rc-tree-icon__customize {
+  margin-right: 2px;
+  vertical-align: top;
+}
+.rc-tree-title {
+  display: inline-block;
+  color: #d1d5da;
+}
+.rc-tree-indent {
+  display: inline-block;
+  height: 0;
+  vertical-align: bottom;
+}
+.rc-tree-indent-unit {
+  display: inline-block;
+  width: 16px;
+}
+.rc-tree-draggable-icon {
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+}
+
+.animation .rc-tree-treenode {
+  display: flex;
+}
+.animation .rc-tree-treenode .rc-tree-indent {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+.animation .rc-tree-treenode .rc-tree-indent .rc-tree-indent-unit {
+  position: relative;
+  height: 100%;
+}
+
+.animation .rc-tree-treenode .rc-tree-indent .rc-tree-indent-unit-end::before {
+  display: none;
+}
+
+.rc-tree-child-tree {
+  display: block;
+}
+
+.node-motion {
+  transition: all .3s;
+  overflow-y: hidden;
 }

@@ -1,232 +1,147 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
 import fileOps from '@obsidians/file-ops'
-
-import { Treebeard, decorators, theme } from 'react-treebeard'
-
-import TreeNodeContainer from './TreeNodeContainer'
+import Tree from 'rc-tree'
+import cloneDeep from 'lodash/cloneDeep'
 
 import './styles.css'
 
-theme.tree.base = {
-  ...theme.tree.base,
-  position: 'relative',
-  display: 'block',
-  background: 'transparent',
-  fontFamily: 'inherit',
-  paddingLeft: '12px',
-  paddingRight: '12px',
-  fontSize: '15px',
-  minWidth: 'fit-content'
-}
-theme.tree.node.base = {}
-theme.tree.node.activeLink = {
-  background: 'red'
-}
-theme.tree.node.toggle.height = 10
-theme.tree.node.toggle.width = 5
-theme.tree.node.toggle.base = {
-  ...theme.tree.node.toggle.base,
-  marginLeft: '-24px'
-}
-theme.tree.node.toggle.wrapper = {
-  ...theme.tree.node.toggle.wrapper,
-  margin: 0,
-  top: 0,
-  left: '10px',
-  height: '24px'
-}
-theme.tree.node.header.base = {
-  ...theme.tree.node.header.base,
-  color: undefined,
-  position: 'relative'
-}
-theme.tree.node.subtree = {
-  ...theme.tree.node.subtree,
-  paddingLeft: '12px'
+function renderIcon(props) {
+  const { data, expanded, loading } = props;
+  if (data.type === 'file') {
+    return <i className='fas fa-file-code fa-fw mr-1' />
+  }
+  if (data.type === 'folder') {
+    return expanded && !loading ? <span key='open' ><span className='fas fa-folder-open fa-fw  mr-1' /></span> : <span key='close'><span className='fas fa-folder fa-fw  mr-1' /></span>
+  }
+};
+
+function renderSwitcherIcon({ loading, expanded, data }) {
+  if (loading && data.type === 'folder') {
+    return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner  fa-fw' /></span>
+  }
+
+  if (data.type === 'file') {
+    return null;
+  }
+
+  return expanded ? (
+    <span key='switch-expanded'><span className='far fa-sm fa-chevron-down fa-fw' /></span>
+  ) : (
+    <span key='switch-close'><span className='far fa-sm fa-chevron-right fa-fw' /></span>
+  );
 }
 
-class FileTree extends PureComponent {
-  static propTypes = {
-    onSelect: PropTypes.func
-  }
+const motion = {
+  motionName: 'node-motion',
+  motionAppear: false,
+  onAppearStart: () => ({ height: 0 }),
+  onAppearActive: node => ({ height: node.scrollHeight }),
+  onLeaveStart: node => ({ height: node.offsetHeight }),
+  onLeaveActive: () => ({ height: 0 }),
+};
 
-  state = {
-    treeData: {},
-    cursor: undefined
-  }
+function setLeaf(treeData, curKey, level) {
+  const loopLeaf = (data, lev) => {
+    const l = lev - 1;
+    data.forEach(item => {
+      if (
+        item.key.length > curKey.length
+          ? item.key.indexOf(curKey) !== 0
+          : curKey.indexOf(item.key) !== 0
+      ) {
+        return;
+      }
+      if (item.children) {
+        loopLeaf(item.children, l);
+      } else if (l < 1) {
+        // eslint-disable-next-line no-param-reassign
+        item.isLeaf = true;
+      }
+    });
+  };
+  loopLeaf(treeData, level + 1);
+}
 
-  loaded = false
-  loadedCallback = null
-
-  componentDidMount() {
-    this.loadTree(this.props.projectManager)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.projectManager !== this.props.projectManager) {
-      prevProps.projectManager.offRefreshDirectory()
-      this.loadTree(this.props.projectManager)
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.projectManager.offRefreshDirectory()
-  }
-
-  loadTree = async projectManager => {
-    projectManager.onRefreshDirectory(this.refreshDirectory)
-
-    this.loaded = false
-
-    const treeData = await projectManager.loadRootDirectory()
-    treeData.toggled = true
-
-    await this.setState({ treeData })
-    this.loaded = true
-    if (this.loadedCallback) {
-      this.loadedCallback()
-      this.loadedCallback = null
-    }
-  }
-
-  onTreeLoaded = callback => {
-    if (this.loaded) {
-      callback()
-      this.loadedCallback = null
-    } else {
-      this.loadedCallback = callback
-    }
-  }
-
-  refreshDirectory = async (directory) => {
-    if (!directory) {
-      return
-    }
-    const node = await this.findNode(directory.path, [this.state.treeData])
-    if (!node) {
-      return
-    }
-    node.loading = false
-    node.children = directory.children
-    if (this.state.cursor) {
-      this.setActive(this.state.cursor.path)
-    }
-    this.forceUpdate()
-  }
-
-  loadDirectory = async node => {
-    node.loading = true
-    await this.forceUpdate()
-    const children = await this.props.projectManager.loadDirectory(node)
-    node.loading = false
-    node.children = children
-    await this.forceUpdate()
-  }
-
-  findNode = async (path, nodes) => {
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i]
-      if (node.path === path) {
-        return node
-      } else if (node.children && path.startsWith(`${node.path}${fileOps.current.path.sep}`)) {
-        node.toggled = true
-        if (node.loading) {
-          await this.loadDirectory(node)
+function getNewTreeData(treeData, curKey, child) {
+  const loop = data => {
+    data.forEach(item => {
+      if (curKey.indexOf(item.key) === 0) {
+        if (item.children?.length > 0) {
+          loop(item.children);
+        } else {
+          item.children = child;
         }
-        return this.findNode(path, node.children)
       }
-    }
-  }
-
-  get activeNode () {
-    return this.state.cursor
-  }
-
-  get rootNode () {
-    return this.state.treeData
-  }
-
-  setNoActive = () => {
-    if (this.state.cursor) {
-      this.state.cursor.active = false
-      this.setState({ cursor: undefined })
-    }
-  }
-
-  setActive = async path => {
-    const node = await this.findNode(path, [this.state.treeData])
-    if (!node) {
-      this.setNoActive()
-      return
-    }
-    if (this.state.cursor !== node) {
-      this.onToggle(node, true)
-    }
-  }
-
-  onToggle = async (node, toggled) => {
-    if (this.state.cursor) {
-      this.state.cursor.active = false
-    }
-    node.active = true
-    this.setState({ cursor: node })
-
-    if (node.children) {
-      node.toggled = toggled
-      if (toggled) {
-        await this.loadDirectory(node)
-      }
-    }
-    if (!node.children && this.props.onSelect) {
-      this.props.onSelect(node)
-    }
-  }
-
-  renderNodeLoading = () => {
-    return (
-      <span key='loading' className='mx-1 text-muted'>
-        <i className='fas fa-spin fa-spinner mr-1' />Loading...
-      </span>
-    )
-  }
-
-  render() {
-    if (!Object.keys(this.state.treeData).length) {
-      return this.renderNodeLoading()
-    }
-
-    decorators.Container = props => {
-      let contextMenu = this.props.contextMenu
-      if (typeof contextMenu === 'function') {
-        contextMenu = contextMenu(props.node)
-      }
-      return (
-        <TreeNodeContainer
-          {...props}
-          contextMenu={contextMenu}
-          readonly={this.props.readonly}
-        />
-      )
-    }
-
-    decorators.Loading = () => {
-      return this.renderNodeLoading();
-    }
-
-    return (
-      <div className='d-flex align-items-stretch flex-column h-100' style={{ overflowY: 'auto' }}>
-        <Treebeard
-          style={theme}
-          data={this.state.treeData}
-          decorators={decorators}
-          onToggle={this.onToggle}
-        />
-      </div>
-    )
-  }
+    });
+  };
+  loop(treeData);
+  setLeaf(treeData, curKey);
 }
 
-export default FileTree;
+
+const FileTree = ({ projectManager }) => {
+  const treeRef = React.useRef()
+  const [treeData, setTreeData] = useState([])
+  const [autoExpandParent, setAutoExpandParent] = useState(true)
+  const [expandedKeys, setExpandKeys] = useState([])
+
+  const loadTree = async projectManager => {
+    const treeData = await projectManager.loadRootDirectory()
+    setTreeData([treeData])
+    setExpandKeys([treeData.key])
+  }
+
+  const handleLoadData = treeNode => {
+    if (!treeNode.key) return;
+
+    return new Promise(resolve => {
+      const tempTreeData = cloneDeep(treeData);
+      projectManager.loadDirectory(treeNode).then(newData => {
+        setTimeout(() => {
+          getNewTreeData([...tempTreeData], treeNode.key, newData);
+          setTreeData(tempTreeData);
+          resolve();
+        }, 500);
+      })
+    });
+  };
+
+  const treeCls = `myCls${('customIcon') || ''}`;
+
+  const handleExpand = (keys) => {
+    setAutoExpandParent(false)
+    setExpandKeys(keys)
+  }
+
+  useEffect(() => {
+    loadTree(projectManager)
+  }, [])
+
+  return (
+    <div className="tree-wrap animation">
+      <Tree
+        className={treeCls}
+        ref={treeRef}
+        // onSelect={handleSelect}
+        loadData={handleLoadData}
+        expandedKeys={expandedKeys}
+        autoExpandParent={autoExpandParent}
+        onExpand={handleExpand}
+        icon={renderIcon}
+        switcherIcon={(nodeProps) =>
+          renderSwitcherIcon(nodeProps)
+        }
+        motion={motion}
+        itemHeight={20}
+        onLoad={handleLoadData}
+        treeData={treeData}
+      />
+    </div>
+  );
+}
+const ForwardFileTree = React.forwardRef(FileTree);
+ForwardFileTree.displayName = 'FileTree';
+
+export default ForwardFileTree;
 
 export { default as ClipBoardService } from "./clipboard"
