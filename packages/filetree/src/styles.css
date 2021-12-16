@@ -78,6 +78,27 @@
   background: none;
 }
 
+.file-tree-drop-indicator {
+  position: absolute;
+  z-index: 1;
+  height: 2px;
+  background-color: #636cb4;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.file-tree-drop-indicator::after {
+  position: absolute;
+  top: -3px;
+  left: -6px;
+  width: 8px;
+  height: 8px;
+  background-color: #636cb4;
+  border: 2px solid #636cb4;
+  border-radius: 50%;
+  content: '';
+}
+
 .rc-tree-child-tree {
   display: none;
 }

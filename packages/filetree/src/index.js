@@ -3,6 +3,7 @@ import fileOps from '@obsidians/file-ops'
 import Tree from 'rc-tree'
 import cloneDeep from 'lodash/cloneDeep'
 import debounce from 'lodash/debounce'
+import DropIndicator from './DropIndicator'
 
 import './styles.css'
 
@@ -249,6 +250,7 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
         itemHeight={20}
         icon={renderIcon}
         treeData={treeData}
+        dropIndicatorRender={DropIndicator}
         loadData={handleLoadData}
         expandedKeys={expandedKeys}
         selectedKeys={selectedKeys}
