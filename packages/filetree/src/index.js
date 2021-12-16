@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import fileOps from '@obsidians/file-ops'
 import Tree from 'rc-tree'
 import cloneDeep from 'lodash/cloneDeep'
+import debounce from 'lodash/debounce'
 
 import './styles.css'
 
-function renderIcon(props) {
-  const { data, expanded, loading } = props;
+const renderIcon = (props) => {
+  const { data, expanded, loading, isLeaf } = props;
   if (data.type === 'file') {
     return <i className='fas fa-file-code fa-fw mr-1' />
   }
@@ -15,7 +16,7 @@ function renderIcon(props) {
   }
 };
 
-function renderSwitcherIcon({ loading, expanded, data }) {
+const renderSwitcherIcon = ({ loading, expanded, data }) => {
   if (loading && data.type === 'folder') {
     return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner  fa-fw' /></span>
   }
@@ -40,9 +41,8 @@ const motion = {
   onLeaveActive: () => ({ height: 0 }),
 };
 
-function setLeaf(treeData, curKey, level) {
-  const loopLeaf = (data, lev) => {
-    const l = lev - 1;
+const setLeaf = (treeData, curKey) => {
+  const loopLeaf = (data) => {
     data.forEach(item => {
       if (
         item.key.length > curKey.length
@@ -52,17 +52,16 @@ function setLeaf(treeData, curKey, level) {
         return;
       }
       if (item.children) {
-        loopLeaf(item.children, l);
-      } else if (l < 1) {
-        // eslint-disable-next-line no-param-reassign
+        loopLeaf(item.children);
+      } else if( !item.children || item.children.length === 0 ) {
         item.isLeaf = true;
       }
     });
   };
-  loopLeaf(treeData, level + 1);
+  loopLeaf(treeData);
 }
 
-function getNewTreeData(treeData, curKey, child) {
+const getNewTreeData = (treeData, curKey, child) => {
   const loop = data => {
     data.forEach(item => {
       if (curKey.indexOf(item.key) === 0) {
@@ -78,12 +77,23 @@ function getNewTreeData(treeData, curKey, child) {
   setLeaf(treeData, curKey);
 }
 
-
-const FileTree = ({ projectManager }) => {
+const FileTree = ({ projectManager, onSelect }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
+  const [selectedKeys, setSelectedKeys] = useState([])
+
+  React.useImperativeHandle(ref, () => ({
+    setActive(key) {
+      if(!selectedKeys.includes(key)) {
+        setSelectedKeys([key])
+      }
+    },
+    setNoActive() {
+      setSelectedKeys([])
+    }
+  }));
 
   const loadTree = async projectManager => {
     const treeData = await projectManager.loadRootDirectory()
@@ -106,11 +116,33 @@ const FileTree = ({ projectManager }) => {
     });
   };
 
-  const treeCls = `myCls${('customIcon') || ''}`;
+  const handleSelect = (_, {node}) => {
+    if(node.type === 'file') {
+      onSelect(node)
+    }
+  }
 
   const handleExpand = (keys) => {
     setAutoExpandParent(false)
     setExpandKeys(keys)
+  }
+
+  const expandFolderNode = (event, node) => {
+    const { isLeaf } = node;
+
+    if (isLeaf) {
+      return;
+    }
+
+    treeRef.current.onNodeExpand(event, node);
+  };
+
+  const onDebounceExpand = debounce(expandFolderNode, 200, {
+    leading: true,
+  });
+
+  const handleClick = (event, node) => {
+    onDebounceExpand(event, node);
   }
 
   useEffect(() => {
@@ -120,21 +152,22 @@ const FileTree = ({ projectManager }) => {
   return (
     <div className="tree-wrap animation">
       <Tree
-        className={treeCls}
         ref={treeRef}
-        // onSelect={handleSelect}
+        motion={motion}
+        itemHeight={20}
+        icon={renderIcon}
+        treeData={treeData}
         loadData={handleLoadData}
         expandedKeys={expandedKeys}
+        selectedKeys={selectedKeys}
         autoExpandParent={autoExpandParent}
-        onExpand={handleExpand}
-        icon={renderIcon}
         switcherIcon={(nodeProps) =>
           renderSwitcherIcon(nodeProps)
         }
-        motion={motion}
-        itemHeight={20}
+        onClick={handleClick}
+        onExpand={handleExpand}
+        onSelect={handleSelect}
         onLoad={handleLoadData}
-        treeData={treeData}
       />
     </div>
   );
