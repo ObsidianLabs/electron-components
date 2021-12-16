@@ -168,7 +168,7 @@ export default class AwsS3Fs {
     const files = result.Contents.map(item => {
       let path = item.Key
       const name = path.replace(`${dirPath}/`, '')
-      return { type: 'file', title: name, key: path, children: [], name, path, remote: true }
+      return { type: 'file', title: name, key: path, name, path, remote: true }
     }).filter(item => item.name && item.name !== '.placeholder')
     return [...folders, ...files]
   }

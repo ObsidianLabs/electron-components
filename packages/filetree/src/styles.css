@@ -40,7 +40,7 @@
 
 .rc-tree .rc-tree-treenode .rc-tree-node-content-wrapper {
   position: relative;
-  display: inline-block;
+  /* display: inline-flex; */
   height: 24px;
   margin: 0;
   padding: 0;
@@ -58,13 +58,9 @@
   display: inline-block;
   width: 17.5px;
 }
-.rc-tree .rc-tree-treenode span.rc-tree-icon_loading {
-  margin-right: 2px;
-  vertical-align: top;
-  background: url('data:image/gif;base64,R0lGODlhEAAQAKIGAMLY8YSx5HOm4Mjc88/g9Ofw+v///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgAGACwAAAAAEAAQAAADMGi6RbUwGjKIXCAA016PgRBElAVlG/RdLOO0X9nK61W39qvqiwz5Ls/rRqrggsdkAgAh+QQFCgAGACwCAAAABwAFAAADD2hqELAmiFBIYY4MAutdCQAh+QQFCgAGACwGAAAABwAFAAADD1hU1kaDOKMYCGAGEeYFCQAh+QQFCgAGACwKAAIABQAHAAADEFhUZjSkKdZqBQG0IELDQAIAIfkEBQoABgAsCgAGAAUABwAAAxBoVlRKgyjmlAIBqCDCzUoCACH5BAUKAAYALAYACgAHAAUAAAMPaGpFtYYMAgJgLogA610JACH5BAUKAAYALAIACgAHAAUAAAMPCAHWFiI4o1ghZZJB5i0JACH5BAUKAAYALAAABgAFAAcAAAMQCAFmIaEp1motpDQySMNFAgA7') no-repeat scroll 0 0 transparent;
-}
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher-noop {
   cursor: auto;
+  /* flex-shrink: 0; */
 }
 .rc-tree .rc-tree-treenode span.rc-tree-switcher .svg-inline--fa {
   transition: all 0.3s ease-in;
@@ -97,6 +93,10 @@
 .rc-tree-title {
   display: inline-block;
   color: #d1d5da;
+  /* flex-grow: 1;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; */
 }
 .rc-tree-indent {
   display: inline-block;
