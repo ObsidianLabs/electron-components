@@ -125,19 +125,21 @@ class TabHeaderItem extends PureComponent {
 
     return connectDragSource(
       connectDropTarget(
-        <li className={classnames('nav-item', { active })} style={{ opacity }}>
 
+        <li className={classnames('nav-item', { active })} style={{ opacity }}>
           <div
-            className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
+            className={classnames('flex-row align-items-center border-0 w-100')}
           >
-            <div className='nav-item-content d-flex flex-row'>
-              <ContextMenuTrigger
-                id={`${tab.key}/tab-item`}
-                ref={ref => { this.clickableRef = ref }}
-                attributes={{
-                  onClick: e => e.preventDefault()
-                }}
-              >
+            <ContextMenuTrigger
+              id={`${tab.key}/tab-item`}
+              ref={ref => { this.clickableRef = ref }}
+              attributes={{
+                onClick: e => e.preventDefault(),
+                className: classnames('btn d-flex', size && `btn-${size}` )
+              }}
+            >
+              <div className='nav-item-content d-flex flex-row'>
+
                 <div className='nav-item-text' onMouseDown={e => {
                   e.stopPropagation()
                   e.button === 0 && onSelectTab(tab)
@@ -155,14 +157,14 @@ class TabHeaderItem extends PureComponent {
                   node={tab}
                   contextMenu={contextMenu}
                 />
-              </ContextMenuTrigger>
 
-            </div>
-            {this.renderCloseBtn()}
+              </div>
+              {this.renderCloseBtn()}
+            </ContextMenuTrigger>
 
           </div>
-
         </li>
+
       ))
   }
 }
