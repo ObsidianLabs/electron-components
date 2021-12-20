@@ -42,7 +42,7 @@
         }
       }
   
-      &>.btn {
+      & .btn {
         border-radius: 0;
   
         & .nav-item-content:nth-last-child(2) {
@@ -58,16 +58,21 @@
           &>.nav-item-text {
             display: flex;
             align-items: center;
-            flex: 0 1 200px;
+            flex: 1;
             overflow: hidden;
             justify-content: center;
-  
+            max-width: 200px;
+            
+            
+
             &>div {
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              user-select: none;
-  
+              span {
+                display: inline-block;
+                width: 100%;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                user-select: none;
+              }
               &>code {
                 padding-top: 2px;
                 font-size: 90%;
@@ -91,7 +96,7 @@
           flex: none;
           color: var(--color-text-muted);
     
-          &>.nav-item-close-times {
+          & .nav-item-close-times {
             display: none;
             opacity: 0;
             font-size: small;
@@ -106,7 +111,7 @@
             color: var(--color-text);
           }
     
-          &>.nav-item-close-dot {
+          & .nav-item-close-dot {
             display: none;
             font-size: xx-small;
     
@@ -115,7 +120,7 @@
             }
           }
   
-          &>.nav-item-close-loading {
+          & .nav-item-close-loading {
             display: none;
             font-size: small;
     
@@ -124,15 +129,15 @@
             }
           }
   
-          &:hover>.nav-item-close-dot, &:hover>.nav-item-close-loading {
+          &:hover .nav-item-close-dot, &:hover .nav-item-close-loading {
             display: none;
           }
         }
       }
   
       &.active, &:hover {
-        &>.btn .nav-item-close {
-          &>.nav-item-close-times {
+        & .btn .nav-item-close {
+          & .nav-item-close-times {
             opacity: 1 !important;
           }
         }
@@ -141,7 +146,7 @@
   
   
     &.nav-tabs-dark-active {
-      &>.nav-item {
+      & .nav-item {
         background: var(--color-bg);
   
         &:hover {
