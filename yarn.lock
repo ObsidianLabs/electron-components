@@ -935,13 +935,6 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.10.1", "@babel/runtime@^7.11.1":
-  version "7.16.5"
-  resolved "https://registry.npmmirror.com/@babel/runtime/download/@babel/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
-  integrity sha512-TXWihFIS3Pyv5hzR7j6ihmeLkZfrXGxAr5UfSl8CHf+6q/wpiYDkUau0czckpYG8QmnCIuPpdLtuA9VmuGGyMA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@babel/template@^7.16.0":
   version "7.16.0"
   resolved "https://registry.npmmirror.com/@babel/template/download/@babel/template-7.16.0.tgz#d16a35ebf4cd74e202083356fab21dd89363ddd6"
@@ -2290,6 +2283,11 @@ clone@^1.0.2:
   version "1.0.4"
   resolved "https://registry.nlark.com/clone/download/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
+
+clsx@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.nlark.com/clsx/download/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha1-mLMTT5q73yOyZjSRrOE8XAOnMYg=
 
 co@^4.6.0:
   version "4.6.0"
@@ -5580,14 +5578,7 @@ next-tick@~1.0.0:
   resolved "https://registry.nlark.com/next-tick/download/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
-node-abi@^2.21.0:
-  version "2.30.1"
-  resolved "https://registry.npmmirror.com/node-abi/download/node-abi-2.30.1.tgz?cache=0&sync_timestamp=1637029282857&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fnode-abi%2Fdownload%2Fnode-abi-2.30.1.tgz#c437d4b1fe0e285aaf290d45b45d4d7afedac4cf"
-  integrity sha1-xDfUsf4OKFqvKQ1FtF1Nev7axM8=
-  dependencies:
-    semver "^5.4.1"
-
-node-abi@^3.0.0:
+node-abi@^2.21.0, node-abi@^3.0.0, node-abi@^3.5.0:
   version "3.5.0"
   resolved "https://registry.npmmirror.com/node-abi/download/node-abi-3.5.0.tgz?cache=0&sync_timestamp=1637029318118&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fnode-abi%2Fdownload%2Fnode-abi-3.5.0.tgz#26e8b7b251c3260a5ac5ba5aef3b4345a0229248"
   integrity sha512-LtHvNIBgOy5mO8mPEUtkCW/YCRWYEKshIvqhe1GHHyXEHEB5mgICyYnAcl4qan3uFeRROErKGzatFHPf6kDxWw==
@@ -6975,10 +6966,10 @@ rc-resize-observer@^1.0.0:
     rc-util "^5.15.0"
     resize-observer-polyfill "^1.5.1"
 
-rc-tree@^5.3.4:
-  version "5.3.4"
-  resolved "https://registry.npmmirror.com/rc-tree/download/rc-tree-5.3.4.tgz#a0f54ef5c21f43de2664fe0fb2831460149e9776"
-  integrity sha512-iYsjT30gXgo/w08tAcOeSqnTmfFAXwNENQ3fDGLRybIlBHhPMJdksMUlqYIpB28ZROM22QJ13jxuXBikDStYKg==
+rc-tree@^5.3.3:
+  version "5.3.5"
+  resolved "https://registry.npmmirror.com/rc-tree/download/rc-tree-5.3.5.tgz#99e5af72a619d2520961e16ee63049c67d27b894"
+  integrity sha512-nMlR7YArdL1m+FJXjl6Mt4n6S2+sVY6op2K3roB34YdVyq/Q4gDy5XT2cpiKGZrfCifX79N2LCihRrOGMO2UTw==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "2.x"
@@ -7013,6 +7004,13 @@ rc@^1.2.7:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
+
+react-contexify@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npm.taobao.org/react-contexify/download/react-contexify-5.0.0.tgz#11b477550a0ee5a9a144399bc17c7c56bbc60057"
+  integrity sha1-EbR3VQoO5amhRDmbwXx8VrvGAFc=
+  dependencies:
+    clsx "^1.1.1"
 
 "react-contextmenu@github:ObsidianLabs/react-contextmenu.git#patch":
   version "2.14.0"
@@ -7746,7 +7744,7 @@ semver-compare@^1.0.0:
   resolved "https://registry.npmmirror.com/semver-compare/download/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
   integrity sha1-De4hahyUGrN+nvsXiPavxf9VN/w=
 
-"semver@2 || 3 || 4 || 5", semver@^5.4.1:
+"semver@2 || 3 || 4 || 5":
   version "5.7.1"
   resolved "https://registry.npm.taobao.org/semver/download/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
   integrity sha1-qVT5Ma66UI0we78Gnv8MAclhFvc=

@@ -3,44 +3,50 @@ import Tree from 'rc-tree'
 import cloneDeep from 'lodash/cloneDeep'
 import debounce from 'lodash/debounce'
 import './styles.css'
+import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
+import 'react-contexify/dist/ReactContexify.min.css'
 
-const renderIcon = (props) => {
-  const { data } = props;
-  if (!data.children) {
+const renderIcon = ({ data }) => {
+
+  const isFolder = (data.children || !data.isLeaf)
+
+  if (!isFolder) {
     return <i className='fas fa-file-code fa-fw mr-1' />
   }
-};
+}
 
 const renderSwitcherIcon = ({ loading, expanded, data }) => {
-  if (loading && data.children) {
+  const isFolder = (data.children || !data.isLeaf)
+
+  if (loading && isFolder) {
     return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner  fa-fw' /></span>
   }
 
-  if (!data.children) {
-    return null;
+  if (!isFolder) {
+    return null
   }
 
   return expanded ? (
     <span key='switch-expanded'><span className='far fa-sm fa-chevron-down fa-fw' /></span>
   ) : (
     <span key='switch-close'><span className='far fa-sm fa-chevron-right fa-fw' /></span>
-  );
+  )
 }
 
 const allowDrop = (props) => {
   const { dropNode, dragNode, dropPosition, enableCopy } = props
 
-  if (dropPosition === -1) return false;
+  if (dropPosition === -1) return false
 
   if (enableCopy) {
     return true
   }
 
   if (!dropNode.children && !dragNode.children && (dropNode.path.replace(dropNode.name, '') === dragNode.path.replace(dragNode.name, ''))) {
-    return false;
+    return false
   }
 
-  return true;
+  return true
 }
 
 const motion = {
@@ -50,16 +56,16 @@ const motion = {
   onAppearActive: node => ({ height: node.scrollHeight }),
   onLeaveStart: node => ({ height: node.offsetHeight }),
   onLeaveActive: () => ({ height: 0 }),
-};
+}
 
 const setLeaf = (treeData, curKey) => {
   const loopLeaf = (data) => {
     data.forEach(item => {
       if (!item.key) {
-        item.key = item.path;
+        item.key = item.path
       }
       if (!item.title) {
-        item.title = item.name;
+        item.title = item.name
       }
 
       if (
@@ -67,16 +73,16 @@ const setLeaf = (treeData, curKey) => {
           ? item.path.indexOf(curKey) !== 0
           : curKey.indexOf(item.path) !== 0
       ) {
-        return;
+        return
       }
       if (item.children) {
-        loopLeaf(item.children);
+        loopLeaf(item.children)
       } else if (!item.children || item.children.length === 0) {
-        item.isLeaf = true;
+        item.isLeaf = true
       }
-    });
-  };
-  loopLeaf(treeData);
+    })
+  }
+  loopLeaf(treeData)
 }
 
 const getNewTreeData = (treeData, curKey, child) => {
@@ -84,15 +90,15 @@ const getNewTreeData = (treeData, curKey, child) => {
     data.forEach(item => {
       if (curKey.indexOf(item.path) === 0) {
         if (item.children?.length > 0) {
-          loop(item.children);
+          loop(item.children)
         } else {
-          item.children = child;
+          item.children = child
         }
       }
-    });
-  };
-  loop(treeData);
-  setLeaf(treeData, curKey);
+    })
+  }
+  loop(treeData)
+  setLeaf(treeData, curKey)
 }
 
 const replaceTreeNode = (treeData, curKey, child) => {
@@ -103,20 +109,40 @@ const replaceTreeNode = (treeData, curKey, child) => {
       } else if (item.children) {
         loop(item.children)
       }
-    });
-  };
-  loop(treeData);
+    })
+  }
+  loop(treeData)
 }
 
 
-const FileTree = ({ projectManager, onSelect }, ref) => {
+const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([])
+  const [selectNode, setSelectNode] = useState({ children: [] })
   const [enableCopy, setEnableCopy] = useState(false)
   const prevTreeData = useRef()
+  const treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
+
+  const { show } = useContextMenu({
+    id: 'file-tree'
+  })
+
+  const handleContextMenu = ({ event, node }) => {
+    event.nativeEvent.preventDefault()
+    handleSetSelectNode(node)
+    show(event.nativeEvent, {
+      props: {
+        key: 'value'
+      }
+    })
+  }
+
+  const handleSetSelectNode = (node) => {
+    setSelectNode(node)
+  }
 
   React.useImperativeHandle(ref, () => ({
     setActive(key) {
@@ -149,13 +175,13 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
   const refreshDirectory = async (directory) => {
     const tempTree = cloneDeep(prevTreeData.current)
 
-    if(!directory) {
+    if (!directory) {
       return
     }
 
-    replaceTreeNode(tempTree, directory.path, directory.children);
+    replaceTreeNode(tempTree, directory.path, directory.children)
     setLeaf(tempTree, tempTree[0].path)
-    setTreeData(tempTree);
+    setTreeData(tempTree)
   }
 
   const handleLoadData = treeNode => {
@@ -163,17 +189,17 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
       if (!treeNode.children) {
         resolve()
       } else {
-        const tempTreeData = cloneDeep(treeData);
+        const tempTreeData = cloneDeep(treeData)
         projectManager.loadDirectory(treeNode).then(newData => {
           setTimeout(() => {
-            getNewTreeData(tempTreeData, treeNode.path, newData);
-            setTreeData(tempTreeData);
-            resolve();
-          }, 500);
+            getNewTreeData(tempTreeData, treeNode.path, newData)
+            setTreeData(tempTreeData)
+            resolve()
+          }, 500)
         })
       }
-    });
-  };
+    })
+  }
 
   const handleSelect = (_, { node }) => {
     if (node.isLeaf) {
@@ -187,36 +213,38 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
   }
 
   const expandFolderNode = (event, node) => {
-    const { isLeaf } = node;
+    const { isLeaf } = node
 
     if (isLeaf) {
-      return;
+      return
     }
 
     if (treeRef.current) {
-      treeRef.current.onNodeExpand(event, node);
+      treeRef.current.onNodeExpand(event, node)
     }
 
-  };
+  }
 
   const onDebounceExpand = debounce(expandFolderNode, 200, {
     leading: true,
-  });
+  })
 
   const handleClick = useCallback((event, node) => {
-    onDebounceExpand(event, node);
+    onDebounceExpand(event, node)
   }, [expandedKeys])
 
   const handleDrop = ({ node, dragNode }) => {
     fileOps(dragNode.path, node.path)
-  };
+  }
 
   const handleDragOver = ({ event }) => {
     setEnableCopy(event.altKey)
   }
+
   const handleDragStart = ({ event }) => {
     setEnableCopy(event.altKey)
   }
+
   const onDebounceDrag = debounce(handleDrop, 2000, {
     leading: true,
   })
@@ -248,6 +276,7 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
         switcherIcon={(nodeProps) =>
           renderSwitcherIcon(nodeProps)
         }
+        onRightClick={handleContextMenu}
         onClick={handleClick}
         onExpand={handleExpand}
         onSelect={handleSelect}
@@ -255,12 +284,17 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
       />
+      <Menu animation='fade' id='file-tree'>
+        {
+          treeNodeContextMenu.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
+        }
+      </Menu>
     </div>
-  );
+  )
 }
-const ForwardFileTree = React.forwardRef(FileTree);
-ForwardFileTree.displayName = 'FileTree';
+const ForwardFileTree = React.forwardRef(FileTree)
+ForwardFileTree.displayName = 'FileTree'
 
-export default ForwardFileTree;
+export default ForwardFileTree
 
 export { default as ClipBoardService } from "./clipboard"
