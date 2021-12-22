@@ -5,27 +5,27 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import BaseProjectManager from './BaseProjectManager'
 
 export default class LocalProjectManager extends BaseProjectManager {
-  static async createProject (options, stage = '') {
+  static async createProject(options, stage = '') {
     return await BaseProjectManager.channel.invoke('post', stage, options)
   }
 
-  constructor (project, projectRoot) {
+  constructor(project, projectRoot) {
     super(project, projectRoot)
 
     BaseProjectManager.channel.on('refresh-file', this.onRefreshFile.bind(this))
     BaseProjectManager.channel.on('delete-file', this.onDeleteFile.bind(this))
   }
 
-  dispose () {
+  dispose() {
     BaseProjectManager.channel.off('refresh-file')
     BaseProjectManager.channel.off('delete-file')
   }
 
-  get path () {
+  get path() {
     return fileOps.current.path
   }
 
-  async prepareProject () {
+  async prepareProject() {
     if (!await fileOps.current.isDirectory(this.projectRoot)) {
       return { error: 'invalid project' }
     }
@@ -44,44 +44,47 @@ export default class LocalProjectManager extends BaseProjectManager {
     return { initial: { path: this.settingsFilePath, pathInProject: this.settingsFilePath }, projectSettings }
   }
 
-  pathForProjectFile (relativePath) {
+  pathForProjectFile(relativePath) {
     return this.projectRoot ? fileOps.current.path.join(this.projectRoot, relativePath) : ''
   }
 
-  pathInProject (filePath) {
+  pathInProject(filePath) {
     return this.path.relative(this.projectRoot, filePath)
   }
 
-  async listFolder (folderPath) {
+  async getDir(filePath) {
+    return await fileOps.current.getDirectory(filePath)
+  }
+  async listFolder(folderPath) {
     return await fileOps.current.listFolder(folderPath)
   }
 
-  async loadRootDirectory () {
+  async loadRootDirectory() {
     return await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
   }
 
-  async loadDirectory (node) {
+  async loadDirectory(node) {
     return await BaseProjectManager.channel.invoke('loadDirectory', node.path)
   }
 
-  async readProjectSettings () {
+  async readProjectSettings() {
     this.projectSettings = new BaseProjectManager.ProjectSettings(this, this.settingsFilePath, BaseProjectManager.channel)
     await this.projectSettings.readSettings()
     return this.projectSettings
   }
 
-  openProjectSettings () {
+  openProjectSettings() {
     this.project.openProjectSettings(this.settingsFilePath)
   }
 
-  get mainFilePath () {
+  get mainFilePath() {
     if (this.projectSettings?.get('main')) {
       return this.pathForProjectFile(this.projectSettings.get('main'))
     }
     throw new Error('No main file in project settings')
   }
 
-  async isMainValid () {
+  async isMainValid() {
     try {
       return await fileOps.current.isFile(this.mainFilePath)
     } catch (e) {
@@ -89,7 +92,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  async checkSettings () {
+  async checkSettings() {
     if (!this.project || !this.projectRoot) {
       notification.error('No Project', 'Please open a project first.')
       return
@@ -98,30 +101,30 @@ export default class LocalProjectManager extends BaseProjectManager {
     return await this.projectSettings.readSettings()
   }
 
-  async isFile (filePath) {
+  async isFile(filePath) {
     return await fileOps.current.isFile(filePath)
   }
 
-  async ensureFile (filePath) {
+  async ensureFile(filePath) {
     return await fileOps.current.fs.ensureFile(filePath)
   }
 
-  async readFile (filePath) {
+  async readFile(filePath) {
     return await fileOps.current.readFile(filePath)
   }
 
-  async saveFile (filePath, content) {
+  async saveFile(filePath, content) {
     await fileOps.current.writeFile(filePath, content)
   }
 
-  onFileChanged () {}
+  onFileChanged() { }
 
-  async createNewFile (basePath, name) {
+  async createNewFile(basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
       throw new Error(`File <b>${filePath}</b> already exists.`)
     }
-  
+
     try {
       await this.ensureFile(filePath)
     } catch (e) {
@@ -134,12 +137,12 @@ export default class LocalProjectManager extends BaseProjectManager {
     return filePath
   }
 
-  async createNewFolder (basePath, name) {
+  async createNewFolder(basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isDirectory(folderPath)) {
       throw new Error(`Folder <b>${folderPath}</b> already exists.`)
     }
-  
+
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
@@ -151,11 +154,55 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  async rename (oldPath, name) {
+  async copy(from, to) {
+    const { fs } = fileOps.current
+    try {
+      await fs.copy(from, to, { overwrite: false, errorOnExist: true });
+      return true;
+    } catch (error) {
+      return false
+    }
+  }
+
+  async moveOps({ from, to }) {
+    const { path, fs } = fileOps.current
+    const toDir = await this.getDir(to)
+    const toIsFile = await this.isFile(to)
+    const { name: fromName, ext: fromExt } = path.parse(from)
+    const dest = !toIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}${fromExt}`
+
+    try {
+      await fs.move(from, dest)
+    } catch (e) {
+      throw new Error(`Fail to rename <b>${dest}</b>.`)
+    }
+  }
+
+  async copyOps({ from, to }, maxAttempts = 10) {
+    const { path } = fileOps.current
+    const toDir = await this.getDir(to)
+    const fromIsFile = await this.isFile(from)
+    const { name: fromName, ext: fromExt } = path.parse(from)
+
+    let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
+
+    // TODO: improve copy rename regex
+    if (!await this.copy(from, dest)); {
+      for (let i = 1; i <= maxAttempts; i++) {
+        dest = dest.replace(new RegExp(/copy[0-9]+/g), `copy${i+1}`)
+        if (await this.copy(from, dest)) {
+          return;
+        }
+      }
+    }
+    
+  }
+
+  async rename(oldPath, name) {
     const { path, fs } = fileOps.current
     const { dir } = path.parse(oldPath)
     const newPath = path.join(dir, name)
-  
+
     try {
       await fs.rename(oldPath, newPath)
     } catch (e) {
@@ -163,7 +210,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  async deleteFile (node) {
+  async deleteFile(node) {
     const { response } = await fileOps.current.showMessageBox({
       message: `Are you sure you want to delete ${node.path}?`,
       buttons: ['Move to Trash', 'Cancel']
@@ -173,18 +220,18 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  onRefreshFile (data) {
+  onRefreshFile(data) {
     modelSessionManager.refreshFile(data)
     if (data.path === this.settingsFilePath) {
       this.projectSettings?.update(data.content)
     }
   }
 
-  onDeleteFile (data) {
+  onDeleteFile(data) {
     modelSessionManager.deleteFile(data.path)
   }
 
-  toggleTerminal (terminal) {
+  toggleTerminal(terminal) {
     BaseProjectManager.terminalButton?.setState({ terminal })
     this.project.toggleTerminal(terminal)
   }

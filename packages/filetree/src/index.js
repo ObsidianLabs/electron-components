@@ -1,26 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import fileOps from '@obsidians/file-ops'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import Tree from 'rc-tree'
 import cloneDeep from 'lodash/cloneDeep'
 import debounce from 'lodash/debounce'
-import DropIndicator from './DropIndicator'
-
 import './styles.css'
 
 const renderIcon = (props) => {
-  const { expanded, loading, isLeaf } = props;
-  if (isLeaf) {
+  const { data } = props;
+  if (!data.children) {
     return <i className='fas fa-file-code fa-fw mr-1' />
   }
-  return expanded && !loading ? <span key='open' ><span className='fas fa-folder-open fa-fw  mr-1' /></span> : <span key='close'><span className='fas fa-folder fa-fw  mr-1' /></span>
 };
 
-const renderSwitcherIcon = ({ loading, expanded, isLeaf }) => {
-  if (loading && !isLeaf) {
+const renderSwitcherIcon = ({ loading, expanded, data }) => {
+  if (loading && data.children) {
     return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner  fa-fw' /></span>
   }
 
-  if (isLeaf) {
+  if (!data.children) {
     return null;
   }
 
@@ -32,17 +28,19 @@ const renderSwitcherIcon = ({ loading, expanded, isLeaf }) => {
 }
 
 const allowDrop = (props) => {
-  const { dropNode, dragNode, dropPosition } = props
-  if (dropNode.path.replace(dropNode.name) === dragNode.path.replace(dragNode.name)) {
+  const { dropNode, dragNode, dropPosition, enableCopy } = props
+
+  if (dropPosition === -1) return false;
+
+  if (enableCopy) {
+    return true
+  }
+
+  if (!dropNode.children && !dragNode.children && (dropNode.path.replace(dropNode.name, '') === dragNode.path.replace(dragNode.name, ''))) {
     return false;
   }
 
-  if (!dropNode.children) {
-    if (dropPosition === 0) return false;
-  }
-
   return true;
-  // TODO: move copy logic
 }
 
 const motion = {
@@ -97,13 +95,28 @@ const getNewTreeData = (treeData, curKey, child) => {
   setLeaf(treeData, curKey);
 }
 
+const replaceTreeNode = (treeData, curKey, child) => {
+  const loop = data => {
+    data.forEach(item => {
+      if (curKey === item.path) {
+        item.children = child
+      } else if (item.children) {
+        loop(item.children)
+      }
+    });
+  };
+  loop(treeData);
+}
+
+
 const FileTree = ({ projectManager, onSelect }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([])
-  const [rerender, setRerender] = useState(false);
+  const [enableCopy, setEnableCopy] = useState(false)
+  const prevTreeData = useRef()
 
   React.useImperativeHandle(ref, () => ({
     setActive(key) {
@@ -114,7 +127,15 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
     setNoActive() {
       setSelectedKeys([])
     }
-  }));
+  }))
+
+  const fileOps = async (from, to) => {
+    if (enableCopy) {
+      await projectManager.copyOps({ from, to })
+    } else {
+      await projectManager.moveOps({ from, to })
+    }
+  }
 
   const loadTree = async projectManager => {
     projectManager.onRefreshDirectory(refreshDirectory)
@@ -126,7 +147,15 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
   }
 
   const refreshDirectory = async (directory) => {
-    console.log('refreshDirectory', directory)
+    const tempTree = cloneDeep(prevTreeData.current)
+
+    if(!directory) {
+      return
+    }
+
+    replaceTreeNode(tempTree, directory.path, directory.children);
+    setLeaf(tempTree, tempTree[0].path)
+    setTreeData(tempTree);
   }
 
   const handleLoadData = treeNode => {
@@ -139,7 +168,6 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
           setTimeout(() => {
             getNewTreeData(tempTreeData, treeNode.path, newData);
             setTreeData(tempTreeData);
-            setRerender(!rerender);
             resolve();
           }, 500);
         })
@@ -171,7 +199,6 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
 
   };
 
-
   const onDebounceExpand = debounce(expandFolderNode, 200, {
     leading: true,
   });
@@ -180,61 +207,24 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
     onDebounceExpand(event, node);
   }, [expandedKeys])
 
-  const handleDrop = info => {
-    const dropKey = info.node.path;
-    const dragKey = info.dragNode.path;
-    const dropPos = info.node.pos.split('-');
-    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-
-    const loop = (data, key, callback) => {
-      data.forEach((item, index, arr) => {
-        if (item.path === key) {
-          callback(item, index, arr);
-          return;
-        }
-        if (item.children) {
-          loop(item.children, key, callback);
-        }
-      });
-    };
-    const data = [...treeData];
-
-    // Find dragObject
-    let dragObj;
-    loop(data, dragKey, (item, index, arr) => {
-      arr.splice(index, 1);
-      dragObj = item;
-    });
-
-    if (dropPosition === 0) {
-      // Drop on the content
-      loop(data, dropKey, item => {
-        // eslint-disable-next-line no-param-reassign
-        item.children = item.children || [];
-        // where to insert
-        item.children.unshift(dragObj);
-      });
-    } else {
-      // Drop on the gap (insert before or insert after)
-      let ar;
-      let i;
-      loop(data, dropKey, (_, index, arr) => {
-        ar = arr;
-        i = index;
-      });
-      if (dropPosition === -1) {
-        ar.splice(i, 0, dragObj);
-      } else {
-        ar.splice(i + 1, 0, dragObj);
-      }
-    }
-
-    setTreeData(data)
+  const handleDrop = ({ node, dragNode }) => {
+    fileOps(dragNode.path, node.path)
   };
 
+  const handleDragOver = ({ event }) => {
+    setEnableCopy(event.altKey)
+  }
+  const handleDragStart = ({ event }) => {
+    setEnableCopy(event.altKey)
+  }
   const onDebounceDrag = debounce(handleDrop, 2000, {
     leading: true,
   })
+
+  useEffect(() => {
+    prevTreeData.current = treeData
+  })
+
   useEffect(() => {
     loadTree(projectManager)
   }, [])
@@ -243,14 +233,14 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
     <div className="tree-wrap animation">
       <Tree
         draggable
-        allowDrop={allowDrop}
+        allowDrop={(props) => allowDrop({ ...props, enableCopy })}
         onDrop={onDebounceDrag}
         ref={treeRef}
         motion={motion}
         itemHeight={20}
         icon={renderIcon}
         treeData={treeData}
-        dropIndicatorRender={DropIndicator}
+        dropIndicatorRender={() => null}
         loadData={handleLoadData}
         expandedKeys={expandedKeys}
         selectedKeys={selectedKeys}
@@ -262,6 +252,8 @@ const FileTree = ({ projectManager, onSelect }, ref) => {
         onExpand={handleExpand}
         onSelect={handleSelect}
         onLoad={handleLoadData}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 .tree-wrap {
   flex-grow: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .rc-tree {
@@ -18,6 +19,11 @@
   position: relative;
   padding: 2px 6px;
   border: 1px solid #24272c;
+  font-size: 14px;
+}
+
+.rc-tree .rc-tree-treenode.drop-target {
+  background-color: #636cb4;
 }
 
 .rc-tree .rc-tree-treenode.drop-target ~ .rc-tree-treenode {
@@ -40,7 +46,7 @@
 
 .rc-tree .rc-tree-treenode .rc-tree-node-content-wrapper {
   position: relative;
-  /* display: inline-flex; */
+  display: inline-flex;
   height: 24px;
   margin: 0;
   padding: 0;
@@ -60,7 +66,7 @@
 }
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher-noop {
   cursor: auto;
-  /* flex-shrink: 0; */
+  flex-shrink: 0;
 }
 .rc-tree .rc-tree-treenode span.rc-tree-switcher .svg-inline--fa {
   transition: all 0.3s ease-in;
@@ -114,10 +120,10 @@
 .rc-tree-title {
   display: inline-block;
   color: #d1d5da;
-  /* flex-grow: 1;
+  flex-grow: 1;
   overflow-x: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis; */
+  text-overflow: ellipsis;
 }
 .rc-tree-indent {
   display: inline-block;
