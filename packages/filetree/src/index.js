@@ -207,7 +207,10 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
     }
   }
 
-  const handleExpand = (keys) => {
+  const handleExpand = (keys, { node }) => {
+    if(node.root) {
+      return
+    }
     setAutoExpandParent(false)
     setExpandKeys(keys)
   }
