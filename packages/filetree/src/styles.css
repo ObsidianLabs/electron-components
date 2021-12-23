@@ -171,7 +171,7 @@
   overflow-y: hidden;
 }
 
-.tree-wrap .react-contexify {
+.obsidians-workspace .react-contexify {
   max-height: 398px;
   overflow: auto;
   background: #1e2024;
@@ -181,18 +181,18 @@
   border-top-right-radius: 0;
 }
 
-.tree-wrap  .react-contexify__item__content {
+.obsidians-workspace .react-contexify__item__content {
   color: rgba(255, 255, 255, 0.8);
   padding: 0.2rem 0.75rem;
   font-size: 0.875rem;
 }
 
-.tree-wrap .react-contexify__separator{
+.obsidians-workspace .react-contexify__separator{
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.tree-wrap .react-contexify__item:not(.react-contexify__item--disabled):focus>.react-contexify__item__content,
+.obsidians-workspace .react-contexify__item:not(.react-contexify__item--disabled):focus>.react-contexify__item__content,
 
-.tree-wrap  .react-contexify__item:not(.react-contexify__item--disabled):hover>.react-contexify__item__content {
+.obsidians-workspace .react-contexify__item:not(.react-contexify__item--disabled):hover>.react-contexify__item__content {
   background-color: #40444f;
 }
