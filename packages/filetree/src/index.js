@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce'
 import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
+import platform from '@obsidians/platform'
 
 const renderIcon = ({ data }) => {
 
@@ -263,7 +264,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
   return (
     <div className="tree-wrap animation">
       <Tree
-        draggable
+        // TODO: improve the condition when support the WEB
+        draggable={platform.isDesktop}
         allowDrop={(props) => allowDrop({ ...props, enableCopy })}
         onDrop={onDebounceDrag}
         ref={treeRef}
