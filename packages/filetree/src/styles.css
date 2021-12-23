@@ -54,6 +54,9 @@
   vertical-align: top;
   cursor: pointer;
   flex-grow: 1;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-icon__customize, .rc-tree .rc-tree-treenode span.rc-tree-checkbox.rc-tree-icon__customize, .rc-tree .rc-tree-treenode span.rc-tree-iconEle.rc-tree-icon__customize {

@@ -167,10 +167,10 @@ export default class LocalProjectManager extends BaseProjectManager {
   async moveOps({ from, to }) {
     const { path, fs } = fileOps.current
     const toDir = await this.getDir(to)
-    const toIsFile = await this.isFile(to)
+    const fromIsFile = await this.isFile(from)
     const { name: fromName, ext: fromExt } = path.parse(from)
-    const dest = !toIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}${fromExt}`
-
+    const dest =  fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
+   
     try {
       await fs.move(from, dest)
     } catch (e) {
@@ -178,24 +178,21 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  async copyOps({ from, to }, maxAttempts = 10) {
+  async copyOps({ from, to }) {
     const { path } = fileOps.current
     const toDir = await this.getDir(to)
     const fromIsFile = await this.isFile(from)
     const { name: fromName, ext: fromExt } = path.parse(from)
-
     let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
-
-    // TODO: improve copy rename regex
-    if (!await this.copy(from, dest)); {
-      for (let i = 1; i <= maxAttempts; i++) {
-        dest = dest.replace(new RegExp(/copy[0-9]+/g), `copy${i+1}`)
-        if (await this.copy(from, dest)) {
-          return;
-        }
+    let safeCount = 0
+    
+    while(!await this.copy(from, dest) && safeCount < 10) {
+      const matched = dest.match(/(?<=copy)\d*(?=\.)/g)
+      safeCount++
+      if(matched) {
+        dest = dest.replace(/(?<=copy)\d*(?=\.)/g, Number(matched[0]) + 1)
       }
     }
-    
   }
 
   async rename(oldPath, name) {
