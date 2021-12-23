@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
+// TODO: replace the new contextmenu or native menu
 import { ContextMenuTrigger } from 'react-contextmenu'
 import TabContextMenu from './TabContextMenu'
 import { UncontrolledTooltip } from 'reactstrap'

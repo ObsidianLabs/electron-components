@@ -12,6 +12,14 @@ export default class FileOps {
     }
   }
 
+  async getDirectory (pathUrl) {
+    try {
+      return (await this.fs.promises.stat(pathUrl)).isDirectory() ? pathUrl : this.path.dirname(pathUrl)
+    } catch (e) {
+      return null
+    }
+  }
+
   async isFile (filePath) {
     try {
       return (await this.fs.promises.stat(filePath)).isFile()

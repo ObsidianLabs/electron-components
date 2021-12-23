@@ -72,6 +72,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return {
       name: this.projectName,
       root: true,
+      key: `${this.prefix}/${this.userId}/${this.projectId}`,
+      title: this.projectName,
       path: `${this.prefix}/${this.userId}/${this.projectId}`,
       pathInProject: this.projectName,
       loading: false,
