@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import {
   ButtonDropdown,
   DropdownToggle,
-  DropdownMenu,
   DropdownItem
 } from 'reactstrap'
 
@@ -17,32 +16,20 @@ import Auth from '@obsidians/auth'
 class User extends Component {
   state = {
     isDropdownOpen: false,
+    loaded: false
   }
 
+  componentDidMount () {
+    const img = new Image()
+    img.src = this.props.profile.get('avatar')
+    img.crossOrigin = true
+    img.onload = () => {
+      this.setState({ loaded: true})
+    }
+  }
   onToggle = event => {
     event.preventDefault()
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
-  }
-
-  renderAvatar = avatar => {
-    if (avatar) {
-      return (
-        <div
-          key='with-avatar'
-          className='d-flex bg-secondary align-items-center justify-content-center user-avatar'
-        >
-          <img className='user-avatar' src={avatar}/>
-        </div>
-      )
-    }
-    return (
-      <div
-        key='no-avatar'
-        className='d-flex bg-secondary align-items-center justify-content-center user-avatar text-light'
-      >
-        <i className='fa fa-user-alt' />
-      </div>
-    )
   }
 
   renderExtraLoggedInOptions = () => {
@@ -174,7 +161,11 @@ class User extends Component {
         onClick={event => event.preventDefault()}
       >
         <DropdownToggle tag='div' className='nav-dropdown-toggle px-2'>
-          {this.renderAvatar(profile.get('avatar'))}
+          <div className='d-flex bg-secondary align-items-center justify-content-center user-avatar'>
+            {
+              this.state.loaded ? <img className='user-avatar' src={profile.get('avatar')} crossOrigin="true" /> : <span><span className='fa fa-user-alt' /></span>
+            }
+          </div>
         </DropdownToggle>
         {this.renderDropdownMenus(profile)}
       </ButtonDropdown>
