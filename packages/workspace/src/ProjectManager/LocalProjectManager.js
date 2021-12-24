@@ -163,18 +163,34 @@ export default class LocalProjectManager extends BaseProjectManager {
       return false
     }
   }
+  async checkExsist (path) {
+    const { fs } = fileOps.current
+    return !!(await fs.promises.stat(path).catch(() => false))
+  }
 
   async moveOps({ from, to }) {
     const { path, fs } = fileOps.current
     const toDir = await this.getDir(to)
     const fromIsFile = await this.isFile(from)
     const { name: fromName, ext: fromExt } = path.parse(from)
-    const dest =  fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
-   
+    const dest = fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
+
+    const exsist = await this.checkExsist(dest)
+
     try {
-      await fs.move(from, dest)
+        if (exsist) {
+          const { response } = await fileOps.current.showMessageBox({
+            message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
+            buttons: ['Replace', 'Cancel']
+          })
+          if (response === 0) {
+            await fs.move(from, dest, { overwrite: true })
+          }
+        } else {
+          await fs.move(from, dest)
+        }
     } catch (e) {
-      throw new Error(`Fail to rename <b>${dest}</b>.`)
+      throw new Error(`Fail to move <b>${dest}</b>.`)
     }
   }
 
@@ -185,11 +201,11 @@ export default class LocalProjectManager extends BaseProjectManager {
     const { name: fromName, ext: fromExt } = path.parse(from)
     let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
     let safeCount = 0
-    
-    while(!await this.copy(from, dest) && safeCount < 10) {
+
+    while (!await this.copy(from, dest) && safeCount < 10) {
       const matched = dest.match(/(?<=copy)\d*(?=\.)/g)
       safeCount++
-      if(matched) {
+      if (matched) {
         dest = dest.replace(/(?<=copy)\d*(?=\.)/g, Number(matched[0]) + 1)
       }
     }

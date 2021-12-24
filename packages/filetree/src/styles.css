@@ -63,14 +63,17 @@
   background-image: none;
 }
 .rc-tree .rc-tree-treenode span.rc-tree-switcher {
-  margin-right: 4px;
   display: inline-block;
-  width: 17.5px;
+  width: 21.5px;
+  margin-right: 0;
 }
+
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher-noop {
   cursor: auto;
   flex-shrink: 0;
+  width: 0;
 }
+
 .rc-tree .rc-tree-treenode span.rc-tree-switcher .svg-inline--fa {
   transition: all 0.3s ease-in;
   -webkit-transition: all 0.3s ease-in;
@@ -117,7 +120,6 @@
 }
 
 .rc-tree-icon__customize {
-  margin-right: 2px;
   vertical-align: top;
 }
 .rc-tree-title {

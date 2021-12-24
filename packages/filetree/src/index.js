@@ -20,7 +20,7 @@ const renderSwitcherIcon = ({ loading, expanded, data }) => {
   const isFolder = (data.children || !data.isLeaf)
 
   if (loading && isFolder) {
-    return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner  fa-fw' /></span>
+    return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner fa-fw' /></span>
   }
 
   if (!isFolder) {
@@ -28,9 +28,9 @@ const renderSwitcherIcon = ({ loading, expanded, data }) => {
   }
 
   return expanded ? (
-    <span key='switch-expanded'><span className='far fa-sm fa-chevron-down fa-fw' /></span>
+    <span key='switch-expanded'><span className='far fa-chevron-down fa-fw' /></span>
   ) : (
-    <span key='switch-close'><span className='far fa-sm fa-chevron-right fa-fw' /></span>
+    <span key='switch-close'><span className='far fa-chevron-right fa-fw' /></span>
   )
 }
 
