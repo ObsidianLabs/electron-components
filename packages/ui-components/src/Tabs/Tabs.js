@@ -43,6 +43,8 @@ export default class Tabs extends PureComponent {
       return
     }
 
+    this.header = React.createRef()
+
     this.state = {
       selected,
       tabs: [selected]
@@ -122,11 +124,18 @@ export default class Tabs extends PureComponent {
 
   updateTab = (updates, key = this.tabKey()) => {
     const target = this.findTab(key)
+    const index = this.findTabIndex()
+
     if (target) {
       Object.keys(updates).forEach(key => {
         target[key] = updates[key]
       })
-      this.header.forceUpdate()
+      const tabs = cloneDeep(this.state.tabs)
+      tabs.splice(index, 1, target)
+      
+      this.setState({
+        tabs
+      })
       this.onTabsUpdated()
     }
     return target
@@ -214,7 +223,7 @@ export default class Tabs extends PureComponent {
     return (
       <div className={classnames(`d-flex flex-column w-100 h-100 overflow-hidden`, this.props.className)}>
         <TabHeader
-          ref={header => this.header = header}
+          ref={this.header}
           size={this.props.size}
           className={this.props.headerClassName}
           tabs={this.state.tabs}
