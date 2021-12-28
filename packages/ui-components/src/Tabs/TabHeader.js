@@ -125,11 +125,11 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active })} style={{ opacity }}>
+        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => onContextMenu(event, tab)}>
           <div
             className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
           >
-            <div className='nav-item-content d-flex flex-row' onContextMenu={(event) => onContextMenu(event, tab)}>
+            <div className='nav-item-content d-flex flex-row'>
 
               <div className='nav-item-text' onMouseDown={e => {
                 e.stopPropagation()
@@ -155,7 +155,7 @@ class TabHeaderItem extends PureComponent {
 
 const SortableTab = DragSource(Types.TAB, cardSource, sourceCollect)(DropTarget(Types.TAB, cardTarget, targetCollect)(TabHeaderItem))
 
-const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [],onCloseTab, onNewTab, contextMenu, onDragTab }) => {
+const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [], onCloseTab, onNewTab, contextMenu, onDragTab }) => {
   const treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selected) : contextMenu
   const { show } = useContextMenu({
     id: 'tab-context-menu'
@@ -223,7 +223,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
             </span>
           }
         </div>
-        <Menu animation='fade' id='tab-context-menu'>
+        <Menu animation={false} id='tab-context-menu'>
           {
             treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selected)}>{item.text}</Item> : <Separator />)
           }
