@@ -200,7 +200,7 @@ class ModelSessionManager {
     if (!modelSession || modelSession.saving) {
       return
     }
-    if (modelSession.saved) {
+    if (!modelSession.saved) {
       modelSession.refreshValue(data.content)
       this._editorContainer.fileSaved(data.path)
       modelSession.saved = true
