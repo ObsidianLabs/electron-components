@@ -2,7 +2,6 @@ const { IpcChannel } = require('@obsidians/ipc')
 const { app, dialog, shell, BrowserWindow } = require('electron')
 const path = require('path')
 const os = require('os')
-const trash = require('trash')
 
 class FileOpsChannel extends IpcChannel {
   constructor () {
@@ -53,10 +52,6 @@ class FileOpsChannel extends IpcChannel {
     } else {
       this.exec(`gnome-terminal --working-directory=${filePath}`)
     }
-  }
-
-  deleteFile (filePath) {
-    return trash([filePath])
   }
 }
 
