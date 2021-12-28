@@ -299,7 +299,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
       />
-      <Menu animation='fade' id='file-tree'>
+      <Menu animation={false} id='file-tree'>
         {
           treeNodeContextMenu.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
         }
