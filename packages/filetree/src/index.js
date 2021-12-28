@@ -122,7 +122,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([])
-  const [selectNode, setSelectNode] = useState({ children: [] })
+  const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
   const prevTreeData = useRef()
   const treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
@@ -153,6 +153,12 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
     },
     setNoActive() {
       setSelectedKeys([])
+    },
+    get activeNode () {
+      return selectNode
+    },
+    get rootNode () {
+      return treeData
     }
   }))
 
@@ -170,6 +176,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
     setLeaf([treeData], treeData.path)
 
     setTreeData([treeData])
+    setSelectNode(treeData)
     setExpandKeys([treeData.path])
   }
 
@@ -183,6 +190,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
     replaceTreeNode(tempTree, directory.path, directory.children)
     setLeaf(tempTree, tempTree[0].path)
     setTreeData(tempTree)
+    setSelectNode(tempTree[0])
   }
 
   const handleLoadData = treeNode => {
@@ -214,6 +222,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
     }
     setAutoExpandParent(false)
     setExpandKeys(keys)
+    setSelectNode(node)
   }
 
   const expandFolderNode = (event, node) => {
@@ -225,6 +234,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
 
     if (treeRef.current) {
       treeRef.current.onNodeExpand(event, node)
+      setSelectNode(node)
     }
 
   }
