@@ -125,7 +125,7 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => {onContextMenu(event, tab)}}>
+        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }}>
           <div
             className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
           >
@@ -164,6 +164,10 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
   })
 
   const handleContextMenu = (event, tab) => {
+    if (treeNodeContextMenu?.length === 0) {
+      return
+    }
+
     event.nativeEvent.preventDefault()
     setSelctNode(tab)
     show(event.nativeEvent, {
@@ -174,64 +178,66 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
   }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className='nav-tab-wrap'>
-        <ul className={classnames('nav nav-tabs', className)}>
-          {
-            tabs.map((tab, index) => {
-              const tabText = getTabText ? getTabText(tab) : tab.text
-              return (
-                <SortableTab
-                  key={tab.key}
-                  size={size}
-                  tab={tab}
-                  index={index}
-                  unsaved={tab.unsaved}
-                  saving={tab.saving}
-                  tabText={tabText}
-                  active={selected.key === tab.key}
-                  onSelectTab={onSelectTab}
-                  onCloseTab={onCloseTab}
-                  onDrag={onDragTab}
-                  onContextMenu={handleContextMenu}
-                />
-              )
-            })
-          }
-          <div className='flex-grow-1' />
-          {
-            ToolButtons.map((btn, index) => {
-              const id = `tab-btn-${index}`
-              return <li key={id}>
-                <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)} onClick={btn.onClick}>
-                  <i className={btn.icon} />
-                  <span>{btn.text}</span>
-                </div>
-                <UncontrolledTooltip delay={0} target={id} placement='bottom' >
-                  {btn.tooltip}
-                </UncontrolledTooltip>
-              </li>
-            })
-          }
-        </ul>
-        <div className='nav-actions'>
-          {onNewTab && platform.isDesktop &&
-            <span
-              key='nav-item-add'
-              className={classnames('btn border-0', size && `btn-${size}`)}
-              onMouseDown={e => e.button === 0 && onNewTab()}
-            >
-              <i className='fas fa-plus' />
-            </span>
-          }
-        </div>
-        <Menu animation={false} id='tab-context-menu'>
-          {
-            treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
-          }
-        </Menu>
+    <div className='nav-top-bar'>
+      <div className='nav-wrap'>
+        <DndProvider backend={HTML5Backend}>
+          <ul className={classnames('nav nav-tabs', className)}>
+            {
+              tabs.map((tab, index) => {
+                const tabText = getTabText ? getTabText(tab) : tab.text
+                return (
+                  <SortableTab
+                    key={tab.key}
+                    size={size}
+                    tab={tab}
+                    index={index}
+                    unsaved={tab.unsaved}
+                    saving={tab.saving}
+                    tabText={tabText}
+                    active={selected.key === tab.key}
+                    onSelectTab={onSelectTab}
+                    onCloseTab={onCloseTab}
+                    onDrag={onDragTab}
+                    onContextMenu={handleContextMenu}
+                  />
+                )
+              })
+            }
+            <div className='flex-grow-1' />
+            {
+              ToolButtons.map((btn, index) => {
+                const id = `tab-btn-${index}`
+                return <li key={id}>
+                  <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)} onClick={btn.onClick}>
+                    <i className={btn.icon} />
+                    <span>{btn.text}</span>
+                  </div>
+                  <UncontrolledTooltip delay={0} target={id} placement='bottom' >
+                    {btn.tooltip}
+                  </UncontrolledTooltip>
+                </li>
+              })
+            }
+          </ul>
+          <Menu animation={false} id='tab-context-menu'>
+            {
+              treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
+            }
+          </Menu>
+        </DndProvider>
       </div>
-    </DndProvider>
+      <div className='nav-actions'>
+        {onNewTab && platform.isDesktop &&
+          <span
+            key='nav-item-add'
+            className={classnames('btn border-0 action-item', size && `btn-${size}`)}
+            onMouseDown={e => e.button === 0 && onNewTab()}
+          >
+            <i className='fas fa-plus' />
+          </span>
+        }
+      </div>
+    </div>
   )
 }
 
