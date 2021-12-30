@@ -71,6 +71,7 @@
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher-noop {
   cursor: auto;
   flex-shrink: 0;
+  width: 0;
 }
 
 .rc-tree .rc-tree-treenode span.rc-tree-switcher .svg-inline--fa {
