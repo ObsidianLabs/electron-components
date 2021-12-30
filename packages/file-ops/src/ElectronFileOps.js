@@ -1,3 +1,4 @@
+// TODO: re integrate file ops with workspace
 import { IpcChannel } from '@obsidians/ipc'
 
 import FileOps from './FileOps'
@@ -78,9 +79,21 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async openItem (filePath) {
-    const result = await this.channel.invoke('openItem', filePath)
-    if (result) {
-      throw new Error(`Cannot open <b>${filePath}</b>. Please make sure it exists.`)
+    const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
+
+    if(!exsist) {
+      const result = await this.channel.invoke('showMessageBox', {
+        message: `The path '${filePath}' does not exist on this computer.`,
+        buttons: ['Remove', 'Cancel']
+      })
+      if (result === 0) {
+        await this.deleteFile(filePath)
+      }
+    } else {
+      const result = await this.channel.invoke('openItem', filePath)
+      if (result) {
+        throw new Error(`Cannot open <b>${filePath}</b>. Please make sure it exists.`)
+      }
     }
   }
 
@@ -89,7 +102,19 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async showItemInFolder (filePath) {
-    return await this.channel.invoke('showItemInFolder', filePath)
+    const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
+
+    if(!exsist) {
+      const result = await this.channel.invoke('showMessageBox', {
+        message: `The path '${filePath}' does not exist on this computer.`,
+        buttons: ['Remove', 'Cancel']
+      })
+      if (result === 0) {
+        await this.deleteFile(filePath)
+      }
+    } else {
+      return await this.channel.invoke('showItemInFolder', filePath)
+    }
   }
 
   async openLink (href) {
@@ -97,7 +122,19 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async openInTerminal (filePath) {
-    return await this.channel.invoke('openInTerminal', filePath)
+    const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
+
+    if(!exsist) {
+      const result = await this.channel.invoke('showMessageBox', {
+        message: `The path '${filePath}' does not exist on this computer.`,
+        buttons: ['Remove', 'Cancel']
+      })
+      if (result === 0) {
+        await this.deleteFile(filePath)
+      }
+    } else {
+      return await this.channel.invoke('openInTerminal', filePath)
+    }
   }
 
   async deleteFile (filePath) {
