@@ -125,24 +125,24 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }}>
+        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
+          e.stopPropagation()
+          e.button === 0 && onSelectTab(tab)
+
+        }}
+          onMouseUp={e => {
+            e.stopPropagation()
+            e.button === 1 && onCloseTab && onCloseTab(tab)
+          }}>
           <div
             className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
           >
             <div className='nav-item-content d-flex flex-row'>
 
-              <div className='nav-item-text' onMouseDown={e => {
-                e.stopPropagation()
-                e.button === 0 && onSelectTab(tab)
-
-              }}
-                onMouseUp={e => {
-                  e.stopPropagation()
-                  e.button === 1 && onCloseTab && onCloseTab(tab)
-                }}>
-                <div key={tab.key} className='d-flex flex-row align-items-center'>
+              <div className='nav-item-text'>
+                <span key={tab.key}>
                   {tabText}
-                </div>
+                </span>
               </div>
             </div>
             {this.renderCloseBtn()}
@@ -170,6 +170,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
 
     event.nativeEvent.preventDefault()
     setSelctNode(tab)
+    onSelectTab(tab)
     show(event.nativeEvent, {
       props: {
         key: 'value'
@@ -226,8 +227,8 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           </Menu>
         </DndProvider>
       </div>
-      <div className='nav-actions'>
-        {onNewTab && platform.isDesktop &&
+      {onNewTab && platform.isDesktop &&
+        <div className='nav-actions'>
           <span
             key='nav-item-add'
             className={classnames('btn border-0 action-item', size && `btn-${size}`)}
@@ -235,8 +236,8 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           >
             <i className='fas fa-plus' />
           </span>
-        }
-      </div>
+        </div>
+      }
     </div>
   )
 }

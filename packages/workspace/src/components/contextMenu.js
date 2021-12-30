@@ -23,11 +23,12 @@ const openInTerminal = node => {
   fileOps.current.openInTerminal(basePath)
 }
 
-export const registerHandlers = ({ newFile, newFolder, rename, deleteFile }) => {
+export const registerHandlers = ({ newFile, newFolder, rename, deleteFile, openFile }) => {
   handlers.newFile = newFile
   handlers.newFolder = newFolder
   handlers.rename = rename
   handlers.deleteFile = deleteFile
+  handlers.openFile = openFile
 }
 
 let contextMenu
@@ -36,7 +37,7 @@ if (platform.isDesktop) {
     { text: 'New File', onClick: node => handlers.newFile(node) },
     { text: 'New Folder', onClick: node => handlers.newFolder(node) },
     null,
-    { text: 'Open' },
+    { text: 'Open', onClick: node => handlers.openFile(node) },
     null,
     { text: 'Open Containing Folder', onClick: showInFinder },
     { text: 'Open in Terminal', onClick: openInTerminal },
