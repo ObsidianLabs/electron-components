@@ -61,7 +61,9 @@ class FileTreeClient {
             name: base,
             path: dirPath,
             loading: true,
-            children: []
+            children: [],
+            type: 'folder',
+            isLeaf: false,
           }
           this.treePointer[dir].children.push(this.treePointer[dirPath])
         })
@@ -79,7 +81,9 @@ class FileTreeClient {
           const { dir, base } = path.parse(filePath)
           this.treePointer[dir].children.push({
             name: base,
-            path: filePath
+            path: filePath,
+            type: 'file',
+            isLeaf: true,
           })
         })
       })

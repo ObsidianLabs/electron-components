@@ -62,6 +62,7 @@ export default class Workspace extends Component {
       newFolder: node => this.openCreateFolderModal(node),
       rename: node => this.openRenameModal(node),
       deleteFile: node => this.context.projectManager.deleteFile(node),
+      openFile: node => this.openFile(node, true)
     })
   }
 
