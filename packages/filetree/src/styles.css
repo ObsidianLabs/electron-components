@@ -172,7 +172,7 @@
   overflow-y: hidden;
 }
 
-.obsidians-workspace .react-contexify {
+#root .react-contexify {
   max-height: 398px;
   overflow: auto;
   background: #1e2024;
@@ -180,20 +180,21 @@
   margin-top: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  z-index: 9999;
 }
 
-.obsidians-workspace .react-contexify__item__content {
+#root .react-contexify__item__content {
   color: rgba(255, 255, 255, 0.8);
   padding: 0.2rem 0.75rem;
   font-size: 0.875rem;
 }
 
-.obsidians-workspace .react-contexify__separator{
+#root .react-contexify__separator{
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.obsidians-workspace .react-contexify__item:not(.react-contexify__item--disabled):focus>.react-contexify__item__content,
+#root .react-contexify__item:not(.react-contexify__item--disabled):focus>.react-contexify__item__content,
 
-.obsidians-workspace .react-contexify__item:not(.react-contexify__item--disabled):hover>.react-contexify__item__content {
+#root .react-contexify__item:not(.react-contexify__item--disabled):hover>.react-contexify__item__content {
   background-color: #40444f;
 }

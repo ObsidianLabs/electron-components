@@ -1,6 +1,7 @@
 import React, { Component, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 
 import {
   ButtonDropdown,
@@ -8,8 +9,6 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
-
-import { ContextMenuTrigger } from 'react-contextmenu'
 
 export default class NavDropdown extends Component {
   static propTypes = {
@@ -21,12 +20,27 @@ export default class NavDropdown extends Component {
 
   state = {
     dropdown: false,
+    activeItem: null
+  }
+
+  contextMenuHandler = useContextMenu({
+    id: `nav-contextmenu-${this.props.route}`
+  })
+
+  handleContextMenu = (event) => {
+    event.nativeEvent.preventDefault()
+
+    this.contextMenuHandler.show(event.nativeEvent, {
+      props: {
+        key: 'value'
+      }
+    })
   }
 
   onToggle = event => {
     if (this.props.onToggle) {
       if (this.props.onToggle(event)) {
-        return        
+        return
       }
     }
     this.setState({ dropdown: !this.state.dropdown })
@@ -60,19 +74,31 @@ export default class NavDropdown extends Component {
           event.preventDefault()
           this.props.onClickItem(item)
         }}
+        onContextMenu={event => {
+          event.preventDefault()
+          this.handleContextMenu(event)
+          this.setState({
+            activeItem: item
+          })
+        }}
       >
-        <ContextMenuTrigger id={`dropdown-item-${this.props.route}-${id}`}>
-          <span key={`dropdown-item-${isSelected}`}>
-            <i className={classnames('mr-2', iconClassName)} />
-          </span>
-          {name}
-        </ContextMenuTrigger>
+        <span key={`dropdown-item-${isSelected}`}>
+          <i className={classnames('mr-2', iconClassName)} />
+        </span>
+        {name}
       </DropdownItem>
     )
   }
 
-  render () {
-    const { list, children, right } = this.props
+  render() {
+    const { list, children, right, contextMenu } = this.props
+    let menus = []
+
+    if (Array.isArray(contextMenu)) {
+      menus = contextMenu
+    } else if (typeof contextMenu === 'function') {
+      menus = this.activeItem?.id ? [] : contextMenu(this.activeItem?.id) || []
+    }
 
     return (
       <ButtonDropdown
@@ -92,6 +118,13 @@ export default class NavDropdown extends Component {
         <DropdownMenu right={right} style={{ width: 'fit-content', top: 48, [right ? 'right' : 'left']: 4 }}>
           {this.renderDropdownList(list)}
         </DropdownMenu>
+        {
+          menus.length > 0 && <Menu animation={false} id={`nav-contextmenu-${this.props.route}`}>
+          {
+            menus.map(item => item ? <Item key={item.text} onClick={() => item.onClick(this.state.activeItem)}>{item.text}</Item> : <Separator />)
+          }
+        </Menu>
+        }
       </ButtonDropdown>
     )
   }

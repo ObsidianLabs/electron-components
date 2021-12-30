@@ -35,7 +35,7 @@ class NavLinkLeft extends PureComponent {
   }
 
   render () {
-    const { route, title, selected, dropdown, icon } = this.props
+    const { route, title, selected, dropdown, icon, contextMenu } = this.props
 
     let url = `/${route}`
     if (selected.id) {
@@ -55,6 +55,7 @@ class NavLinkLeft extends PureComponent {
           onToggle={this.onToggle}
           onClickItem={this.onClickItem}
           icon={icon}
+          contextMenu={contextMenu}
         >
           <NavLinkContent
             title={title}
