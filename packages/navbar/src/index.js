@@ -9,10 +9,7 @@ import { NavLink } from 'react-router-dom'
 
 import NavLinkLeft from './NavLinkLeft'
 import NavLinkRight from './NavLinkRight'
-
 import User from './User'
-
-import NavDropdownContextMenu from './NavDropdownContextMenu'
 
 import './styles.scss'
 
@@ -24,6 +21,7 @@ export default class Header extends PureComponent {
         route={link.route}
         title={link.title}
         icon={link.icon}
+        contextMenu={link.contextMenu}
         selected={link.selected}
         dropdown={link.dropdown}
         onClickItem={link.onClickItem}
@@ -89,8 +87,6 @@ export default class Header extends PureComponent {
             <User profile={profile} extraLoggedInOptions={extraLoggedInOptions} />
           </NavLink>
         </Nav>
-        {this.renderContextMenu(navbarLeft)}
-        {this.renderContextMenu(navbarRight)}
       </Navbar>
     )
   }
