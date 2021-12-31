@@ -82,12 +82,15 @@ export default class ElectronFileOps extends FileOps {
     const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
 
     if(!exsist) {
-      const result = await this.channel.invoke('showMessageBox', {
+      const { response } = await this.channel.invoke('showMessageBox', {
         message: `The path '${filePath}' does not exist on this computer.`,
         buttons: ['Remove', 'Cancel']
       })
-      if (result === 0) {
-        await this.deleteFile(filePath)
+
+      if (response === 0) {
+        return {
+          exsist
+        }
       }
     } else {
       const result = await this.channel.invoke('openItem', filePath)
@@ -109,8 +112,10 @@ export default class ElectronFileOps extends FileOps {
         message: `The path '${filePath}' does not exist on this computer.`,
         buttons: ['Remove', 'Cancel']
       })
-      if (result === 0) {
-        await this.deleteFile(filePath)
+      if (result.response === 0) {
+        return {
+          exsist
+        }
       }
     } else {
       return await this.channel.invoke('showItemInFolder', filePath)
@@ -129,8 +134,10 @@ export default class ElectronFileOps extends FileOps {
         message: `The path '${filePath}' does not exist on this computer.`,
         buttons: ['Remove', 'Cancel']
       })
-      if (result === 0) {
-        await this.deleteFile(filePath)
+      if (result.response === 0) {
+        return {
+          exsist
+        }
       }
     } else {
       return await this.channel.invoke('openInTerminal', filePath)

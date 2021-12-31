@@ -14,11 +14,22 @@ const projectContextMenus = id => {
   return [
     {
       text: `Open Containing Folder`,
-      onClick: project => fileOps.current.openItem(project.path),
+      onClick: async project => {
+        const result = await fileOps.current.openItem(project.path)
+
+        if (result) {
+          !result.exsist && actions.removeProject(project)
+        }
+      },
     },
     {
       text: `Open in Terminal`,
-      onClick: project => fileOps.current.openInTerminal(project.path),
+      onClick: async project => {
+        const result = await fileOps.current.openInTerminal(project.path)
+        if (result) {
+          !result.exsist && actions.removeProject(project)
+        }
+      },
     },
     null,
     {
@@ -28,7 +39,7 @@ const projectContextMenus = id => {
   ]
 }
 
-export default function navbarItem (projects, selected, username) {
+export default function navbarItem(projects, selected, username) {
   if (platform.isWeb && username === 'local') {
     return {
       route: 'local',
