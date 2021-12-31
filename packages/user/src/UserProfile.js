@@ -18,7 +18,7 @@ class UserProfile extends PureComponent {
   renderAvatar = () => {
     const { profile } = this.props
     const img = new Image()
-    img.src = profile.avatar
+    img.src = profile?.avatar
     img.crossOrigin = true
     img.onload = () => {
       this.setState({ loaded: true })
