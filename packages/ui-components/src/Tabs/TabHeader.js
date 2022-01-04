@@ -157,7 +157,7 @@ const SortableTab = DragSource(Types.TAB, cardSource, sourceCollect)(DropTarget(
 
 const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [], onCloseTab, onNewTab, contextMenu, onDragTab }) => {
   const treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selected) : contextMenu
-  const [selectNode, setSelctNode] = useState(selected)
+  const [selectNode, setSelectNode] = useState(selected)
 
   const { show } = useContextMenu({
     id: 'tab-context-menu'
@@ -169,8 +169,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     }
 
     event.nativeEvent.preventDefault()
-    setSelctNode(tab)
-    onSelectTab(tab)
+    setSelectNode(tab)
     show(event.nativeEvent, {
       props: {
         key: 'value'
