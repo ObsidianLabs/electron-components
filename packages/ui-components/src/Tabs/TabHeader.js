@@ -125,7 +125,7 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
+        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
 
@@ -148,7 +148,6 @@ class TabHeaderItem extends PureComponent {
             {this.renderCloseBtn()}
           </div>
         </li>
-
       ))
   }
 }
