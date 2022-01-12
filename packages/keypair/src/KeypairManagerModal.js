@@ -61,7 +61,7 @@ export default class KeypairManagerModal extends PureComponent {
     this.setState({ loading: true })
     const keypairs = await keypairManager.loadAllKeypairs()
     keypairs.forEach(item=>{
-      item.address = utils.formatAddress(item.address)
+      item.address = utils.simplifyAddress(item.address)
     })
 
     this.setState({ keypairs, loading: false })
@@ -190,7 +190,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td>
           <div className='d-flex align-items-center'>
-            <code className='small'>{keypair.address}</code>
+            <code className='small'>{utils.formatAddress(keypair.address) ? utils.formatAddress(keypair.address) : 'wrong address' }</code>
             <span className='text-transparent'>.</span>
             <DeleteButton
               color='primary'
