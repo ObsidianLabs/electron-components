@@ -9,6 +9,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { utils } from '@obsidians/eth-sdk'
 
 import keypairManager from './keypairManager'
 
@@ -59,6 +60,10 @@ export default class KeypairManagerModal extends PureComponent {
   async refresh () {
     this.setState({ loading: true })
     const keypairs = await keypairManager.loadAllKeypairs()
+    keypairs.forEach(item=>{
+      item.address = utils.simplifyAddress(item.address)
+    })
+
     this.setState({ keypairs, loading: false })
   }
 
@@ -185,7 +190,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td>
           <div className='d-flex align-items-center'>
-            <code className='small'>{keypair.address}</code>
+            <code className='small'>{utils.formatAddress(keypair.address)}</code>
             <span className='text-transparent'>.</span>
             <DeleteButton
               color='primary'
