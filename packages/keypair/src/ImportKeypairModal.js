@@ -61,7 +61,7 @@ export default class ImportKeypairModal extends PureComponent {
       this.setState({
         keypair,
         valid: true,
-        feedback: <span>Address: <code>{utils.formatAddress(keypair.address) ? utils.formatAddress(keypair.address) : 'wrong address'}</code></span>
+        feedback: <span>Address: <code>{utils.formatAddress(keypair.address)}</code></span>
       })
     } catch (e) {
       console.warn(e)

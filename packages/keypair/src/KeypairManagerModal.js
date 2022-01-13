@@ -190,7 +190,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td>
           <div className='d-flex align-items-center'>
-            <code className='small'>{utils.formatAddress(keypair.address) ? utils.formatAddress(keypair.address) : 'wrong address' }</code>
+            <code className='small'>{utils.formatAddress(keypair.address)}</code>
             <span className='text-transparent'>.</span>
             <DeleteButton
               color='primary'
