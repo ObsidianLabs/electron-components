@@ -6,6 +6,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { utils } from '@obsidians/eth-sdk'
 
 import keypairManager from './keypairManager'
 
@@ -43,14 +44,16 @@ export default class KeypairInputSelector extends PureComponent {
   }
 
   renderDisplay = key => {
-    const { address, name } = key
+    const { name } = key
+    const address = utils.formatAddress(key.address)
+
     return (highlight, active) => {
       let highlightAddress = address
       if (!active) {
         highlightAddress = []
         address.split(highlight).forEach(part => {
           highlightAddress.push(part)
-          highlightAddress.push(<b className='text-primary'>{highlight}</b>)
+          highlightAddress.push(<b className='text-primary'>{utils.formatAddress(highlight)}</b>)
         })
         highlightAddress.pop()
       }
