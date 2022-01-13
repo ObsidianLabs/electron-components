@@ -59,7 +59,7 @@ export default class CreateKeypairModal extends PureComponent {
   }
 
   onConfirm = async () => {
-    const {name, keypair} = this.state
+    const { name, keypair } = this.state
 
     if (!keypair) {
       this.onResolve()
@@ -70,19 +70,19 @@ export default class CreateKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
-          `Create Keypair Failed`,
-          `The keypair name <b>${name}</b> has already been used.`
+        `Create Keypair Failed`,
+        `The keypair name <b>${name}</b> has already been used.`
       )
       return
     }
 
-    this.setState({pending: true})
+    this.setState({ pending: true })
     await keypairManager.saveKeypair(name, keypair)
-    this.setState({pending: false})
+    this.setState({ pending: false })
 
     this.modal.current.closeModal()
     this.onResolve(true)
-  };
+  }
 
   renderChainOptions = () => {
     const { chains } = this.props
