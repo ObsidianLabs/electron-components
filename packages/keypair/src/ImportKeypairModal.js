@@ -8,7 +8,6 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { utils } from '@obsidians/eth-sdk'
 
 import keypairManager from './keypairManager'
 
@@ -61,7 +60,7 @@ export default class ImportKeypairModal extends PureComponent {
       this.setState({
         keypair,
         valid: true,
-        feedback: <span>Address: <code>{utils.formatAddress(keypair.address)}</code></span>
+        feedback: <span>Address: <code>{keypair.address}</code></span>
       })
     } catch (e) {
       console.warn(e)
