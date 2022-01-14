@@ -15,6 +15,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { utils } from '@obsidians/eth-sdk'
 
 import keypairManager from './keypairManager'
 
@@ -47,6 +48,7 @@ export default class CreateKeypairModal extends PureComponent {
 
   regenerateKeypair = async () => {
     const keypair = await keypairManager.newKeypair(this.props.kp, this.state.chain, this.state.secretType)
+    keypair.address = utils.simplifyAddress(keypair.address)
     this.setState({ keypair })
   }
 
@@ -57,28 +59,30 @@ export default class CreateKeypairModal extends PureComponent {
   }
 
   onConfirm = async () => {
-    const { name, keypair } = this.state
+    const {name, keypair} = this.state
 
     if (!keypair) {
       this.onResolve()
       return
     }
 
+    keypair.address = utils.simplifyAddress(keypair.address)
+
     if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
-        `Create Keypair Failed`,
-        `The keypair name <b>${name}</b> has already been used.`
+          `Create Keypair Failed`,
+          `The keypair name <b>${name}</b> has already been used.`
       )
       return
     }
 
-    this.setState({ pending: true })
+    this.setState({pending: true})
     await keypairManager.saveKeypair(name, keypair)
-    this.setState({ pending: false })
+    this.setState({pending: false})
 
     this.modal.current.closeModal()
     this.onResolve(true)
-  }
+  };
 
   renderChainOptions = () => {
     const { chains } = this.props
@@ -156,7 +160,7 @@ export default class CreateKeypairModal extends PureComponent {
             <Badge pill color='info' className='ml-1'>Address</Badge>
           </div>
           <div className='col-10 pl-0'>
-            <code className='user-select small'>{address}</code>
+            <code className='user-select small'>{utils.formatAddress(address)}</code>
           </div>
         </div>
         <div className='row align-items-center'>

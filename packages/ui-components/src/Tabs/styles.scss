@@ -151,18 +151,18 @@
       &.nav-tabs-dark-active {
         & .nav-item {
           background: var(--color-bg);
-    
           &:hover {
             background: var(--color-hover);
+          }
+          &:not(.dragging):hover {
+            background: var(--color-bg);
           }
           &.active {
             background: var(--color-bg2);
             border-bottom: 1px solid var(--color-bg2);
           }
-    
           &.nav-item-add {
             background: transparent;
-      
             &:hover {
               background: var(--color-hover);
             }

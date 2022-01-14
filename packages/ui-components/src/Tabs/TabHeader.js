@@ -2,7 +2,6 @@ import React, { PureComponent, useState } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
-import { UncontrolledTooltip } from 'reactstrap'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import platform from '@obsidians/platform'
@@ -125,7 +124,7 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
+        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
 
@@ -148,7 +147,6 @@ class TabHeaderItem extends PureComponent {
             {this.renderCloseBtn()}
           </div>
         </li>
-
       ))
   }
 }
@@ -157,7 +155,7 @@ const SortableTab = DragSource(Types.TAB, cardSource, sourceCollect)(DropTarget(
 
 const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [], onCloseTab, onNewTab, contextMenu, onDragTab }) => {
   const treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selected) : contextMenu
-  const [selectNode, setSelctNode] = useState(selected)
+  const [selectNode, setSelectNode] = useState(selected)
 
   const { show } = useContextMenu({
     id: 'tab-context-menu'
@@ -169,8 +167,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     }
 
     event.nativeEvent.preventDefault()
-    setSelctNode(tab)
-    onSelectTab(tab)
+    setSelectNode(tab)
     show(event.nativeEvent, {
       props: {
         key: 'value'
@@ -208,15 +205,14 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
             {
               ToolButtons.map((btn, index) => {
                 const id = `tab-btn-${index}`
-                return <li key={id}>
-                  <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)} onClick={btn.onClick}>
-                    <i className={btn.icon} />
-                    <span>{btn.text}</span>
-                  </div>
-                  <UncontrolledTooltip delay={0} target={id} placement='bottom' >
-                    {btn.tooltip}
-                  </UncontrolledTooltip>
-                </li>
+                return (
+                  <li key={id} onClick={btn.onClick} title={btn.tooltip}>
+                    <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)}>
+                      <i className={btn.icon} />
+                      <span>{btn.text}</span>
+                    </div>
+                  </li>
+                )
               })
             }
           </ul>
