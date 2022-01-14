@@ -29,7 +29,7 @@ class GithubProvider extends BaseProvider {
 
   get project () {
     if(process.env.NODE_ENV === 'development') {
-      return local
+      return 'local'
     }
     if(process.env.NODE_ENV === 'test') {
       return `${process.env.PROJECT}-test`
