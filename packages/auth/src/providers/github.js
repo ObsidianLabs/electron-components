@@ -28,7 +28,14 @@ class GithubProvider extends BaseProvider {
   }
 
   get project () {
-    return process.env.NODE_ENV === 'development' ? 'local' : process.env.PROJECT
+    if(process.env.NODE_ENV === 'development') {
+      return local
+    }
+    if(process.env.NODE_ENV === 'test') {
+      return `${process.env.PROJECT}-test`
+    }
+
+    return process.env.PROJECT
   }
 
   get awsConfig () {
