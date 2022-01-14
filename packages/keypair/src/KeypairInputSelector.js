@@ -53,7 +53,7 @@ export default class KeypairInputSelector extends PureComponent {
         highlightAddress = []
         address.split(highlight).forEach(part => {
           highlightAddress.push(part)
-          highlightAddress.push(<b className='text-primary'>{utils.formatAddress(highlight)}</b>)
+          highlightAddress.push(<b className='text-primary'>{highlight}</b>)
         })
         highlightAddress.pop()
       }
