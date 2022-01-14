@@ -6,8 +6,6 @@ import {
 } from '@obsidians/ui-components'
 
 import keypairManager from './keypairManager'
-import { utils } from '@obsidians/eth-sdk'
-
 
 export default class RevealSecretModal extends PureComponent {
   constructor (props) {
@@ -43,7 +41,7 @@ export default class RevealSecretModal extends PureComponent {
             <Badge pill color='info' className='ml-1'>Address</Badge>
           </div>
           <div className='col-10 pl-0'>
-            <code className='user-select small'>{utils.formatAddress(address)}</code>
+            <code className='user-select small'>{address}</code>
           </div>
         </div>
         <div className='row align-items-center'>
