@@ -86,7 +86,6 @@ export default class TabbedExplorer extends PureComponent {
       ExtraToolbarButtons = () => null,
       Page,
       cacheLifecycles,
-      tabContextMenu,
       ...otherProps
     } = { ...props, ...this.props }
     const { initialized, initialTabs, initialSelected, value } = this.state
@@ -102,7 +101,6 @@ export default class TabbedExplorer extends PureComponent {
         initialSelected={initialSelected}
         getTabText={getTabText}
         maxTabWidth={46}
-        tabContextMenu={tabContextMenu}
         onValue={value => {
           const formatted = this.onValue(value)
           onValueUpdate && onValueUpdate(formatted)

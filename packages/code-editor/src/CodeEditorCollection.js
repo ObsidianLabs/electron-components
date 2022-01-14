@@ -97,14 +97,14 @@ export default class CodeEditorCollection extends PureComponent {
     return tab => modelSessionManager.closeModelSession(tab.path)
   }
 
-  closeCurrentFile = tab => {
-    const { onCloseTab } = this.tabs.current
-    onCloseTab(tab)
+  closeCurrentFile = () => {
+    const { onCloseTab, currentTab } = this.tabs.current
+    onCloseTab(currentTab)
   }
 
   // MARK: may can define a batch delete in the Tabs component
-  closeOtherFiles = currentTab => {
-    const { onCloseTab, allTabs } = this.tabs.current;
+  closeOtherFiles = () => {
+    const { onCloseTab, currentTab, allTabs } = this.tabs.current;
     const shouldCloseTabs = allTabs.filter(tab => tab.key !== currentTab.key);
 
     shouldCloseTabs.forEach(tab => {
