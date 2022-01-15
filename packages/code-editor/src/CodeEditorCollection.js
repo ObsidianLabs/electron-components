@@ -231,7 +231,7 @@ export default class CodeEditorCollection extends PureComponent {
           initialSelected={initialTab}
           onSelectTab={this.onSelectTab}
           tryCloseTab={this.tryCloseTab}
-          createNewTab={() => fileOps.current.openNewFile(projectRoot)}
+          createNewTab={platform.isDesktop ? () => fileOps.current.openNewFile(projectRoot) : undefined }
           getTabText={tab => modelSessionManager.tabTitle(tab)}
           tabContextMenu={this.tabContextMenu}
         >
