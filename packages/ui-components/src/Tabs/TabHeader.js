@@ -223,7 +223,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           </Menu>
         </DndProvider>
       </div>
-      {onNewTab && platform.isDesktop &&
+      {onNewTab && 
         <div className='nav-actions'>
           <span
             key='nav-item-add'
