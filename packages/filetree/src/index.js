@@ -187,6 +187,11 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
       } else {
         const tempTreeData = cloneDeep(treeData)
         projectManager.loadDirectory(treeNode).then(newData => {
+          if(newData.length === 0) {
+            resolve()
+            return
+          }
+          console.log(1)
           setTimeout(() => {
             getNewTreeData(tempTreeData, treeNode.path, newData)
             setTreeData(tempTreeData)
