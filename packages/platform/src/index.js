@@ -1,6 +1,25 @@
 let type, os, appleSilicon
 
-if (window.require) {
+function isElectron() {
+  // Renderer process
+  if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+      return true;
+  }
+
+  // Main process
+  if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+      return true;
+  }
+
+  // Detect the user agent when the `nodeIntegration` option is set to true
+  if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+      return true;
+  }
+
+  return false;
+}
+
+if (isElectron()) {
   type = 'desktop'
   const { OS_IS_WINDOWS, OS_IS_MAC, OS_IS_LINUX } = process.env
   appleSilicon = false // TODO: need a way to test apple silicon

@@ -265,7 +265,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu }, ref) => {
     <div className="tree-wrap animation">
       <Tree
         // TODO: improve the condition when support the WEB
-        draggable={platform.isDesktop}
+        draggable={!platform.isWeb}
         allowDrop={(props) => allowDrop({ ...props, enableCopy })}
         onDrop={onDebounceDrag}
         ref={treeRef}
