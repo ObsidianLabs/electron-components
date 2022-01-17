@@ -15,6 +15,8 @@ import {
   Badge,
 } from 'reactstrap'
 
+import { utils } from '@obsidians/eth-sdk'
+
 export default class DropdownInput extends PureComponent {
   constructor (props) {
     super(props)
@@ -109,7 +111,8 @@ export default class DropdownInput extends PureComponent {
   }
 
   getDropdownOptions = () => {
-    const { value, options = [] } = this.props
+    const { options = [] } = this.props
+    const value = utils.simplifyAddress(this.props.value)
     const filterMode = this.state.filterMode
     let dropdownOptions = []
 
@@ -208,13 +211,13 @@ export default class DropdownInput extends PureComponent {
       maxLength,
       noCaret,
       options = [],
-      value,
       bg,
       inputClassName,
       invalid,
       onClick,
     } = this.props
-
+    let tempValue = this.props.value
+    const value = utils.isValidAddressReturn(tempValue)
     const selectedOption = this.findSelectedOption(options, value)
     const dropdownOptions = this.renderOptions()
 
