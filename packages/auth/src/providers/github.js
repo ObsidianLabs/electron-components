@@ -31,7 +31,7 @@ class GithubProvider extends BaseProvider {
     if(process.env.NODE_ENV === 'development') {
       return 'local'
     }
-    if(process.env.NODE_ENV === 'test') {
+    if(process.env.REACT_APP_ENV === 'test') {
       return `${process.env.PROJECT}-test`
     }
 
