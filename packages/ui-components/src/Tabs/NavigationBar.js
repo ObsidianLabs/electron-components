@@ -7,11 +7,13 @@ import {
 
 import ToolbarButton from '../buttons/ToolbarButton'
 
+import { utils } from '@obsidians/eth-sdk'
+
 export default class NavigationBar extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      value: props.tab.value,
+      value: utils.isValidAddressReturn(props.tab.value),
     }
     this.input = React.createRef()
   }
@@ -64,9 +66,9 @@ export default class NavigationBar extends PureComponent {
   }
 
   onChange = event => {
-    const value = event.target.value
+    const value = utils.isValidAddressReturn(event.target.value)
     this.setState({ value })
-    this.props.tab.temp = value
+    this.props.tab.temp = value.toLowerCase()
   }
 
   onKeyPress = event => {
@@ -76,12 +78,12 @@ export default class NavigationBar extends PureComponent {
         value = value.trim()
         this.setState({ value })
       }
-      this.props.updateTab({ value, temp: undefined })
+      this.props.updateTab({ value: value.toLowerCase(), temp: undefined })
       this.input.current.blur()
       this.forceUpdate()
 
       if (this.props.onEnter) {
-        this.props.onEnter(value)
+        this.props.onEnter(value.toLowerCase())
       }
     }
   }
@@ -123,7 +125,7 @@ export default class NavigationBar extends PureComponent {
         <div
           key='narbar-star'
           className='btn btn-sm text-warning hover-block'
-          onClick={() => this.props.onToggleStar(this.state.value, false)}
+          onClick={() => this.props.onToggleStar(this.state.value.toLowerCase(), false)}
         >
           <i className='fas fa-star hover-hide' />
           <i className='far fa-star hover-show' />
@@ -134,7 +136,7 @@ export default class NavigationBar extends PureComponent {
         <div
           key='narbar-star-o'
           className='btn btn-sm text-secondary hover-block'
-          onClick={() => this.props.onToggleStar(this.state.value, true)}
+          onClick={() => this.props.onToggleStar(this.state.value.toLowerCase(), true)}
         >
           <i className='far fa-star hover-hide' />
           <i className='fas fa-star hover-show' />
