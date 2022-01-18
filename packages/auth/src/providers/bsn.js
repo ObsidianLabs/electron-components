@@ -1,4 +1,5 @@
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk/global'
+import STS from "aws-sdk/clients/sts"
 import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import decode from 'jwt-decode'
@@ -168,7 +169,7 @@ class BsnProvider extends BaseProvider {
   }
 
   async fetchAwsCredential (token) {
-    const sts = new AWS.STS()
+    const sts = new STS()
     const params = {
       WebIdentityToken: token,
       RoleArn: this.awsConfig.roleArn,

@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk/global'
 import fileOps from '@obsidians/file-ops'
 import decode from 'jwt-decode'
 import { BuildService } from '@obsidians/ipc'

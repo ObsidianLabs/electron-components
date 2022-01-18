@@ -1,4 +1,5 @@
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk/global'
+import S3 from 'aws-sdk/client/s3'
 import path from 'path-browserify'
 
 import { AWSS3Region, AWSBucket } from './config.json'
@@ -24,7 +25,7 @@ export default class AwsS3Fs {
       sessionToken: credential.Credentials.SessionToken,
     })
 
-    this.s3 = new AWS.S3()
+    this.s3 = new S3()
   }
 
   async readFile (filePath, { encoding } = {}) {
