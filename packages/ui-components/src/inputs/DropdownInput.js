@@ -215,9 +215,8 @@ export default class DropdownInput extends PureComponent {
       inputClassName,
       invalid,
       onClick,
+      value,
     } = this.props
-    let tempValue = this.props.value
-    const value = utils.isValidAddressReturn(tempValue)
     const selectedOption = this.findSelectedOption(options, value)
     const dropdownOptions = this.renderOptions()
 
