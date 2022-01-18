@@ -50,6 +50,7 @@ export default class KeypairInputSelector extends PureComponent {
     return (highlight, active) => {
       let highlightAddress = address
       if (!active) {
+        //todo: perfect the filter.
         highlightAddress = []
         address.split(highlight).forEach(part => {
           highlightAddress.push(part)
