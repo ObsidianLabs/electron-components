@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk/global'
-import CloudWatchLogs from 'aws-sdk/client/cloudwatchlogs'
+import CloudWatchLogs from 'aws-sdk/clients/cloudwatchlogs'
 const PROJECT = process.env.PROJECT
 const region = process.env.REACT_APP_AWS_REGION
 

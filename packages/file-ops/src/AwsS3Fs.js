@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk/global'
-import S3 from 'aws-sdk/client/s3'
+import S3 from 'aws-sdk/clients/s3'
 import path from 'path-browserify'
 
 import { AWSS3Region, AWSBucket } from './config.json'
