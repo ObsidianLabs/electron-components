@@ -40,6 +40,7 @@ export default class CustomScrollbar extends Component {
     }
 
     handleWheel(value) {
+        //todo: optimize scroll
         value.preventDefault()
         let scrollLeft = this.scrollSelf.current.getScrollLeft()
         let wheelY = value.deltaY
