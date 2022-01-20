@@ -177,7 +177,12 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
 
   return (
     <div className='nav-top-bar'>
-      <div className='nav-wrap'>
+      <div className='nav-wrap' ref={el=> {
+        el.addEventListener("wheel", (evt) => {
+          evt.preventDefault();
+          el.scrollLeft += evt.deltaY;
+        });
+      }}>
         <DndProvider backend={HTML5Backend}>
           <ul className={classnames('nav nav-tabs', className)}>
             {
