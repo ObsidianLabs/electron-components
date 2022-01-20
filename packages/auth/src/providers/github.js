@@ -32,7 +32,7 @@ class GithubProvider extends BaseProvider {
       return 'local'
     }
     if(process.env.REACT_APP_ENV === 'test') {
-      return `${process.env.PROJECT}-test`
+      return 'eth-test'
     }
 
     return process.env.PROJECT
