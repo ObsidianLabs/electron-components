@@ -1,5 +1,5 @@
-import AWS from 'aws-sdk'
-
+import AWS from 'aws-sdk/global'
+import CloudWatchLogs from 'aws-sdk/clients/cloudwatchlogs'
 const PROJECT = process.env.PROJECT
 const region = process.env.REACT_APP_AWS_REGION
 
@@ -28,7 +28,7 @@ export default class BuildService {
       sessionToken: credential.Credentials.SessionToken,
     })
 
-    BuildService.watcher = new AWS.CloudWatchLogs()
+    BuildService.watcher = new CloudWatchLogs()
   }
 
   async start (onData) {
