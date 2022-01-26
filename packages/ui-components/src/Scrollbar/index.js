@@ -6,32 +6,31 @@ export default class CustomScrollbar extends Component {
     constructor(props, ...rest) {
         super(props, ...rest);
         this.state = { top: 0, left: 0 };
-        this.renderView = this.renderView.bind(this);
-        this.renderThumb = this.renderThumb.bind(this);
-        this.handleWheel = this.handleWheel.bind(this);
         this.scrollSelf = React.createRef()
     }
 
-    renderView() {
+    renderView = ({ style, ...props }) => {
         return (
             <div
-                className="box"/>
+                className="box"
+                style={{ ...style,  }}
+                {...props}/>
         );
     }
 
-    renderThumb() {
+    renderThumb = ({ style, ...props }) => {
         const thumbStyle = {
             backgroundColor: 'rgb(255,255,255)',
             borderRadius: '5px',
         };
         return (
             <div
-                style={{ ...thumbStyle }}
-                />
+                style={{ ...style, ...thumbStyle }}
+                {...props}/>
         );
     }
 
-    handleWheel(event) {
+    handleWheel = (event) => {
         //todo: optimize scroll
         let scrollLeft = this.scrollSelf.current.getScrollLeft()
         let wheelY = event.deltaY
