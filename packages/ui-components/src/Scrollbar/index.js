@@ -18,10 +18,55 @@ export default class CustomScrollbar extends Component {
         );
     }
 
-    renderThumb = ({ style, ...props }) => {
+    renderThumbHorizontal = ({ style, ...props }) => {
         const thumbStyle = {
             backgroundColor: 'rgb(255,255,255)',
             borderRadius: '5px',
+            height: '63%',
+            opacity: '0.2',
+            position: 'absolute',
+            bottom: '0',
+            transition: 'all 0.5s ease-out',
+
+        };
+        return (
+            <div
+                style={{ ...style, ...thumbStyle }}
+                {...props}/>
+        );
+    }
+
+    renderTrackHorizontal = ({ style, ...props }) => {
+        const trackStyle = {
+            bottom: '0',
+            width: '100%',
+        };
+        return (
+            <div
+                className='trackHorizontal'
+                style={{ ...style, ...trackStyle }}
+                {...props}/>
+        );
+    }
+
+    renderTrackVertical = ({ style, ...props }) => {
+        const trackStyle = {
+            display: 'none',
+        };
+        return (
+            <div
+                className='trackVertical'
+                style={{ ...style, ...trackStyle }}
+                {...props}/>
+        );
+    }
+
+    renderThumbVertical = ({ style, ...props }) => {
+        const thumbStyle = {
+            backgroundColor: 'rgb(255,255,255)',
+            borderRadius: '5px',
+            height: '63%',
+            opacity: '0.2',
         };
         return (
             <div
@@ -42,13 +87,15 @@ export default class CustomScrollbar extends Component {
             <Scrollbars
                 ref={this.scrollSelf}
                 autoHide
-                autoHideTimeout={1000}
+                autoHideTimeout={300}
                 autoHideDuration={200}
                 renderView={this.renderView}
-                renderThumbHorizontal={this.renderThumb}
-                renderThumbVertical={this.renderThumb}
-                thumbSize={500}
-                thumbMinSize={500}
+                renderThumbHorizontal={this.renderThumbHorizontal}
+                renderThumbVertical={this.renderThumbVertical}
+                renderTrackHorizontal={this.renderTrackHorizontal}
+                renderTrackVertical={this.renderTrackVertical}
+                thumbSize={282}
+                thumbMinSize={100}
                 onWheel={this.handleWheel}
                 {...this.props}>
             </Scrollbars>
