@@ -3,11 +3,12 @@ import providers from './providers'
 
 export default {
   profile: null,
-  credentials: null,
+  credentials: JSON.parse(sessionStorage.getItem('credentials')) || null,
   refreshPromise: null,
   modal: null,
   provider: null,
   history: null,
+  expireTime: sessionStorage.getItem('expireTime') || null,
 
   get username () {
     return this.profile && this.profile.username
@@ -21,6 +22,11 @@ export default {
     if (!this.isLogin) {
       return false
     }
+
+    if (this.expireTime && (Number(this.expireTime) > (new Date().getTime() / 1000))) {
+      return false
+    }
+
     if (!this.credentials || !this.credentials.token) {
       return true
     }
@@ -88,6 +94,7 @@ export default {
     }
     await this.refreshPromise
     this.refreshPromise = null
+    this.update(this.credentials)
     return this.credentials && this.credentials.token
   },
 
@@ -102,7 +109,8 @@ export default {
 
     this.credentials = credentials
     this.profile = profile
-
+    sessionStorage.setItem('expireTime', profile.exp)
+    sessionStorage.setItem('credentials', JSON.stringify(credentials))
     this.update()
   },
 

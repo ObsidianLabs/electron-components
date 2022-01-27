@@ -64,6 +64,7 @@ class BaseProvider {
     // Check token expiration
     try {
       const { exp } = decode(token)
+      sessionStorage.setItem('expireTime', exp)
       const currentTs = Math.floor(Date.now() / 1000)
       return exp - currentTs < 60
     } catch (error) {
