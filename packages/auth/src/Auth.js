@@ -23,8 +23,8 @@ export default {
       return false
     }
 
-    if (this.expireTime && (Number(this.expireTime) > (new Date().getTime() / 1000))) {
-      return false
+    if (this.expireTime && (Number(this.expireTime) < (Date.now() / 1000))) {
+      return true
     }
 
     if (!this.credentials || !this.credentials.token) {
