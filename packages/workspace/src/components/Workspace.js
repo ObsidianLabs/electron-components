@@ -179,9 +179,11 @@ export default class Workspace extends Component {
       signer,
       Terminal,
       defaultSize,
-      readonly = false,
+      readonly: readonlyInProps = false,
       makeContextMenu = x => x,
     } = this.props
+
+    const readonly = readonlyInProps || !this.context.projectManager.userOwnProject
 
     const {
       editorConfig,
