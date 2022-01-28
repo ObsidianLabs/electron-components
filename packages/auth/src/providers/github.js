@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk/global'
 import fileOps from '@obsidians/file-ops'
 import decode from 'jwt-decode'
 import { BuildService } from '@obsidians/ipc'
@@ -31,8 +31,8 @@ class GithubProvider extends BaseProvider {
     if(process.env.NODE_ENV === 'development') {
       return 'local'
     }
-    if(process.env.NODE_ENV === 'test') {
-      return `${process.env.PROJECT}-test`
+    if(process.env.REACT_APP_ENV === 'test') {
+      return 'eth-test'
     }
 
     return process.env.PROJECT

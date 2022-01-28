@@ -4,8 +4,8 @@ import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import platform from '@obsidians/platform'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
+import CustomScrollbar from '../Scrollbar/index'
 
 const Types = {
   TAB: 'tab'
@@ -177,7 +177,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
 
   return (
     <div className='nav-top-bar'>
-      <div className='nav-wrap'>
+      <CustomScrollbar className='nav-wrap' >
         <DndProvider backend={HTML5Backend}>
           <ul className={classnames('nav nav-tabs', className)}>
             {
@@ -222,7 +222,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
             }
           </Menu>
         </DndProvider>
-      </div>
+      </CustomScrollbar>
       {onNewTab && 
         <div className='nav-actions'>
           <span

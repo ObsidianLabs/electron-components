@@ -5,7 +5,6 @@
 
   .nav-wrap {
     overflow-x: auto;
-    flex: 1;
 
     .nav.nav-tabs {
       flex-wrap: nowrap;
@@ -153,6 +152,9 @@
           background: var(--color-bg);
           &:hover {
             background: var(--color-hover);
+          }
+          &:not(.dragging):hover {
+            background: var(--color-bg);
           }
           &.active {
             background: var(--color-bg2);

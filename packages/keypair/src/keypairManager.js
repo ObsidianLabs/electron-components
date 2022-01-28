@@ -1,6 +1,7 @@
 import React from 'react'
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
+import { utils } from '@obsidians/eth-sdk'
 
 class KeypairManager {
   constructor () {
@@ -27,6 +28,7 @@ class KeypairManager {
   async loadAllKeypairs () {
     try {
       const keypairs = await this.channel.invoke('get')
+      keypairs.forEach(item => item.address = utils.simplifyAddress(item.address))
       const names = redux.getState().keypairs
       const unsorted = keypairs.map(k => ({ address: k.address, name: k.name || names.get(k.address) }))
       const sorted = unsorted.sort((a, b) => {
