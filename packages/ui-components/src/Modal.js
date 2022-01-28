@@ -16,6 +16,7 @@ export default class BaseModal extends PureComponent {
     size: PropTypes.string,
     overflow: PropTypes.bool,
     fullscreen: PropTypes.bool,
+    scrollable: PropTypes.bool,
     title: PropTypes.node,
     textConfirm: PropTypes.node,
     colorConfirm: PropTypes.string,
