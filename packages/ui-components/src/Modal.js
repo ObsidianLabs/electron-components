@@ -13,7 +13,7 @@ import {
 
 export default class BaseModal extends PureComponent {
   static propTypes = {
-    wide: PropTypes.bool,
+    size: PropTypes.string,
     overflow: PropTypes.bool,
     fullscreen: PropTypes.bool,
     title: PropTypes.node,
@@ -115,10 +115,10 @@ export default class BaseModal extends PureComponent {
 
   render () {
     const {
-      wide,
+      size,
       overflow,
       fullscreen,
-      h100,
+      scrollable,
       title,
       ActionBtn = null,
       textActions,
@@ -148,9 +148,11 @@ export default class BaseModal extends PureComponent {
       <Modal
         ref={this.modal}
         isOpen={this.state.isOpen}
-        style={{ userSelect: 'none', maxWidth: wide && '1000px' }}
-        className={classnames({ 'modal-fullscreen': fullscreen, 'h-100': h100 }, className)}
-        contentClassName={h100 && 'h-100'}
+        style={{ userSelect: 'none' }}
+        className={classnames({
+          'modal-fullscreen': fullscreen,
+          'modal-dialog-scrollable': scrollable,
+        }, size && `modal-${size}`, className)}
         onClosed={onClosed}
       >
         <ModalHeader
@@ -169,9 +171,9 @@ export default class BaseModal extends PureComponent {
         >
           {title}
         </ModalHeader>
-        <ModalBody
-          className={classnames('d-flex flex-column', !overflow && 'overflow-auto')}
-        >
+        <ModalBody className={classnames(
+          'd-flex flex-column', !overflow && !scrollable && 'overflow-auto'
+        )}>
           {children}
           {errorComponent}
         </ModalBody>
