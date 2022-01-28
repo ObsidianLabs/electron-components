@@ -3,6 +3,7 @@ import notification from '@obsidians/notification'
 import { HttpIpcChannel } from '@obsidians/ipc'
 
 import BaseProjectManager from './BaseProjectManager'
+import Auth from '@obsidians/auth'
 
 const projectChannel = new HttpIpcChannel('project')
 
@@ -16,6 +17,19 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
     this.remote = true
     this.prefix = 'private'
+    const projectOwner = this.projectRoot.split("/")[0]
+    this.projectOwner = projectOwner
+    this.userOwnProject = Auth.profile.username === projectOwner
+  }
+
+  togglePublic = async (aim = void 0) => {
+    if (aim === 'public') this.prefix = 'public'
+    if (aim === 'private') this.prefix = 'private'
+    const project = await projectChannel.invoke('put', `${this.projectOwner}/${this.projectName}`, {
+      public: this.prefix === 'public',
+    })
+    // await toggleFunction //
+    return project.public
   }
 
   get path () {
@@ -30,6 +44,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
       return { error: e.message }
     }
 
+    this.prefix = project.public ? 'public' : 'private'
     this.projectName = project.name
     this.userId = project.userId
     this.projectId = project._id
@@ -130,6 +145,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
   
   async saveFile (filePath, content) {
+    if (!this.userOwnProject) throw new Error('This Project Is Readonly!')
     await fileOps.web.writeFile(filePath, content)
   }
 
