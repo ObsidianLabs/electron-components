@@ -1,4 +1,3 @@
-import './sytles.scss'
 export { default } from './keypairManager'
 
 export { default as redux } from './redux'
