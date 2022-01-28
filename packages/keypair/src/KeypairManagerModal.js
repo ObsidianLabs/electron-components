@@ -6,6 +6,7 @@ import {
   Table,
   IconButton,
   DeleteButton,
+  UncontrolledTooltip,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -170,8 +171,15 @@ export default class KeypairManagerModal extends PureComponent {
     return (
       <tr key={`key-${keypair.address}`} className='hover-flex'>
         <td>
-          <div className='d-flex'>
-            {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
+          <div className='d-flex' id={`tooltip-${keypair.address}`}>
+            <span className='hide-overflow'>
+              {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
+            </span>
+              <UncontrolledTooltip
+                  target={`tooltip-${keypair.address}`}
+              >
+                <p>{keypair.name}</p>
+              </UncontrolledTooltip>
             {
               !this.props.modifyNameDisabled &&
               <IconButton
