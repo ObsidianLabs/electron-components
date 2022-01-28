@@ -22,6 +22,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return fileOps.web.path
   }
 
+  get readonly () {
+    return true // TODO: readonly=true for other's public project
+  }
+
   async prepareProject () {
     let project
     try {
