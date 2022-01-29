@@ -185,7 +185,6 @@ export default class NewProjectModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        overflow={false}
         title='Create a New Project'
         textConfirm='Create Project'
         onConfirm={this.onCreateProject}
