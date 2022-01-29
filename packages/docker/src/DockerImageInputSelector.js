@@ -83,7 +83,7 @@ export default class DockerImageInputSelector extends PureComponent {
       options = [...this.props.extraOptions, ...options]
     }
 
-    const { size, label, disableAutoSelection, bg, inputClassName, selected, onSelected } = this.props
+    const { size, label, disableAutoSelection, bg, inputClassName, selected, onSelected, readOnly } = this.props
     return <>
       <DropdownInput
         size={size}
@@ -96,6 +96,7 @@ export default class DockerImageInputSelector extends PureComponent {
         {...this.badgeProps(selected)}
         value={selected?.toString() || ''}
         onChange={onSelected}
+        readOnly={readOnly}
       />
       <DockerImageManager
         ref={this.modal}

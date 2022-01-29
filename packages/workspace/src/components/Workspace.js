@@ -179,11 +179,11 @@ export default class Workspace extends Component {
       signer,
       Terminal,
       defaultSize,
-      readonly: readonlyInProps = false,
+      readOnly: readOnlyInProps = false,
       makeContextMenu = x => x,
     } = this.props
 
-    const readonly = readonlyInProps || !this.context.projectManager.userOwnProject
+    const readOnly = readOnlyInProps || !this.context.projectManager.userOwnProject
 
     const {
       editorConfig,
@@ -214,7 +214,7 @@ export default class Workspace extends Component {
             projectRoot={this.context.projectRoot}
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
-            readonly={readonly}
+            readOnly={readOnly}
           />
           {Terminal}
         </SplitPane>
@@ -230,7 +230,7 @@ export default class Workspace extends Component {
           projectRoot={this.context.projectRoot}
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
-          readonly={readonly}
+          readOnly={readOnly}
         />
       )
     }
@@ -254,16 +254,18 @@ export default class Workspace extends Component {
               id='new'
               icon='fas fa-plus'
               tooltip='New File'
+              readOnly={readOnly}
               onClick={() => this.openCreateFileModal()}
             />
-            <ProjectToolbar signer={signer} />
+            <ProjectToolbar
+              signer={signer}/>
           </div>
           <FileTree
             ref={this.filetree}
             projectManager={this.context.projectManager}
             initialPath={initial.path}
             onSelect={this.openFile}
-            readonly={readonly}
+            readOnly={readOnly}
             contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />
         </div>

@@ -102,7 +102,7 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = ({ projectManager, onSelect, contextMenu, readonly = false }, ref) => {
+const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -113,7 +113,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readonly = false }, r
   const prevTreeData = useRef()
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
-  if (readonly) {
+  if (readOnly) {
     // only leave the "Copy Path" feature
     // TODO we need a id to make sure the filter works correctlly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')

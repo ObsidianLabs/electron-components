@@ -42,7 +42,7 @@ export default class MonacoEditorModelSession {
     this._model = model
     this._remote = remote
     this._CustomTab = CustomTab
-    this._readonly = false
+    this._readOnly = false
     this._showCustomTab = true
     this._viewState = null
     this._saved = true
@@ -95,11 +95,11 @@ export default class MonacoEditorModelSession {
   }
   get saving () { return Boolean(this._saving) }
 
-  get readonly () {
-    return this._readonly
+  get readOnly () {
+    return this._readOnly
   }
-  set readonly (readonly) {
-    this._readonly = readonly
+  set readOnly (readOnly) {
+    this._readOnly = readOnly
   }
 
   get viewState () {
@@ -132,7 +132,7 @@ export default class MonacoEditorModelSession {
       monacoEditor.restoreViewState(this.viewState)
     }
 
-    monacoEditor.updateOptions({ readOnly: this.readonly })
+    monacoEditor.updateOptions({ readOnly: this.readOnly })
     monacoEditor.focus()
   }
 

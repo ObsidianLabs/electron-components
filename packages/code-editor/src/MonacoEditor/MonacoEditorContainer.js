@@ -12,7 +12,7 @@ import CustomTabContainer from './CustomTabContainer'
 
 export default class MonacoEditorContainer extends PureComponent {
   static propTypes = {
-    readonly: PropTypes.bool,
+    readOnly: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     onCommand: PropTypes.func.isRequired
   }
@@ -45,18 +45,18 @@ export default class MonacoEditorContainer extends PureComponent {
     modelSessionManager.closeAllModelSessions()
   }
 
-  async loadFile ({ path, remote, mode, readonly = false }) {
+  async loadFile ({ path, remote, mode, readOnly = false }) {
     this.setState({ loading: true })
     try {
-      const modelSession = await this.modelSessionFromFile({ path, remote, mode, readonly })
+      const modelSession = await this.modelSessionFromFile({ path, remote, mode, readOnly })
       this.setState({ initialized: true, loading: false, modelSession })
     } catch {}
     this.setState({ loading: false })
   }
 
-  async modelSessionFromFile ({ path, remote, mode, readonly }) {
+  async modelSessionFromFile ({ path, remote, mode, readOnly }) {
     const modelSession = await modelSessionManager.newModelSession(path, remote, mode)
-    modelSession.readonly = readonly
+    modelSession.readOnly = readOnly
     return modelSession
   }
 
@@ -64,7 +64,7 @@ export default class MonacoEditorContainer extends PureComponent {
     // if (this.sessions[saveAsPath]) {
     //   // this.sessions[saveAsPath].
     // } else {
-    //   this.sessions[saveAsPath] = await this.modelSessionFromFile(saveAsPath, this.props.readonly)
+    //   this.sessions[saveAsPath] = await this.modelSessionFromFile(saveAsPath, this.props.readOnly)
     //   if (this.sessions[path]) {
     //     this.sessions[saveAsPath].viewState = this.sessions[path].viewState
     //   }
@@ -82,7 +82,7 @@ export default class MonacoEditorContainer extends PureComponent {
       return <LoadingScreen />
     }
 
-    const { theme, editorConfig, onCommand, onChange, readonly } = this.props
+    const { theme, editorConfig, onCommand, onChange, readOnly } = this.props
 
     let topbar = null
     if (modelSession.topbar) {
@@ -106,7 +106,7 @@ export default class MonacoEditorContainer extends PureComponent {
         theme={theme}
         editorConfig={editorConfig}
         onCommand={onCommand}
-        readonly={readonly}
+        readOnly={readOnly}
         onChange={() => onChange(true)}
       />
       <CustomTabContainer
