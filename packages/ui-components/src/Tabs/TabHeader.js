@@ -49,6 +49,11 @@ const cardTarget = {
 
     monitor.getItem().index = hoverIndex;
   },
+  drop(props, monitor,) {
+    if(monitor.canDrop()) {
+      props.onSelectTab(props.tab)
+    }
+  },
 };
 
 function targetCollect(connect) {
@@ -124,7 +129,7 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
+        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
 
