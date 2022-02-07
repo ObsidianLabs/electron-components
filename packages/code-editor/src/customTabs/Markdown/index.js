@@ -22,11 +22,14 @@ import './styles.scss'
 // import ForkButton from './ForkButton'
 
 export default class Markdown extends Component {
-  // state = {
-  //   avatar: ''
-  // }
+  state = {
+    isPublic: false,
+  }
 
   componentDidMount () {
+    this.setState({
+      isPublic: modelSessionManager.projectManager.prefix === "public",
+    })
     // this.getAvatar(this.props)
   }
 
@@ -74,6 +77,32 @@ export default class Markdown extends Component {
     )
   }
 
+  async togglePublic(){
+    const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
+    this.setState({isPublic})
+  }
+
+  renderTogglePublicButton = () => {
+    if (!modelSessionManager.projectManager.remote) return false
+    if (!modelSessionManager.projectManager.userOwnProject) return false
+    if (!this.display) return false
+    return (
+    <Button
+      color='primary'
+      size='sm'
+      className='ml-2'
+      onClick={this.togglePublic.bind(this)}
+      style={this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
+    >
+      {
+        this.state.isPublic
+          ? <span key='mode-public'><i className='fas fa-eye' /> Public</span>
+          : <span key='mode-private'><i className='fas fa-eye-slash'/> Private</span>
+      }
+    </Button>
+    )
+  }
+
   renderHovers = () => {
     if (!this.display || !this.filePath.endsWith(':/README.md')) {
       return (
@@ -83,6 +112,7 @@ export default class Markdown extends Component {
           top: '1.25rem',
           zIndex: 10
         }}>
+          {this.renderTogglePublicButton()}
           {this.renderSwitchToEditorBtn()}
         </div>
       )

@@ -262,7 +262,7 @@ export default class Terminal extends PureComponent {
       height,
       className,
       Toolbar,
-      readonly,
+      readOnly,
       input
     } = this.props
 
@@ -275,7 +275,7 @@ export default class Terminal extends PureComponent {
         <div className='xterm-wrapper'>
           <div ref={this.termRef} id={`xterm-${logId}`} className='xterm-element' />
         </div>
-        { !readonly && input &&
+        { !readOnly && input &&
           <TerminalInput ref={this.inputRef} onSubmit={this.onInputSubmit} onStop={this.stop} />
         }
       </div>

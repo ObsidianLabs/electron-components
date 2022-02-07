@@ -216,6 +216,7 @@ export default class DropdownInput extends PureComponent {
       invalid,
       onClick,
       value,
+      readOnly,
     } = this.props
     const selectedOption = this.findSelectedOption(options, value)
     const dropdownOptions = this.renderOptions()
@@ -224,7 +225,6 @@ export default class DropdownInput extends PureComponent {
     const badgeColor = selectedOption?.badgeColor || this.props.badgeColor || 'info'
 
     const text = this.renderText(selectedOption)
-
     const inputGroup = (
       <InputGroup
         size={size}
@@ -243,6 +243,7 @@ export default class DropdownInput extends PureComponent {
           direction='down'
           isOpen={this.state.dropdownOpen && !!dropdownOptions.length}
           toggle={this.toggleDropdown}
+          disabled={readOnly}
         >
           {
             editable &&
@@ -303,7 +304,7 @@ export default class DropdownInput extends PureComponent {
     }
 
     return (
-      <FormGroup className={classnames(size === 'sm' && 'mb-2')}>
+      <FormGroup className={classnames(size === 'sm' && 'mb-2')} readOnly={true}>
         <Label className={classnames(size === 'sm' && 'mb-1 small')}>{label}</Label>
         {inputGroup}
       </FormGroup>

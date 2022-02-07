@@ -18,7 +18,7 @@ export default function ToolbarButton ({
   tooltipPlacement = 'bottom',
   className,
   children,
-  readonly,
+  readOnly,
 }) {
   const childrenComponent = loading
     ? <span key='loading'><i className='fas fa-spin fa-spinner' /></span>
@@ -37,7 +37,7 @@ export default function ToolbarButton ({
       key={`toolbar-btn-${id}`}
       className={classnames('flex-none px-2 w-5 flex-column align-items-center', !rounded && 'rounded-0 border-0', className)}
       onClick={onClick}
-      disabled={readonly}
+      disabled={readOnly}
     >
       {childrenComponent}
     </Button>
