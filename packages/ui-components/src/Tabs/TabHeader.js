@@ -83,11 +83,12 @@ class TabHeaderItem extends PureComponent {
     onCloseTab: PropTypes.func,
     onDrag: PropTypes.func,
     contextMenu: PropTypes.array,
+    showClose: PropTypes.bool
   }
 
   renderCloseBtn() {
-    const { tab, unsaved, saving, onCloseTab } = this.props
-    if (!onCloseTab) {
+    const { tab, unsaved, saving, onCloseTab, showClose } = this.props
+    if (!onCloseTab || !showClose) {
       return null
     }
 
@@ -202,6 +203,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                     onCloseTab={onCloseTab}
                     onDrag={onDragTab}
                     onContextMenu={handleContextMenu}
+                    showClose={tabs.length > 1}
                   />
                 )
               })
