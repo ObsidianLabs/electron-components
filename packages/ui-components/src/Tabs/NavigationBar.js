@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect } from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 
 import {
