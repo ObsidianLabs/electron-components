@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from 'react'
+import React, { PureComponent, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
@@ -181,14 +181,18 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     })
   }
 
+  useEffect(() => {
+    scrollCurrentIntoView()
+  });
+
   const scrollCurrentIntoView = () => {
     let tabIndex = tabs.findIndex( item => item.key === selected.key)
-    tabIndex >= 0 ? doScroll(tabIndex) : doScroll(this.allTabs.length-1)
+    tabIndex >= 0 ? doScroll(tabIndex) : doScroll(this.allTabs.length)
   }
 
   const tabsContent = React.useRef()
   const doScroll = (index) => {
-    tabsContent.current ? tabsContent.current.children[index].scrollIntoView() : null
+    tabsContent.current && tabsContent.current.children[index].scrollIntoView()
   }
 
   return (
@@ -217,9 +221,6 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                   />
                 )
               })
-            }
-            {
-              scrollCurrentIntoView()
             }
             <div onDoubleClick={onNewTab} className='flex-grow-1' />
             {
