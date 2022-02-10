@@ -50,19 +50,20 @@ export default class KeypairInputSelector extends PureComponent {
     return (highlight, active) => {
       let highlightAddress = address
       if (!active && highlight) {
-        // highlightAddress = []
-        // let reg = new RegExp(highlight, 'ig')
-        // address.split(reg).forEach(part => {
-        //   highlightAddress.push(part)
-        //   highlightAddress.push(<b className='text-primary'>{highlight}</b>)
-        // })
-        // highlightAddress.pop()
+        highlightAddress = []
         let reg = new RegExp(highlight, 'ig')
-        highlightAddress = highlightAddress.replaceAll(reg, text => `<b class='text-primary'>${text}</b>`)
+        let tempArr = address.replaceAll(reg, text => `,spc-${text},`)
+        tempArr.split(',').forEach(part => {
+          if(part !== '') {
+            part.indexOf('spc') !== -1
+                ? highlightAddress.push(<b className='text-primary'>{part.split('spc-')[1]}</b>)
+                : highlightAddress.push(part)
+          }
+        })
       }
       return (
         <div className='w-100 d-flex align-items-center justify-content-between'>
-          <code className='text-overflow-dots mr-1' dangerouslySetInnerHTML={{__html: highlightAddress}}></code>
+          <code className='text-overflow-dots mr-1'>{highlightAddress}</code>
           <Badge color='info' style={{ top: 0 }}>{name}</Badge>
         </div>
       )
