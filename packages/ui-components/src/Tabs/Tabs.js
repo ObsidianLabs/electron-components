@@ -80,6 +80,7 @@ export default class Tabs extends PureComponent {
       this.setState(newState, this.onTabsUpdated)
     }
     this.props.onSelectTab(selected)
+    this.scrollCurrentTabIntoView(tab)
   }
 
   get currentTab () {
@@ -102,6 +103,18 @@ export default class Tabs extends PureComponent {
 
   get allTabs () {
     return [...this.state.tabs]
+  }
+
+  scrollCurrentTabIntoView = (tab) => {
+    //todo: scroll to the file which is opened at first time.
+    let tabIndex = this.allTabs.findIndex( item => item.key === tab.key)
+    if(this.header) {
+      tabIndex >= 0 ? this.doScroll(tabIndex) : this.doScroll(this.allTabs.length-1)
+    }
+  }
+
+  doScroll = (index) => {
+    document.getElementsByClassName('nav-item')[index].scrollIntoView()
   }
 
   nextTab = () => {
