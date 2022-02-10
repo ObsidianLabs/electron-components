@@ -79,6 +79,7 @@ export default class Markdown extends Component {
 
   async togglePublic(){
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
+    modelSessionManager.currentModelSession._public = isPublic
     this.setState({isPublic})
   }
 
