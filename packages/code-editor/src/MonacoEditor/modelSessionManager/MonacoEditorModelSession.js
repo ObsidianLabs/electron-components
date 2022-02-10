@@ -73,7 +73,6 @@ export default class MonacoEditorModelSession {
       const [root, others] = filePath.split(':')
       filePath = `${root.toUpperCase()}:${others}`
     }
-    console.log(filePath)
     return filePath
   }
   get CustomTab () {
