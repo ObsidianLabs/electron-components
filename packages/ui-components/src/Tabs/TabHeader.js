@@ -190,16 +190,16 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     tabIndex >= 0 ? doScroll(tabIndex) : doScroll(this.allTabs.length)
   }
 
-  const tabsContent = React.useRef()
+  const tabsRef = React.useRef()
   const doScroll = (index) => {
-    tabsContent.current && tabsContent.current.children[index].scrollIntoView()
+    tabsRef.current && tabsRef.current.children[index].scrollIntoView()
   }
 
   return (
     <div className='nav-top-bar'>
       <CustomScrollbar className='nav-wrap' >
         <DndProvider backend={HTML5Backend}>
-          <ul ref={tabsContent} className={classnames('nav nav-tabs', className)}>
+          <ul ref={tabsRef} className={classnames('nav nav-tabs', className)}>
             {
               tabs.map((tab, index) => {
                 const tabText = getTabText ? getTabText(tab) : tab.text
