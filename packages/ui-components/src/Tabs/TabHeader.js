@@ -181,19 +181,22 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     })
   }
 
-  useEffect(() => {
-    scrollCurrentIntoView()
-  });
-
-  const scrollCurrentIntoView = () => {
-    let tabIndex = tabs.findIndex( item => item.key === selected.key)
-    tabIndex >= 0 ? doScroll(tabIndex) : doScroll(this.allTabs.length)
-  }
-
   const tabsRef = React.useRef()
-  const doScroll = (index) => {
-    tabsRef.current && tabsRef.current.children[index].scrollIntoView()
-  }
+
+  useEffect(() => {
+    const scrollCurrentIntoView = () => {
+      let tabIndex = tabs.findIndex( item => item.key === selected.key)
+      tabIndex >= 0 ? doScroll(tabIndex) : doScroll(tabs.length)
+    }
+
+    const doScroll = (index) => {
+      tabsRef.current && tabsRef.current.children[index].scrollIntoView()
+    }
+
+    scrollCurrentIntoView()
+  },[selected]);
+
+
 
   return (
     <div className='nav-top-bar'>
