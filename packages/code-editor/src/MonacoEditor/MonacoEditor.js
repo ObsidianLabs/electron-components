@@ -11,6 +11,7 @@ import registerThemes from './languages/registerThemes'
 
 export default class MonacoEditor extends Component {
   static propTypes = {
+    readOnly: PropTypes.bool,
     modelSession: PropTypes.object.isRequired,
     onCommand: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired
@@ -64,7 +65,7 @@ export default class MonacoEditor extends Component {
   }
 
   createEditorWith (model) {
-    const { theme, editorConfig = {} } = this.props
+    const { theme, editorConfig = {}, readOnly = false } = this.props
     const monacoEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
       model,
       theme: theme || 'vs',
@@ -73,7 +74,9 @@ export default class MonacoEditor extends Component {
       fontSize: editorConfig.fontSize || '13px',
       fontLigatures: Boolean(editorConfig.ligatures),
       scrollBeyondLastLine: false,
-      glyphMargin: true
+      glyphMargin: true,
+      readOnly: readOnly,
+      domReadOnly: readOnly,
     }, premiumEditor.overrides)
     modelSessionManager.editor = monacoEditor
     monacoEditor.onDidChangeModelContent(() => {

@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from 'react'
+import React, { PureComponent, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
@@ -49,6 +49,11 @@ const cardTarget = {
 
     monitor.getItem().index = hoverIndex;
   },
+  drop(props, monitor,) {
+    if(monitor.canDrop()) {
+      props.onSelectTab(props.tab)
+    }
+  },
 };
 
 function targetCollect(connect) {
@@ -78,11 +83,12 @@ class TabHeaderItem extends PureComponent {
     onCloseTab: PropTypes.func,
     onDrag: PropTypes.func,
     contextMenu: PropTypes.array,
+    showClose: PropTypes.bool
   }
 
   renderCloseBtn() {
-    const { tab, unsaved, saving, onCloseTab } = this.props
-    if (!onCloseTab) {
+    const { tab, unsaved, saving, onCloseTab, showClose } = this.props
+    if (!onCloseTab || !showClose) {
       return null
     }
 
@@ -124,7 +130,7 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onMouseDown={e => {
+        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
 
@@ -175,11 +181,28 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     })
   }
 
+  const tabsRef = React.useRef()
+
+  useEffect(() => {
+    const scrollCurrentIntoView = () => {
+      let tabIndex = tabs.findIndex( item => item.key === selected.key)
+      tabIndex >= 0 ? doScroll(tabIndex) : doScroll(tabs.length)
+    }
+
+    const doScroll = (index) => {
+      tabsRef.current && tabsRef.current.children[index].scrollIntoView()
+    }
+
+    scrollCurrentIntoView()
+  },[selected]);
+
+
+
   return (
     <div className='nav-top-bar'>
       <CustomScrollbar className='nav-wrap' >
         <DndProvider backend={HTML5Backend}>
-          <ul className={classnames('nav nav-tabs', className)}>
+          <ul ref={tabsRef} className={classnames('nav nav-tabs', className)}>
             {
               tabs.map((tab, index) => {
                 const tabText = getTabText ? getTabText(tab) : tab.text
@@ -197,11 +220,12 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                     onCloseTab={onCloseTab}
                     onDrag={onDragTab}
                     onContextMenu={handleContextMenu}
+                    showClose={tabs.length > 1}
                   />
                 )
               })
             }
-            <div className='flex-grow-1' />
+            <div onDoubleClick={onNewTab} className='flex-grow-1' />
             {
               ToolButtons.map((btn, index) => {
                 const id = `tab-btn-${index}`

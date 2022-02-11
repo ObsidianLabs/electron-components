@@ -12,7 +12,7 @@ export default class CodeEditorCollection extends PureComponent {
   static propTypes = {
     initialTab: PropTypes.object.isRequired,
     onSelectTab: PropTypes.func.isRequired,
-    readonly: PropTypes.bool,
+    readOnly: PropTypes.bool,
     theme: PropTypes.string,
   }
 
@@ -219,7 +219,7 @@ export default class CodeEditorCollection extends PureComponent {
       editorConfig,
       projectRoot,
       initialTab,
-      readonly,
+      readOnly,
     } = this.props
 
     return (
@@ -242,7 +242,7 @@ export default class CodeEditorCollection extends PureComponent {
             path={this.state.selectedTab.path}
             remote={this.state.selectedTab.remote}
             mode={this.state.selectedTab.mode}
-            readonly={readonly}
+            readOnly={readOnly}
             onChange={this.setCurrentTabUnsaved}
             onCommand={this.onCommand}
           />

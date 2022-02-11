@@ -42,13 +42,16 @@ export default class MonacoEditorModelSession {
     this._model = model
     this._remote = remote
     this._CustomTab = CustomTab
-    this._readonly = false
+    this._readOnly = false
     this._showCustomTab = true
     this._viewState = null
     this._saved = true
     this._saving = false
     this._topbar = null
     this.decorations = decorations
+    this._public = null
+    if (this.filePath.startsWith('public/')) this._public = true
+    if (this.filePath.startsWith('private/')) this._public = false
   }
 
   get model () {
@@ -57,7 +60,14 @@ export default class MonacoEditorModelSession {
   get filePath () {
     let filePath = decodeURIComponent(this._model.uri.toString().replace('file://', ''))
     if (this._remote) {
-      filePath = filePath.substr(1)
+      if (this._public === true && filePath.startsWith('private/')) {
+        filePath = filePath.replace(/^private/, '/public')
+        this._model.uri.path = this._model.uri.path.replace(/^\/private/, '/public')
+      }
+      if (this._public === false && filePath.startsWith('public/')) {
+        filePath = filePath.replace(/^public/, '/private')
+        this._model.uri.path = this._model.uri.path.replace(/^\/public/, '/private')
+      }
     } else if (process.env.OS_IS_WINDOWS) {
       filePath = fileOps.current.path.normalize(filePath.substr(1))
       const [root, others] = filePath.split(':')
@@ -95,11 +105,11 @@ export default class MonacoEditorModelSession {
   }
   get saving () { return Boolean(this._saving) }
 
-  get readonly () {
-    return this._readonly
+  get readOnly () {
+    return this._readOnly
   }
-  set readonly (readonly) {
-    this._readonly = readonly
+  set readOnly (readOnly) {
+    this._readOnly = readOnly
   }
 
   get viewState () {
@@ -132,7 +142,7 @@ export default class MonacoEditorModelSession {
       monacoEditor.restoreViewState(this.viewState)
     }
 
-    monacoEditor.updateOptions({ readOnly: this.readonly })
+    monacoEditor.updateOptions({ readOnly: this.readOnly })
     monacoEditor.focus()
   }
 

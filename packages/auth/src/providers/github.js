@@ -28,11 +28,12 @@ class GithubProvider extends BaseProvider {
   }
 
   get project () {
+    if(process.env.REACT_APP_ENV === 'development') {
+      return 'eth-test'
+    }
+
     if(process.env.NODE_ENV === 'development') {
       return 'local'
-    }
-    if(process.env.REACT_APP_ENV === 'test') {
-      return 'eth-test'
     }
 
     return process.env.PROJECT

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import { utils } from '@obsidians/eth-sdk'
 
 import {
   Modal,
@@ -6,6 +7,7 @@ import {
   Table,
   IconButton,
   DeleteButton,
+  UncontrolledTooltip,
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -170,8 +172,15 @@ export default class KeypairManagerModal extends PureComponent {
     return (
       <tr key={`key-${keypair.address}`} className='hover-flex'>
         <td>
-          <div className='d-flex'>
-            {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
+          <div className='d-flex' id={`tooltip-${keypair.address}`}>
+            <span className='text-truncate'>
+              {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
+            </span>
+              <UncontrolledTooltip
+                  target={`tooltip-${keypair.address}`}
+              >
+                <p>{keypair.name}</p>
+              </UncontrolledTooltip>
             {
               !this.props.modifyNameDisabled &&
               <IconButton
@@ -185,7 +194,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td>
           <div className='d-flex align-items-center'>
-            <code className='small'>{keypair.address}</code>
+            <code className='small'>{utils.formatAddress(keypair.address)}</code>
             <span className='text-transparent'>.</span>
             <DeleteButton
               color='primary'
