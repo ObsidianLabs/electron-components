@@ -2,8 +2,8 @@ import React, { PureComponent, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
-import { DragSource, DropTarget, DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DragSource, DropTarget, DragPreviewImage, DndProvider } from 'react-dnd'
+import { HTML5Backend,getEmptyImage } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import CustomScrollbar from '../Scrollbar/index'
 import CustomDragLayer from "./CustomDragLayer";
@@ -65,7 +65,8 @@ function targetCollect(connect) {
 const sourceCollect = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
+    connectDragPreview: connect.dragPreview(),
   }
 }
 
@@ -121,6 +122,19 @@ export class TabHeaderItem extends PureComponent {
         </span>
       </div>
     )
+  }
+
+  componentDidMount() {
+    const { connectDragPreview } = this.props;
+    if (connectDragPreview) {
+      // Use empty image as a drag preview so browsers don't draw it
+      // and we can draw whatever we want on the custom drag layer instead.
+      connectDragPreview(getEmptyImage(), {
+        // IE fallback: specify that we'd rather screenshot the node
+        // when it already knows it's being dragged so we can hide it with CSS.
+        captureDraggingState: true,
+      });
+    }
   }
 
   render() {

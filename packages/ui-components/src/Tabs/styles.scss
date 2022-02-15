@@ -24,7 +24,7 @@
         margin-bottom: -1px;
         white-space: nowrap;
         flex-shrink: 0;
-    
+
         &:hover {
           background: var(--color-hover);
         }
@@ -146,7 +146,10 @@
           }
         }
       }
-    
+
+      &>.dragging-tab {
+        background: var(--color-hover);
+      }
     
       &.nav-tabs-dark-active {
         & .nav-item {
@@ -206,4 +209,9 @@
   border: 0 !important;
   color: var(--color-bg2) !important;
   box-shadow: none !important;
+}
+
+.dragging-tab {
+  background: var(--color-hover);
+  width: 80px;
 }

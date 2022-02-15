@@ -35,7 +35,8 @@ const CustomDragLayer = (props) => {
     function renderItem() {
         switch (itemType) {
             case Types.TAB:
-                return (<div className={classnames('nav-item')}>
+                return (<div className='dragging-tab text-truncate text-center h-100'
+                >
                     {item.tabText}
                 </div>)
 
