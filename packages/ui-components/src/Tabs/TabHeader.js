@@ -6,16 +6,16 @@ import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import CustomScrollbar from '../Scrollbar/index'
+import CustomDragLayer from "./CustomDragLayer";
 
-const Types = {
+export const Types = {
   TAB: 'tab'
 }
 
 const cardSource = {
   beginDrag(props) {
     return {
-      id: props.tab.key,
-      index: props.index,
+      ...props,
     }
   }
 }
@@ -69,7 +69,7 @@ const sourceCollect = (connect, monitor) => {
   }
 }
 
-class TabHeaderItem extends PureComponent {
+export class TabHeaderItem extends PureComponent {
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
@@ -194,7 +194,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     }
 
     scrollCurrentIntoView()
-  },[selected]);
+  });
 
 
 
@@ -240,6 +240,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
               })
             }
           </ul>
+          <CustomDragLayer/>
           <Menu animation={false} id='tab-context-menu'>
             {
               treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
