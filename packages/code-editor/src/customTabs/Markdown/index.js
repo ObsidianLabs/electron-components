@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import fileOps from '@obsidians/file-ops'
 
 import {
+  Modal,
   Button,
 } from '@obsidians/ui-components'
 
@@ -24,6 +25,9 @@ import './styles.scss'
 export default class Markdown extends Component {
   state = {
     isPublic: false,
+    togglePublicModal: React.createRef(),
+    togglePublicSaved: true,
+    togglePublicToggling: false,
   }
 
   componentDidMount () {
@@ -78,9 +82,31 @@ export default class Markdown extends Component {
   }
 
   async togglePublic(){
+    let saved = true
+    for(let key in modelSessionManager.sessions) {
+      const session = modelSessionManager.sessions[key]
+      if (session.saved) continue
+      saved = false
+      break
+    }
+    this.setState({togglePublicSaved: saved}, () => {
+      this.state.togglePublicModal.current.openModal()
+    })
+  }
+
+  async confirmTogglePublic(save){
+
+    await this.setState({
+      togglePublicToggling: true,
+    })
+    this.state.togglePublicModal.current.closeModal()
+    if (save) await modelSessionManager.projectManager.project.saveAll()
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
     modelSessionManager.currentModelSession._public = isPublic
-    this.setState({isPublic})
+    this.setState({
+      isPublic,
+      togglePublicToggling: false,
+    })
   }
 
   renderTogglePublicButton = () => {
@@ -93,13 +119,11 @@ export default class Markdown extends Component {
       size='sm'
       className='ml-2'
       onClick={this.togglePublic.bind(this)}
-      style={this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
+      style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
     >
-      {
-        this.state.isPublic
-          ? <span key='mode-public'><i className='fas fa-eye' /> Public</span>
-          : <span key='mode-private'><i className='fas fa-eye-slash'/> Private</span>
-      }
+      { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> Toggling</span> }
+      { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> Public</span> }
+      { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash'/> Private</span> }
     </Button>
     )
   }
@@ -250,6 +274,15 @@ export default class Markdown extends Component {
             >
               {value}
             </ReactMarkdown>
+            <Modal
+              ref={this.state.togglePublicModal}
+              title={`Are you sure to toggle the${this.state.togglePublicSaved ? '' : ' unsaved'} project to ${this.state.isPublic ? 'private' : 'public'}?`}
+              textActions={this.state.togglePublicSaved ? ['Toggle'] : ['Save and toggle', 'Toggle without save']}
+              colorActions={this.state.togglePublicSaved ? ['primary'] : ['primary', 'default']}
+              onActions={this.state.togglePublicSaved ? 
+                [this.confirmTogglePublic.bind(this, true)] : 
+                [this.confirmTogglePublic.bind(this, true), this.confirmTogglePublic.bind(this, false)]}
+            />
           </div>
           {this.renderHovers()}
         </div>

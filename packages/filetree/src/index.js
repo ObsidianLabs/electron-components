@@ -94,7 +94,11 @@ const replaceTreeNode = (treeData, curKey, child) => {
     data.forEach(item => {
       if (curKey === item.path) {
         item.children = child
-      } else if (item.children) {
+      } else if (item.root && curKey.replace(/^(public|private)\//, '') === item.path.replace(/^(public|private)\//, '')) {
+        item.path = curKey
+        item.children = child
+      }
+      else if (item.children) {
         loop(item.children)
       }
     })
@@ -179,7 +183,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     if (!directory) {
       return
     }
-
+    
     replaceTreeNode(tempTree, directory.path, directory.children)
     setLeaf(tempTree, tempTree[0].path)
     setTreeData(tempTree)
@@ -197,7 +201,6 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
             resolve()
             return
           }
-          console.log(1)
           setTimeout(() => {
             getNewTreeData(tempTreeData, treeNode.path, newData)
             setTreeData(tempTreeData)
