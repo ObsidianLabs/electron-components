@@ -21,6 +21,7 @@ const cardSource = {
 }
 
 const cardTarget = {
+  //todo: a better interaction.
   hover(props, monitor, component) {
     const dragIndex = monitor.getItem().index
     const hoverIndex = props.index
