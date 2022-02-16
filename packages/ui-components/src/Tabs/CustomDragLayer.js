@@ -1,7 +1,6 @@
 import React from 'react'
 import { DragLayer } from 'react-dnd';
 import { Types, TabHeaderItem } from './TabHeader';
-import classnames from "classnames";
 const layerStyles = {
     position: 'fixed',
     pointerEvents: 'none',
@@ -35,7 +34,7 @@ const CustomDragLayer = (props) => {
     function renderItem() {
         switch (itemType) {
             case Types.TAB:
-                return (<div className='dragging-tab text-truncate text-center h-100'
+                return (<div className='d-flex justify-content-center align-items-center dragging-tab text-truncate text-center'
                 >
                     {item.tabText}
                 </div>)
