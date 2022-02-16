@@ -53,7 +53,6 @@ const CustomDragLayer = (props) => {
 		</div>);
 };
 export default DragLayer((monitor) => {
-    console.log(monitor)
     return ({
         item: monitor.getItem(),
         itemType: monitor.getItemType(),
