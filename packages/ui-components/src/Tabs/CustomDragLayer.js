@@ -1,6 +1,6 @@
 import React from 'react'
 import { DragLayer } from 'react-dnd';
-import { Types, TabHeaderItem } from './TabHeader';
+import { Types } from './TabHeader';
 const layerStyles = {
     position: 'fixed',
     pointerEvents: 'none',

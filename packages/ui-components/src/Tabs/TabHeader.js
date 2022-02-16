@@ -71,7 +71,7 @@ const sourceCollect = (connect, monitor) => {
   }
 }
 
-export class TabHeaderItem extends PureComponent {
+class TabHeaderItem extends PureComponent {
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
@@ -205,7 +205,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     }
 
     scrollCurrentIntoView()
-  });
+  },[selected]);
 
 
 
