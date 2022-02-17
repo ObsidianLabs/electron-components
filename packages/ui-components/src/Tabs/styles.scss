@@ -211,8 +211,12 @@
   box-shadow: none !important;
 }
 
-.dragging-tab {
-  background: var(--color-hover);
-  width: 90px;
-  height: 30px;
+.custom-drag-layer {
+  .custom-drag-layer-box1 {
+    background: var(--color-bg);
+
+    .custom-drag-layer-box2 {
+      max-width: 200px;
+    }
+  }
 }
