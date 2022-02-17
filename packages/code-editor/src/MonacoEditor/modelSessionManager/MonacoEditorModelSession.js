@@ -50,8 +50,8 @@ export default class MonacoEditorModelSession {
     this._topbar = null
     this.decorations = decorations
     this._public = null
-    if (this.filePath.startsWith('public/')) this._public = true
-    if (this.filePath.startsWith('private/')) this._public = false
+    if (this.filePath.startsWith('/public')) this._public = true
+    if (this.filePath.startsWith('/private')) this._public = false
   }
 
   get model () {
@@ -60,13 +60,13 @@ export default class MonacoEditorModelSession {
   get filePath () {
     let filePath = decodeURIComponent(this._model.uri.toString().replace('file://', ''))
     if (this._remote) {
-      if (this._public === true && filePath.startsWith('private/')) {
-        filePath = filePath.replace(/^private/, '/public')
-        this._model.uri.path = this._model.uri.path.replace(/^\/private/, '/public')
+      if (this._public === true) {
+        filePath = filePath.replace(/^\/public/, 'public')
+        this._model.uri.path = this._model.uri.path.replace(/^\/public/, 'public')
       }
-      if (this._public === false && filePath.startsWith('public/')) {
-        filePath = filePath.replace(/^public/, '/private')
-        this._model.uri.path = this._model.uri.path.replace(/^\/public/, '/private')
+      if (this._public === false) {
+        filePath = filePath.replace(/^\/private/, 'private')
+        this._model.uri.path = this._model.uri.path.replace(/^\/private/, 'private')
       }
     } else if (process.env.OS_IS_WINDOWS) {
       filePath = fileOps.current.path.normalize(filePath.substr(1))
