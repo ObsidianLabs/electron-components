@@ -183,7 +183,7 @@ export default class Workspace extends Component {
       makeContextMenu = x => x,
     } = this.props
 
-    const readOnly = readOnlyInProps || !this.context.projectManager.userOwnProject
+    const readOnly = readOnlyInProps || !this.context.projectManager.userOwnProject && this.context.projectManager.remote
 
     const {
       editorConfig,
