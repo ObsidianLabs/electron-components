@@ -67,72 +67,10 @@ class GithubProvider extends BaseProvider {
     return credentials
   }
 
-  async grant (code) {
-    const tokens = await this.fetchTokens(code)
-    if (!tokens) {
-      return {}
-    }
-    const { token, awsToken } = tokens
-
-    const awsCredential = await this.fetchAwsCredential(awsToken)
-    if (!awsCredential) {
-      return {}
-    }
-
-    const credentials = { token, awsCredential }
-    const profile = decode(token)
-
-    return { credentials, profile }
-  }
-
-  async logout () {
-    try {
-      await fetch(`${this.serverUrl}/api/v1/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      })
-    } catch (error) {}
-  }
-
   async update (credentials) {
     if (credentials && credentials.awsCredential) {
       fileOps.web.fs.updateCredential(credentials.awsCredential)
       BuildService.updateCredential(credentials.awsCredential)
-    }
-  }
-
-  async fetchTokens (code) {
-    try {
-      let url
-      let method
-      let body
-      if (code) {
-        url = `${this.serverUrl}/api/v1/auth/login`
-        method = 'POST'
-        body = JSON.stringify({
-          code,
-          provider: this.name,
-          project: this.project
-        })
-      } else {
-        url = `${this.serverUrl}/api/v1/auth/refresh-token`
-        method = 'GET'
-      }
-
-      const response = await fetch(url, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        method,
-        body,
-      })
-
-      const { token, awsToken } = await response.json()
-      return { token, awsToken }
-    } catch (error) {
-      return
     }
   }
 

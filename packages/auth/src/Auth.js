@@ -108,8 +108,6 @@ export default {
 
   async getNoUserAuth(){
     this.credentials = await this.provider.getNoUserAuth()
-    console.log(this.credentials)
-
     this.update()
   },
 

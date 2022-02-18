@@ -276,7 +276,9 @@ export default class Markdown extends Component {
             </ReactMarkdown>
             <Modal
               ref={this.state.togglePublicModal}
-              title={`Are you sure to toggle the${this.state.togglePublicSaved ? '' : ' unsaved'} project to ${this.state.isPublic ? 'private' : 'public'}?`}
+              size='md'
+              title={'Warning'}
+              children={`Are you sure to toggle the${this.state.togglePublicSaved ? '' : ' unsaved'} project to ${this.state.isPublic ? 'private' : 'public'}?`}
               textActions={this.state.togglePublicSaved ? ['Toggle'] : ['Save and toggle', 'Toggle without save']}
               colorActions={this.state.togglePublicSaved ? ['primary'] : ['primary', 'default']}
               onActions={this.state.togglePublicSaved ? 
