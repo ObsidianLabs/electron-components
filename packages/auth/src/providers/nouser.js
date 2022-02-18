@@ -1,11 +1,10 @@
 import AWS from 'aws-sdk/global'
 import fileOps from '@obsidians/file-ops'
-import decode from 'jwt-decode'
 import { BuildService } from '@obsidians/ipc'
 
 import BaseProvider from './base'
 
-class GithubProvider extends BaseProvider {
+class NoUserProvider extends BaseProvider {
   constructor () {
     super('nouser')
     AWS.config.update({ region: this.awsConfig.region })
@@ -93,4 +92,4 @@ class GithubProvider extends BaseProvider {
   }
 }
 
-export default GithubProvider
+export default NoUserProvider
