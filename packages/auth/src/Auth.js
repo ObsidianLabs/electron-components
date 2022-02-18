@@ -106,6 +106,11 @@ export default {
     this.update()
   },
 
+  async getNoUserAuth(){
+    this.credentials = await this.provider.getNoUserAuth()
+    this.update()
+  },
+
   // Update profile to redux, update credentials to provder
   async update () {
     if (!redux.store) {
@@ -141,6 +146,11 @@ export default {
     if (this.shouldRefresh) {
       this.restore()
       await this.grant()
+    }
+    // TODO: should invoke it when direct to the project page
+    if (!this.provider){ 
+      this.provider = providers['nouser']
+      await this.getNoUserAuth()
     }
   },
 
