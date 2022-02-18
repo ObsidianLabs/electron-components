@@ -19,6 +19,7 @@ export default class NavigationBar extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
+    this.setState({value : utils.isValidAddressReturn(this.state.value)})
     if (prevProps.tab.key === this.props.tab.key) {
       return
     }

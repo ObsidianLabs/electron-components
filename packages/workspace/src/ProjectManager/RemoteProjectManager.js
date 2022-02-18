@@ -28,6 +28,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const project = await projectChannel.invoke('put', `${this.projectOwner}/${this.projectName}`, {
       public: this.prefix === 'public',
     })
+    this.refreshDirectory()
     // await toggleFunction //
     return project.public
   }
