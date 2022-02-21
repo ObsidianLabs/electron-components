@@ -88,7 +88,7 @@ class TabHeaderItem extends PureComponent {
 
   renderCloseBtn() {
     const { tab, unsaved, saving, onCloseTab, showClose } = this.props
-    if (!onCloseTab || !showClose) {
+    if (!onCloseTab || showClose) {
       return null
     }
 
@@ -197,7 +197,6 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
   },[selected]);
 
 
-
   return (
     <div className='nav-top-bar'>
       <CustomScrollbar className='nav-wrap' >
@@ -220,7 +219,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                     onCloseTab={onCloseTab}
                     onDrag={onDragTab}
                     onContextMenu={handleContextMenu}
-                    showClose={tabs.length > 1}
+                    showClose={tabs[0].value === '' && tabs.length === 1}
                   />
                 )
               })

@@ -195,6 +195,13 @@ export default class Tabs extends PureComponent {
         this.currentTab = null
       }
     }
+
+    newTabs.length === 0 ? newTabs.push({
+          key: "tab-0",
+          temp: undefined,
+          text: "",
+          value: "",
+        }) : newTabs
     this.setState({ tabs: newTabs }, this.onTabsUpdated)
     closeTabHandler && closeTabHandler(closingTab)
   }
