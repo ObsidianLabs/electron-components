@@ -26,7 +26,7 @@ export default class CustomScrollbar extends Component {
             opacity: '0.2',
             position: 'absolute',
             bottom: '0',
-            transition: 'all 0.5s ease-out',
+            transition: 'all 0.5s ease-in-out',
 
         };
         return (
