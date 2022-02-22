@@ -98,7 +98,23 @@ class TabHeaderItem extends PureComponent {
   renderCloseBtn() {
     const { tab, unsaved, saving, onCloseTab, showClose } = this.props
     if (!onCloseTab || showClose) {
-      return null
+      return (
+        <div
+            className='nav-item-close d-flex align-items-center justify-content-center'
+            onMouseDown={e => e.button !== 1 && e.stopPropagation()}
+            onClick={e => {
+              e.stopPropagation()
+              onCloseTab(tab)
+            }}
+        >
+          <span
+              key='nav-item-close'
+              className={classnames('nav-item-close-times', { active: false })}
+          >
+            <i className='fas fa-times' />
+          </span>
+        </div>
+      )
     }
 
     return (
