@@ -186,6 +186,7 @@ export default class Tabs extends PureComponent {
     }
 
     const newTabs = [...this.state.tabs]
+    const isInTab = newTabs[0].key.indexOf('tab') !== -1
     newTabs.splice(index, 1)
 
     if (closingTab.key === this.tabKey()) {
@@ -196,7 +197,7 @@ export default class Tabs extends PureComponent {
       }
     }
 
-    newTabs.length === 0 ? newTabs.push({
+    newTabs.length === 0 && isInTab ? newTabs.push({
           key: "tab-0",
           temp: undefined,
           text: "",
