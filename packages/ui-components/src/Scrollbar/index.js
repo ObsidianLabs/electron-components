@@ -13,7 +13,7 @@ export default class CustomScrollbar extends Component {
         return (
             <div
                 className="box"
-                style={{ ...style,  }}
+                style={{ ...style, overflowY : 'hidden', }}
                 {...props}/>
         );
     }
