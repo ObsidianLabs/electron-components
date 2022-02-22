@@ -199,7 +199,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
 
   return (
     <div className='nav-top-bar'>
-      <CustomScrollbar className='nav-wrap' >
+      <CustomScrollbar className='nav-wrap'  style={{opacity: tabs.length ===0 ? 0 : 1}}>
         <DndProvider backend={HTML5Backend}>
           <ul ref={tabsRef} className={classnames('nav nav-tabs', className)}>
             {
