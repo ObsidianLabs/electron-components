@@ -299,31 +299,26 @@ class ModelSessionManager {
     const linterMarkers = decorations.filter(item => item.from === 'linter')
     const compilerMarkers = decorations.filter(item => item.from === 'compiler')
     const decorationMap = this.decorationMap
-
-    if(Object.keys(this.decorationMap).length === 0 ) {
-      decorations.forEach(item => {
-        if (!decorationMap[item.filePath]) {
-          decorationMap[item.filePath] = []
-        }
+    
+    decorations.forEach(item => {
+      if (!decorationMap[item.filePath]) {
+        decorationMap[item.filePath] = []
         decorationMap[item.filePath].push(item)
-      })
-    }
-
-    Object.keys(this.decorationMap).forEach(filePath => {
-      if (this.sessions[filePath]) {
+      } else {
         if (linterMarkers.length > 0) {
-          const restCompilers = decorationMap[filePath].filter(item => item.from !== 'linter')
-          this.sessions[filePath].decorations = restCompilers.concat(linterMarkers)
-          decorationMap[filePath] = restCompilers.concat(linterMarkers)
+          const restCompilers = decorationMap[item.filePath].filter(d => d.from !== 'linter')
+          this.sessions[item.filePath].decorations = restCompilers.concat(linterMarkers)
+          decorationMap[item.filePath] = restCompilers.concat(linterMarkers.filter(c => c.filePath === item.filePath))
         }
         if (compilerMarkers.length > 0) {
-          const restLinters = decorationMap[filePath].filter(item => item.from !== 'compiler')
-          this.sessions[filePath].decorations = restLinters.concat(compilerMarkers)
-          decorationMap[filePath] = restLinters.concat(compilerMarkers)
+          const restLinters = decorationMap[item.filePath].filter(d => d.from !== 'compiler')
+          this.sessions[item.filePath].decorations = restLinters.concat(compilerMarkers)
+          decorationMap[item.filePath] = restLinters.concat(compilerMarkers.filter(c => c.filePath === item.filePath))
         }
       }
+      
     })
-    
+
     this.decorationMap = decorationMap
     Object.keys(this.decorationMap).forEach(filePath => {
       if (this.sessions[filePath]) {
