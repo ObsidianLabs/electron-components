@@ -198,7 +198,7 @@ export default class Tabs extends PureComponent {
     }
 
     this.setState({ tabs: newTabs }, this.onTabsUpdated)
-    newTabs.length === 0 && isInTab ? await this.onNewTab() : newTabs
+    !(newTabs.length === 0 && isInTab) || await this.onNewTab()
     closeTabHandler && closeTabHandler(closingTab)
   }
 
