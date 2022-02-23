@@ -65,7 +65,9 @@ function targetCollect(connect) {
 const sourceCollect = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
+    didDrop: monitor.didDrop(),
+    canDrag: monitor.canDrag(),
   }
 }
 
@@ -84,6 +86,13 @@ class TabHeaderItem extends PureComponent {
     onDrag: PropTypes.func,
     contextMenu: PropTypes.array,
     showClose: PropTypes.bool
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      canDragState: true,
+    }
   }
 
   renderCloseBtn() {
@@ -124,13 +133,15 @@ class TabHeaderItem extends PureComponent {
   }
 
   render() {
-    const { size, tab, active, tabText, isDragging, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
+    const { size, tab, active, tabText, isDragging, didDrop, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
+    let { canDragState } = this.state
+    setTimeout(()=>this.setState({ canDragState: canDrag }), 100)
     const opacity = isDragging ? 0 : 1
 
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item', { active, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
+        <li className={classnames('nav-item',{ 'disable-hover': !canDragState}, { active: active && canDragState, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
 
