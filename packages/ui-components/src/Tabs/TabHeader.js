@@ -1,11 +1,10 @@
-import React, { PureComponent, useState, useEffect } from 'react'
+import React, { PureComponent, useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
-import CustomScrollbar from '../Scrollbar/index'
 
 const Types = {
   TAB: 'tab'
