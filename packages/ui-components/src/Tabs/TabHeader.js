@@ -192,6 +192,11 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     })
   }
 
+  const scrollBarRef = useRef()
+  const handleWheel = (event) => {
+    scrollBarRef.current.scrollLeft += event.deltaY
+  }
+
   const tabsRef = React.useRef()
 
   useEffect(() => {
@@ -208,11 +213,12 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
   },[selected]);
 
 
+
   return (
-    <div className='nav-top-bar'>
-      <CustomScrollbar className='nav-wrap'  style={{opacity: tabs.length ===0 ? 0 : 1}}>
-        <DndProvider backend={HTML5Backend}>
-          <ul ref={tabsRef} className={classnames('nav nav-tabs', className)}>
+    <div className='nav-top-bar overflow-hidden'>
+      <DndProvider backend={HTML5Backend}>
+        <div ref={scrollBarRef} className="nav-wrap" onWheel={handleWheel}>
+          <ul  ref={tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
             {
               tabs.map((tab, index) => {
                 const tabText = getTabText ? getTabText(tab) : tab.text
@@ -235,7 +241,6 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                 )
               })
             }
-            <div onDoubleClick={onNewTab} className='flex-grow-1' />
             {
               ToolButtons.map((btn, index) => {
                 const id = `tab-btn-${index}`
@@ -250,13 +255,13 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
               })
             }
           </ul>
-          <Menu animation={false} id='tab-context-menu'>
-            {
-              treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
-            }
-          </Menu>
-        </DndProvider>
-      </CustomScrollbar>
+        </div>
+        <Menu animation={false} id='tab-context-menu'>
+          {
+            treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
+          }
+        </Menu>
+      </DndProvider>
       {onNewTab && 
         <div className='nav-actions'>
           <span
@@ -268,6 +273,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           </span>
         </div>
       }
+      <div onDoubleClick={onNewTab} className='flex-grow-1' />
     </div>
   )
 }

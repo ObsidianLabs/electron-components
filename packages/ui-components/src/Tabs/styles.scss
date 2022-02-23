@@ -5,7 +5,10 @@
   height: 30px;
   
   .nav-wrap {
-    overflow-x: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    height: 3rem;
+    transition: all 0.5s ease-in-out;
 
     .nav.nav-tabs {
       flex-wrap: nowrap;
