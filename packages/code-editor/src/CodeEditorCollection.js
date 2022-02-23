@@ -4,6 +4,7 @@ import platform from '@obsidians/platform'
 import { Tabs } from '@obsidians/ui-components'
 import fileOps from '@obsidians/file-ops'
 import { ClipBoardService } from '@obsidians/filetree';
+import classnames from 'classnames'
 
 import MonacoEditorContainer from './MonacoEditor/MonacoEditorContainer'
 import modelSessionManager from './MonacoEditor/modelSessionManager'
@@ -223,7 +224,7 @@ export default class CodeEditorCollection extends PureComponent {
     } = this.props
 
     return (
-      <div className='d-flex w-100 h-100 overflow-hidden bg2'>
+      <div className={classnames('d-flex w-100 h-100 overflow-hidden', { bg2: this.tabs.current && this.tabs.current.state.tabs.length !== 1 })}>
         <Tabs
           ref={this.tabs}
           size='sm'
