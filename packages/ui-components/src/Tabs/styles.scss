@@ -146,7 +146,13 @@
           }
         }
       }
-    
+
+      &>.disable-hover:hover{
+        background: none !important;
+        .btn .nav-item-close .nav-item-close-times {
+          opacity: 0 !important;
+        }
+      }
     
       &.nav-tabs-dark-active {
         & .nav-item {
