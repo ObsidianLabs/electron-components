@@ -175,19 +175,24 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     setTreeData([treeData])
     setSelectNode(treeData)
     setExpandKeys([treeData.path])
+    treeRef.current.state.loadedKeys = []
   }
 
   const refreshDirectory = async (directory) => {
-    const tempTree = cloneDeep(prevTreeData.current)
+    const { prefix, projectId, userId } = projectManager
+    if (directory.path === `${prefix}/${userId}/${projectId}`) {
+      await loadTree(projectManager)
+    } else {
+      const tempTree = cloneDeep(prevTreeData.current)
+      if (!directory) {
+        return
+      }
 
-    if (!directory) {
-      return
+      replaceTreeNode(tempTree, directory.path, directory.children)
+      setLeaf(tempTree, tempTree[0].path)
+      setTreeData(tempTree)
+      setSelectNode(tempTree[0])
     }
-    
-    replaceTreeNode(tempTree, directory.path, directory.children)
-    setLeaf(tempTree, tempTree[0].path)
-    setTreeData(tempTree)
-    setSelectNode(tempTree[0])
   }
 
   const handleLoadData = treeNode => {
@@ -197,7 +202,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       } else {
         const tempTreeData = cloneDeep(treeData)
         projectManager.loadDirectory(treeNode).then(newData => {
-          if(newData.length === 0) {
+          if (newData.length === 0) {
             resolve()
             return
           }
