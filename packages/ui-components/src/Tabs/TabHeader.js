@@ -144,7 +144,7 @@ class TabHeaderItem extends PureComponent {
         <li className={classnames('nav-item',{ 'disable-hover': !canDragState}, { active: active && canDragState, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
-
+          tab.clickCallback && tab.clickCallback()
         }}
           onMouseUp={e => {
             e.stopPropagation()
