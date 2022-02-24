@@ -263,28 +263,12 @@ class ModelSessionManager {
     this._editorContainer.refresh()
   }
 
-  clearLinterDecorations () {
-      const decorationMap = this.decorationMap
-      Object.keys(this.decorationMap).forEach(filePath => {
-        if (this.sessions[filePath]) {
-          const restDecorations = decorationMap[filePath].filter(item => item.from !== 'linter')
-          decorationMap[filePath] = restDecorations
-        }
-      })
-      this.decorationMap = decorationMap
-      Object.keys(this.decorationMap).forEach(filePath => {
-        if (this.sessions[filePath]) {
-          this.sessions[filePath].decorations = decorationMap[filePath]
-        }
-      })
-  }
-
-  clearCompilerDecoration () {
+  clearDecoration (type) {
     const decorationMap = this.decorationMap
     Object.keys(this.decorationMap).forEach(filePath => {
       if (this.sessions[filePath]) {
-        const restLinters= decorationMap[filePath].filter(item => item.from !== 'compiler')
-        decorationMap[filePath] = restLinters
+        const rest = decorationMap[filePath].filter(item => item.from !== type)
+        decorationMap[filePath] = rest
       }
     })
     this.decorationMap = decorationMap
@@ -320,31 +304,12 @@ class ModelSessionManager {
     })
 
     this.decorationMap = decorationMap
+
     Object.keys(this.decorationMap).forEach(filePath => {
       if (this.sessions[filePath]) {
         this.sessions[filePath].decorations = decorationMap[filePath]
       }
     })
-    // decorations.forEach(item => {
-    //   if (!decorationMap[item.filePath]) {
-    //     decorationMap[item.filePath] = []
-    //   }
-    //   decorationMap[item.filePath].push(item)
-    // })
-    // if (this.decorationMap) {
-    //   Object.keys(this.decorationMap).forEach(filePath => {
-    //     if (this.sessions[filePath]) {
-    //       this.sessions[filePath].decorations = this.sessions[filePath].decorations.concat(decorationCollection[filePath])
-    //     }
-    //   })
-    // }
-
-    // this.decorationMap = decorationMap
-    // Object.keys(decorationMap).forEach(filePath => {
-    //   if (this.sessions[filePath]) {
-    //     this.sessions[filePath].decorations = decorationMap[filePath]
-    //   }
-    // })
   }
 
   closeModelSession(filePath) {
