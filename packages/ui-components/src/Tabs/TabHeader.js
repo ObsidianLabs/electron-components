@@ -192,16 +192,15 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     })
   }
 
-  const scrollBarRef = useRef()
+  const tabsRef = useRef()
   const handleWheel = (event) => {
-    scrollBarRef.current.scrollLeft += event.deltaY
+    tabsRef.current.scrollLeft += event.deltaY
   }
   const handleWheelThrottled = throttle(handleWheel, 100)
   useEffect(() => {
     handleWheelThrottled.cancel()
   });
 
-  const tabsRef = React.useRef()
 
   useEffect(() => {
     const scrollCurrentIntoView = () => {
@@ -217,13 +216,13 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     scrollCurrentIntoView()
   },[selected]);
 
-
-
+  const isInTab = tabs[0] && tabs[0].key.indexOf('tab') !== -1
+  console.log(ToolButtons)
   return (
     <div className='nav-top-bar overflow-hidden'>
       <DndProvider backend={HTML5Backend}>
-        <div ref={scrollBarRef} className="nav-wrap" onWheel={handleWheelThrottled}>
-          <ul  ref={tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
+        <div className="nav-wrap w-100 d-flex" >
+          <ul onWheel={handleWheelThrottled} ref={tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
             {
               tabs.map((tab, index) => {
                 const tabText = getTabText ? getTabText(tab) : tab.text
@@ -246,20 +245,33 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                 )
               })
             }
+          </ul>
+
+          {onNewTab &&
+            <div className='nav-actions'>
+              <span
+                  key='nav-item-add'
+                  className={classnames('btn border-0 action-item', size && `btn-${size}`)}
+                  onMouseDown={e => e.button === 0 && onNewTab()}
+              >
+                <i className='fas fa-plus' />
+              </span>
+            </div>
+            }
+            <div onDoubleClick={onNewTab} className={classnames('flex-grow-1', {'border-bottom-tab': tabs.length !== 0 })} />
             {
               ToolButtons.map((btn, index) => {
                 const id = `tab-btn-${index}`
                 return (
-                  <li key={id} onClick={btn.onClick} title={btn.tooltip}>
+                  <div key={id} onClick={btn.onClick} title={btn.tooltip}>
                     <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)}>
                       <i className={btn.icon} />
                       <span>{btn.text}</span>
                     </div>
-                  </li>
+                  </div>
                 )
               })
             }
-          </ul>
         </div>
         <Menu animation={false} id='tab-context-menu'>
           {
@@ -267,18 +279,6 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           }
         </Menu>
       </DndProvider>
-      {onNewTab && 
-        <div className='nav-actions'>
-          <span
-            key='nav-item-add'
-            className={classnames('btn border-0 action-item', size && `btn-${size}`)}
-            onMouseDown={e => e.button === 0 && onNewTab()}
-          >
-            <i className='fas fa-plus' />
-          </span>
-        </div>
-      }
-      <div onDoubleClick={onNewTab} className={classnames('flex-grow-1', {'border-bottom-tab': tabs.length !== 0 })} />
     </div>
   )
 }
