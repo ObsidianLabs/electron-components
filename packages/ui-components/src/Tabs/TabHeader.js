@@ -208,6 +208,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
       tabsRef.current && tabsRef.current.children[index].scrollIntoView()
     }
 
+    if(tabs.length === 0) return
     scrollCurrentIntoView()
   },[selected]);
 
