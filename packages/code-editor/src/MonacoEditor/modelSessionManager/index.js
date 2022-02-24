@@ -40,7 +40,7 @@ class ModelSessionManager {
   tabsRef = null
   editorRef = null
 
-  updateEditorAfterMovedFile(oldPath, newPath) {
+  updateEditorAfterMovedFile (oldPath, newPath) {
     // include move file and rename file
     if (!this.sessions[oldPath]) return
 
