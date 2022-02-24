@@ -5,6 +5,7 @@ import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
+import throttle from 'lodash/throttle'
 
 const Types = {
   TAB: 'tab'
@@ -195,6 +196,10 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
   const handleWheel = (event) => {
     scrollBarRef.current.scrollLeft += event.deltaY
   }
+  const handleWheelThrottled = throttle(handleWheel, 100)
+  useEffect(() => {
+    handleWheelThrottled.cancel()
+  });
 
   const tabsRef = React.useRef()
 
@@ -217,7 +222,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
   return (
     <div className='nav-top-bar overflow-hidden'>
       <DndProvider backend={HTML5Backend}>
-        <div ref={scrollBarRef} className="nav-wrap" onWheel={handleWheel}>
+        <div ref={scrollBarRef} className="nav-wrap" onWheel={handleWheelThrottled}>
           <ul  ref={tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
             {
               tabs.map((tab, index) => {
@@ -273,7 +278,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           </span>
         </div>
       }
-      <div onDoubleClick={onNewTab} className='flex-grow-1 border-bottom-tab' />
+      <div onDoubleClick={onNewTab} className={classnames('flex-grow-1', {'border-bottom-tab': tabs.length !== 0 })} />
     </div>
   )
 }
