@@ -183,10 +183,16 @@
 
   .nav-actions {
     flex-grow: 0;
-    background-color: var(--color-bg-invalid);
     border-bottom: 1px solid var(--color-border);
-    border-left: 1px solid var(--color-border);
     max-height: 30px;
+    .btn-sm {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
+  .border-bottom-tab {
+    border-bottom: 1px solid var(--color-border);
   }
 }
     

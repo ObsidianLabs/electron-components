@@ -273,7 +273,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
           </span>
         </div>
       }
-      <div onDoubleClick={onNewTab} className='flex-grow-1' />
+      <div onDoubleClick={onNewTab} className='flex-grow-1 border-bottom-tab' />
     </div>
   )
 }
