@@ -139,7 +139,7 @@ class TabHeaderItem extends PureComponent {
   render() {
     const { size, tab, active, tabText, isDragging, didDrop, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
     let { canDragState } = this.state
-    setTimeout(()=>this.setState({ canDragState: canDrag }), 100)
+    setTimeout(()=>this.setState({ canDragState: canDrag }), 200)
     const opacity = isDragging ? 0 : 1
 
     return connectDragSource(
