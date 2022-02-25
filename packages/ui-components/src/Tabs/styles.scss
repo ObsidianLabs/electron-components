@@ -233,3 +233,7 @@
 button, .btn, .nav-link {
   cursor: pointer !important;
 }
+
+.btn {
+  transition: none !important;
+}

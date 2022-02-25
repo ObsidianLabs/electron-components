@@ -66,7 +66,6 @@ const sourceCollect = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
-    didDrop: monitor.didDrop(),
     canDrag: monitor.canDrag(),
   }
 }
@@ -137,9 +136,9 @@ class TabHeaderItem extends PureComponent {
   }
 
   render() {
-    const { size, tab, active, tabText, isDragging, didDrop, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
+    const { size, tab, active, tabText, isDragging, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
     let { canDragState } = this.state
-    setTimeout(()=>this.setState({ canDragState: canDrag }), 100)
+    setTimeout(()=>this.setState({ canDragState: canDrag }), 200)
     const opacity = isDragging ? 0 : 1
 
     return connectDragSource(
