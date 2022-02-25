@@ -101,11 +101,6 @@ class TabHeaderItem extends PureComponent {
       return (
         <div
             className='nav-item-close d-flex align-items-center justify-content-center'
-            onMouseDown={e => e.button !== 1 && e.stopPropagation()}
-            onClick={e => {
-              e.stopPropagation()
-              onCloseTab(tab)
-            }}
         >
           <span
               key='nav-item-close'
