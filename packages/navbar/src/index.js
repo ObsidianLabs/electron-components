@@ -10,7 +10,7 @@ import { NavLink } from 'react-router-dom'
 import NavLinkLeft from './NavLinkLeft'
 import NavLinkRight from './NavLinkRight'
 import User from './User'
-
+import platform from '@obsidians/platform'
 import './styles.scss'
 
 export default class Header extends PureComponent {
@@ -71,10 +71,12 @@ export default class Header extends PureComponent {
     const { profile, navbarLeft, navbarRight, extraLoggedInOptions, children } = this.props
     const isLogin = profile.get('username')
     const username = isLogin || 'local'
+    const disable = !isLogin && platform.isWeb
+
     return (
       <Navbar tag='header' dark expand>
         <Nav navbar className='navbar-left'>
-          {this.renderLeftNavbar(navbarLeft, !isLogin)}
+          {this.renderLeftNavbar(navbarLeft, disable)}
         </Nav>
         {children}
         <Nav navbar className='ml-auto navbar-nav-scroll navbar-right'>
