@@ -61,6 +61,7 @@
 
           & .nav-item-content {
             overflow: hidden;
+            line-height: 1;
 
             .nav-item-text {
               overflow: hidden;
@@ -98,6 +99,7 @@
 
           & .empty {
             width: 12px;
+            height: 19.5px;
           }
 
           & .nav-item-close {
