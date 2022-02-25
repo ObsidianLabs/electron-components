@@ -100,11 +100,8 @@ class TabHeaderItem extends PureComponent {
     if (!onCloseTab || showClose) {
       return (
           <span
-              style={{ opacity: 0 }}
-              className='nav-item-close-times'
-          >
-            <i className='fas fa-times' />
-          </span>
+              className='nav-item-close-times empty'
+          />
       )
     }
 

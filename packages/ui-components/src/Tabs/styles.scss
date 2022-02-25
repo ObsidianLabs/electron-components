@@ -96,6 +96,11 @@
             }
           }
 
+          & .empty {
+            opacity: 0;
+            width: 12px;
+          }
+
           & .nav-item-close {
             width: 12px;
             flex: none;
