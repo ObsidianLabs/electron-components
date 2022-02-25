@@ -99,16 +99,12 @@ class TabHeaderItem extends PureComponent {
     const { tab, unsaved, saving, onCloseTab, showClose } = this.props
     if (!onCloseTab || showClose) {
       return (
-        <div
-            className='nav-item-close d-flex align-items-center justify-content-center'
-        >
           <span
-              key='nav-item-close'
-              className={classnames('nav-item-close-times', { active: false })}
+              style={{ opacity: 0 }}
+              className='nav-item-close-times'
           >
             <i className='fas fa-times' />
           </span>
-        </div>
       )
     }
 
