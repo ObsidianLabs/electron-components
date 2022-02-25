@@ -3,7 +3,7 @@
   width: 100%;
   position: relative;
   height: 30px;
-  
+
   .nav-wrap {
 
     .nav.nav-tabs {
@@ -94,6 +94,10 @@
               height: 100%;
               flex: 0 100 8px;
             }
+          }
+
+          & .empty {
+            width: 12px;
           }
 
           & .nav-item-close {
@@ -196,7 +200,7 @@
     background: var(--color-bg-invalid);
   }
 }
-    
+
 .navbar-input-wrapper {
   position: relative;
   padding: 0rem .25rem;

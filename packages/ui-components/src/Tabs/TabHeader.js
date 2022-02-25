@@ -98,7 +98,11 @@ class TabHeaderItem extends PureComponent {
   renderCloseBtn() {
     const { tab, unsaved, saving, onCloseTab, showClose } = this.props
     if (!onCloseTab || showClose) {
-      return null
+      return (
+          <span
+              className='nav-item-close-times empty'
+          />
+      )
     }
 
     return (
