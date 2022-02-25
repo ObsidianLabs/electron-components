@@ -5,13 +5,15 @@
   height: 30px;
   
   .nav-wrap {
-    overflow-x: auto;
 
     .nav.nav-tabs {
       flex-wrap: nowrap;
       border-bottom: 1px solid var(--color-border);
       background-color: var(--color-bg-invalid);
-      flex-grow: 1;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      height: 3rem;
+      transition: all 0.5s ease-in-out;
 
       &>.nav-item {
         flex: 0 1 auto;
@@ -24,7 +26,7 @@
         margin-bottom: -1px;
         white-space: nowrap;
         flex-shrink: 0;
-    
+
         &:hover {
           background: var(--color-hover);
         }
@@ -33,41 +35,41 @@
           border-bottom: 1px solid var(--color-bg);
           color: var(--color-text);
         }
-    
+
         &.nav-item-add {
           flex: none;
           background: transparent;
           border-right: none;
           text-align: center;
           font-size: small;
-    
+
           &:hover {
             color: var(--color-text);
             background: var(--color-hover);
           }
         }
-    
+
         & .btn {
           border-radius: 0;
-    
+
           & .nav-item-content:nth-last-child(2) {
             &:before {
               width: 16px;
               flex: 0 100 16px;
             }
           }
-    
+
           & .nav-item-content {
             overflow: hidden;
-    
+
             .nav-item-text {
               overflow: hidden;
               max-width: 200px;
               text-overflow: ellipsis;
               user-select: none;
-              
-              
-  
+
+
+
               &>div {
                 span {
                   display: inline-block;
@@ -84,7 +86,7 @@
                 }
               }
             }
-      
+
             &:before, &:after {
               content: '';
               display: flex;
@@ -93,51 +95,51 @@
               flex: 0 100 8px;
             }
           }
-      
+
           & .nav-item-close {
             width: 12px;
             flex: none;
             color: var(--color-text-muted);
-      
+
             & .nav-item-close-times {
               display: none;
               opacity: 0;
               font-size: small;
-      
+
               &.active {
                 display: block;
               }
             }
-      
+
             &:hover>.nav-item-close-times {
               display: block;
               color: var(--color-text);
             }
-      
+
             & .nav-item-close-dot {
               display: none;
               font-size: xx-small;
-      
+
               &.active {
                 display: block;
               }
             }
-    
+
             & .nav-item-close-loading {
               display: none;
               font-size: small;
-      
+
               &.active {
                 display: block;
               }
             }
-    
+
             &:hover .nav-item-close-dot, &:hover .nav-item-close-loading {
               display: none;
             }
           }
         }
-    
+
         &.active, &:hover {
           & .btn .nav-item-close {
             & .nav-item-close-times {
@@ -153,7 +155,7 @@
           opacity: 0 !important;
         }
       }
-    
+
       &.nav-tabs-dark-active {
         & .nav-item {
           background: var(--color-bg);
@@ -180,10 +182,18 @@
 
   .nav-actions {
     flex-grow: 0;
-    background-color: var(--color-bg-invalid);
     border-bottom: 1px solid var(--color-border);
-    border-left: 1px solid var(--color-border);
+    background: var(--color-bg-invalid);
     max-height: 30px;
+    .btn-sm {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
+  .border-bottom-tab {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-invalid);
   }
 }
     
@@ -212,4 +222,8 @@
   border: 0 !important;
   color: var(--color-bg2) !important;
   box-shadow: none !important;
+}
+
+button, .btn, .nav-link {
+  cursor: pointer !important;
 }

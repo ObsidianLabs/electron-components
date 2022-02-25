@@ -1,11 +1,11 @@
-import React, { PureComponent, useState, useEffect } from 'react'
+import React, { PureComponent, useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
-import CustomScrollbar from '../Scrollbar/index'
+import throttle from 'lodash/throttle'
 
 const Types = {
   TAB: 'tab'
@@ -192,7 +192,15 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     })
   }
 
-  const tabsRef = React.useRef()
+  const tabsRef = useRef()
+  const handleWheel = (event) => {
+    tabsRef.current.scrollLeft += event.deltaY
+  }
+  const handleWheelThrottled = throttle(handleWheel, 100)
+  useEffect(() => {
+    handleWheelThrottled.cancel()
+  });
+
 
   useEffect(() => {
     const scrollCurrentIntoView = () => {
@@ -204,15 +212,17 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
       tabsRef.current && tabsRef.current.children[index].scrollIntoView()
     }
 
+    if(tabs.length === 0) return
     scrollCurrentIntoView()
   },[selected]);
 
-
+  const isInTab = tabs[0] && tabs[0].key.indexOf('tab') !== -1
+  console.log(ToolButtons)
   return (
-    <div className='nav-top-bar'>
-      <CustomScrollbar className='nav-wrap'  style={{opacity: tabs.length ===0 ? 0 : 1}}>
-        <DndProvider backend={HTML5Backend}>
-          <ul ref={tabsRef} className={classnames('nav nav-tabs', className)}>
+    <div className='nav-top-bar overflow-hidden'>
+      <DndProvider backend={HTML5Backend}>
+        <div className="nav-wrap w-100 d-flex" >
+          <ul onWheel={handleWheelThrottled} ref={tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
             {
               tabs.map((tab, index) => {
                 const tabText = getTabText ? getTabText(tab) : tab.text
@@ -235,39 +245,40 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
                 )
               })
             }
-            <div onDoubleClick={onNewTab} className='flex-grow-1' />
+          </ul>
+
+          {onNewTab &&
+            <div className='nav-actions'>
+              <span
+                  key='nav-item-add'
+                  className={classnames('btn border-0 action-item', size && `btn-${size}`)}
+                  onMouseDown={e => e.button === 0 && onNewTab()}
+              >
+                <i className='fas fa-plus' />
+              </span>
+            </div>
+            }
+            <div onDoubleClick={onNewTab} className={classnames('flex-grow-1', {'border-bottom-tab': tabs.length !== 0 })} />
             {
               ToolButtons.map((btn, index) => {
                 const id = `tab-btn-${index}`
                 return (
-                  <li key={id} onClick={btn.onClick} title={btn.tooltip}>
+                  <div key={id} onClick={btn.onClick} title={btn.tooltip}>
                     <div id={id} className={classnames('btn btn-transparent rounded-0', size && `btn-${size}`)}>
                       <i className={btn.icon} />
                       <span>{btn.text}</span>
                     </div>
-                  </li>
+                  </div>
                 )
               })
             }
-          </ul>
-          <Menu animation={false} id='tab-context-menu'>
-            {
-              treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
-            }
-          </Menu>
-        </DndProvider>
-      </CustomScrollbar>
-      {onNewTab && 
-        <div className='nav-actions'>
-          <span
-            key='nav-item-add'
-            className={classnames('btn border-0 action-item', size && `btn-${size}`)}
-            onMouseDown={e => e.button === 0 && onNewTab()}
-          >
-            <i className='fas fa-plus' />
-          </span>
         </div>
-      }
+        <Menu animation={false} id='tab-context-menu'>
+          {
+            treeNodeContextMenu?.map(item => item ? <Item onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
+          }
+        </Menu>
+      </DndProvider>
     </div>
   )
 }
