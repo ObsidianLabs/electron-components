@@ -8,7 +8,7 @@ import NavDropdown from './NavDropdown'
 
 class NavLinkLeft extends PureComponent {
   static defaultProps = {
-    onClickItem: () => {},
+    onClickItem: () => { },
   }
 
   onToggle = event => {
@@ -34,8 +34,8 @@ class NavLinkLeft extends PureComponent {
     }
   }
 
-  render () {
-    const { route, title, selected, dropdown, icon, contextMenu } = this.props
+  render() {
+    const { route, title, selected, dropdown, icon, contextMenu, disable } = this.props
 
     let url = `/${route}`
     if (selected.id) {
@@ -55,6 +55,7 @@ class NavLinkLeft extends PureComponent {
           onToggle={this.onToggle}
           onClickItem={this.onClickItem}
           icon={icon}
+          disable={disable}
           contextMenu={contextMenu}
         >
           <NavLinkContent

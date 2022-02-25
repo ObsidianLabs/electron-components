@@ -10,11 +10,11 @@ import { NavLink } from 'react-router-dom'
 import NavLinkLeft from './NavLinkLeft'
 import NavLinkRight from './NavLinkRight'
 import User from './User'
-
+import platform from '@obsidians/platform'
 import './styles.scss'
 
 export default class Header extends PureComponent {
-  renderLeftNavbar = links => {
+  renderLeftNavbar = (links, disable) => {
     return links.map(link => (
       <NavLinkLeft
         key={`nav-link-${link.route}`}
@@ -24,6 +24,7 @@ export default class Header extends PureComponent {
         contextMenu={link.contextMenu}
         selected={link.selected}
         dropdown={link.dropdown}
+        disable={disable}
         onClickItem={link.onClickItem}
       />
     ))
@@ -68,12 +69,14 @@ export default class Header extends PureComponent {
 
   render () {
     const { profile, navbarLeft, navbarRight, extraLoggedInOptions, children } = this.props
-    const username = profile.get('username') || 'local'
+    const isLogin = profile.get('username')
+    const username = isLogin || 'local'
+    const disable = !isLogin && platform.isWeb
 
     return (
       <Navbar tag='header' dark expand>
         <Nav navbar className='navbar-left'>
-          {this.renderLeftNavbar(navbarLeft)}
+          {this.renderLeftNavbar(navbarLeft, disable)}
         </Nav>
         {children}
         <Nav navbar className='ml-auto navbar-nav-scroll navbar-right'>

@@ -1,11 +1,11 @@
 import React from 'react'
 import * as monaco from 'monaco-editor'
-import fileOps from '@obsidians/file-ops' 
+import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 
 import MonacoEditorModelSession from './MonacoEditorModelSession'
 
-export function defaultModeDetector (filePath) {
+export function defaultModeDetector(filePath) {
   if (filePath.startsWith('custom:')) {
     return filePath.substr(7)
   } else if (filePath.endsWith('.cpp') || filePath.endsWith('.hpp')) {
@@ -22,32 +22,82 @@ export function defaultModeDetector (filePath) {
 }
 
 class ModelSessionManager {
-  constructor () {
+  constructor() {
     this._editorContainer = null
     this._editor = null
-    
+
     this.modeDetector = defaultModeDetector
     this.CustomTabs = {}
     this.customTabTitles = {}
 
     this._currentModelSession = null
     this.sessions = {}
-    this.decorationCollection = {}
+    this.decorationMap = {}
+    this.lintMarkerMap = {}
+    this.compileMarkerMap = {}
+  }
+
+  tabsRef = null
+  editorRef = null
+
+  updateEditorAfterMovedFile (oldPath, newPath) {
+    // include move file and rename file
+    if (!this.sessions[oldPath]) return
+
+    const newModelSession = this.replaceModelSession(oldPath, newPath)
+    this.sessions[newPath] = newModelSession
+
+    this.sessions[oldPath].delete
+    delete this.sessions[oldPath]
+    const tabsState = this.tabsRef.current.state
+    const oldTab = tabsState.tabs.find(tab => tab.path.endsWith(oldPath))
+    if (!oldTab) return
+    const tab = {
+        path: oldTab.path && oldTab.path.replace(oldPath, newPath),
+        key: oldTab.key && oldTab.key.replace(oldPath, newPath),
+        pathInProject: oldTab.pathInProject && oldTab.pathInProject.replace(oldPath, newPath),
+        remote: oldTab.remote,
+      }
+    const newTab = this.tabsRef.current.updateTab(tab ,oldTab.key)
+    if (this.currentFilePath !== oldPath) return
+    this.tabsRef.current.changeCurrentTab(newTab)
+    this.currentModelSession = this.sessions[newPath]
+    this.editorRef.current.setState({
+      modelSession: this.sessions[newPath],
+    })
+  }
+
+
+
+  replaceModelSession(oldPath, newPath){
+    const uri = monaco.Uri.file(newPath)
+    const newModel = monaco.editor.createModel(this.sessions[oldPath]._model.value, this.sessions[oldPath]._model._languageIdentifier.language, uri)
+
+    const whiteList = ['_buffer', '_options']
+    for (let key in newModel) {
+      if (whiteList.includes(key)) newModel[key] = this.sessions[oldPath]._model[key]
+      if (!key.startsWith('_')) continue
+      if (Object.prototype.toString.call(newModel[key]) === '[object Object]') continue
+      if (Object.prototype.toString.call(newModel[key]) === '[object Array]') continue
+      newModel[key] = this.sessions[oldPath]._model[key]
+    }
+
+    return new MonacoEditorModelSession(newModel, this.sessions[oldPath]._remote, this.sessions[oldPath]._CustomTab, this.sessions[oldPath].decorations)
   }
 
   set editorContainer (editorContainer) {
     this._editorContainer = editorContainer
   }
 
-  set editor (editor) {
+  set editor(editor) {
     this._editor = editor
   }
-  
-  get projectManager () {
+
+  get projectManager() {
     return this._editorContainer.props.projectManager
   }
 
-  set currentModelSession (modelSession) {
+  set currentModelSession(modelSession) {
     if (modelSession.filePath.indexOf('node_modules') > -1) {
       modelSession.setTopbar({ title: `This file is a dependency and changes may have a great impact on the project. Make sure you know what you are doing before making changes.` })
       this._editorContainer.refresh()
@@ -55,20 +105,21 @@ class ModelSessionManager {
     this._currentModelSession = modelSession
   }
 
-  get currentModelSession () {
+  get currentModelSession() {
     return this._currentModelSession
   }
 
-  registerModeDetector (modeDetector) {
+  registerModeDetector(modeDetector) {
     this.modeDetector = modeDetector
   }
-  registerCustomTab (mode, CustomTab, title) {
+  registerCustomTab(mode, CustomTab, title) {
     this.CustomTabs[mode] = CustomTab
     if (title) {
       this.customTabTitles[mode] = title
     }
   }
-  tabTitle (tab, mode = this.modeDetector(tab.path)) {
+
+  tabTitle(tab, mode = this.modeDetector(tab.path)) {
     const modeTitle = this.customTabTitles[tab.mode || mode]
     if (modeTitle) {
       return modeTitle
@@ -82,21 +133,22 @@ class ModelSessionManager {
     }
   }
 
-  get projectRoot () {
+  get projectRoot() {
     return this._editorContainer.props.projectRoot
   }
-  get currentFilePath () {
+
+  get currentFilePath() {
     return this.currentModelSession?.filePath
   }
 
-  openFile (filePath, remote = this.projectManager.remote) {
+  openFile(filePath, remote = this.projectManager.remote) {
     if (!fileOps.current.path.isAbsolute(filePath)) {
       filePath = fileOps.current.path.join(this.projectRoot, filePath)
     }
     this._editorContainer.openTab({ key: filePath, path: filePath, remote })
   }
 
-  async newModelSession (filePath, remote = false, mode = this.modeDetector(filePath)) {
+  async newModelSession(filePath, remote = false, mode = this.modeDetector(filePath)) {
     if (!filePath) {
       throw new Error('Empty path for "newModelSession"')
     }
@@ -116,12 +168,12 @@ class ModelSessionManager {
           model = monaco.editor.createModel(content, mode, uri)
         }
       }
-      this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationCollection[filePath] || [])
+      this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationMap[filePath] || [])
     }
     return this.sessions[filePath]
   }
 
-  async saveFile (filePath) {
+  async saveFile(filePath) {
     if (!this.sessions[filePath]) {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
@@ -136,7 +188,7 @@ class ModelSessionManager {
     this.sessions[filePath].saved = true
   }
 
-  async saveCurrentFile () {
+  async saveCurrentFile() {
     if (!this.currentFilePath) {
       throw new Error('No current file open.')
     }
@@ -148,7 +200,7 @@ class ModelSessionManager {
     }
   }
 
-  async loadFile (filePath) {
+  async loadFile(filePath) {
     if (!this.sessions[filePath]) {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
@@ -159,21 +211,21 @@ class ModelSessionManager {
     this.sessions[filePath].refreshValue(content)
   }
 
-  undo () {
+  undo() {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
       throw new Error('No current file open.')
     }
     this.sessions[this.currentFilePath].model.undo()
   }
 
-  redo () {
+  redo() {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
       throw new Error('No current file open.')
     }
     this.sessions[this.currentFilePath].model.redo()
   }
 
-  delete () {
+  delete() {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
       throw new Error('No current file open.')
     }
@@ -187,7 +239,7 @@ class ModelSessionManager {
     }
   }
 
-  selectAll () {
+  selectAll() {
     if (!this.currentFilePath || !this.sessions[this.currentFilePath]) {
       throw new Error('No current file open.')
     }
@@ -195,7 +247,7 @@ class ModelSessionManager {
     this._editor?.setSelection(model.getFullModelRange())
   }
 
-  refreshFile (data) {
+  refreshFile(data) {
     const modelSession = this.sessions[data.path]
     if (!modelSession || modelSession.saving) {
       return
@@ -231,12 +283,12 @@ class ModelSessionManager {
     }
   }
 
-  deleteFile (filePath) {
+  deleteFile(filePath) {
     const modelSession = this.sessions[filePath]
     if (!modelSession) {
       return
     }
-    
+
     modelSession.setTopbar({
       title: `This file is deleted.`,
       actions: [
@@ -259,39 +311,63 @@ class ModelSessionManager {
     this._editorContainer.refresh()
   }
 
-  updateDecorations (decorations) {
-    const decorationCollection = {}
-    decorations.forEach(item => {
-      if (!decorationCollection[item.filePath]) {
-        decorationCollection[item.filePath] = []
-      }
-      decorationCollection[item.filePath].push(item)
-    })
-
-    if (this.decorationCollection) {
-      Object.keys(this.decorationCollection).forEach(filePath => {
-        if (this.sessions[filePath]) {
-          this.sessions[filePath].decorations = decorationCollection[filePath]
-        }
-      })
-    }
-
-    this.decorationCollection = decorationCollection
-    Object.keys(decorationCollection).forEach(filePath => {
+  clearDecoration (type) {
+    const decorationMap = this.decorationMap
+    Object.keys(this.decorationMap).forEach(filePath => {
       if (this.sessions[filePath]) {
-        this.sessions[filePath].decorations = decorationCollection[filePath]
+        const rest = decorationMap[filePath].filter(item => item.from !== type)
+        decorationMap[filePath] = rest
+      }
+    })
+    this.decorationMap = decorationMap
+    Object.keys(this.decorationMap).forEach(filePath => {
+      if (this.sessions[filePath]) {
+        this.sessions[filePath].decorations = decorationMap[filePath]
       }
     })
   }
 
-  closeModelSession (filePath) {
+  updateDecorations(decorations) {
+    const linterMarkers = decorations.filter(item => item.from === 'linter')
+    const compilerMarkers = decorations.filter(item => item.from === 'compiler')
+    const decorationMap = this.decorationMap
+    
+    decorations.forEach(item => {
+      if (!decorationMap[item.filePath]) {
+        decorationMap[item.filePath] = []
+        decorationMap[item.filePath].push(item)
+      } else {
+        if (linterMarkers.length > 0) {
+          const restCompilers = decorationMap[item.filePath].filter(d => d.from !== 'linter')
+          this.sessions[item.filePath].decorations = restCompilers.concat(linterMarkers)
+          decorationMap[item.filePath] = restCompilers.concat(linterMarkers.filter(c => c.filePath === item.filePath))
+        }
+        if (compilerMarkers.length > 0) {
+          const restLinters = decorationMap[item.filePath].filter(d => d.from !== 'compiler')
+          this.sessions[item.filePath].decorations = restLinters.concat(compilerMarkers)
+          decorationMap[item.filePath] = restLinters.concat(compilerMarkers.filter(c => c.filePath === item.filePath))
+        }
+      }
+      
+    })
+
+    this.decorationMap = decorationMap
+
+    Object.keys(this.decorationMap).forEach(filePath => {
+      if (this.sessions[filePath]) {
+        this.sessions[filePath].decorations = decorationMap[filePath]
+      }
+    })
+  }
+
+  closeModelSession(filePath) {
     if (this.sessions[filePath]) {
       this.sessions[filePath].dispose()
       this.sessions[filePath] = undefined
     }
   }
 
-  closeAllModelSessions () {
+  closeAllModelSessions() {
     Object.keys(this.sessions).forEach(filePath => this.closeModelSession(filePath))
   }
 }

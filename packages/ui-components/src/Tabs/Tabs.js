@@ -186,6 +186,7 @@ export default class Tabs extends PureComponent {
     }
 
     const newTabs = [...this.state.tabs]
+    const isInTab = newTabs[0].key.indexOf('tab') !== -1
     newTabs.splice(index, 1)
 
     if (closingTab.key === this.tabKey()) {
@@ -195,7 +196,9 @@ export default class Tabs extends PureComponent {
         this.currentTab = null
       }
     }
+
     this.setState({ tabs: newTabs }, this.onTabsUpdated)
+    newTabs.length === 0 && isInTab && await this.onNewTab()
     closeTabHandler && closeTabHandler(closingTab)
   }
 

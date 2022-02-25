@@ -43,6 +43,11 @@ export default class NavDropdown extends Component {
         return
       }
     }
+
+    if(this.props.disable) {
+      return
+    }
+    
     this.setState({ dropdown: !this.state.dropdown })
   }
 
