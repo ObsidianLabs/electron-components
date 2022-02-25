@@ -37,7 +37,55 @@ class ModelSessionManager {
     this.compileMarkerMap = {}
   }
 
-  set editorContainer(editorContainer) {
+  tabsRef = null
+  editorRef = null
+
+  updateEditorAfterMovedFile (oldPath, newPath) {
+    // include move file and rename file
+    if (!this.sessions[oldPath]) return
+
+    const newModelSession = this.replaceModelSession(oldPath, newPath)
+    this.sessions[newPath] = newModelSession
+
+    this.sessions[oldPath].delete
+    delete this.sessions[oldPath]
+    const tabsState = this.tabsRef.current.state
+    const oldTab = tabsState.tabs.find(tab => tab.path.endsWith(oldPath))
+    if (!oldTab) return
+    const tab = {
+        path: oldTab.path && oldTab.path.replace(oldPath, newPath),
+        key: oldTab.key && oldTab.key.replace(oldPath, newPath),
+        pathInProject: oldTab.pathInProject && oldTab.pathInProject.replace(oldPath, newPath),
+        remote: oldTab.remote,
+      }
+    const newTab = this.tabsRef.current.updateTab(tab ,oldTab.key)
+    if (this.currentFilePath !== oldPath) return
+    this.tabsRef.current.changeCurrentTab(newTab)
+    this.currentModelSession = this.sessions[newPath]
+    this.editorRef.current.setState({
+      modelSession: this.sessions[newPath],
+    })
+  }
+
+
+
+  replaceModelSession(oldPath, newPath){
+    const uri = monaco.Uri.file(newPath)
+    const newModel = monaco.editor.createModel(this.sessions[oldPath]._model.value, this.sessions[oldPath]._model._languageIdentifier.language, uri)
+
+    const whiteList = ['_buffer', '_options']
+    for (let key in newModel) {
+      if (whiteList.includes(key)) newModel[key] = this.sessions[oldPath]._model[key]
+      if (!key.startsWith('_')) continue
+      if (Object.prototype.toString.call(newModel[key]) === '[object Object]') continue
+      if (Object.prototype.toString.call(newModel[key]) === '[object Array]') continue
+      newModel[key] = this.sessions[oldPath]._model[key]
+    }
+
+    return new MonacoEditorModelSession(newModel, this.sessions[oldPath]._remote, this.sessions[oldPath]._CustomTab, this.sessions[oldPath].decorations)
+  }
+
+  set editorContainer (editorContainer) {
     this._editorContainer = editorContainer
   }
 
