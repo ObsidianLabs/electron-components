@@ -109,7 +109,7 @@ export default class BaseModal extends PureComponent {
         className='ml-2'
         disabled
       >
-        <i className='fas fa-spin fa-spinner mr-1' />{pending}
+        <i className='fas fa-spinner fa-pulse'/> {pending}
       </Button>
     )
   }
