@@ -219,8 +219,6 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     scrollCurrentIntoView()
   },[selected]);
 
-  const isInTab = tabs[0] && tabs[0].key.indexOf('tab') !== -1
-  console.log(ToolButtons)
   return (
     <div className='nav-top-bar overflow-hidden'>
       <DndProvider backend={HTML5Backend}>
