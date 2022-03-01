@@ -43,8 +43,6 @@ class ModelSessionManager {
   updateEditorAfterMovedFile (oldPath, newPath) {
     // include move file and rename file
     if (!this.sessions[oldPath]) return
-    try{
-
     const newModelSession = this.replaceModelSession(oldPath, newPath)
     this.sessions[newPath] = newModelSession
 
@@ -66,9 +64,6 @@ class ModelSessionManager {
     this.editorRef.current.setState({
       modelSession: this.sessions[newPath],
     })
-    }catch(e){
-      console.log(e)
-    }
   }
 
   replaceModelSession(oldPath, newPath) {
@@ -81,7 +76,6 @@ class ModelSessionManager {
       if (!key.startsWith('_')) continue
       if (Object.prototype.toString.call(newModel[key]) === '[object Object]') continue
       if (Object.prototype.toString.call(newModel[key]) === '[object Array]') continue
-      console.log(key)
       newModel[key] = this.sessions[oldPath]._model[key]
     }
 
