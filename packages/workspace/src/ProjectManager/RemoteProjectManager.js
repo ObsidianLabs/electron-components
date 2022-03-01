@@ -192,6 +192,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
     try {
       await fileOps.web.fs.rename(oldPathWithType, newPath)
+      updateEditorAfterMovedFile(oldPath, newPath)
     } catch (e) {
       throw new Error(`Fail to rename <b>${this.pathInProject(oldPath)}</b>.`)
     }
