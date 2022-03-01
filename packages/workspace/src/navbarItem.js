@@ -39,7 +39,7 @@ const projectContextMenus = id => {
   ]
 }
 
-export default function navbarItem(projects, selected, username) {
+export default function navbarItem(projects, selected, username = 'local') {
   if (platform.isWeb && username === 'local') {
     return {
       route: 'local',
