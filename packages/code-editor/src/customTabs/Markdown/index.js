@@ -94,19 +94,22 @@ export default class Markdown extends Component {
     })
   }
 
-  async confirmTogglePublic(save){
+  async confirmTogglePublic(){
+
+    if (!this.state.togglePublicSaved)  return this.state.togglePublicModal.current.closeModal()
 
     await this.setState({
       togglePublicToggling: true,
     })
-    this.state.togglePublicModal.current.closeModal()
-    if (save) await modelSessionManager.projectManager.project.saveAll()
+    // if (save) await modelSessionManager.projectManager.project.saveAll()
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
     modelSessionManager.currentModelSession._public = isPublic
     this.setState({
       isPublic,
       togglePublicToggling: false,
     })
+    this.state.togglePublicModal.current.closeModal()
+    notification.success('Change Visibility Successful', `This project is now <b>${isPublic ? 'private' : 'public'}</b> and visible to anyone with the link.`)
   }
 
   renderTogglePublicButton = () => {
@@ -277,13 +280,12 @@ export default class Markdown extends Component {
             <Modal
               ref={this.state.togglePublicModal}
               size='md'
-              title={'Warning'}
-              children={`Are you sure to toggle the${this.state.togglePublicSaved ? '' : ' unsaved'} project to ${this.state.isPublic ? 'private' : 'public'}?`}
-              textActions={this.state.togglePublicSaved ? ['Toggle'] : ['Save and toggle', 'Toggle without save']}
-              colorActions={this.state.togglePublicSaved ? ['primary'] : ['primary', 'default']}
-              onActions={this.state.togglePublicSaved ? 
-                [this.confirmTogglePublic.bind(this, true)] : 
-                [this.confirmTogglePublic.bind(this, true), this.confirmTogglePublic.bind(this, false)]}
+              title={this.state.togglePublicSaved ? 'Change Project Visibility' : 'Some files are not saved'}
+              children={this.state.togglePublicSaved ? <span>Are you sure to change this project to <b>{this.state.isPublic ? 'private' : 'public'}</b>? Public projects are visible to anyone with the link.</span> : 'You have unsaved files in this project. Please save before changing the project visibility.'}
+              textConfirm={this.state.togglePublicSaved ? 'Confirm' : 'OK'}
+              noCancel={this.state.togglePublicToggling || !this.state.togglePublicSaved}
+              pending={this.state.togglePublicToggling ? 'Changing...' : false}
+              onConfirm={this.confirmTogglePublic.bind(this)}
             />
           </div>
           {this.renderHovers()}
