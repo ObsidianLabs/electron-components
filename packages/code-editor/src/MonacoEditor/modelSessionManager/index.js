@@ -40,7 +40,7 @@ class ModelSessionManager {
   tabsRef = null
   editorRef = null
 
-  updateEditorAfterMovedFile (oldPath, newPath) {
+  updateEditorAfterMovedFile(oldPath, newPath) {
     // include move file and rename file
     if (!this.sessions[oldPath]) return
 
@@ -53,12 +53,12 @@ class ModelSessionManager {
     const oldTab = tabsState.tabs.find(tab => tab.path.endsWith(oldPath))
     if (!oldTab) return
     const tab = {
-        path: oldTab.path && oldTab.path.replace(oldPath, newPath),
-        key: oldTab.key && oldTab.key.replace(oldPath, newPath),
-        pathInProject: oldTab.pathInProject && oldTab.pathInProject.replace(oldPath, newPath),
-        remote: oldTab.remote,
-      }
-    const newTab = this.tabsRef.current.updateTab(tab ,oldTab.key)
+      path: oldTab.path && oldTab.path.replace(oldPath, newPath),
+      key: oldTab.key && oldTab.key.replace(oldPath, newPath),
+      pathInProject: oldTab.pathInProject && oldTab.pathInProject.replace(oldPath, newPath),
+      remote: oldTab.remote,
+    }
+    const newTab = this.tabsRef.current.updateTab(tab, oldTab.key)
     if (this.currentFilePath !== oldPath) return
     this.tabsRef.current.changeCurrentTab(newTab)
     this.currentModelSession = this.sessions[newPath]
@@ -67,9 +67,7 @@ class ModelSessionManager {
     })
   }
 
-
-
-  replaceModelSession(oldPath, newPath){
+  replaceModelSession(oldPath, newPath) {
     const uri = monaco.Uri.file(newPath)
     const newModel = monaco.editor.createModel(this.sessions[oldPath]._model.value, this.sessions[oldPath]._model._languageIdentifier.language, uri)
 
@@ -85,7 +83,7 @@ class ModelSessionManager {
     return new MonacoEditorModelSession(newModel, this.sessions[oldPath]._remote, this.sessions[oldPath]._CustomTab, this.sessions[oldPath].decorations)
   }
 
-  set editorContainer (editorContainer) {
+  set editorContainer(editorContainer) {
     this._editorContainer = editorContainer
   }
 
@@ -112,6 +110,7 @@ class ModelSessionManager {
   registerModeDetector(modeDetector) {
     this.modeDetector = modeDetector
   }
+
   registerCustomTab(mode, CustomTab, title) {
     this.CustomTabs[mode] = CustomTab
     if (title) {
@@ -311,7 +310,7 @@ class ModelSessionManager {
     this._editorContainer.refresh()
   }
 
-  clearDecoration (type) {
+  clearDecoration(type) {
     const decorationMap = this.decorationMap
     Object.keys(this.decorationMap).forEach(filePath => {
       if (this.sessions[filePath]) {
@@ -331,7 +330,8 @@ class ModelSessionManager {
     const linterMarkers = decorations.filter(item => item.from === 'linter')
     const compilerMarkers = decorations.filter(item => item.from === 'compiler')
     const decorationMap = this.decorationMap
-    
+
+
     decorations.forEach(item => {
       if (!decorationMap[item.filePath]) {
         decorationMap[item.filePath] = []
@@ -348,7 +348,7 @@ class ModelSessionManager {
           decorationMap[item.filePath] = restLinters.concat(compilerMarkers.filter(c => c.filePath === item.filePath))
         }
       }
-      
+
     })
 
     this.decorationMap = decorationMap

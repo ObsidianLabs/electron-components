@@ -14,7 +14,8 @@ export default class MonacoEditor extends Component {
     readOnly: PropTypes.bool,
     modelSession: PropTypes.object.isRequired,
     onCommand: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    onChangeDecorations: PropTypes.func.isRequired
   }
 
   componentDidMount () {
@@ -22,6 +23,17 @@ export default class MonacoEditor extends Component {
 
     this.throttledLayoutEditor = throttle(this.layoutEditor, 500)
     this.monacoEditor = this.createEditorWith(this.props.modelSession.model)
+    
+    this.monacoEditor.onDidChangeModelDecorations(() => {
+      const compileMarkerMap = modelSessionManager.decorationMap
+      const decorations = Object.keys(compileMarkerMap).map(path => ({
+        [path]: {
+          warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
+          error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0,
+        }
+      }))
+      this.props.onChangeDecorations(decorations)
+    })
 
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')

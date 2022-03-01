@@ -15,6 +15,7 @@ export default class CodeEditorCollection extends PureComponent {
     onSelectTab: PropTypes.func.isRequired,
     readOnly: PropTypes.bool,
     theme: PropTypes.string,
+    onChangeDecorations: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -249,6 +250,7 @@ export default class CodeEditorCollection extends PureComponent {
             readOnly={readOnly}
             onChange={this.setCurrentTabUnsaved}
             onCommand={this.onCommand}
+            onChangeDecorations={this.props.onChangeDecorations}
           />
         </Tabs>
       </div>

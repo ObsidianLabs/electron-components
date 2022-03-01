@@ -14,7 +14,8 @@ export default class MonacoEditorContainer extends PureComponent {
   static propTypes = {
     readOnly: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
-    onCommand: PropTypes.func.isRequired
+    onCommand: PropTypes.func.isRequired,
+    onChangeDecorations: PropTypes.func.isRequired
   }
 
   state = {
@@ -108,6 +109,7 @@ export default class MonacoEditorContainer extends PureComponent {
         onCommand={onCommand}
         readOnly={readOnly}
         onChange={() => onChange(true)}
+        onChangeDecorations={this.props.onChangeDecorations}
       />
       <CustomTabContainer
         loading={loading}

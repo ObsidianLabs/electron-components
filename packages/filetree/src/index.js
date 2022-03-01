@@ -310,9 +310,11 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     </div>
   )
 }
+
 const ForwardFileTree = React.forwardRef(FileTree)
 ForwardFileTree.displayName = 'FileTree'
 
 export default ForwardFileTree
 
+// TOOD: refactor the dir contruct of the service
 export { default as ClipBoardService } from "./clipboard"
