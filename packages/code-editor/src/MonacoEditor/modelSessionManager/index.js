@@ -41,13 +41,15 @@ class ModelSessionManager {
   editorRef = null
 
   updateEditorAfterMovedFile (oldPath, newPath) {
+
     // include move file and rename file
     if (!this.sessions[oldPath]) return
     const newModelSession = this.replaceModelSession(oldPath, newPath)
     this.sessions[newPath] = newModelSession
-
+    this.decorationMap[newPath] = this.decorationMap[oldPath]
     this.sessions[oldPath].dispose()
     delete this.sessions[oldPath]
+    delete this.decorationMap[oldPath]
     const tabsState = this.tabsRef.current.state
     const oldTab = tabsState.tabs.find(tab => tab.path.endsWith(oldPath))
     if (!oldTab) return
@@ -78,7 +80,7 @@ class ModelSessionManager {
       if (Object.prototype.toString.call(newModel[key]) === '[object Array]') continue
       newModel[key] = this.sessions[oldPath]._model[key]
     }
-
+    
     return new MonacoEditorModelSession(newModel, this.sessions[oldPath]._remote, this.sessions[oldPath]._CustomTab, this.sessions[oldPath].decorations)
   }
 
