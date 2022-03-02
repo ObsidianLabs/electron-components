@@ -1,6 +1,7 @@
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 import { HttpIpcChannel } from '@obsidians/ipc'
+import { modelSessionManager } from '@obsidians/code-editor'
 
 import BaseProjectManager from './BaseProjectManager'
 import Auth from '@obsidians/auth'
@@ -192,7 +193,9 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
     try {
       await fileOps.web.fs.rename(oldPathWithType, newPath)
+      modelSessionManager.updateEditorAfterMovedFile(oldPath, newPath)
     } catch (e) {
+      console.log(e)
       throw new Error(`Fail to rename <b>${this.pathInProject(oldPath)}</b>.`)
     }
 

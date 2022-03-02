@@ -218,11 +218,11 @@ export default class LocalProjectManager extends BaseProjectManager {
 
     try {
       await fs.rename(oldPath, newPath)
+      modelSessionManager.updateEditorAfterMovedFile(oldPath, newPath)
     } catch (e) {
       throw new Error(`Fail to rename <b>${oldPath}</b>.`)
     }
 
-    modelSessionManager.updateEditorAfterMovedFile(oldPath, newPath)
   }
 
   async deleteFile(node) {
