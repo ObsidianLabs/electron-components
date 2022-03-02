@@ -30,7 +30,7 @@ class NavLinkRight extends PureComponent {
       >
         <NavLinkContent
           title={title}
-          selected={selected.name}
+          selected={selected.fullName}
           icon={icon}
           noneIcon={noneIcon}
           width='5.9rem'
