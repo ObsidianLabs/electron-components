@@ -110,7 +110,7 @@ export default class Markdown extends Component {
     })
     this.state.togglePublicModal.current.closeModal()
     notification.success('Change Visibility Successful', 
-    `This project is now <b>${isPublic ? 'private' : 'public'}</b> ${isPublic ? 'and only visible to yourself.' : 'and visible to anyone with the link.'}`)
+    `This project is now <b>${isPublic ? 'public' : 'private'}</b> ${isPublic ? 'and visible to anyone with the link.' : 'and only visible to yourself.'}`)
   }
 
   renderTogglePublicButton = () => {
