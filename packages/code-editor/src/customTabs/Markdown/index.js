@@ -109,7 +109,8 @@ export default class Markdown extends Component {
       togglePublicToggling: false,
     })
     this.state.togglePublicModal.current.closeModal()
-    notification.success('Change Visibility Successful', `This project is now <b>${isPublic ? 'private' : 'public'}</b> and visible to anyone with the link.`)
+    notification.success('Change Visibility Successful', 
+    `This project is now <b>${isPublic ? 'public' : 'private'}</b> ${isPublic ? 'and visible to anyone with the link.' : 'and only visible to yourself.'}`)
   }
 
   renderTogglePublicButton = () => {
@@ -281,7 +282,13 @@ export default class Markdown extends Component {
               ref={this.state.togglePublicModal}
               size='md'
               title={this.state.togglePublicSaved ? 'Change Project Visibility' : 'Some files are not saved'}
-              children={this.state.togglePublicSaved ? <span>Are you sure to change this project to <b>{this.state.isPublic ? 'private' : 'public'}</b>? Public projects are visible to anyone with the link.</span> : 'You have unsaved files in this project. Please save before changing the project visibility.'}
+              children={this.state.togglePublicSaved ? 
+              <span>Are you sure to change this project to 
+                <b>{this.state.isPublic ? ' private' : ' public'}</b>
+                ? 
+                {this.state.isPublic ? ' Private projects are only visible to your self.' : ' Public projects are visible to anyone with the link.'}
+                </span> 
+              : 'You have unsaved files in this project. Please save before changing the project visibility.'}
               textConfirm={this.state.togglePublicSaved ? 'Confirm' : 'OK'}
               noCancel={this.state.togglePublicToggling || !this.state.togglePublicSaved}
               pending={this.state.togglePublicToggling ? 'Changing...' : false}
