@@ -1,5 +1,5 @@
 {
-  "**/*.{css,json,md,yaml,yml}": ["prettier --write"],
+  "*.{css,json,md,yaml,yml}": ["prettier --write"],
   "**/*.{scss, css}": ["stylelint"],
   "**/*.{js,jsx}": ["import-sort --write", "prettier --write", "eslint --fix"]
 }
