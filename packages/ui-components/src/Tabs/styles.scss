@@ -61,7 +61,7 @@
 
           & .nav-item-content {
             overflow: hidden;
-            line-height: 1;
+            align-items: center;
 
             .nav-item-text {
               overflow: hidden;
@@ -106,6 +106,8 @@
             width: 12px;
             flex: none;
             color: var(--color-text-muted);
+            position: relative;
+            top: 1px;
 
             & .nav-item-close-times {
               display: none;
