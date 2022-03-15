@@ -1,3 +1,9 @@
 .toolbar {
   height: 31px;
 }
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

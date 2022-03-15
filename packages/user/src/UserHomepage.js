@@ -18,9 +18,11 @@ import ProjectList from './ProjectList'
 const userChannel = new HttpIpcChannel('user')
 const projectChannel = new HttpIpcChannel('project')
 
-const HEADER = 'Welcome to Ethereum Studio' //  header of TutorialModal
-const DESCRIP = `Ethereum Studio is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
-Here is an instruction for a quick scan and details of each features.` // description of TutorialModal
+const tutorialModalInfo = {
+  header: 'Welcome to Ethereum Studio',
+  description: `Ethereum Studio is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
+  Here is an instruction for a quick scan and details of each features.`
+}
 
 class UserHomepage extends PureComponent {
   state = {
@@ -50,7 +52,6 @@ class UserHomepage extends PureComponent {
     }
   }
 
-  // verify current current is new user or not
   checkIsNewUser() {
     if (!localStorage.getItem('hasMark')) {
       localStorage.setItem('hasMark', 'true')
@@ -208,10 +209,11 @@ class UserHomepage extends PureComponent {
             ListItem={ProjectListItem}
           />
         </div>
+
         <TutorialModal
           ref={this.modal}
-          header={HEADER}
-          description={DESCRIP} />
+          header={tutorialModalInfo.header}
+          description={tutorialModalInfo.description} />
       </div>
     )
   }

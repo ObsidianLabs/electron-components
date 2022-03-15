@@ -7,7 +7,6 @@ import {
 } from '@obsidians/ui-components'
 
 export default class TutorialModal extends PureComponent {
-  // define prop types
   static get propTypes() {
     return {
       header: PropTypes.string,
@@ -15,27 +14,23 @@ export default class TutorialModal extends PureComponent {
     }
   }
 
-  // constructor function
   constructor(props) {
     super(props)
-    this.state = {} // initial local state
-    this.modal = React.createRef()  // create react ref of modal
+    this.state = {}
+    this.modal = React.createRef()
     this.toGuidePage = this.toGuidePage.bind(this)
     this.showModal = this.showModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
   }
 
-  // show modal
   showModal() {
     this.modal.current.openModal()
   }
 
-  // close modal
   closeModal() {
     this.modal.current.closeModal()
   }
 
-  // open tutorial page
   toGuidePage() {
     console.log('visit guide page')
   }
@@ -50,13 +45,13 @@ export default class TutorialModal extends PureComponent {
         <div>
           <h4>{ header }</h4>
           <p style={{ 'fontSize': '12px' }}>
-            {description}
+            { description }
           </p>
-          <ListGroupItem className='d-flex justify-content-between align-items-center' style={{
+          <ListGroupItem className='center' style={{
             'margin': '10px 0',
             'borderRadius': '6px'
           }}>
-            <div className='d-flex justify-content-between align-items-center'>
+            <div className='center'>
               <div style={{
                 'backgroundColor': '#5255A5',
                 'width': '10px',
@@ -74,7 +69,7 @@ export default class TutorialModal extends PureComponent {
               Open
             </Button>
           </ListGroupItem>
-          <div className='d-flex justify-content-between align-items-center'
+          <div className='center'
             style={{'paddingTop': '30px'}}>
             <Button
               className='mx-auto '

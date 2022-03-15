@@ -38,7 +38,6 @@ class User extends Component {
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
   }
 
-  // open help page
   toHelpPage() {
     console.log('visit help page')
   }
