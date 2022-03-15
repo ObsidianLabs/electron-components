@@ -5,18 +5,22 @@ import {
   Button,
   ButtonOptions,
   LoadingScreen,
-  CenterScreen,
+  CenterScreen
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
-import { actions } from '@obsidians/workspace'
+import { actions, TutorialModal } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
 
 const userChannel = new HttpIpcChannel('user')
 const projectChannel = new HttpIpcChannel('project')
+
+const HEADER = 'Welcome to Ethereum Studio' //  header of TutorialModal
+const DESCRIP = `Ethereum Studio is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
+Here is an instruction for a quick scan and details of each features.` // description of TutorialModal
 
 class UserHomepage extends PureComponent {
   state = {
@@ -24,12 +28,18 @@ class UserHomepage extends PureComponent {
     loading: true,
     user: null,
     remote: platform.isWeb,
-    projects: null,
+    projects: null
   }
 
-  componentDidMount () {
+  constructor(props) {
+    super(props)
+    this.modal = React.createRef()
+  }
+
+  componentDidMount() {
     const { username } = this.props.match.params
     this.getProjectList(username)
+    this.checkIsNewUser()
   }
 
   componentDidUpdate (props) {
@@ -37,6 +47,14 @@ class UserHomepage extends PureComponent {
     const { username: prev } = props.match.params
     if (username !== prev) {
       this.getProjectList(username)
+    }
+  }
+
+  // verify current current is new user or not
+  checkIsNewUser() {
+    if (!localStorage.getItem('hasMark')) {
+      localStorage.setItem('hasMark', 'true')
+      this.modal.current.showModal()
     }
   }
 
@@ -66,7 +84,7 @@ class UserHomepage extends PureComponent {
         id: p.name,
         name: p.name,
         author: username,
-        path: `${username}/${p.name}`,
+        path: `${username}/${p.name}`
       }))
 
       if (this.isSelf()) {
@@ -120,7 +138,7 @@ class UserHomepage extends PureComponent {
           className='mb-0'
           options={[
             { key: 'local', text: 'Local', icon: 'far fa-desktop mr-1' },
-            { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' },
+            { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' }
           ]}
           selected={this.state.remote ? 'cloud' : 'local'}
           onSelect={key => this.setState({ remote: key === 'cloud' })}
@@ -190,6 +208,10 @@ class UserHomepage extends PureComponent {
             ListItem={ProjectListItem}
           />
         </div>
+        <TutorialModal
+          ref={this.modal}
+          header={HEADER}
+          description={DESCRIP} />
       </div>
     )
   }
@@ -197,5 +219,5 @@ class UserHomepage extends PureComponent {
 
 export default connect(['profile', 'projects'])(UserHomepage)
 export {
-  UserHomepage as BaseUserHomepage,
+  UserHomepage as BaseUserHomepage
 }
