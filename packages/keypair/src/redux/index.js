@@ -4,12 +4,33 @@ export default {
   default: Map(),
   persist: true,
   actions: {
-    UPDATE_KEYPAIR_NAME: {
+    UPDATE_FROM_REMOTE: {
       reducer: (state, { payload }) => {
-        return state.set(payload.address, payload.name)
+        let reduceState = state
+        payload.forEach(keypair => {
+          if (typeof state.get(keypair.address) === 'object') return
+          reduceState = reduceState.set(keypair.address, {
+            address: keypair.address, 
+            name: keypair.name, 
+            balance: {},
+          })
+        })
+        return reduceState
       }
     },
-    REMOVE_KEYPAIR_NAME: {
+    UPDATE_KEYPAIR_BALANCE: {
+      reducer: (state, { payload }) => {
+        return state.setIn([payload.address, 'balance', payload.networkId], payload.balance)
+      },
+    },
+    UPDATE_KEYPAIR: {
+      reducer: (state, { payload }) => {
+        const {address, name, balance = {}} = payload
+        const newState = state.set(payload.address, {address, name, balance})
+        return newState
+      }
+    },
+    REMOVE_KEYPAIR: {
       reducer: (state, { payload }) => {
         return state.remove(payload.address)
       }
