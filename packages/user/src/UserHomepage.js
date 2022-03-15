@@ -39,7 +39,7 @@ class UserHomepage extends PureComponent {
   componentDidMount() {
     const { username } = this.props.match.params
     this.getProjectList(username)
-    this.checkIsNewUser()
+    this.state.remote && this.checkIsNewUser()
   }
 
   componentDidUpdate (props) {

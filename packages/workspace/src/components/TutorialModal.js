@@ -6,9 +6,6 @@ import {
   ListGroupItem
 } from '@obsidians/ui-components'
 
-// import platform from '@obsidians/platform'
-// import fileOps from '@obsidians/file-ops'
-
 export default class TutorialModal extends PureComponent {
   // define prop types
   static get propTypes() {
