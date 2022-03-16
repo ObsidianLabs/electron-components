@@ -25,12 +25,41 @@ class KeypairManager {
     return () => this.eventTarget.removeEventListener('updated', eventHandler)
   }
 
+  getKeypairFromRedux (networkId) {
+    const keypairsState = redux.getState().keypairs
+    const formatjs = Object.values(keypairsState.toJS())
+    return formatjs.map(keypair => ({
+      address: keypair.address,
+      name: keypair.name,
+      balance: keypair.balance && keypair.balance[networkId] || '0',
+    }))
+  }
+
   async loadAllKeypairs () {
     try {
+      const { networkManager } = require('@obsidians/eth-network')
+      const networkId = networkManager.network.id
+
       const keypairs = await this.channel.invoke('get')
+      redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
+
       keypairs.forEach(item => item.address = utils.simplifyAddress(item.address))
-      const names = redux.getState().keypairs
-      const unsorted = keypairs.map(k => ({ address: k.address, name: k.name || names.get(k.address) }))
+      const unsorted = this.getKeypairFromRedux(networkId)
+
+      const updating = unsorted.map(async keypair => {
+        const address = keypair.address
+        const account = await networkManager.sdk.client.getAccount(address)
+        redux.dispatch('UPDATE_KEYPAIR_BALANCE', {
+          address,
+          networkId,
+          balance: account.balance,
+        })
+      })
+      Promise.all(updating).then(() => {
+        const keypairs = this.getKeypairFromRedux(networkId)
+        const event = new CustomEvent('updated', { detail: keypairs })
+        this.eventTarget.dispatchEvent(event)
+      })
       const sorted = unsorted.sort((a, b) => {
         if (!a.name || !b.name) {
           return 0
@@ -60,19 +89,19 @@ class KeypairManager {
   async saveKeypair (name, keypair) {
     keypair.name = name
     await this.channel.invoke('post', '', keypair)
-    redux.dispatch('UPDATE_KEYPAIR_NAME', { address: keypair.address, name })
+    redux.dispatch('UPDATE_KEYPAIR', { address: keypair.address, name })
     await this.loadAndUpdateKeypairs()
   }
 
   async updateKeypairName (address, name) {
-    redux.dispatch('UPDATE_KEYPAIR_NAME', { address, name })
+    redux.dispatch('UPDATE_KEYPAIR', { address, name })
     await this.channel.invoke('put', address, { name })
     await this.loadAndUpdateKeypairs()
   }
 
   async deleteKeypair (keypair) {
     await this.channel.invoke('delete', keypair.address)
-    redux.dispatch('REMOVE_KEYPAIR_NAME', { address: keypair.address })
+    redux.dispatch('REMOVE_KEYPAIR', { address: keypair.address })
     await this.loadAndUpdateKeypairs()
   }
 

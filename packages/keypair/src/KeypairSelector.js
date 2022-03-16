@@ -26,7 +26,11 @@ export default class KeypairSelector extends PureComponent {
   componentDidMount () {
     this.setState({ loading: true })
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
-    keypairManager.onUpdated(this.updateKeypairs)
+    this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
+  }
+
+  componentWillUnmount(){
+    this.listenKeypairChange && this.listenKeypairChange()
   }
 
   componentDidUpdate (prevProps) {
