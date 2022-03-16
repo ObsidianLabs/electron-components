@@ -6,6 +6,7 @@ import { DragSource, DropTarget, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import throttle from 'lodash/throttle'
+import platform from '@obsidians/platform'
 
 const Types = {
   TAB: 'tab'
@@ -219,7 +220,6 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     scrollCurrentIntoView()
   },[selected]);
 
-  const isInTab = tabs[0] && tabs[0].key.indexOf('tab') !== -1
   return (
     <div className='nav-top-bar overflow-hidden'>
       <DndProvider backend={HTML5Backend}>
@@ -260,7 +260,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
               </span>
             </div>
             }
-            <div onDoubleClick={onNewTab} className={classnames('flex-grow-1', {'border-bottom-tab': tabs.length !== 0 })} />
+            <div onDoubleClick={onNewTab} className={classnames('flex-grow-1', {'border-bottom-tab': tabs.length !== 0 || platform.isDesktop })} />
             {
               ToolButtons.map((btn, index) => {
                 const id = `tab-btn-${index}`
