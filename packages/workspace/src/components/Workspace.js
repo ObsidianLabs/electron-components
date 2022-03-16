@@ -34,7 +34,7 @@ SplitPane.getSizeUpdate = (props, state) => {
 export default class Workspace extends Component {
   static contextType = WorkspaceContext
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.filetree = React.createRef()
     this.codeEditor = React.createRef()
@@ -48,6 +48,7 @@ export default class Workspace extends Component {
       editorConfig: {},
       showTerminal: !!props.terminal,
       terminalSize: 160,
+      filetreeDecorations: []
     }
 
     const effect = BaseProjectManager.effect(`settings:editor`, editorConfig => {
@@ -66,12 +67,12 @@ export default class Workspace extends Component {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const editorConfig = this.context.projectSettings.get('editor')
     this.setState({ editorConfig })
   }
 
-  async componentDidUpdate (prevProps) {
+  async componentDidUpdate(prevProps) {
     if (prevProps.terminal !== this.props.terminal) {
       if (this.props.terminal) {
         this.setState({
@@ -85,7 +86,7 @@ export default class Workspace extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.disposable()
   }
 
@@ -171,7 +172,7 @@ export default class Workspace extends Component {
     }
   }
 
-  render () {
+  render() {
     const {
       theme,
       initial,
@@ -215,6 +216,9 @@ export default class Workspace extends Component {
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readOnly={readOnly}
+            onChangeDecorations={(decorations) => this.setState({
+              filetreeDecorations: decorations
+            })}
           />
           {Terminal}
         </SplitPane>
@@ -231,6 +235,9 @@ export default class Workspace extends Component {
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readOnly={readOnly}
+          onChangeDecorations={(decorations) => this.setState({
+            filetreeDecorations: decorations
+          })}
         />
       )
     }
@@ -258,13 +265,14 @@ export default class Workspace extends Component {
               onClick={() => this.openCreateFileModal()}
             />
             <ProjectToolbar
-              signer={signer}/>
+              signer={signer} />
           </div>
           <FileTree
             ref={this.filetree}
             projectManager={this.context.projectManager}
             initialPath={initial.path}
             onSelect={this.openFile}
+            decorations={this.state.filetreeDecorations}
             readOnly={readOnly}
             contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />

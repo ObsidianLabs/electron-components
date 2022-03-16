@@ -20,7 +20,11 @@ export default class KeypairInputSelector extends PureComponent {
 
   componentDidMount () {
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
-    keypairManager.onUpdated(this.updateKeypairs)
+    this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
+  }
+
+  componentWillUnmount(){
+    this.listenKeypairChange && this.listenKeypairChange()
   }
 
   componentDidUpdate (prevProps) {
@@ -133,7 +137,7 @@ export default class KeypairInputSelector extends PureComponent {
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
         options={[...options, ...extraOptions]}
-        renderText={!editable && (option => option ? <code>{option.id}</code> : null)}
+        renderText={!editable && (option => option ? <code>{utils.isValidAddressReturn(option.id)}</code> : null)}
         value={value}
         onChange={onChange}
         invalid={invalid}

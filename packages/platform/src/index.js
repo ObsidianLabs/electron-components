@@ -22,7 +22,8 @@ function isElectron() {
 if (isElectron()) {
   type = 'desktop'
   const { OS_IS_WINDOWS, OS_IS_MAC, OS_IS_LINUX } = process.env
-  appleSilicon = false // TODO: need a way to test apple silicon
+  const nodemodule_os = require('os')
+  appleSilicon = Boolean(nodemodule_os.cpus().find(cpu => cpu.model.startsWith('Apple M')))
 
   if (OS_IS_WINDOWS) {
     os = 'win'

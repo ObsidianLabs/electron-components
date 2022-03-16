@@ -23,7 +23,7 @@ export default class KeypairManagerModal extends PureComponent {
   static defaultProps = {
     title: 'Keypair Manager',
     warning: true,
-    head: ['Name', 'Address'],
+    head: ['Name', 'Address', 'Balance'],
     actions: true,
     textActions: ['Create', 'Import'],
     keypairText: 'Keypair',
@@ -56,6 +56,16 @@ export default class KeypairManagerModal extends PureComponent {
       this.setChain(chain)
     }
     this.refresh()
+  }
+
+  componentDidMount () {
+    this.listenKeypairChange = keypairManager.onUpdated(keypairs => {
+      this.setState({ keypairs })
+    })
+  }
+
+  componentWillUnmount(){
+    this.listenKeypairChange && this.listenKeypairChange()
   }
 
   async refresh () {
@@ -169,15 +179,19 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   renderKeypairRow = keypair => {
+    // 过滤地址中包含的不合法字符（禁止出现在 html attr 中的字符）
+    // filter the illegal address
+    const validAddress = keypair.address.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
+
     return (
-      <tr key={`key-${keypair.address}`} className='hover-flex'>
+      <tr key={`key-${validAddress}`} className='hover-flex'>
         <td>
-          <div className='d-flex' id={`tooltip-${keypair.address}`}>
+          <div className='d-flex' id={`tooltip-${validAddress}`}>
             <span className='text-truncate'>
               {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
             </span>
               <UncontrolledTooltip
-                  target={`tooltip-${keypair.address}`}
+                  target={`tooltip-${validAddress}`}
               >
                 <p>{keypair.name}</p>
               </UncontrolledTooltip>
@@ -204,6 +218,9 @@ export default class KeypairManagerModal extends PureComponent {
               onConfirm={() => this.revealSecret(keypair)}
             />
           </div>
+        </td>
+        <td>
+          <span className='address-balance'>{keypair.balance}</span>
         </td>
         <td align='right'>
         {
@@ -261,8 +278,9 @@ export default class KeypairManagerModal extends PureComponent {
           tableSm
           TableHead={(
             <tr>
-              <th style={{ width: '25%' }}>{head[0]}</th>
+              <th style={{ width: '20%' }}>{head[0]}</th>
               <th style={{ width: '50%' }}>{head[1]}</th>
+              <th style={{ width: '20%' }}>{head[2]}</th>
               <th></th>
             </tr>
           )}

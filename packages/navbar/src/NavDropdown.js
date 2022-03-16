@@ -38,15 +38,16 @@ export default class NavDropdown extends Component {
   }
 
   onToggle = event => {
-    if(this.props.disable) {
-      return
-    }
-    
     if (this.props.onToggle) {
       if (this.props.onToggle(event)) {
         return
       }
     }
+
+    if(this.props.disable) {
+      return
+    }
+    
     this.setState({ dropdown: !this.state.dropdown })
   }
 
