@@ -39,7 +39,6 @@ class KeypairManager {
     try {
       const { networkManager } = require('@obsidians/eth-network')
       const networkId = networkManager.network.id
-      // console.log(await networkManager.sdk.client.getAccount('cfxtest:aaj822612rft18a8555vxxpn9dejvv9xvad79ggh99'))
 
       const keypairs = await this.channel.invoke('get')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
@@ -60,7 +59,6 @@ class KeypairManager {
         const keypairs = this.getKeypairFromRedux(networkId)
         const event = new CustomEvent('updated', { detail: keypairs })
         this.eventTarget.dispatchEvent(event)
-        // const unsorted = keypairs.map(k => ({ address: k.address, name: k.name || names.get(k.address) }))
       })
       const sorted = unsorted.sort((a, b) => {
         if (!a.name || !b.name) {
