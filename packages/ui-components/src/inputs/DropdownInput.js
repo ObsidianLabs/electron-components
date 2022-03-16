@@ -228,7 +228,7 @@ export default class DropdownInput extends PureComponent {
     const inputGroup = (
       <InputGroup
         size={size}
-        className='flex-nowrap'
+        className='flex-nowrap cursorDefultBtn'
       >
         {
           addon &&

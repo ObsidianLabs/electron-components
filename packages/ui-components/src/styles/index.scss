@@ -116,3 +116,9 @@ pre.pre-box {
 .modal-md {
   width: 	500px;
 }
+.dropup, .dropright, .dropdown, .dropleft, .curserPointer{
+  cursor: pointer;
+}
+.dropdown-header, .cursorDefultBtn .btn {
+  cursor: default !important;
+}
