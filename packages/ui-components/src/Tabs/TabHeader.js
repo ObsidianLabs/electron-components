@@ -224,7 +224,7 @@ const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, T
     <div className='nav-top-bar overflow-hidden'>
       <DndProvider backend={HTML5Backend}>
         <div className="nav-wrap w-100 d-flex" >
-          <ul onWheel={handleWheelThrottled} ref={tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
+          <ul onWheel={handleWheelThrottled} ref={tabs.length > 1? tabsRef : {}} className={classnames('d-flex nav nav-tabs ', className)}>
             {
               tabs.map((tab, index) => {
                 const tabText = getTabText ? getTabText(tab) : tab.text
