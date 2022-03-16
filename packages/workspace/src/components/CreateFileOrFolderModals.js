@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 
 import {
   Modal,
-  DebouncedFormGroup,
+  DebouncedFormGroup
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
@@ -16,7 +16,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
       loading: false,
       name: '',
       baseName: '',
-      basePath: '',
+      basePath: ''
     }
     this.modal = React.createRef()
     this.input = React.createRef()

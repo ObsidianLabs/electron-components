@@ -5,8 +5,8 @@ const translation = {
     welcome: 'Welcome to {{projectName}}',
     message: '{{projectName}} is a graphic IDE for developing smart contracts on the {{chainName}} blockchain. To get started, please install the prerequisite tools for {{projectName}}.',
     start: 'Get Started',
-    skip: 'Skip',
-  },
+    skip: 'Skip'
+  }
 }
 
 export default {

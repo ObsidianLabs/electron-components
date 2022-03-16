@@ -19,6 +19,11 @@ class User extends Component {
     loaded: false
   }
 
+  constructor(props) {
+    super(props)
+    this.toHelpPage = this.toHelpPage.bind(this)
+  }
+
   componentDidMount () {
     const img = new Image()
     img.src = this.props.profile.get('avatar')
@@ -27,9 +32,14 @@ class User extends Component {
       this.setState({ loaded: true})
     }
   }
+
   onToggle = event => {
     event.preventDefault()
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
+  }
+
+  toHelpPage() {
+    console.log('visit help page')
   }
 
   renderExtraLoggedInOptions = () => {
@@ -58,7 +68,7 @@ class User extends Component {
       PROJECT_NAME,
       PROJECT_WEB_URL,
       PROJECT_DESKTOP_URL,
-      PROJECT_GITHUB_REPO,
+      PROJECT_GITHUB_REPO
     } = process.env
 
     let linkToOtherPlatformItem = []
@@ -96,9 +106,9 @@ class User extends Component {
     if (platform.isDesktop && !ENABLE_AUTH) {
       dropdownItems = [
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-          <i className='fas fa-th-list w-3 mr-2' />My Projects		
+          <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>,
-        ...linkToOtherPlatformItem,
+        ...linkToOtherPlatformItem
       ]
     } else if (username) {
       dropdownItems = [
@@ -112,17 +122,21 @@ class User extends Component {
         <DropdownItem key='divider' divider />,
         <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
           <i className='fas fa-sign-out w-3 mr-2' />Log out
-        </DropdownItem>,
+        </DropdownItem>
       ]
     } else {
       dropdownItems = [
         ...this.renderLoginButton(),
-        <DropdownItem key='divider' divider />,
+        <DropdownItem key='divider-2' divider />,
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
           <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>,
         this.renderExtraLoggedInOptions(),
         ...linkToOtherPlatformItem,
+        <DropdownItem key='divider-3' divider />,
+        <DropdownItem key='help-page' onClick={this.toHelpPage}>
+          <i className='fas fa-info-circle w-3 mr-2' />Help page
+        </DropdownItem>
       ]
     }
 
@@ -163,7 +177,7 @@ class User extends Component {
         <DropdownToggle tag='div' className='nav-dropdown-toggle px-2'>
           <div className='d-flex bg-secondary align-items-center justify-content-center user-avatar'>
             {
-              this.state.loaded && profile.get('avatar') ? <img className='user-avatar' src={profile.get('avatar')} crossOrigin="true" /> : <span><span className='fa fa-user-alt' /></span>
+              this.state.loaded && profile.get('avatar') ? <img className='user-avatar' src={profile.get('avatar')} crossOrigin='true' /> : <span><span className='fa fa-user-alt' /></span>
             }
           </div>
         </DropdownToggle>
