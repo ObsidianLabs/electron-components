@@ -52,14 +52,7 @@ export default class TutorialModal extends PureComponent {
             'borderRadius': '6px'
           }}>
             <div className='center'>
-              <div style={{
-                'backgroundColor': '#5255A5',
-                'width': '10px',
-                'height': '10px',
-                'borderRadius': '50%',
-                'marginBottom': '2px',
-                'marginRight': '10px'
-              }} />
+              <div className='tutorialPanel' />
               <p>Learn how to use Ethereum Studio</p>
             </div>
 
