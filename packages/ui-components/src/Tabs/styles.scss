@@ -12,7 +12,7 @@
       background-color: var(--color-bg-invalid);
       overflow-x: scroll;
       overflow-y: hidden;
-      height: 3rem;
+      height: 60px;
       transition: all 0.5s ease-in-out;
 
       &>.nav-item {
@@ -26,6 +26,7 @@
         margin-bottom: -1px;
         white-space: nowrap;
         flex-shrink: 0;
+        height: 30px;
 
         &:hover {
           background: var(--color-hover);
@@ -68,8 +69,6 @@
               max-width: 200px;
               text-overflow: ellipsis;
               user-select: none;
-
-
 
               &>div {
                 span {
