@@ -62,7 +62,7 @@ export default class NavDropdown extends Component {
     if (item.divider) {
       return <DropdownItem divider key={`dropdown-item-divider-${index}`} />
     } else if (item.header) {
-      return <DropdownItem header key={`dropdown-item-header-${index}`}>{item.header}</DropdownItem>
+      return <DropdownItem className='cursor-default' header key={`dropdown-item-header-${index}`}>{item.header}</DropdownItem>
     } else if (item.none) {
       return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
     }

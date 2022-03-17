@@ -228,18 +228,18 @@ export default class DropdownInput extends PureComponent {
     const inputGroup = (
       <InputGroup
         size={size}
-        className='flex-nowrap cursorDefultBtn'
+        className='flex-nowrap'
       >
         {
           addon &&
             <InputGroupAddon addonType='prepend'>
-              <Button color='secondary' tabIndex={-1} className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
+              <Button color='secondary' tabIndex={-1} className={[classnames(size === 'sm' ? 'px-0' : 'px-1','cursor-default')]}>
                 <div className='w-5'>{addon}</div>
               </Button>
             </InputGroupAddon>
         }
         <Dropdown
-          className='d-flex flex-grow-1'
+          className='d-flex flex-grow-1 cursor-pointer'
           direction='down'
           isOpen={this.state.dropdownOpen && !!dropdownOptions.length}
           toggle={this.toggleDropdown}
