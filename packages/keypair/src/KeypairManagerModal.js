@@ -181,7 +181,7 @@ export default class KeypairManagerModal extends PureComponent {
   renderKeypairRow = keypair => {
     // 过滤地址中包含的不合法字符（禁止出现在 html attr 中的字符）
     // filter the illegal address
-    const validAddress = keypair.address.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
+    const validAddress = keypair?.address?.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
 
     return (
       <tr key={`key-${validAddress}`} className='hover-flex'>
@@ -266,6 +266,7 @@ export default class KeypairManagerModal extends PureComponent {
 
     return <>
       <Modal
+        size='lg'
         ref={this.modal}
         title={title}
         textActions={actions ? textActions : []}
@@ -279,7 +280,7 @@ export default class KeypairManagerModal extends PureComponent {
           TableHead={(
             <tr>
               <th style={{ width: '20%' }}>{head[0]}</th>
-              <th style={{ width: '50%' }}>{head[1]}</th>
+              <th style={{ width: '55%' }}>{head[1]}</th>
               <th style={{ width: '20%' }}>{head[2]}</th>
               <th></th>
             </tr>
