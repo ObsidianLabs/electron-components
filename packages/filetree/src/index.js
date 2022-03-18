@@ -150,17 +150,25 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     setIsBlankAreaRightClick(true);
 
     let fileNode = Object.assign({},ref.current.activeNode);
-    let fileNodeIsRoot = fileNode.pathInProject.split('/');
-    if(fileNodeIsRoot.length > 1) {
-      let inProjectSecondPath = fileNodeIsRoot[1];
-      let rootFileNodePath = fileNode.path.split('/');
-      let fileNodePathIndex = rootFileNodePath.indexOf(inProjectSecondPath);
-      let filePathAndKey = (rootFileNodePath.slice(0,fileNodePathIndex)).join('/');
+   
+    if (!(fileNode.root) && (platform.isDesktop || platform.isWeb)) {
+      let pathPOS = fileNode.pos.split('-');
+      let filePathPOS = pathPOS.length - 2;
+      let pathDividingLine = platform.isDesktop? '\\' : (platform.isWeb && '/');
+      let rootFileNodePath = fileNode.path.split(pathDividingLine);
+      let filePathAndKey = (rootFileNodePath.slice(0,rootFileNodePath.length - filePathPOS)).join(pathDividingLine);
       fileNode.path = filePathAndKey;
       fileNode.key = filePathAndKey;
-      fileNode.pathInProject = fileNodeIsRoot[0];
+      fileNode.pos = (pathPOS.slice(0,pathPOS.length - filePathPOS)).join('-');
+      fileNode.name = filePathAndKey[filePathAndKey.length - 1];
+      fileNode.title = filePathAndKey[filePathAndKey.length - 1];
+      let pathInProjectAndTitle;
+      if (platform.isWeb) {
+        pathInProjectAndTitle = fileNode.pathInProject.split(pathDividingLine);
+        fileNode.pathInProject = (pathInProjectAndTitle.slice(0,pathInProjectAndTitle.length - filePathPOS)).join(pathDividingLine);
+      }
     }
-    
+
     handleSetSelectNode(fileNode);
     show(event.nativeEvent, {
       props: {
