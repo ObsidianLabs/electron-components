@@ -4,7 +4,7 @@ import throttle from 'lodash/throttle'
 
 import {
   SplitPane,
-  ToolbarButton,
+  ToolbarButton
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'

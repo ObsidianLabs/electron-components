@@ -6,7 +6,7 @@ import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
-
+import StatusTitle from './statusTitle'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -106,7 +106,44 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
+const travelTree = (treeData, fn, extraValue) => {
+  let fatherNode = treeData
+  const travel = (tree, fn) => {
+    fn(tree, fatherNode, extraValue)
+    if (!tree.children) return
+    fatherNode = tree
+    for (let i = 0; i < tree.children.length; i++) {
+      travel(tree.children[i], fn)
+    }
+  }
+  travel(treeData, fn)
+}
+
+const renderTitle = (curNode, fatherNode, value) => {
+  const pathKey = Object.keys(value)[0]
+  if (curNode.key !== pathKey) return
+  const showType = value[pathKey].error > value[pathKey].warning ? 'error' : 'warning'
+  curNode.title = (<StatusTitle
+    title={curNode.name}
+    isLeaf={curNode.isLeaf}
+    showType={showType}
+    error={value[pathKey].error}
+    warnig={value[pathKey].warning} />)
+  fatherNode.title = (<StatusTitle
+    title={fatherNode.name}
+    isLeaf={fatherNode.isLeaf}
+    showType={showType}
+    error={value[pathKey].error}
+    warnig={value[pathKey].warning} />)
+}
+
+const updateStatus = (decorations, treeData) => {
+  decorations.forEach((item) => {
+    travelTree(treeData, renderTitle, item)
+  })
+}
+
+const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -156,6 +193,22 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       }
     })
   }
+  
+  // useEffect(() => {
+  //   updateStatus(decorations, ...treeData)
+  // }, [decorations])
+  useEffect(() => {
+    // updateStatus(decorations, ...treeData)
+    console.log('ssss', decorationMap)
+  }, [decorationMap])
+
+  useEffect(() => {
+    prevTreeData.current = treeData
+  })
+
+  useEffect(() => {
+    loadTree(projectManager)
+  }, [])
 
   const handleSetSelectNode = (node) => {
     setSelectNode(node)
@@ -189,6 +242,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   const loadTree = async projectManager => {
     projectManager.onRefreshDirectory(refreshDirectory)
     const treeData = await projectManager.loadRootDirectory()
+    // treeData.children[0].title = (<StatusTitle />)
+    // treeData.children[0].title = test
     setLeaf([treeData], treeData.path)
 
     setTreeData([treeData])
@@ -259,11 +314,10 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       treeRef.current.onNodeExpand(event, node)
       setSelectNode(node)
     }
-
   }
 
   const onDebounceExpand = debounce(expandFolderNode, 200, {
-    leading: true,
+    leading: true
   })
 
   const handleClick = (event, node) => {
@@ -283,16 +337,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   }
 
   const onDebounceDrag = debounce(handleDrop, 2000, {
-    leading: true,
+    leading: true
   })
-
-  useEffect(() => {
-    prevTreeData.current = treeData
-  })
-
-  useEffect(() => {
-    loadTree(projectManager)
-  }, [])
 
   return (
     <div className="tree-wrap animation"
@@ -338,4 +384,4 @@ ForwardFileTree.displayName = 'FileTree'
 export default ForwardFileTree
 
 // TOOD: refactor the dir contruct of the service
-export { default as ClipBoardService } from "./clipboard"
+export { default as ClipBoardService } from './clipboard'

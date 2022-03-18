@@ -329,9 +329,11 @@ class ModelSessionManager {
 
   updateDecorations(decorations) {
     const linterMarkers = decorations.filter(item => item.from === 'linter')
+    console.log('linterMarkers', linterMarkers)
     const compilerMarkers = decorations.filter(item => item.from === 'compiler')
+    console.log('compilerMarkers', compilerMarkers)
     const decorationMap = this.decorationMap
-
+    console.log('decorationMap', decorationMap)
 
     decorations.forEach(item => {
       if (!decorationMap[item.filePath]) {
@@ -359,6 +361,7 @@ class ModelSessionManager {
         this.sessions[filePath].decorations = decorationMap[filePath]
       }
     })
+    console.log('r', this.decorationMap)
   }
 
   closeModelSession(filePath) {

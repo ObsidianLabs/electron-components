@@ -23,17 +23,8 @@ export default class MonacoEditor extends Component {
 
     this.throttledLayoutEditor = throttle(this.layoutEditor, 500)
     this.monacoEditor = this.createEditorWith(this.props.modelSession.model)
-    
-    this.monacoEditor.onDidChangeModelDecorations(() => {
-      const compileMarkerMap = modelSessionManager.decorationMap
-      const decorations = Object.keys(compileMarkerMap).map(path => ({
-        [path]: {
-          warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
-          error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0,
-        }
-      }))
-      this.props.onChangeDecorations(decorations)
-    })
+
+    this.monacoEditor.onDidChangeModelDecorations(this.formatDecoration)
 
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')
@@ -49,7 +40,7 @@ export default class MonacoEditor extends Component {
         this.props.modelSession.viewState = this.monacoEditor.saveViewState()
       }
       props.modelSession.recoverInEditor(this.monacoEditor)
-  
+
       this.throttledLayoutEditor()
       // $.bottomBar.updatePosition(this.monacoEditor.getPosition())
     }
@@ -59,7 +50,7 @@ export default class MonacoEditor extends Component {
       this.monacoEditor.updateOptions({
         fontFamily: fontFamily || 'Hack',
         fontSize: fontSize || '13px',
-        fontLigatures: Boolean(ligatures),
+        fontLigatures: Boolean(ligatures)
       })
     }
 
@@ -68,6 +59,17 @@ export default class MonacoEditor extends Component {
 
   componentWillUnmount () {
     this.monacoEditor.dispose()
+  }
+
+  formatDecoration() {
+    const compileMarkerMap = modelSessionManager.decorationMap
+    const decorations = Object.keys(compileMarkerMap).map(path => ({
+      [path]: {
+        warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
+        error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0
+      }
+    }))
+    this.props.onChangeDecorations(decorations)
   }
 
   layoutEditor = () => {
@@ -88,7 +90,7 @@ export default class MonacoEditor extends Component {
       scrollBeyondLastLine: false,
       glyphMargin: true,
       readOnly: readOnly,
-      domReadOnly: readOnly,
+      domReadOnly: readOnly
     }, premiumEditor.overrides)
     modelSessionManager.editor = monacoEditor
     monacoEditor.onDidChangeModelContent(() => {
