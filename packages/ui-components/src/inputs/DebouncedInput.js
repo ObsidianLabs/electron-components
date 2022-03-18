@@ -78,7 +78,7 @@ export default class DebouncedInput extends PureComponent {
       >
         { addon 
           ? <InputGroupAddon addonType='prepend'>
-              <Button color='secondary' tabIndex={-1} className={classnames(size === 'sm' ? 'px-0' : 'px-1')}>
+              <Button color='secondary' tabIndex={-1} className={classnames(size === 'sm' ? 'px-0' : 'px-1','cursor-default')}>
                 <div className='w-5'>{addon}</div>
               </Button>
             </InputGroupAddon>
