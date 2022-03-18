@@ -106,7 +106,7 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false}, ref) => {
+const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -114,7 +114,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false}, re
   const [selectedKeys, setSelectedKeys] = useState([])
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
-  const prevTreeData = useRef() 
+  const prevTreeData = useRef()
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
@@ -147,11 +147,20 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false}, re
   }
 
   const handleEmptyTreeContextMenu = (event) => {
-    event.nativeEvent.preventDefault();
-    event.stopPropagation();
     setIsBlankAreaRightClick(true);
 
     let fileNode = Object.assign({},ref.current.activeNode);
+    let fileNodeIsRoot = fileNode.pathInProject.split('/');
+    if(fileNodeIsRoot.length > 1) {
+      let inProjectSecondPath = fileNodeIsRoot[1];
+      let rootFileNodePath = fileNode.path.split('/');
+      let fileNodePathIndex = rootFileNodePath.indexOf(inProjectSecondPath);
+      let filePathAndKey = (rootFileNodePath.slice(0,fileNodePathIndex)).join('/');
+      fileNode.path = filePathAndKey;
+      fileNode.key = filePathAndKey;
+      fileNode.pathInProject = fileNodeIsRoot[0];
+    }
+    
     handleSetSelectNode(fileNode);
     show(event.nativeEvent, {
       props: {
