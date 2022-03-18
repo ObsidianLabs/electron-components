@@ -100,6 +100,11 @@ class User extends Component {
           <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
         </DropdownItem>
       )
+      linkToOtherPlatformItem.push(
+        <DropdownItem key='help-page' onClick={this.toHelpPage}>
+          <i className='fas fa-info-circle w-3 mr-2' />Help page
+        </DropdownItem>
+      )
     }
 
     const username = profile.get('username')
@@ -132,11 +137,7 @@ class User extends Component {
           <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>,
         this.renderExtraLoggedInOptions(),
-        ...linkToOtherPlatformItem,
-        <DropdownItem key='divider-3' divider />,
-        <DropdownItem key='help-page' onClick={this.toHelpPage}>
-          <i className='fas fa-info-circle w-3 mr-2' />Help page
-        </DropdownItem>
+        ...linkToOtherPlatformItem
       ]
     }
 

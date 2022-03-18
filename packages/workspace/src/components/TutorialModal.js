@@ -41,14 +41,13 @@ export default class TutorialModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        noCancel={true}>
+        title={header}>
         <div>
-          <h4>{ header }</h4>
-          <p style={{ 'fontSize': '12px' }}>
+          <p style={{ 'fontSize': '15px' }}>
             { description }
           </p>
           <ListGroupItem className='center' style={{
-            'margin': '10px 0',
+            'margin': '5px 0',
             'borderRadius': '6px'
           }}>
             <div className='center'>
@@ -62,15 +61,6 @@ export default class TutorialModal extends PureComponent {
               Open
             </Button>
           </ListGroupItem>
-          <div className='center'
-            style={{'paddingTop': '30px'}}>
-            <Button
-              className='mx-auto '
-              onClick={this.closeModal}
-              color={'primary'}>
-              Skip
-            </Button>
-          </div>
         </div>
       </Modal>
     )
