@@ -106,7 +106,7 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
+const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false}, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -114,7 +114,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   const [selectedKeys, setSelectedKeys] = useState([])
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
-  const prevTreeData = useRef()
+  const prevTreeData = useRef() 
+  const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
   if (readOnly) {
@@ -122,15 +123,36 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     // TODO we need a id to make sure the filter works correctlly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')
   }
+  if (!readOnly && isBlankAreaRightClick) {
+    treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder'));
+  }
 
   const { show } = useContextMenu({
     id: 'file-tree'
   })
 
+  
+
   const handleContextMenu = ({ event, node }) => {
-    event.nativeEvent.preventDefault()
+    event.nativeEvent.preventDefault();
+    event.stopPropagation();
+    setIsBlankAreaRightClick(false);
 
     handleSetSelectNode(node)
+    show(event.nativeEvent, {
+      props: {
+        key: 'value'
+      }
+    })
+  }
+
+  const handleEmptyTreeContextMenu = (event) => {
+    event.nativeEvent.preventDefault();
+    event.stopPropagation();
+    setIsBlankAreaRightClick(true);
+
+    let fileNode = Object.assign({},ref.current.activeNode);
+    handleSetSelectNode(fileNode);
     show(event.nativeEvent, {
       props: {
         key: 'value'
@@ -276,7 +298,9 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   }, [])
 
   return (
-    <div className="tree-wrap animation">
+    <div className="tree-wrap animation"
+    onContextMenu={handleEmptyTreeContextMenu}
+    >
       <Tree
         // TODO: improve the condition when support the WEB
         draggable={!platform.isWeb}
