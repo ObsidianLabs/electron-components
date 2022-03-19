@@ -25,7 +25,7 @@ if (isMasterBranch && !isHotfixBranch && !isReleaseBranch) {
 }
 
 // Check the standard of the commit message
-const regex = /^(Merge pull request)|(feat|fix|major|chore|docs|build|hotfix|style|perf|refactor|)([\(（^].*[\)）])?:/g
+const regex = /^(Merge)|(feat|fix|major|chore|docs|build|hotfix|style|perf|refactor|)([\(（^].*[\)）])?:/g
 danger.git.commits.forEach(commit => {
 	if (!commit.message.match(regex)) {
 		fail(`Commit message '${commit.message}' does match the correct format!`);
