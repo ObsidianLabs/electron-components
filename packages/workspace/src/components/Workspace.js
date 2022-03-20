@@ -9,7 +9,7 @@ import {
 
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
-import CodeEditorCollection from '@obsidians/code-editor'
+import CodeEditorCollection, { modelSessionManager } from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
 import WorkspaceContext from '../WorkspaceContext'
@@ -43,6 +43,8 @@ export default class Workspace extends Component {
     this.throttledDispatchResizeEvent = throttle(() => {
       window.dispatchEvent(new Event('resize'))
     }, 200)
+
+    this.formatDecoration = this.formatDecoration.bind(this)
 
     this.state = {
       editorConfig: {},
@@ -112,6 +114,17 @@ export default class Workspace extends Component {
 
   closeAllTabs = () => {
 
+  }
+
+  formatDecoration () {
+    const compileMarkerMap = modelSessionManager.decorationMap
+    const decorations = Object.keys(compileMarkerMap).map(path => ({
+      [path]: {
+        warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
+        error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0
+      }
+    }))
+    this.setState({filetreeDecorations: decorations})
   }
 
   openCreateFileModal = node => {
@@ -216,9 +229,7 @@ export default class Workspace extends Component {
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readOnly={readOnly}
-            onChangeDecorations={(decorations) => this.setState({
-              filetreeDecorations: decorations
-            })}
+            onChangeDecorations={this.formatDecoration}
           />
           {Terminal}
         </SplitPane>
@@ -235,9 +246,7 @@ export default class Workspace extends Component {
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readOnly={readOnly}
-          onChangeDecorations={(decorations) => this.setState({
-            filetreeDecorations: decorations
-          })}
+          onChangeDecorations={this.formatDecoration}
         />
       )
     }
@@ -265,6 +274,7 @@ export default class Workspace extends Component {
               onClick={() => this.openCreateFileModal()}
             />
             <ProjectToolbar
+              finalCall={this.formatDecoration}
               signer={signer} />
           </div>
           <FileTree

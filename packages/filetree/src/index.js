@@ -119,30 +119,6 @@ const travelTree = (treeData, fn, extraValue) => {
   travel(treeData, fn)
 }
 
-const renderTitle = (curNode, fatherNode, value) => {
-  const pathKey = Object.keys(value)[0]
-  if (curNode.key !== pathKey) return
-  const showType = value[pathKey].error > value[pathKey].warning ? 'error' : 'warning'
-  curNode.title = (<StatusTitle
-    title={curNode.name}
-    isLeaf={curNode.isLeaf}
-    showType={showType}
-    error={value[pathKey].error}
-    warnig={value[pathKey].warning} />)
-  fatherNode.title = (<StatusTitle
-    title={fatherNode.name}
-    isLeaf={fatherNode.isLeaf}
-    showType={showType}
-    error={value[pathKey].error}
-    warnig={value[pathKey].warning} />)
-}
-
-const updateStatus = (decorations, treeData) => {
-  decorations.forEach((item) => {
-    travelTree(treeData, renderTitle, item)
-  })
-}
-
 const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
@@ -151,6 +127,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   const [selectedKeys, setSelectedKeys] = useState([])
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
+  const [isFold, setFold] = useState(true)
   const prevTreeData = useRef()
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
@@ -161,19 +138,17 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')
   }
   if (!readOnly && isBlankAreaRightClick) {
-    treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder'));
+    treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder'))
   }
 
   const { show } = useContextMenu({
     id: 'file-tree'
   })
 
-  
-
   const handleContextMenu = ({ event, node }) => {
-    event.nativeEvent.preventDefault();
-    event.stopPropagation();
-    setIsBlankAreaRightClick(false);
+    event.nativeEvent.preventDefault()
+    event.stopPropagation()
+    setIsBlankAreaRightClick(false)
 
     handleSetSelectNode(node)
     show(event.nativeEvent, {
@@ -184,23 +159,60 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   }
 
   const handleEmptyTreeContextMenu = (event) => {
-    setIsBlankAreaRightClick(true);
+    setIsBlankAreaRightClick(true)
 
-    handleSetSelectNode(treeData[0]);
+    handleSetSelectNode(treeData[0])
     show(event.nativeEvent, {
       props: {
         key: 'value'
       }
     })
   }
-  
-  // useEffect(() => {
-  //   updateStatus(decorations, ...treeData)
-  // }, [decorations])
+
+  const renderAllTitle = (curNode, fatherNode, value) => {
+    const pathKey = Object.keys(value)[0]
+    if (curNode.key !== pathKey || fatherNode.name === 'build') return
+    const showType = value[pathKey].error > value[pathKey].warning ? 'error' : 'warning'
+    curNode.title = (<StatusTitle
+      title={curNode.name}
+      isLeaf={curNode.isLeaf}
+      showType={showType}
+      error={value[pathKey].error}
+      warnig={value[pathKey].warning} />)
+    fatherNode.title = (<StatusTitle
+      title={fatherNode.name}
+      isLeaf={fatherNode.isLeaf}
+      showType={showType}
+      error={value[pathKey].error}
+      warnig={value[pathKey].warning} />)
+  }
+
+  const renderPartialTitle = (curNode, fatherNode, value) => {
+    const pathKey = Object.keys(value)[0]
+    const name = fatherNode.name
+    if (pathKey.indexOf(name) === -1 || fatherNode.name === 'build') return
+    const showType = value[pathKey].error > value[pathKey].warning ? 'error' : 'warning'
+    fatherNode.title = (<StatusTitle
+      title={fatherNode.name}
+      isLeaf={fatherNode.isLeaf}
+      showType={showType}
+      error={value[pathKey].error}
+      warnig={value[pathKey].warning} />)
+  }
+
+  const updateStatus = (decorations, treeData, isFold) => {
+    decorations.forEach((item) => {
+      travelTree(treeData,
+        isFold ? renderPartialTitle : renderAllTitle,
+        item)
+    })
+    setTreeData([treeData])
+  }
+
   useEffect(() => {
-    // updateStatus(decorations, ...treeData)
-    console.log('ssss', decorationMap)
-  }, [decorationMap])
+    if (!decorations.length) return
+    updateStatus(decorations, ...treeData, isFold)
+  }, [decorations])
 
   useEffect(() => {
     prevTreeData.current = treeData
@@ -228,6 +240,9 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
     },
     get rootNode() {
       return treeData
+    },
+    updateStatus() {
+      updateStatus(decorations, ...treeData, isFold)
     }
   }))
 
@@ -283,6 +298,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
           setTimeout(() => {
             getNewTreeData(tempTreeData, treeNode.path, newData)
             setTreeData(tempTreeData)
+            updateStatus(decorations, ...tempTreeData, false)
             resolve()
           }, 500)
         })
@@ -306,6 +322,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   }
 
   const expandFolderNode = (event, node) => {
+    setFold(false)
     if (node.isLeaf) {
       return
     }
@@ -341,8 +358,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   })
 
   return (
-    <div className="tree-wrap animation"
-    onContextMenu={handleEmptyTreeContextMenu}
+    <div className='tree-wrap animation'
+      onContextMenu={handleEmptyTreeContextMenu}
     >
       <Tree
         // TODO: improve the condition when support the WEB
@@ -371,7 +388,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
       />
       <Menu animation={false} id='file-tree'>
         {
-          treeNodeContextMenu.map((item, index) => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator key={`blank-${index}`}/>)
+          treeNodeContextMenu.map((item, index) => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator key={`blank-${index}`} />)
         }
       </Menu>
     </div>

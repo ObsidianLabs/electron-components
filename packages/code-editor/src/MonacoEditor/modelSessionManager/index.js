@@ -41,7 +41,6 @@ class ModelSessionManager {
   editorRef = null
 
   updateEditorAfterMovedFile (oldPath, newPath) {
-
     // include move file and rename file
     if (!this.sessions[oldPath]) return
     const newModelSession = this.replaceModelSession(oldPath, newPath)
@@ -57,14 +56,14 @@ class ModelSessionManager {
       path: oldTab.path && oldTab.path.replace(oldPath, newPath),
       key: oldTab.key && oldTab.key.replace(oldPath, newPath),
       pathInProject: oldTab.pathInProject && oldTab.pathInProject.replace(oldPath, newPath),
-      remote: oldTab.remote,
+      remote: oldTab.remote
     }
     const newTab = this.tabsRef.current.updateTab(tab, oldTab.key)
     if (this.currentFilePath !== oldPath) return
     this.tabsRef.current.changeCurrentTab(newTab)
     this.currentModelSession = this.sessions[newPath]
     this.editorRef.current.setState({
-      modelSession: this.sessions[newPath],
+      modelSession: this.sessions[newPath]
     })
   }
 
@@ -80,7 +79,7 @@ class ModelSessionManager {
       if (Object.prototype.toString.call(newModel[key]) === '[object Array]') continue
       newModel[key] = this.sessions[oldPath]._model[key]
     }
-    
+
     return new MonacoEditorModelSession(newModel, this.sessions[oldPath]._remote, this.sessions[oldPath]._CustomTab, this.sessions[oldPath].decorations)
   }
 
@@ -234,7 +233,7 @@ class ModelSessionManager {
       const selection = this._editor.getSelection()
       model.pushEditOperations(null, [{
         range: selection,
-        text: null,
+        text: null
       }])
     }
   }
@@ -268,14 +267,14 @@ class ModelSessionManager {
               modelSession.saved = true
               modelSession.dismissTopbar()
               this._editorContainer.refresh()
-            },
+            }
           },
           {
             text: 'Keep Current',
             onClick: async () => {
               modelSession.dismissTopbar()
               this._editorContainer.refresh()
-            },
+            }
           }
         ]
       })
@@ -297,14 +296,14 @@ class ModelSessionManager {
           onClick: async () => {
             modelSession.dismissTopbar()
             this._editorContainer.refresh()
-          },
+          }
         },
         {
           text: 'Discard',
           onClick: async () => {
             modelSession.dismissTopbar()
             this._editorContainer.closeCurrentFile()
-          },
+          }
         }
       ]
     })
@@ -329,11 +328,8 @@ class ModelSessionManager {
 
   updateDecorations(decorations) {
     const linterMarkers = decorations.filter(item => item.from === 'linter')
-    console.log('linterMarkers', linterMarkers)
     const compilerMarkers = decorations.filter(item => item.from === 'compiler')
-    console.log('compilerMarkers', compilerMarkers)
     const decorationMap = this.decorationMap
-    console.log('decorationMap', decorationMap)
 
     decorations.forEach(item => {
       if (!decorationMap[item.filePath]) {
@@ -351,7 +347,6 @@ class ModelSessionManager {
           decorationMap[item.filePath] = restLinters.concat(compilerMarkers.filter(c => c.filePath === item.filePath))
         }
       }
-
     })
 
     this.decorationMap = decorationMap
@@ -361,7 +356,6 @@ class ModelSessionManager {
         this.sessions[filePath].decorations = decorationMap[filePath]
       }
     })
-    console.log('r', this.decorationMap)
   }
 
   closeModelSession(filePath) {
