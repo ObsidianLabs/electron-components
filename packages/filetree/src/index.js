@@ -304,7 +304,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       />
       <Menu animation={false} id='file-tree'>
         {
-          treeNodeContextMenu.map(item => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator />)
+          treeNodeContextMenu.map((item, index) => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator key={`blank-${index}`}/>)
         }
       </Menu>
     </div>

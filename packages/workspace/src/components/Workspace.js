@@ -52,7 +52,7 @@ export default class Workspace extends Component {
     }
 
     const effect = BaseProjectManager.effect(`settings:editor`, editorConfig => {
-      this.setState({ editorConfig })
+      this.state.editorConfig = editorConfig
     })
     this.disposable = effect()
 
