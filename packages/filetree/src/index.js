@@ -149,8 +149,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   const handleEmptyTreeContextMenu = (event) => {
     setIsBlankAreaRightClick(true);
 
-    let fileNode = Object.assign({},treeData[0]);
-    handleSetSelectNode(fileNode);
+    handleSetSelectNode(treeData[0]);
     show(event.nativeEvent, {
       props: {
         key: 'value'
