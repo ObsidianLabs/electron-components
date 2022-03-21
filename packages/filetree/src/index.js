@@ -7,7 +7,7 @@ import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
 
-console.log(' -- platform --',platform);
+
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
     return <i className='fas fa-file-code fa-fw mr-1' />
@@ -148,7 +148,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
 
   const handleEmptyTreeContextMenu = (event) => {
     setIsBlankAreaRightClick(true);
-    
+
     let fileNode = Object.assign({},treeData[0]);
     handleSetSelectNode(fileNode);
     show(event.nativeEvent, {
