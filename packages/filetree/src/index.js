@@ -7,7 +7,7 @@ import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
 
-
+console.log(' -- platform --',platform);
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
     return <i className='fas fa-file-code fa-fw mr-1' />
@@ -148,27 +148,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
 
   const handleEmptyTreeContextMenu = (event) => {
     setIsBlankAreaRightClick(true);
-
-    let fileNode = Object.assign({},ref.current.activeNode);
-   
-    if (!(fileNode.root) && (platform.isDesktop || platform.isWeb)) {
-      let pathPOS = fileNode.pos.split('-');
-      let filePathPOS = pathPOS.length - 2;
-      let pathDividingLine = platform.isDesktop? '\\' : (platform.isWeb && '/');
-      let rootFileNodePath = fileNode.path.split(pathDividingLine);
-      let filePathAndKey = (rootFileNodePath.slice(0,rootFileNodePath.length - filePathPOS)).join(pathDividingLine);
-      fileNode.path = filePathAndKey;
-      fileNode.key = filePathAndKey;
-      fileNode.pos = (pathPOS.slice(0,pathPOS.length - filePathPOS)).join('-');
-      fileNode.name = filePathAndKey[filePathAndKey.length - 1];
-      fileNode.title = filePathAndKey[filePathAndKey.length - 1];
-      let pathInProjectAndTitle;
-      if (platform.isWeb) {
-        pathInProjectAndTitle = fileNode.pathInProject.split(pathDividingLine);
-        fileNode.pathInProject = (pathInProjectAndTitle.slice(0,pathInProjectAndTitle.length - filePathPOS)).join(pathDividingLine);
-      }
-    }
-
+    
+    let fileNode = Object.assign({},treeData[0]);
     handleSetSelectNode(fileNode);
     show(event.nativeEvent, {
       props: {
