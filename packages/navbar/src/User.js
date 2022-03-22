@@ -13,6 +13,8 @@ import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
+const HELP_PAGE_ADDRESS = 'https://github.com/ObsidianLabs/EthereumStudio/blob/master/README.md'
+
 class User extends Component {
   state = {
     isDropdownOpen: false,
@@ -39,7 +41,7 @@ class User extends Component {
   }
 
   toHelpPage() {
-    console.log('visit help page')
+    window.open(HELP_PAGE_ADDRESS, '_blank')
   }
 
   renderExtraLoggedInOptions = () => {
