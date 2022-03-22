@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { useRef, forwardRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   Modal,
@@ -6,63 +6,64 @@ import {
   ListGroupItem
 } from '@obsidians/ui-components'
 
-export default class TutorialModal extends PureComponent {
-  static get propTypes() {
-    return {
-      header: PropTypes.string,
-      description: PropTypes.string
+const TutorialModal = forwardRef(({header, description, nextPage}, ref) => {
+  const modal = useRef(null)
+
+  if (ref) {
+    ref.current = {
+      showModal: () => {
+        showModal()
+      },
+      closeModal: () => {
+        closeModal()
+      }
     }
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {}
-    this.modal = React.createRef()
-    this.toGuidePage = this.toGuidePage.bind(this)
-    this.showModal = this.showModal.bind(this)
-    this.closeModal = this.closeModal.bind(this)
+  const showModal = () => {
+    modal.current.openModal()
   }
 
-  showModal() {
-    this.modal.current.openModal()
+  const closeModal = () => {
+    modal.current.closeModal()
   }
 
-  closeModal() {
-    this.modal.current.closeModal()
+  const toGuidePage = () => {
+    window.open(nextPage, '_blank')
+    closeModal()
   }
 
-  toGuidePage() {
-    console.log('visit guide page')
-  }
+  return (
+    <Modal
+      ref={modal}
+      title={header}>
+      <div>
+        <p style={{ 'fontSize': '15px' }}>
+          { description }
+        </p>
+        <ListGroupItem className='center' style={{
+          'margin': '5px 0',
+          'borderRadius': '6px'
+        }}>
+          <div className='center'>
+            <div className='tutorialPanel' />
+            <p>Learn how to use Ethereum Studio</p>
+          </div>
 
-  render() {
-    const { header, description } = this.props
-
-    return (
-      <Modal
-        ref={this.modal}
-        title={header}>
-        <div>
-          <p style={{ 'fontSize': '15px' }}>
-            { description }
-          </p>
-          <ListGroupItem className='center' style={{
-            'margin': '5px 0',
-            'borderRadius': '6px'
-          }}>
-            <div className='center'>
-              <div className='tutorialPanel' />
-              <p>Learn how to use Ethereum Studio</p>
-            </div>
-
-            <Button
-              onClick={this.toGuidePage}
-              color={'primary'}>
+          <Button
+            onClick={toGuidePage}
+            color={'primary'}>
               Open
             </Button>
-          </ListGroupItem>
-        </div>
-      </Modal>
-    )
-  }
+        </ListGroupItem>
+      </div>
+    </Modal>)
+})
+
+TutorialModal.propTypes = {
+  header: PropTypes.string,
+  description: PropTypes.string,
+  nextPage: PropTypes.string
 }
+
+export default TutorialModal
