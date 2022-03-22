@@ -21,6 +21,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const projectOwner = this.projectRoot.split("/")[0]
     this.projectOwner = projectOwner
     this.userOwnProject = Auth.profile.username === projectOwner
+    this.isFirstLoad = true
   }
 
   togglePublic = async (aim = void 0) => {
@@ -50,14 +51,14 @@ export default class RemoteProjectManager extends BaseProjectManager {
     this.projectName = project.name
     this.userId = project.userId
     this.projectId = project._id
-
+    
     let projectSettings
     try {
       projectSettings = await this.readProjectSettings()
     } catch (e) {
       console.warn(e)
       return { initial: { path: this.pathForProjectFile('README.md'), remote: true, pathInProject: this.pathInProject(this.pathForProjectFile('README.md')) }, projectSettings: null }
-    }
+    } 
 
     return { initial: { path: this.pathForProjectFile('README.md'), remote: true, pathInProject: this.pathInProject(this.pathForProjectFile('README.md')) }, projectSettings }
   }
@@ -85,7 +86,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory () {
-    const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
+    const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`);
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+      let isHasFileREADME = result.length == 0? [] : result.filter(item => item.name == 'README.md');
+      isHasFileREADME.length == 0 && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
+    }
     return {
       name: this.projectName,
       root: true,
@@ -195,7 +201,6 @@ export default class RemoteProjectManager extends BaseProjectManager {
       await fileOps.web.fs.rename(oldPathWithType, newPath)
       modelSessionManager.updateEditorAfterMovedFile(oldPath, newPath)
     } catch (e) {
-      console.log(e)
       throw new Error(`Fail to rename <b>${this.pathInProject(oldPath)}</b>.`)
     }
 
