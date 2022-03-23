@@ -89,8 +89,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     if (this.isFirstLoad) {
       this.isFirstLoad = false;
-      let isHasFileREADME = result.length == 0? [] : result.filter(item => item.name == 'README.md');
-      isHasFileREADME.length == 0 && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
+      const isHasFileREADME = result.length == 0? false : result.find(item => item.name == 'README.md');
+      !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
     }
     return {
       name: this.projectName,
