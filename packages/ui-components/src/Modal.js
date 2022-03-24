@@ -158,7 +158,7 @@ export default class BaseModal extends PureComponent {
       >
         <ModalHeader
           toggle={noCancel ? undefined : this.toggle}
-          close={!noCancel &&
+          close={!noCancel ? void 0 :
             <Button
               size='sm'
               color='default'

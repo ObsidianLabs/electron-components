@@ -2,15 +2,17 @@ class Notification {
   constructor (ref, { title, message, level = 'success', autoDismiss = 2, action = undefined }) {
     this.ref = ref
     if (this.ref) {
-      this.notification = this.ref.addNotification({
-        title,
-        message,
-        level,
-        position: 'tc',
-        autoDismiss,
-        dismissible: false,
-        action
-      })
+      setTimeout(() => {
+        this.notification = this.ref.addNotification({
+          title,
+          message,
+          level,
+          position: 'tc',
+          autoDismiss,
+          dismissible: false,
+          action
+        })
+      }, 0)
     }
   }
 
