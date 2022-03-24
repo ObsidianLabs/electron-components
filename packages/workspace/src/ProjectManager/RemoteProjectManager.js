@@ -21,6 +21,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const projectOwner = this.projectRoot.split("/")[0]
     this.projectOwner = projectOwner
     this.userOwnProject = Auth.profile.username === projectOwner
+    this.isFirstLoad = true
   }
 
   togglePublic = async (aim = void 0) => {
@@ -86,6 +87,11 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async loadRootDirectory () {
     const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+      const isHasFileREADME = result.length == 0? false : result.find(item => item.name == 'README.md');
+      !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
+    }
     return {
       name: this.projectName,
       root: true,

@@ -60,7 +60,10 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory() {
-    return await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
+    const rootResult = await BaseProjectManager.channel.invoke('loadTree', this.projectRoot);
+    const isHasFileREADME = rootResult.children.length == 0? false : rootResult.children.find(item => item.name == 'README.md');
+    !isHasFileREADME && this.createNewFile(this.projectRoot,'README.md');
+    return rootResult
   }
 
   async loadDirectory(node) {
