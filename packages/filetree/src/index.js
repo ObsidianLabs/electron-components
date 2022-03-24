@@ -116,15 +116,24 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   const [enableCopy, setEnableCopy] = useState(false)
   const prevTreeData = useRef()
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
+  const [isTreeDataRoot, setIsTreeDataRoot] = useState(false)
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
   if (readOnly) {
     // only leave the "Copy Path" feature
     // TODO we need a id to make sure the filter works correctlly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')
-  }
-  if (!readOnly && isBlankAreaRightClick) {
-    treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder'));
+  } else {
+    isBlankAreaRightClick && (treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder')));
+    
+    // Removing rename and delete operations from the root of the file tree
+    if(!isBlankAreaRightClick && isTreeDataRoot) {
+      const renameAndDeleteText = ['Rename','Delete'];
+      treeNodeContextMenu = treeNodeContextMenu.filter(item => {
+        return item? !renameAndDeleteText.includes(item.text) : treeNodeContextMenu.push(null);
+      });
+      !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop();
+    }
   }
 
   const { show } = useContextMenu({
@@ -134,6 +143,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   
 
   const handleContextMenu = ({ event, node }) => {
+    node.root? setIsTreeDataRoot(true) : setIsTreeDataRoot(false);
     event.nativeEvent.preventDefault();
     event.stopPropagation();
     setIsBlankAreaRightClick(false);
