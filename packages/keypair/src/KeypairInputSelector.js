@@ -16,6 +16,8 @@ export default class KeypairInputSelector extends PureComponent {
     this.state = {
       keypairs: [],
     }
+    const { networkManager } = require('@obsidians/eth-network')
+    this.networkManager = networkManager
   }
 
   componentDidMount () {
@@ -49,7 +51,7 @@ export default class KeypairInputSelector extends PureComponent {
 
   renderDisplay = key => {
     const { name } = key
-    const address = utils.formatAddress(key.address)
+    const address = this.networkManager?.sdk.utils.formatAddress(key.address)
 
     return (highlight, active) => {
       let highlightAddress = address

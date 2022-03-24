@@ -5,6 +5,7 @@ import {
   Modal,
   ButtonOptions,
   Table,
+  Badge,
   IconButton,
   DeleteButton,
   UncontrolledTooltip,
@@ -182,7 +183,7 @@ export default class KeypairManagerModal extends PureComponent {
     // 过滤地址中包含的不合法字符（禁止出现在 html attr 中的字符）
     // filter the illegal address
     const validAddress = keypair?.address?.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
-
+    const { networkManager } = require('@obsidians/eth-network')
     return (
       <tr key={`key-${validAddress}`} className='hover-flex'>
         <td>
@@ -208,7 +209,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td>
           <div className='d-flex align-items-center'>
-            <code className='small'>{utils.formatAddress(keypair.address)}</code>
+            <code className='small'>{networkManager.sdk.utils.formatAddress(keypair.address)}</code>
             <span className='text-transparent'>.</span>
             <DeleteButton
               color='primary'
@@ -220,7 +221,7 @@ export default class KeypairManagerModal extends PureComponent {
           </div>
         </td>
         <td>
-          <span className='address-balance'>{keypair.balance}</span>
+          <Badge pill color='success' className='ml-1'>{keypair.balance} {networkManager.symbol}</Badge>
         </td>
         <td align='right'>
         {
@@ -279,9 +280,9 @@ export default class KeypairManagerModal extends PureComponent {
           tableSm
           TableHead={(
             <tr>
-              <th style={{ width: '20%' }}>{head[0]}</th>
-              <th style={{ width: '55%' }}>{head[1]}</th>
-              <th style={{ width: '20%' }}>{head[2]}</th>
+              <th style={{ width: '25%' }}>{head[0]}</th>
+              <th style={{ width: '58%' }}>{head[1]}</th>
+              <th style={{ width: '12%' }}>{head[2]}</th>
               <th></th>
             </tr>
           )}
