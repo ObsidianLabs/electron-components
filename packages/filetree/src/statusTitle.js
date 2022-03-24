@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 
 const TYPE_COLOR = {
   error: '#D1606C',
-  warnig: '#D1AD60'
+  warning: '#D1AD60'
   // unsaved: '#FFF'
 }
 
-const StatusTitle = ({ title, isLeaf, showType, error, warnig }) => {
-  const amount = showType === 'error' ? error : warnig
+const StatusTitle = ({ title, isLeaf, showType, error, warning }) => {
+  const amount = showType === 'error' ? error : warning
   return (
     <div className='center' style={{ 'color': `${TYPE_COLOR[showType]}` }} >
       <p > { title }</p>
@@ -26,6 +26,6 @@ StatusTitle.propTypes = {
   title: PropTypes.string,
   showType: PropTypes.string,
   error: PropTypes.number,
-  warnig: PropTypes.number
+  warning: PropTypes.number
   // unsaved: PropTypes.number
 }

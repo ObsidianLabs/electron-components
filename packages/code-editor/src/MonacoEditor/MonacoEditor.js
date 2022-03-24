@@ -18,17 +18,13 @@ export default class MonacoEditor extends Component {
     onChangeDecorations: PropTypes.func.isRequired
   }
 
-  // constructor(props) {
-  //   super(props)
-  // }
-
   componentDidMount () {
     registerThemes()
 
     this.throttledLayoutEditor = throttle(this.layoutEditor, 500)
     this.monacoEditor = this.createEditorWith(this.props.modelSession.model)
 
-    // this.monacoEditor.onDidChangeModelDecorations(this.props.onChangeDecorations)
+    this.monacoEditor.onDidChangeModelDecorations(this.props.onChangeDecorations)
 
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')

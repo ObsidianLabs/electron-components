@@ -111,8 +111,8 @@ const travelTree = (treeData, fn, extraValue) => {
   const travel = (tree, fn) => {
     fn(tree, fatherNode, extraValue)
     if (!tree.children) return
-    fatherNode = tree
     for (let i = 0; i < tree.children.length; i++) {
+      fatherNode = tree
       travel(tree.children[i], fn)
     }
   }
@@ -127,9 +127,9 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   const [selectedKeys, setSelectedKeys] = useState([])
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
-  const [isFold, setFold] = useState(true)
   const prevTreeData = useRef()
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
+  prevTreeData.current = treeData
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
   if (readOnly) {
@@ -171,52 +171,48 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
 
   const renderAllTitle = (curNode, fatherNode, value) => {
     const pathKey = Object.keys(value)[0]
-    if (curNode.key !== pathKey || fatherNode.name === 'build') return
-    const showType = value[pathKey].error > value[pathKey].warning ? 'error' : 'warning'
-    curNode.title = (<StatusTitle
-      title={curNode.name}
-      isLeaf={curNode.isLeaf}
-      showType={showType}
-      error={value[pathKey].error}
-      warnig={value[pathKey].warning} />)
-    fatherNode.title = (<StatusTitle
-      title={fatherNode.name}
-      isLeaf={fatherNode.isLeaf}
-      showType={showType}
-      error={value[pathKey].error}
-      warnig={value[pathKey].warning} />)
+    const matchPath = pathKey.indexOf(curNode.name) !== -1
+    const matchkey = curNode.key === pathKey
+    const showType = value[pathKey].error ? 'error' : 'warning'
+    if (fatherNode.name === 'build') return
+    if (matchPath && !curNode.isLeaf) {
+      curNode.title = (<StatusTitle
+        title={curNode.name}
+        isLeaf={curNode.isLeaf}
+        showType={showType}
+        error={value[pathKey].error}
+        warning={value[pathKey].warning} />)
+      return
+    }
+    if (matchkey) {
+      curNode.title = (<StatusTitle
+        title={curNode.name}
+        isLeaf={curNode.isLeaf}
+        showType={showType}
+        error={value[pathKey].error}
+        warning={value[pathKey].warning} />)
+      fatherNode.title = (<StatusTitle
+        title={fatherNode.name}
+        isLeaf={fatherNode.isLeaf}
+        showType={showType}
+        error={value[pathKey].error}
+        warnig={value[pathKey].warning} />)
+    }
   }
 
-  const renderPartialTitle = (curNode, fatherNode, value) => {
-    const pathKey = Object.keys(value)[0]
-    const name = fatherNode.name
-    if (pathKey.indexOf(name) === -1 || fatherNode.name === 'build') return
-    const showType = value[pathKey].error > value[pathKey].warning ? 'error' : 'warning'
-    fatherNode.title = (<StatusTitle
-      title={fatherNode.name}
-      isLeaf={fatherNode.isLeaf}
-      showType={showType}
-      error={value[pathKey].error}
-      warnig={value[pathKey].warning} />)
-  }
-
-  const updateStatus = (decorations, treeData, isFold) => {
+  const updateStatus = (decorations, treeData) => {
+    const newTree = cloneDeep(treeData)
     decorations.forEach((item) => {
-      travelTree(treeData,
-        isFold ? renderPartialTitle : renderAllTitle,
-        item)
+      travelTree(newTree, renderAllTitle, item)
     })
-    setTreeData([treeData])
+
+    setTreeData([newTree])
   }
 
   useEffect(() => {
     if (!decorations.length) return
-    updateStatus(decorations, ...treeData, isFold)
+    updateStatus(decorations, ...treeData)
   }, [decorations])
-
-  useEffect(() => {
-    prevTreeData.current = treeData
-  })
 
   useEffect(() => {
     loadTree(projectManager)
@@ -242,7 +238,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
       return treeData
     },
     updateStatus() {
-      updateStatus(decorations, ...treeData, isFold)
+      updateStatus(decorations, ...treeData)
     }
   }))
 
@@ -257,8 +253,6 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   const loadTree = async projectManager => {
     projectManager.onRefreshDirectory(refreshDirectory)
     const treeData = await projectManager.loadRootDirectory()
-    // treeData.children[0].title = (<StatusTitle />)
-    // treeData.children[0].title = test
     setLeaf([treeData], treeData.path)
 
     setTreeData([treeData])
@@ -298,7 +292,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
           setTimeout(() => {
             getNewTreeData(tempTreeData, treeNode.path, newData)
             setTreeData(tempTreeData)
-            updateStatus(decorations, ...tempTreeData, false)
+            updateStatus(decorations, ...tempTreeData)
             resolve()
           }, 500)
         })
@@ -322,7 +316,6 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
   }
 
   const expandFolderNode = (event, node) => {
-    setFold(false)
     if (node.isLeaf) {
       return
     }

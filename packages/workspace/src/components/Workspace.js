@@ -79,7 +79,7 @@ export default class Workspace extends Component {
       if (this.props.terminal) {
         this.setState({
           showTerminal: true,
-          terminalSize: this.state.terminalSize || 160,
+          terminalSize: this.state.terminalSize || 160
         })
       } else {
         this.setState({ showTerminal: false })
@@ -118,12 +118,20 @@ export default class Workspace extends Component {
 
   formatDecoration () {
     const compileMarkerMap = modelSessionManager.decorationMap
-    const decorations = Object.keys(compileMarkerMap).map(path => ({
-      [path]: {
-        warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
-        error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0
+    const decorations = Object.keys(compileMarkerMap).map(path => {
+      const key = path
+      const obj = {
+        [key]: {
+          warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
+          error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0
+        }
       }
-    }))
+      if (obj[key].error !== 0 && obj[key].warning !== 0) {
+        obj[path].error -= 1
+      }
+      return obj
+    })
+
     this.setState({filetreeDecorations: decorations})
   }
 
@@ -194,7 +202,7 @@ export default class Workspace extends Component {
       Terminal,
       defaultSize,
       readOnly: readOnlyInProps = false,
-      makeContextMenu = x => x,
+      makeContextMenu = x => x
     } = this.props
 
     const readOnly = readOnlyInProps || !this.context.projectManager.userOwnProject && this.context.projectManager.remote
@@ -202,7 +210,7 @@ export default class Workspace extends Component {
     const {
       editorConfig,
       showTerminal,
-      terminalSize,
+      terminalSize
     } = this.state
 
     let Editor = null
