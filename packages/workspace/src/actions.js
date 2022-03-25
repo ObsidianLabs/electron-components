@@ -72,7 +72,7 @@ export class ProjectActions {
     BaseProjectManager.instance?.toggleTerminal(true)
   }
 
-  async removeProject ({ id, name }) {
+  async removeProject ({ id, name, type }) {
     const selected = redux.getState().projects.get('selected')
     if (selected && selected.get('id') === id) {
       redux.dispatch('SELECT_PROJECT', { project: undefined })
@@ -80,7 +80,13 @@ export class ProjectActions {
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id })
-    notification.info('Remove Project Successful', `Project <b>${name}</b> is removed`)
+    let notificationTitle = 'Remove Project Successful';
+    let notificationDescription = `Project <b>${name}</b> is removed`;
+    if (type == 'delete') {
+      notificationTitle = 'Delete Project Successful';
+      notificationDescription = `You have permanently delete project <b>${name}</b>`;
+    }
+    notification.info(notificationTitle, notificationDescription)
   }
 }
 
