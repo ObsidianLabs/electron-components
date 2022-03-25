@@ -7,19 +7,20 @@ import {
 
 import ToolbarButton from '../buttons/ToolbarButton'
 
-import { utils } from '@obsidians/sdk'
-
 export default class NavigationBar extends PureComponent {
   constructor (props) {
     super(props)
+    const { networkManager } = require('@obsidians/network')
+    this.networkManager = networkManager
     this.state = {
-      value: utils.isValidAddressReturn(props.tab.value),
+      value: networkManager.sdk.utils.isValidAddressReturn(props.tab.value),
     }
     this.input = React.createRef()
+    
   }
 
   componentDidUpdate (prevProps) {
-    this.setState({value : utils.isValidAddressReturn(this.state.value)})
+    this.setState({value : this.networkManager.sdk.utils.isValidAddressReturn(this.state.value)})
     if (prevProps.tab.key === this.props.tab.key) {
       return
     }
@@ -67,7 +68,7 @@ export default class NavigationBar extends PureComponent {
   }
 
   onChange = event => {
-    const value = utils.isValidAddressReturn(event.target.value)
+    const value = this.networkManager.sdk.utils.isValidAddressReturn(event.target.value)
     this.setState({ value })
     this.props.tab.temp = value.toLowerCase()
   }

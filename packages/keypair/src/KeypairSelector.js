@@ -8,11 +8,8 @@ import {
   DropdownItem,
 } from '@obsidians/ui-components'
 
-import { utils } from '@obsidians/sdk'
-
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
-
 export default class KeypairSelector extends PureComponent {
   constructor (props) {
     super(props)
@@ -21,6 +18,8 @@ export default class KeypairSelector extends PureComponent {
       keypairs: [],
     }
     this.modal = React.createRef()
+    const { networkManager } = require('@obsidians/network')
+    this.networkManager = networkManager
   }
 
   componentDidMount () {
@@ -87,7 +86,7 @@ export default class KeypairSelector extends PureComponent {
         >
           <div>
             {iconComponent}{k.name}
-            <div className={classnames('small code', !disabled && 'text-muted')}>{utils.formatAddress(k.address)}</div>
+            <div className={classnames('small code', !disabled && 'text-muted')}>{this.networkManager.sdk.utils.formatAddress(k.address)}</div>
           </div>
         </DropdownItem>
       )
