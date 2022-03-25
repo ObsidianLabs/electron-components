@@ -183,7 +183,13 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
       const matchPath = pathKey.indexOf(curNode.name) !== -1
       const matchkey = curNode.key === pathKey
       const showType = value[pathKey].error ? 'error' : 'warning'
+      const noError = value[pathKey].error === 0 && value[pathKey].warning === 0
       if (fatherNode.name === 'build') return
+      if (noError && matchkey) {
+        curNode.title = curNode.name
+        fatherNode.title = fatherNode.name
+        return
+      }
       if (matchPath && !curNode.isLeaf) {
         curNode.title = (<StatusTitle
           title={curNode.name}
