@@ -54,7 +54,7 @@ class UserHomepage extends PureComponent {
   }
 
   checkIsNewUser() {
-    if (!localStorage.getItem('hasMark')) {
+    if (!localStorage.getItem('hasMark') && this.isSelf()) {
       localStorage.setItem('hasMark', 'true')
       this.modal.current.showModal()
     }
@@ -190,8 +190,10 @@ class UserHomepage extends PureComponent {
 
     if (!this.isSelf()) {
       if (loading) {
+        console.log('5')
         return <LoadingScreen />
       } else if (notfound) {
+        console.log('6')
         return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
       }
     }
