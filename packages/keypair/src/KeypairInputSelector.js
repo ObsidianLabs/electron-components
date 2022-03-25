@@ -6,8 +6,6 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { utils } from '@obsidians/sdk'
-
 import keypairManager from './keypairManager'
 
 export default class KeypairInputSelector extends PureComponent {
@@ -16,7 +14,7 @@ export default class KeypairInputSelector extends PureComponent {
     this.state = {
       keypairs: [],
     }
-    const { networkManager } = require('@obsidians/eth-network')
+    const { networkManager } = require('@obsidians/network')
     this.networkManager = networkManager
   }
 
@@ -139,7 +137,7 @@ export default class KeypairInputSelector extends PureComponent {
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
         options={[...options, ...extraOptions]}
-        renderText={!editable && (option => option ? <code>{utils.isValidAddressReturn(option.id)}</code> : null)}
+        renderText={!editable && (option => option ? <code>{this.networkManager?.sdk.utils.isValidAddressReturn(option.id)}</code> : null)}
         value={value}
         onChange={onChange}
         invalid={invalid}
