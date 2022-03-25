@@ -18,10 +18,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
     this.remote = true
     this.prefix = 'private'
-    const projectOwner = this.projectRoot.split("/")[0]
-    this.projectOwner = projectOwner
-    this.userOwnProject = Auth.profile.username === projectOwner
-    this.isFirstLoad = true
+    if (this.projectRoot) {
+      const projectOwner = this.projectRoot.split("/")[0]
+      this.projectOwner = projectOwner
+      this.userOwnProject = Auth.profile.username === projectOwner
+      this.isFirstLoad = true
+    }
   }
 
   togglePublic = async (aim = void 0) => {

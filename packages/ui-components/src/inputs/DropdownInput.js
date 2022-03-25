@@ -112,6 +112,9 @@ export default class DropdownInput extends PureComponent {
 
   getDropdownOptions = () => {
     const { options = [] } = this.props
+    if (!this.networkManager.sdk) {
+      return []
+    }
     const value = this.networkManager.sdk.utils.simplifyAddress(this.props.value)
     const filterMode = this.state.filterMode
     let dropdownOptions = []
