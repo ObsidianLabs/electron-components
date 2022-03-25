@@ -6,7 +6,7 @@ import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
-
+import StatusTitle from './statusTitle'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -106,7 +106,20 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
+const travelTree = (treeData, fn, extraValue) => {
+  let fatherNode = treeData
+  const travel = (tree, fn) => {
+    fn(tree, fatherNode, extraValue)
+    if (!tree.children) return
+    for (let i = 0; i < tree.children.length; i++) {
+      fatherNode = tree
+      travel(tree.children[i], fn)
+    }
+  }
+  travel(treeData, fn)
+}
+
+const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -117,6 +130,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   const prevTreeData = useRef()
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
   const [isTreeDataRoot, setIsTreeDataRoot] = useState(false)
+  prevTreeData.current = treeData
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
   if (readOnly) {
@@ -134,13 +148,10 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       });
       !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop();
     }
-  }
 
   const { show } = useContextMenu({
     id: 'file-tree'
   })
-
-  
 
   const handleContextMenu = ({ event, node }) => {
     node.root? setIsTreeDataRoot(true) : setIsTreeDataRoot(false);
@@ -157,15 +168,64 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   }
 
   const handleEmptyTreeContextMenu = (event) => {
-    setIsBlankAreaRightClick(true);
+    setIsBlankAreaRightClick(true)
 
-    handleSetSelectNode(treeData[0]);
+    handleSetSelectNode(treeData[0])
     show(event.nativeEvent, {
       props: {
         key: 'value'
       }
     })
   }
+
+  const renderAllTitle = (curNode, fatherNode, value) => {
+    const pathKey = Object.keys(value)[0]
+    const matchPath = pathKey.indexOf(curNode.name) !== -1
+    const matchkey = curNode.key === pathKey
+    const showType = value[pathKey].error ? 'error' : 'warning'
+    if (fatherNode.name === 'build') return
+    if (matchPath && !curNode.isLeaf) {
+      curNode.title = (<StatusTitle
+        title={curNode.name}
+        isLeaf={curNode.isLeaf}
+        showType={showType}
+        error={value[pathKey].error}
+        warning={value[pathKey].warning} />)
+      return
+    }
+    if (matchkey) {
+      curNode.title = (<StatusTitle
+        title={curNode.name}
+        isLeaf={curNode.isLeaf}
+        showType={showType}
+        error={value[pathKey].error}
+        warning={value[pathKey].warning} />)
+      fatherNode.title = (<StatusTitle
+        title={fatherNode.name}
+        isLeaf={fatherNode.isLeaf}
+        showType={showType}
+        error={value[pathKey].error}
+        warnig={value[pathKey].warning} />)
+    }
+  }
+
+  const updateStatus = (decorations, treeData) => {
+    const newTree = cloneDeep(treeData)
+    decorations.forEach((item) => {
+      travelTree(newTree, renderAllTitle, item)
+    })
+
+    setTreeData([newTree])
+  }
+
+  useEffect(() => {
+    if (!decorations.length) return
+    updateStatus(decorations, ...treeData)
+  }, [decorations])
+
+  useEffect(() => {
+    loadTree(projectManager)
+  }, [])
 
   const handleSetSelectNode = (node) => {
     setSelectNode(node)
@@ -185,6 +245,9 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     },
     get rootNode() {
       return treeData
+    },
+    updateStatus() {
+      updateStatus(decorations, ...treeData)
     }
   }))
 
@@ -238,6 +301,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
           setTimeout(() => {
             getNewTreeData(tempTreeData, treeNode.path, newData)
             setTreeData(tempTreeData)
+            updateStatus(decorations, ...tempTreeData)
             resolve()
           }, 500)
         })
@@ -269,11 +333,10 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       treeRef.current.onNodeExpand(event, node)
       setSelectNode(node)
     }
-
   }
 
   const onDebounceExpand = debounce(expandFolderNode, 200, {
-    leading: true,
+    leading: true
   })
 
   const handleClick = (event, node) => {
@@ -293,20 +356,12 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   }
 
   const onDebounceDrag = debounce(handleDrop, 2000, {
-    leading: true,
+    leading: true
   })
-
-  useEffect(() => {
-    prevTreeData.current = treeData
-  })
-
-  useEffect(() => {
-    loadTree(projectManager)
-  }, [])
 
   return (
-    <div className="tree-wrap animation"
-    onContextMenu={handleEmptyTreeContextMenu}
+    <div className='tree-wrap animation'
+      onContextMenu={handleEmptyTreeContextMenu}
     >
       <Tree
         // TODO: improve the condition when support the WEB
@@ -335,7 +390,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       />
       <Menu animation={false} id='file-tree'>
         {
-          treeNodeContextMenu.map((item, index) => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator key={`blank-${index}`}/>)
+          treeNodeContextMenu.map((item, index) => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator key={`blank-${index}`} />)
         }
       </Menu>
     </div>
@@ -348,4 +403,4 @@ ForwardFileTree.displayName = 'FileTree'
 export default ForwardFileTree
 
 // TOOD: refactor the dir contruct of the service
-export { default as ClipBoardService } from "./clipboard"
+export { default as ClipBoardService } from './clipboard'

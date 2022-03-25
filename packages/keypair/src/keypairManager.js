@@ -1,7 +1,7 @@
 import React from 'react'
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
-import { utils } from '@obsidians/eth-sdk'
+import { utils } from '@obsidians/sdk'
 
 class KeypairManager {
   constructor () {
@@ -28,25 +28,31 @@ class KeypairManager {
   getKeypairFromRedux (networkId) {
     const keypairsState = redux.getState().keypairs
     const formatjs = Object.values(keypairsState.toJS())
-    return formatjs.map(keypair => ({
+    const unsorted =  formatjs.map(keypair => ({
       address: keypair.address,
       name: keypair.name,
       balance: keypair.balance && keypair.balance[networkId] || '0',
     }))
+    return unsorted.sort((a, b) => {
+      if (!a.name || !b.name) {
+        return 0
+      }
+      return a.name.localeCompare(b.name)
+    })
   }
 
   async loadAllKeypairs () {
     try {
-      const { networkManager } = require('@obsidians/eth-network')
+      const { networkManager } = require('@obsidians/network')
       const networkId = networkManager.network.id
 
       const keypairs = await this.channel.invoke('get')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
 
       keypairs.forEach(item => item.address = utils.simplifyAddress(item.address))
-      const unsorted = this.getKeypairFromRedux(networkId)
+      const sorted = this.getKeypairFromRedux(networkId)
 
-      const updating = unsorted.map(async keypair => {
+      const updating = sorted.map(async keypair => {
         const address = keypair.address
         const account = await networkManager.sdk.client.getAccount(address)
         redux.dispatch('UPDATE_KEYPAIR_BALANCE', {
@@ -59,12 +65,6 @@ class KeypairManager {
         const keypairs = this.getKeypairFromRedux(networkId)
         const event = new CustomEvent('updated', { detail: keypairs })
         this.eventTarget.dispatchEvent(event)
-      })
-      const sorted = unsorted.sort((a, b) => {
-        if (!a.name || !b.name) {
-          return 0
-        }
-        return a.name.localeCompare(b.name)
       })
       return sorted
     } catch (e) {

@@ -13,6 +13,8 @@ import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
+const HELP_PAGE_ADDRESS = 'https://github.com/ObsidianLabs/EthereumStudio/blob/master/README.md'
+
 class User extends Component {
   state = {
     isDropdownOpen: false,
@@ -39,7 +41,7 @@ class User extends Component {
   }
 
   toHelpPage() {
-    console.log('visit help page')
+    window.open(HELP_PAGE_ADDRESS, '_blank')
   }
 
   renderExtraLoggedInOptions = () => {
@@ -100,6 +102,11 @@ class User extends Component {
           <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
         </DropdownItem>
       )
+      linkToOtherPlatformItem.push(
+        <DropdownItem key='help-page' onClick={this.toHelpPage}>
+          <i className='fas fa-info-circle w-3 mr-2' />Help page
+        </DropdownItem>
+      )
     }
 
     const username = profile.get('username')
@@ -132,11 +139,7 @@ class User extends Component {
           <i className='fas fa-th-list w-3 mr-2' />My Projects
         </DropdownItem>,
         this.renderExtraLoggedInOptions(),
-        ...linkToOtherPlatformItem,
-        <DropdownItem key='divider-3' divider />,
-        <DropdownItem key='help-page' onClick={this.toHelpPage}>
-          <i className='fas fa-info-circle w-3 mr-2' />Help page
-        </DropdownItem>
+        ...linkToOtherPlatformItem
       ]
     }
 

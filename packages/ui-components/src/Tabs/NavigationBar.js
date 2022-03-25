@@ -7,7 +7,7 @@ import {
 
 import ToolbarButton from '../buttons/ToolbarButton'
 
-import { utils } from '@obsidians/eth-sdk'
+import { utils } from '@obsidians/sdk'
 
 export default class NavigationBar extends PureComponent {
   constructor (props) {

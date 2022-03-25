@@ -49,7 +49,6 @@
   display: inline-flex;
   margin: 0;
   padding: 0;
-  height: 20px;
   text-decoration: none;
   vertical-align: top;
   cursor: pointer;
@@ -198,4 +197,16 @@
 
 #root .react-contexify__item:not(.react-contexify__item--disabled):hover>.react-contexify__item__content {
   background-color: #40444f;
+}
+
+.center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.circleBadge {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }

@@ -8,7 +8,7 @@ import {
   DropdownItem,
 } from '@obsidians/ui-components'
 
-import { utils } from '@obsidians/eth-sdk'
+import { utils } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'

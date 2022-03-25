@@ -4,12 +4,12 @@ import throttle from 'lodash/throttle'
 
 import {
   SplitPane,
-  ToolbarButton,
+  ToolbarButton
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
-import CodeEditorCollection from '@obsidians/code-editor'
+import CodeEditorCollection, { modelSessionManager } from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
 import WorkspaceContext from '../WorkspaceContext'
@@ -44,6 +44,8 @@ export default class Workspace extends Component {
       window.dispatchEvent(new Event('resize'))
     }, 200)
 
+    this.formatDecoration = this.formatDecoration.bind(this)
+
     this.state = {
       editorConfig: {},
       showTerminal: !!props.terminal,
@@ -77,7 +79,7 @@ export default class Workspace extends Component {
       if (this.props.terminal) {
         this.setState({
           showTerminal: true,
-          terminalSize: this.state.terminalSize || 160,
+          terminalSize: this.state.terminalSize || 160
         })
       } else {
         this.setState({ showTerminal: false })
@@ -112,6 +114,25 @@ export default class Workspace extends Component {
 
   closeAllTabs = () => {
 
+  }
+
+  formatDecoration () {
+    const compileMarkerMap = modelSessionManager.decorationMap
+    const decorations = Object.keys(compileMarkerMap).map(path => {
+      const key = path
+      const obj = {
+        [key]: {
+          warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
+          error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0
+        }
+      }
+      if (obj[key].error !== 0 && obj[key].warning !== 0) {
+        obj[path].error -= 1
+      }
+      return obj
+    })
+
+    this.setState({filetreeDecorations: decorations})
   }
 
   openCreateFileModal = node => {
@@ -181,7 +202,7 @@ export default class Workspace extends Component {
       Terminal,
       defaultSize,
       readOnly: readOnlyInProps = false,
-      makeContextMenu = x => x,
+      makeContextMenu = x => x
     } = this.props
 
     const readOnly = readOnlyInProps || !this.context.projectManager.userOwnProject && this.context.projectManager.remote
@@ -189,7 +210,7 @@ export default class Workspace extends Component {
     const {
       editorConfig,
       showTerminal,
-      terminalSize,
+      terminalSize
     } = this.state
 
     let Editor = null
@@ -216,9 +237,7 @@ export default class Workspace extends Component {
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readOnly={readOnly}
-            onChangeDecorations={(decorations) => this.setState({
-              filetreeDecorations: decorations
-            })}
+            onChangeDecorations={this.formatDecoration}
           />
           {Terminal}
         </SplitPane>
@@ -235,9 +254,7 @@ export default class Workspace extends Component {
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readOnly={readOnly}
-          onChangeDecorations={(decorations) => this.setState({
-            filetreeDecorations: decorations
-          })}
+          onChangeDecorations={this.formatDecoration}
         />
       )
     }
@@ -265,6 +282,7 @@ export default class Workspace extends Component {
               onClick={() => this.openCreateFileModal()}
             />
             <ProjectToolbar
+              finalCall={this.formatDecoration}
               signer={signer} />
           </div>
           <FileTree
