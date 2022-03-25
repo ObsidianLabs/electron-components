@@ -9,6 +9,7 @@ import {
 import debounce from 'lodash/debounce'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
+import classnames from 'classnames'
 
 import actions from '../actions'
 
@@ -94,7 +95,7 @@ class DeleteButton extends PureComponent {
           onChange={this.changeVal}
         />
         <div style={{color: 'var(--color-danger)'}} 
-          className={ (!this.state.name || (this.state.name && !this.state.confirmDisableStatus)) && 'display-none'}>
+          className={ classnames((!this.state.name || (this.state.name && !this.state.confirmDisableStatus)) && 'display-none')}>
           Project name does not match
         </div>
       </Modal>

@@ -166,7 +166,7 @@ export default class BaseModal extends PureComponent {
             <Button
               size='sm'
               color='default'
-              className={{'text-muted': true, 'display-none': headerCancelBtnHide}}
+              className={classnames('text-muted', headerCancelBtnHide && 'display-none')}
               tabIndex={-1}
               onClick={this.toggle}
             >
@@ -189,7 +189,7 @@ export default class BaseModal extends PureComponent {
           </div>
           <div>
             { onAdditionAction && textAddition && <Button color={colorAddition} onClick={onAdditionAction}>{textAddition}</Button> }
-            { (!noCancel || !cancelBtnHide) && textCancel && <Button className={{'display-none': cancelBtnHide}} color={colorCancel} onClick={this.toggle}>{textCancel}</Button> }
+            { (!noCancel || !cancelBtnHide) && textCancel && <Button className={classnames(cancelBtnHide && 'display-none')} color={colorCancel} onClick={this.toggle}>{textCancel}</Button> }
             {this.renderConfirmButton(this.props)}
           </div>
         </ModalFooter>
