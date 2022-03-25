@@ -1,7 +1,7 @@
 import React from 'react'
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
-import { utils } from '@obsidians/eth-sdk'
+import { utils } from '@obsidians/sdk'
 
 class KeypairManager {
   constructor () {
@@ -43,7 +43,7 @@ class KeypairManager {
 
   async loadAllKeypairs () {
     try {
-      const { networkManager } = require('@obsidians/eth-network')
+      const { networkManager } = require('@obsidians/network')
       const networkId = networkManager.network.id
 
       const keypairs = await this.channel.invoke('get')

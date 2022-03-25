@@ -15,7 +15,7 @@ import {
   Badge,
 } from 'reactstrap'
 
-import { utils } from '@obsidians/eth-sdk'
+import { utils } from '@obsidians/sdk'
 
 export default class DropdownInput extends PureComponent {
   constructor (props) {
