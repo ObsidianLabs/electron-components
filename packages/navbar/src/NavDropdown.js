@@ -58,7 +58,7 @@ export default class NavDropdown extends Component {
     return list.map(this.renderDropdownItem)
   }
 
-  renderDropdownItem = (item, index) => {
+  renderDropdownItem = (item, index, listDropMenu) => {
     if (item.divider) {
       return <DropdownItem divider key={`dropdown-item-divider-${index}`} />
     } else if (item.header) {
@@ -80,6 +80,15 @@ export default class NavDropdown extends Component {
           this.props.onClickItem(item)
         }}
         onContextMenu={event => {
+          const isLocalProject = listDropMenu.find((liItem,liIndex) => {
+            return  liItem && liItem.header === 'local projects' && (liItem['index'] = liIndex);
+          });
+          const isRemoteProject = listDropMenu.find((liItem,liIndex) => {
+            return  liItem && liItem.header === 'remote projects' && (liItem['index'] = liIndex);
+          });
+          if (index < isLocalProject.index || index > isRemoteProject.index) {
+            return null
+          }
           event.preventDefault()
           this.handleContextMenu(event)
           this.setState({
