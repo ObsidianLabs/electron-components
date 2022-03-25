@@ -6,7 +6,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { utils } from '@obsidians/eth-sdk'
+import { utils } from '@obsidians/sdk'
 
 import keypairManager from './keypairManager'
 
