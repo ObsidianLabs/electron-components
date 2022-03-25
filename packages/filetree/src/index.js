@@ -267,7 +267,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
       setTreeData([treeData])
       setSelectNode(treeData)
       setExpandKeys([treeData.path])
-      treeRef.current.state.loadedKeys = []
+      treeRef.current && (treeRef.current.state.loadedKeys = [])
     }
 
     const refreshDirectory = async (directory) => {
