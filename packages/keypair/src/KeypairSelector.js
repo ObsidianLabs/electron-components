@@ -10,29 +10,28 @@ import {
 
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
+import { utils } from '@obsidians/sdk'
 export default class KeypairSelector extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       loading: true,
       keypairs: [],
     }
     this.modal = React.createRef()
-    const { networkManager } = require('@obsidians/network')
-    this.networkManager = networkManager
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ loading: true })
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
     this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.listenKeypairChange && this.listenKeypairChange()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.filter !== this.props.filter) {
       this.updateKeypairs(this.allKeypairs || [])
     }
@@ -86,14 +85,14 @@ export default class KeypairSelector extends PureComponent {
         >
           <div>
             {iconComponent}{k.name}
-            <div className={classnames('small code', !disabled && 'text-muted')}>{this.networkManager.sdk.utils.formatAddress(k.address)}</div>
+            <div className={classnames('small code', !disabled && 'text-muted')}>{utils.formatAddress(k.address)}</div>
           </div>
         </DropdownItem>
       )
     })
   }
 
-  render () {
+  render() {
     const {
       size,
       color = 'default',
