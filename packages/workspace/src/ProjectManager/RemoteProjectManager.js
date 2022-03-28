@@ -5,6 +5,7 @@ import { modelSessionManager } from '@obsidians/code-editor'
 
 import BaseProjectManager from './BaseProjectManager'
 import Auth from '@obsidians/auth'
+import { sortFile } from './helper'
 
 const projectChannel = new HttpIpcChannel('project')
 
@@ -87,13 +88,15 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return await fileOps.web.listFolder(folderPath)
   }
 
-  async loadRootDirectory () {
+  async loadRootDirectory() {
     const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     if (this.isFirstLoad) {
       this.isFirstLoad = false;
       const isHasFileREADME = result.length == 0? false : result.find(item => item.name == 'README.md');
       !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
     }
+
+    const rawData = result.map(item => ({ ...item, pathInProject: `${this.projectName}/${item.name}` }))
     return {
       name: this.projectName,
       root: true,
@@ -102,16 +105,17 @@ export default class RemoteProjectManager extends BaseProjectManager {
       path: `${this.prefix}/${this.userId}/${this.projectId}`,
       pathInProject: this.projectName,
       loading: false,
-      children: result.map(item => ({ ...item, pathInProject: `${this.projectName}/${item.name}` }))
+      children: sortFile(rawData)
     }
   }
 
-  async loadDirectory (node) {
+  async loadDirectory(node) {
     const result = await this.listFolder(node.path)
-    return result.map(item => ({
+    const rawData = result.map(item => ({
       ...item,
       pathInProject: this.pathInProject(item.path)
     }))
+    return sortFile(rawData)
   }
 
   openProjectSettings () {
