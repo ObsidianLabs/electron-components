@@ -27,7 +27,7 @@ export default class DropdownInput extends PureComponent {
     this.dropdownOptions = null
     this.input = React.createRef()
     this.toggler = React.createRef()
-    const { networkManager } = require('@obsidians/network')
+    const { networkManager } = require('@obsidians/eth-network')
     this.networkManager = networkManager
   }
 

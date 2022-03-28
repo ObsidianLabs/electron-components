@@ -41,7 +41,7 @@ class KeypairManager {
 
   async loadAllKeypairs () {
     try {
-      const { networkManager } = require('@obsidians/network')
+      const { networkManager } = require('@obsidians/eth-network')
       const networkId = networkManager.network.id
       const keypairs = await this.channel.invoke('get')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
