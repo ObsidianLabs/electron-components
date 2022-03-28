@@ -203,10 +203,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 20px;
+  text-overflow: ellipsis;
 }
 
 .circleBadge {
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: 50%
 }

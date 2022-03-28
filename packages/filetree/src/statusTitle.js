@@ -11,7 +11,7 @@ const StatusTitle = ({ title, isLeaf, showType, error, warning }) => {
   const amount = showType === 'error' ? error : warning
   return (
     <div className='center' style={{ 'color': `${TYPE_COLOR[showType]}` }} >
-      <p > { title }</p>
+      <p style={{'margin': '0'}}> { title }</p>
       { isLeaf ? <p style={{ 'fontSize': '12px' }} >{ amount }</p>
         : <div className='circleBadge' style={{ 'backgroundColor': `${TYPE_COLOR[showType]}` }} />
       }
