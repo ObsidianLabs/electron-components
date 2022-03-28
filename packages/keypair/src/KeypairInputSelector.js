@@ -7,7 +7,6 @@ import {
 
 import notification from '@obsidians/notification'
 import keypairManager from './keypairManager'
-import { utils } from '@obsidians/sdk'
 
 export default class KeypairInputSelector extends PureComponent {
   constructor(props) {
@@ -15,6 +14,8 @@ export default class KeypairInputSelector extends PureComponent {
     this.state = {
       keypairs: [],
     }
+    const { networkManager } = require('@obsidians/eth-network')
+    this.networkManager = networkManager
   }
 
   componentDidMount() {
@@ -48,7 +49,7 @@ export default class KeypairInputSelector extends PureComponent {
 
   renderDisplay = key => {
     const { name } = key
-    const address = utils.formatAddress(key.address)
+    const address = this.networkManager.sdk.utils.formatAddress(key.address)
 
     return (highlight, active) => {
       let highlightAddress = address
@@ -136,7 +137,7 @@ export default class KeypairInputSelector extends PureComponent {
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
         options={[...options, ...extraOptions]}
-        renderText={!editable && (option => option ? <code>{utils.isValidAddressReturn(option.id)}</code> : null)}
+        renderText={!editable && (option => option ? <code>{this.networkManager.sdk.utils.isValidAddressReturn(option.id)}</code> : null)}
         value={value}
         onChange={onChange}
         invalid={invalid}
