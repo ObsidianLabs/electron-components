@@ -45,7 +45,6 @@ class KeypairManager {
       const networkId = networkManager.network.id
       const keypairs = await this.channel.invoke('get')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
-
       keypairs.forEach(item => item.address = networkManager.sdk.utils.simplifyAddress(item.address))
       const sorted = this.getKeypairFromRedux(networkId)
 
