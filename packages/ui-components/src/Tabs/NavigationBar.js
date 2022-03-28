@@ -4,22 +4,21 @@ import classnames from 'classnames'
 import {
   Input,
 } from 'reactstrap'
-
+import { utils } from '@obsidians/sdk'
 import ToolbarButton from '../buttons/ToolbarButton'
 
-import { utils } from '@obsidians/eth-sdk'
-
 export default class NavigationBar extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       value: utils.isValidAddressReturn(props.tab.value),
     }
     this.input = React.createRef()
+
   }
 
-  componentDidUpdate (prevProps) {
-    this.setState({value : utils.isValidAddressReturn(this.state.value)})
+  componentDidUpdate(prevProps) {
+    this.setState({ value: utils.isValidAddressReturn(this.state.value) })
     if (prevProps.tab.key === this.props.tab.key) {
       return
     }
@@ -41,7 +40,7 @@ export default class NavigationBar extends PureComponent {
     }
   }
 
-  get selection () {
+  get selection() {
     const input = this.input.current
     if (input === document.activeElement) {
       return {
@@ -53,7 +52,7 @@ export default class NavigationBar extends PureComponent {
     return null
   }
 
-  set selection (selection) {
+  set selection(selection) {
     const input = this.input.current
     if (!selection) {
       input.blur()
@@ -67,7 +66,7 @@ export default class NavigationBar extends PureComponent {
   }
 
   onChange = event => {
-    const value = utils.isValidAddressReturn(event.target.value)
+    const value = this.networkManager.sdk.utils.isValidAddressReturn(event.target.value)
     this.setState({ value })
     this.props.tab.temp = value.toLowerCase()
   }
@@ -146,7 +145,7 @@ export default class NavigationBar extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const { size = 'md', maxLength, disabled, children } = this.props
 
     return (

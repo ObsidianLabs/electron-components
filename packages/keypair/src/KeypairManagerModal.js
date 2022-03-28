@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import { utils } from '@obsidians/eth-sdk'
 
 import {
   Modal,

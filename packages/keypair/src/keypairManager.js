@@ -1,8 +1,6 @@
 import React from 'react'
 import { IpcChannel } from '@obsidians/ipc'
 import redux from '@obsidians/redux'
-import { utils } from '@obsidians/eth-sdk'
-
 class KeypairManager {
   constructor () {
     this.channel = new IpcChannel('keypair')
@@ -43,13 +41,11 @@ class KeypairManager {
 
   async loadAllKeypairs () {
     try {
-      const { networkManager } = require('@obsidians/eth-network')
+      const { networkManager } = require('@obsidians/network')
       const networkId = networkManager.network.id
-
       const keypairs = await this.channel.invoke('get')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
-
-      keypairs.forEach(item => item.address = utils.simplifyAddress(item.address))
+      keypairs.forEach(item => item.address = networkManager.sdk.utils.simplifyAddress(item.address))
       const sorted = this.getKeypairFromRedux(networkId)
 
       const updating = sorted.map(async keypair => {

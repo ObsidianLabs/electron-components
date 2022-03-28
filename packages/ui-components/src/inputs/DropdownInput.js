@@ -15,8 +15,6 @@ import {
   Badge,
 } from 'reactstrap'
 
-import { utils } from '@obsidians/eth-sdk'
-
 export default class DropdownInput extends PureComponent {
   constructor (props) {
     super(props)
@@ -29,6 +27,8 @@ export default class DropdownInput extends PureComponent {
     this.dropdownOptions = null
     this.input = React.createRef()
     this.toggler = React.createRef()
+    const { networkManager } = require('@obsidians/network')
+    this.networkManager = networkManager
   }
 
   componentDidUpdate (prevProps) {
@@ -112,7 +112,10 @@ export default class DropdownInput extends PureComponent {
 
   getDropdownOptions = () => {
     const { options = [] } = this.props
-    const value = utils.simplifyAddress(this.props.value)
+    if (!this.networkManager.sdk) {
+      return []
+    }
+    const value = this.networkManager.sdk.utils.simplifyAddress(this.props.value)
     const filterMode = this.state.filterMode
     let dropdownOptions = []
 

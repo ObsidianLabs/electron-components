@@ -8,13 +8,11 @@ import {
   DropdownItem,
 } from '@obsidians/ui-components'
 
-import { utils } from '@obsidians/eth-sdk'
-
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
-
+import { utils } from '@obsidians/sdk'
 export default class KeypairSelector extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       loading: true,
@@ -23,17 +21,17 @@ export default class KeypairSelector extends PureComponent {
     this.modal = React.createRef()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ loading: true })
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
     this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.listenKeypairChange && this.listenKeypairChange()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.filter !== this.props.filter) {
       this.updateKeypairs(this.allKeypairs || [])
     }
@@ -94,7 +92,7 @@ export default class KeypairSelector extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const {
       size,
       color = 'default',

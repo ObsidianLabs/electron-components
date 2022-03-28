@@ -14,7 +14,7 @@ import ProjectInvalid from './components/ProjectInvalid'
 import actions from './actions'
 
 export default class WorkspaceLoader extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.workspace = React.createRef()
     this.state = {
@@ -26,14 +26,14 @@ export default class WorkspaceLoader extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.prepareProject(this.props)
     if (this.props.addLanguages) {
       this.props.addLanguages()
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.terminal !== prevState.terminal) {
       window.dispatchEvent(new Event('resize'))
     }
@@ -45,25 +45,27 @@ export default class WorkspaceLoader extends PureComponent {
     }
   }
 
-  async prepareProject ({ ProjectManager, projectRoot, type }) {
-    this.setState({ loading: true, invalid: false, context: {} })
+  async prepareProject({ ProjectManager, projectRoot, type }) {
+    if (projectRoot) {
+      this.setState({ loading: true, invalid: false, context: {} })
 
-    const projectManager = new ProjectManager[type](this, projectRoot)
+      const projectManager = new ProjectManager[type](this, projectRoot)
 
-    const result = await projectManager.prepareProject()
-    if (result.error) {
-      this.setState({ loading: false, invalid: true })
-    } else {
-      this.setState({
-        loading: false,
-        initial: result.initial,
-        context: {
-          projectRoot,
-          projectManager,
-          projectSettings: result.projectSettings,
-        }
-      })
-      redux.dispatch('PROJECT_LOADED')
+      const result = await projectManager.prepareProject()
+      if (result.error) {
+        this.setState({ loading: false, invalid: true })
+      } else {
+        this.setState({
+          loading: false,
+          initial: result.initial,
+          context: {
+            projectRoot,
+            projectManager,
+            projectSettings: result.projectSettings,
+          }
+        })
+        redux.dispatch('PROJECT_LOADED')
+      }
     }
   }
 
@@ -102,7 +104,7 @@ export default class WorkspaceLoader extends PureComponent {
     actions.removeProject({ id, name: projectRoot })
   }
 
-  render () {
+  render() {
     const {
       projectRoot,
       ProjectToolbar,

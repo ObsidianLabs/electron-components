@@ -6,12 +6,11 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
-import { utils } from '@obsidians/eth-sdk'
-
 import keypairManager from './keypairManager'
+import { utils } from '@obsidians/sdk'
 
 export default class KeypairInputSelector extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       keypairs: [],
@@ -20,16 +19,16 @@ export default class KeypairInputSelector extends PureComponent {
     this.networkManager = networkManager
   }
 
-  componentDidMount () {
+  componentDidMount() {
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
     this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.listenKeypairChange && this.listenKeypairChange()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.filter !== this.props.filter) {
       this.updateKeypairs(this.allKeypairs || [])
     }
@@ -60,10 +59,10 @@ export default class KeypairInputSelector extends PureComponent {
         let reg = new RegExp(highlight, 'ig')
         let tempArr = address.replaceAll(reg, text => `,spc-${text},`)
         tempArr.split(',').forEach(part => {
-          if(part !== '') {
+          if (part !== '') {
             part.indexOf('spc') !== -1
-                ? highlightAddress.push(<b className='text-primary'>{part.split('spc-')[1]}</b>)
-                : highlightAddress.push(part)
+              ? highlightAddress.push(<b className='text-primary'>{part.split('spc-')[1]}</b>)
+              : highlightAddress.push(part)
           }
         })
       }
@@ -84,7 +83,7 @@ export default class KeypairInputSelector extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const {
       size,
       label,

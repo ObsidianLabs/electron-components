@@ -21,7 +21,8 @@ const projectChannel = new HttpIpcChannel('project')
 const tutorialModalInfo = {
   header: 'Welcome to Ethereum Studio',
   description: `Ethereum Studio is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
-  Here is an instruction for a quick scan and details of each features.`
+  Here is an instruction for a quick scan and details of each features.`,
+  nextPage: 'https://github.com/ObsidianLabs/EthereumStudio/blob/master/README.md'
 }
 
 class UserHomepage extends PureComponent {
@@ -53,7 +54,7 @@ class UserHomepage extends PureComponent {
   }
 
   checkIsNewUser() {
-    if (!localStorage.getItem('hasMark')) {
+    if (!localStorage.getItem('hasMark') && this.isSelf()) {
       localStorage.setItem('hasMark', 'true')
       this.modal.current.showModal()
     }
@@ -189,8 +190,10 @@ class UserHomepage extends PureComponent {
 
     if (!this.isSelf()) {
       if (loading) {
+        console.log('5')
         return <LoadingScreen />
       } else if (notfound) {
+        console.log('6')
         return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
       }
     }
@@ -213,6 +216,7 @@ class UserHomepage extends PureComponent {
         <TutorialModal
           ref={this.modal}
           header={tutorialModalInfo.header}
+          nextPage={tutorialModalInfo.nextPage}
           description={tutorialModalInfo.description} />
       </div>
     )
