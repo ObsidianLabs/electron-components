@@ -80,13 +80,9 @@ export default class NavDropdown extends Component {
           this.props.onClickItem(item)
         }}
         onContextMenu={event => {
-          const isLocalProject = listDropMenu.find((liItem,liIndex) => {
-            return  liItem && liItem.header === 'local projects' && (liItem['index'] = liIndex);
-          });
-          const isRemoteProject = listDropMenu.find((liItem,liIndex) => {
-            return  liItem && liItem.header === 'remote projects' && (liItem['index'] = liIndex);
-          });
-          if (index < isLocalProject.index || index > isRemoteProject.index) {
+          const isLocalProject = listDropMenu.find((elem, elIndex) =>  elem?.header === 'local projects' && (elem['index'] = elIndex));
+          const isRemoteProject = listDropMenu.find((elem, elIndex) =>  elem?.header === 'remote projects' && (elem['index'] = elIndex));
+          if (index < isLocalProject?.index || index > isRemoteProject?.index) {
             return null
           }
           event.preventDefault()
