@@ -22,8 +22,8 @@ export default class BaseModal extends PureComponent {
     colorConfirm: PropTypes.string,
     onConfirm: PropTypes.func,
     confirmDisabled: PropTypes.bool,
-    headerCancelBtnHide: PropTypes.bool,
-    cancelBtnHide: PropTypes.bool,
+    headerCancelIcon: PropTypes.bool,
+    footerCancelIcon: PropTypes.bool,
     ActionBtn: PropTypes.node,
     textActions: PropTypes.node,
     colorActions: PropTypes.array,
@@ -136,8 +136,8 @@ export default class BaseModal extends PureComponent {
       onClosed = () => {},
       className,
       children,
-      headerCancelBtnHide,
-      cancelBtnHide,
+      headerCancelIcon,
+      footerCancelIcon,
     } = this.props
 
     let errorComponent = null
@@ -166,9 +166,10 @@ export default class BaseModal extends PureComponent {
             <Button
               size='sm'
               color='default'
-              className={classnames('text-muted', headerCancelBtnHide && 'display-none')}
+              className='text-muted'
               tabIndex={-1}
               onClick={this.toggle}
+              hidden={headerCancelIcon}
             >
               <i className='fas fa-times' />
             </Button>
@@ -189,7 +190,7 @@ export default class BaseModal extends PureComponent {
           </div>
           <div>
             { onAdditionAction && textAddition && <Button color={colorAddition} onClick={onAdditionAction}>{textAddition}</Button> }
-            { (!noCancel || !cancelBtnHide) && textCancel && <Button className={classnames(cancelBtnHide && 'display-none')} color={colorCancel} onClick={this.toggle}>{textCancel}</Button> }
+            { (!noCancel || !footerCancelIcon) && textCancel && <Button hidden={footerCancelIcon} color={colorCancel} onClick={this.toggle}>{textCancel}</Button> }
             {this.renderConfirmButton(this.props)}
           </div>
         </ModalFooter>
