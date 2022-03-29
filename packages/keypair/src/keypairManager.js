@@ -50,7 +50,7 @@ class KeypairManager {
 
       const updating = sorted.map(async keypair => {
         const address = keypair.address
-        const account = await networkManager.sdk.client.getAccount(address)
+        const account = await (networkManager?.sdk?.client?.getAccount(address) || {balance: '0.0'})
         redux.dispatch('UPDATE_KEYPAIR_BALANCE', {
           address,
           networkId,
