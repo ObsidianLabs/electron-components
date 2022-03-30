@@ -8,6 +8,7 @@ import {
   CenterScreen
 } from '@obsidians/ui-components'
 
+import PropTypes from 'prop-types'
 import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
@@ -54,7 +55,7 @@ class UserHomepage extends PureComponent {
   }
 
   checkIsNewUser() {
-    if (!localStorage.getItem('hasMark') && this.isSelf()) {
+    if (!localStorage.getItem('hasMark') && this.isSelf() && this.props.enableTutorial) {
       localStorage.setItem('hasMark', 'true')
       this.modal.current.showModal()
     }
@@ -226,4 +227,12 @@ class UserHomepage extends PureComponent {
 export default connect(['profile', 'projects'])(UserHomepage)
 export {
   UserHomepage as BaseUserHomepage
+}
+
+UserHomepage.propTypes = {
+  enableTutorial: PropTypes.boolean
+}
+
+UserHomepage.defaultProps = {
+  enableTutorial: false
 }
