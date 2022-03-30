@@ -26,7 +26,7 @@ class User extends Component {
     this.toHelpPage = this.toHelpPage.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const img = new Image()
     img.src = this.props.profile.get('avatar')
     img.crossOrigin = true
@@ -70,9 +70,11 @@ class User extends Component {
       PROJECT_NAME,
       PROJECT_WEB_URL,
       PROJECT_DESKTOP_URL,
-      PROJECT_GITHUB_REPO
+      PROJECT_GITHUB_REPO,
+      REACT_APP_HELP_PAGE
     } = process.env
-
+  
+    const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
     let linkToOtherPlatformItem = []
     if (platform.isDesktop) {
       if (PROJECT_WEB_URL) {
@@ -102,11 +104,11 @@ class User extends Component {
           <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
         </DropdownItem>
       )
-      linkToOtherPlatformItem.push(
+      enableHelpPage && linkToOtherPlatformItem.push(
         <DropdownItem key='help-page' onClick={this.toHelpPage}>
           <i className='fas fa-info-circle w-3 mr-2' />Help page
-        </DropdownItem>
-      )
+          </DropdownItem>
+        )
     }
 
     const username = profile.get('username')
@@ -191,3 +193,4 @@ class User extends Component {
 }
 
 export default withRouter(User)
+
