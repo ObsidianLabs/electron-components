@@ -71,7 +71,7 @@ class ModelSessionManager {
     const uri = monaco.Uri.file(newPath)
     const newModel = monaco.editor.createModel(this.sessions[oldPath]._model.value, this.sessions[oldPath]._model._languageIdentifier.language, uri)
 
-    const whiteList = ['_buffer', '_options']
+    const whiteList = ['_buffer', '_options', '_tokens']
     for (let key in newModel) {
       if (whiteList.includes(key)) newModel[key] = this.sessions[oldPath]._model[key]
       if (!key.startsWith('_')) continue
