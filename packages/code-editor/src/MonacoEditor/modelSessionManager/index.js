@@ -330,7 +330,6 @@ class ModelSessionManager {
     const linterMarkers = decorations.filter(item => item.from === 'linter')
     const compilerMarkers = decorations.filter(item => item.from === 'compiler')
     const decorationMap = this.decorationMap
-
     decorations.forEach(item => {
       if (!decorationMap[item.filePath]) {
         decorationMap[item.filePath] = []
