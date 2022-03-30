@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import {
   Modal,
   DebouncedFormGroup,
-  Button,
+  Button
 } from '@obsidians/ui-components'
 
 import debounce from 'lodash/debounce'
@@ -22,7 +22,7 @@ class DeleteButton extends PureComponent {
       name: '',
       projectName: '',
       projectRoot: '',
-      confirmDisableStatus: true,
+      confirmDisableStatus: true
     }
     this.modal = React.createRef()
     this.input = React.createRef()
@@ -30,18 +30,18 @@ class DeleteButton extends PureComponent {
 
   openDeleteProjectModal = () => {
     const { projectManager } = this.props.context
-    const inputPlaceholder = `Please type ${platform.isWeb? projectManager.projectRoot : projectManager.projectName } to confirm`;
+    const inputPlaceholder = `Please type ${platform.isWeb ? projectManager.projectRoot : projectManager.projectName } to confirm`
     this.setState({ projectRoot: projectManager.projectRoot, projectName: projectManager.projectName, deleting: false, inputPlaceholder, projectManager })
     setTimeout(() => this.input.current?.focus(), 100)
     this.modal.current.openModal()
   }
 
   changeVal = (name) => {
-    const { projectName, projectRoot } = this.state;
-    const currentName = platform.isWeb? projectRoot : projectName;
-    name = name.trim();
-    const confirmDisableStatus = name != currentName;
-    this.setState({ name , confirmDisableStatus })
+    const { projectName, projectRoot } = this.state
+    const currentName = platform.isWeb ? projectRoot : projectName
+    name = name.trim()
+    const confirmDisableStatus = name != currentName
+    this.setState({ name, confirmDisableStatus })
   }
 
   deleteProject = async () => {
@@ -75,8 +75,8 @@ class DeleteButton extends PureComponent {
         colorConfirm='danger'
         pending={this.state.deleting && 'Deleting...'}
         noCancel={true}
-        headerCancelBtnHide={this.state.deleting}
-        cancelBtnHide={this.state.deleting}
+        headerCancelIcon={this.state.deleting}
+        footerCancelIcon={this.state.deleting}
         confirmDisabled={this.state.confirmDisableStatus}
         onConfirm={this.deleteProject}
       >
@@ -84,17 +84,19 @@ class DeleteButton extends PureComponent {
           ref={this.input}
           label={
             <div>
-              You are about to permanently delete, This operation<b> CANNOT </b>be undone !
-              <div> Type " {platform.isWeb? this.state.projectRoot : this.state.projectName} " to confirm:</div>
+              You are about to permanently delete this project. This operation <b>CANNOT</b> be undone!
+              <div>Type <kbd>{platform.isWeb ? this.state.projectRoot : this.state.projectName}</kbd> to confirm</div>
             </div>
           }
           placeholder={this.state.inputPlaceholder}
           maxLength='100'
-          value={this.state.name} 
+          value={this.state.name}
           onChange={this.changeVal}
         />
-        <div style={{color: 'var(--color-danger)'}} 
-          className={ (!this.state.name || (this.state.name && !this.state.confirmDisableStatus)) && 'display-none'}>
+        <div 
+          className='color-danger' 
+          hidden={(!this.state.name || (this.state.name && !this.state.confirmDisableStatus))}
+          >
           Project name does not match
         </div>
       </Modal>
