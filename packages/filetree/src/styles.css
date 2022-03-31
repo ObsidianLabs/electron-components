@@ -199,7 +199,7 @@
   background-color: #40444f;
 }
 
-.center {
+.status-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -207,7 +207,7 @@
   text-overflow: ellipsis;
 }
 
-.circleBadge {
+.status-title-circleBadge {
   width: 10px;
   height: 10px;
   border-radius: 50%

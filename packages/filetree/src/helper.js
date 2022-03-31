@@ -81,11 +81,10 @@ const updateErrorInfo = (decorations, fileKey) => {
   }, {})
 }
 
-const travelTree = (treeData, fn, extraValue) => {
+const travelTree = (treeData, fn, extraValue, stopCheck) => {
   const travel = (tree, fn) => {
     fn(tree, extraValue)
-
-    if (!tree.children) return
+    if (!tree.children || stopCheck(tree)) return
     for (let i = 0; i < tree.children.length; i++) {
       travel(tree.children[i], fn)
     }

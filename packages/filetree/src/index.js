@@ -185,7 +185,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
         return
       }
       const errorNode = updateErrorInfo(rawDecoration, treeData.key)
-      travelTree(treeData, renderTitle, errorNode)
+      const stopCheck = node => node.name === 'build'
+      travelTree(treeData, renderTitle, errorNode, stopCheck)
       setTreeData([treeData])
     }
 

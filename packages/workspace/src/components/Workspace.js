@@ -116,7 +116,7 @@ export default class Workspace extends Component {
   }
 
   updateTree() {
-    this.filetree.current.updateTreeTitle()
+    this.filetree.current && this.filetree.current.updateTreeTitle()
   }
 
   openCreateFileModal = node => {
