@@ -207,7 +207,15 @@
   text-overflow: ellipsis;
 }
 
-.status-title-circleBadge {
+.status-title__title {
+  margin: 0;
+}
+
+.status-title__count {
+  font-size: 12px;
+}
+
+.status-title__circleBadge {
   width: 10px;
   height: 10px;
   border-radius: 50%

@@ -8,11 +8,12 @@ const TYPE_COLOR = {
 }
 
 const StatusTitle = ({ title, isLeaf, showType, count }) => {
+  const typeColor = TYPE_COLOR[showType]
   return (
-    <div className='status-title' style={{ 'color': `${TYPE_COLOR[showType]}` }} >
-      <p style={{'margin': '0'}}> { title }</p>
-      { isLeaf ? <p style={{ 'fontSize': '12px' }} >{ count }</p>
-        : <div className='status-title-circleBadge' style={{ 'backgroundColor': `${TYPE_COLOR[showType]}` }} />
+    <div className='status-title' style={{ 'color': `${typeColor}` }} >
+      <p className='status-title__title'> { title }</p>
+      {isLeaf ? <p className='status-title__count' >{ count }</p>
+        : <div className='status-title__circleBadge' style={{ 'backgroundColor': `${typeColor}` }} />
       }
     </div>
   )
