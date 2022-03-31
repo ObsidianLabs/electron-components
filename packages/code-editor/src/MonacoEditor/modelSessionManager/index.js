@@ -326,36 +326,40 @@ class ModelSessionManager {
     })
   }
 
-  updateDecorations(decorations) {
-    const linterMarkers = decorations.filter(item => item.from === 'linter')
-    const compilerMarkers = decorations.filter(item => item.from === 'compiler')
-    const decorationMap = this.decorationMap
+  updateLinterBatch(decorationMap, newValue, filePath) {
+    const hasError = newValue.length !== 0
+    const curPathValue = decorationMap[filePath]
+    if (!curPathValue && hasError) { // create lint node
+      decorationMap[filePath] = [...newValue]
+    }
+    if (curPathValue && !hasError) { // remove all node
+      decorationMap[filePath] = []
+    }
+    if (curPathValue && hasError) { // update lint node
+      decorationMap[filePath] = curPathValue.filter(item => item.from !== 'linter').concat(newValue)
+    }
+    if (this.sessions[filePath]) {
+      this.sessions[filePath].decorations = decorationMap[filePath]
+    }
+  }
 
-    decorations.forEach(item => {
-      if (!decorationMap[item.filePath]) {
-        decorationMap[item.filePath] = []
-        decorationMap[item.filePath].push(item)
-      } else {
-        if (linterMarkers.length > 0) {
-          const restCompilers = decorationMap[item.filePath].filter(d => d.from !== 'linter')
-          this.sessions[item.filePath].decorations = restCompilers.concat(linterMarkers)
-          decorationMap[item.filePath] = restCompilers.concat(linterMarkers.filter(c => c.filePath === item.filePath))
-        }
-        if (compilerMarkers.length > 0) {
-          const restLinters = decorationMap[item.filePath].filter(d => d.from !== 'compiler')
-          this.sessions[item.filePath].decorations = restLinters.concat(compilerMarkers)
-          decorationMap[item.filePath] = restLinters.concat(compilerMarkers.filter(c => c.filePath === item.filePath))
-        }
-      }
+  updateCompilerBatch(decorationMap, newInfoArr) {
+    const newMap = newInfoArr.reduce((prev, cur) => {
+      prev[cur.filePath] ? prev[cur.filePath].push(cur)
+        : prev[cur.filePath] = [cur]
+      return prev
+    }, {})
+    const oldMapkeys = Object.keys(decorationMap)
+    Object.keys(newMap).forEach(cur => {
+      !oldMapkeys.includes(cur) ? decorationMap[cur] = newMap[cur]
+        : decorationMap[cur] = decorationMap[cur].filter(item => item.from !== 'compiler' && item.type !== 'error').concat(newMap[cur])
+      this.sessions[cur].decorations = decorationMap[cur]
     })
+  }
 
-    this.decorationMap = decorationMap
-
-    Object.keys(this.decorationMap).forEach(filePath => {
-      if (this.sessions[filePath]) {
-        this.sessions[filePath].decorations = decorationMap[filePath]
-      }
-    })
+  updateDecorations(newValue, pathFromlinter) {
+    pathFromlinter ? this.updateLinterBatch(this.decorationMap, newValue, pathFromlinter)
+      : this.updateCompilerBatch(this.decorationMap, newValue)
   }
 
   closeModelSession(filePath) {

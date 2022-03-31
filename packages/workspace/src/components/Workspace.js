@@ -9,7 +9,7 @@ import {
 
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
-import CodeEditorCollection, { modelSessionManager } from '@obsidians/code-editor'
+import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
 
 import WorkspaceContext from '../WorkspaceContext'
@@ -44,13 +44,12 @@ export default class Workspace extends Component {
       window.dispatchEvent(new Event('resize'))
     }, 200)
 
-    this.formatDecoration = this.formatDecoration.bind(this)
+    this.updateTree = this.updateTree.bind(this)
 
     this.state = {
       editorConfig: {},
       showTerminal: !!props.terminal,
-      terminalSize: 160,
-      filetreeDecorations: []
+      terminalSize: 160
     }
 
     const effect = BaseProjectManager.effect(`settings:editor`, editorConfig => {
@@ -116,23 +115,8 @@ export default class Workspace extends Component {
 
   }
 
-  formatDecoration () {
-    const compileMarkerMap = modelSessionManager.decorationMap
-    const decorations = Object.keys(compileMarkerMap).map(path => {
-      const key = path
-      const obj = {
-        [key]: {
-          warning: compileMarkerMap[path]?.filter(item => item.type === 'warning').length || 0,
-          error: compileMarkerMap[path]?.filter(item => item.type === 'error').length || 0
-        }
-      }
-      if (obj[key].error !== 0 && obj[key].warning !== 0) {
-        obj[path].error -= 1
-      }
-      return obj
-    })
-
-    this.setState({filetreeDecorations: decorations})
+  updateTree() {
+    this.filetree.current && this.filetree.current.updateTreeTitle()
   }
 
   openCreateFileModal = node => {
@@ -237,7 +221,7 @@ export default class Workspace extends Component {
             projectManager={this.context.projectManager}
             onSelectTab={this.onSelectTab}
             readOnly={readOnly}
-            onChangeDecorations={this.formatDecoration}
+            onChangeDecorations={this.updateTree}
           />
           {Terminal}
         </SplitPane>
@@ -254,7 +238,7 @@ export default class Workspace extends Component {
           projectManager={this.context.projectManager}
           onSelectTab={this.onSelectTab}
           readOnly={readOnly}
-          onChangeDecorations={this.formatDecoration}
+          onChangeDecorations={this.updateTree}
         />
       )
     }
@@ -282,7 +266,7 @@ export default class Workspace extends Component {
               onClick={() => this.openCreateFileModal()}
             />
             <ProjectToolbar
-              finalCall={this.formatDecoration}
+              finalCall={this.updateTree}
               signer={signer} />
           </div>
           <FileTree
@@ -290,7 +274,6 @@ export default class Workspace extends Component {
             projectManager={this.context.projectManager}
             initialPath={initial.path}
             onSelect={this.openFile}
-            decorations={this.state.filetreeDecorations}
             readOnly={readOnly}
             contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />
