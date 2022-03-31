@@ -23,7 +23,6 @@ class User extends Component {
 
   constructor(props) {
     super(props)
-    this.toHelpPage = this.toHelpPage.bind(this)
   }
 
   componentDidMount() {
@@ -38,10 +37,6 @@ class User extends Component {
   onToggle = event => {
     event.preventDefault()
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
-  }
-
-  toHelpPage() {
-    window.open(HELP_PAGE_ADDRESS, '_blank')
   }
 
   renderExtraLoggedInOptions = () => {
@@ -105,7 +100,7 @@ class User extends Component {
         </DropdownItem>
       )
       enableHelpPage && linkToOtherPlatformItem.push(
-        <DropdownItem key='help-page' onClick={this.toHelpPage}>
+        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(HELP_PAGE_ADDRESS)}>
           <i className='fas fa-info-circle w-3 mr-2' />Help page
           </DropdownItem>
         )
