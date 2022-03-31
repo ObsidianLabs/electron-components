@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react'
 import redux from '@obsidians/redux'
+import Auth from '@obsidians/auth'
+import notification from '@obsidians/notification'
 
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
@@ -15,6 +17,14 @@ export default class KeypairButton extends PureComponent {
   }
 
   openModal = () => {
+    const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
+    if (!redux.store.getState().profile?.size) {
+      notification.error('Not Logged In', `Please <b>Login</b> before operation`)
+      return setTimeout(() => {
+        Auth.login(this.props.history, providers[0])
+      },3000)
+    }
+
     let chain
     if (this.props.chains) {
       const network = redux.getState().network
