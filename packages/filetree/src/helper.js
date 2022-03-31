@@ -9,12 +9,15 @@ const computeType = (valueArr) => {
 }
 
 const updateEachNode = (typeInfo, pathInfo, treeMap) => {
-  const updateBranch = (cur, nodeValue) => {
+  const refreshNode = (cur, nodeValue, isLeaf) => {
     if (!nodeValue) {
       treeMap[cur] = {
         name: cur,
         type: typeInfo.type,
-        isLeaf: false
+        isLeaf: isLeaf
+      }
+      if (isLeaf) {
+        treeMap[cur]['count'] = typeInfo.count
       }
     } else {
       const oldDefault = nodeValue.type === 'default'
@@ -26,38 +29,16 @@ const updateEachNode = (typeInfo, pathInfo, treeMap) => {
       }
       if (oldWarning) {
         nodeValue.type = newError ? 'error' : 'warning'
+        if (isLeaf) {
+          nodeValue.count = newError ? typeInfo.count : nodeValue.count
+        }
         return
       }
       if (oldDefault) {
         nodeValue.type = typeInfo.type
-      }
-    }
-  }
-
-  const updateLeaf = (curPath, nodeValue) => {
-    if (!nodeValue) {
-      treeMap[curPath] = {
-        name: curPath,
-        type: typeInfo.type,
-        isLeaf: true,
-        count: typeInfo.count
-      }
-    } else {
-      const oldDefault = nodeValue.type === 'default'
-      const oldError = nodeValue.type === 'error'
-      const oldWarning = !oldDefault && !oldError
-      const newError = typeInfo.type === 'error'
-      if (oldError) {
-        return
-      }
-      if (oldWarning) {
-        nodeValue.type = newError ? 'error' : 'warning'
-        nodeValue.count = newError ? typeInfo.count : nodeValue.count
-        return
-      }
-      if (oldDefault) {
-        nodeValue.type = typeInfo.type
-        nodeValue.count = typeInfo.count
+        if (isLeaf) {
+          nodeValue.count = typeInfo.count
+        }
       }
     }
   }
@@ -65,7 +46,7 @@ const updateEachNode = (typeInfo, pathInfo, treeMap) => {
   pathInfo.forEach((cur, index) => {
     const isLeaf = index === pathInfo.length - 1
     const nodeValue = treeMap[cur]
-    isLeaf ? updateLeaf(cur, nodeValue) : updateBranch(cur, nodeValue)
+    refreshNode(cur, nodeValue, isLeaf)
   })
 }
 
