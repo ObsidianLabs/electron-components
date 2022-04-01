@@ -57,7 +57,6 @@ const setLeaf = (treeData, curKey) => {
       if (!item.title) {
         item.title = item.name
       }
-
       if (
         item.path.length > curKey.length
           ? item.path.indexOf(curKey) !== 0

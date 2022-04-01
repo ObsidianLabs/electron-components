@@ -17,7 +17,7 @@ class FileTreeChannel extends IpcChannel {
     return this.fileTreeClient.ready()
   }
 
-  async loadDirectory (directory) {
+  async loadDirectory(directory) {
     const node = await this.fileTreeClient.loadDirectory(directory)
     return node.children
   }

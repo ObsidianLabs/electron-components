@@ -184,7 +184,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async createNewFolder (basePath, name) {
 
     const folderPath = this.path.join(basePath, name)
-  
+
     try {
       await fileOps.web.fs.ensureDir(folderPath)
     } catch (e) {
