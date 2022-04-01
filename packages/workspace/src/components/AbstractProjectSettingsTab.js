@@ -80,10 +80,6 @@ class DeleteButton extends PureComponent {
         confirmDisabled={this.state.confirmDisableStatus}
         onConfirm={this.deleteProject}
       >
-        <div>
-          You are about to permanently delete this project. This operation <b>CANNOT</b> be undone!
-          <div>Type <kbd>{platform.isWeb ? this.state.projectRoot : this.state.projectName}</kbd> to confirm</div>
-        </div>
         <DebouncedFormGroup
           ref={this.input}
           label={
