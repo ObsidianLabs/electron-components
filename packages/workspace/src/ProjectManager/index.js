@@ -3,5 +3,5 @@ import RemoteProjectManager from './RemoteProjectManager'
 
 export default {
   Local: LocalProjectManager,
-  Remote: RemoteProjectManager,
+  Remote: RemoteProjectManager
 }
