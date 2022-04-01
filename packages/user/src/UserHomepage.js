@@ -191,10 +191,8 @@ class UserHomepage extends PureComponent {
 
     if (!this.isSelf()) {
       if (loading) {
-        console.log('5')
         return <LoadingScreen />
       } else if (notfound) {
-        console.log('6')
         return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
       }
     }
