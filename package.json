@@ -21,7 +21,8 @@
     "standard-react": "^4.0.0"
   },
   "resolutions": {
-    "node-abi": "^3.5.0"
+    "node-abi": "^3.5.0",
+    "node-sass": "npm:sass"
   },
   "workspaces": [
     "packages/*"
