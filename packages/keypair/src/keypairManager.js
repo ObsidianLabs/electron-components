@@ -41,7 +41,6 @@ class KeypairManager {
 
   async loadAllKeypairs () {
     try {
-      console.log("asdads")
       const { networkManager } = require('@obsidians/eth-network')
       const networkId = networkManager?.network?.id
       const keypairs = await this.channel.invoke('get')
