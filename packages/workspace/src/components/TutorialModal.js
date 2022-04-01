@@ -47,7 +47,7 @@ const TutorialModal = forwardRef(({header, description, nextPage}, ref) => {
         }}>
           <div className='center'>
             <div className='tutorialPanel' />
-            <p>Learn how to use Ethereum Studio</p>
+            <p>Learn how to use Black IDE</p>
           </div>
 
           <Button
