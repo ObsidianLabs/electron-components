@@ -7,6 +7,8 @@ import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
 import StatusTitle from './statusTitle'
+import { travelTree, updateErrorInfo } from './helper'
+import { modelSessionManager } from '@obsidians/code-editor'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -106,20 +108,7 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const travelTree = (treeData, fn, extraValue) => {
-  let fatherNode = treeData
-  const travel = (tree, fn) => {
-    fn(tree, fatherNode, extraValue)
-    if (!tree.children) return
-    for (let i = 0; i < tree.children.length; i++) {
-      fatherNode = tree
-      travel(tree.children[i], fn)
-    }
-  }
-  travel(treeData, fn)
-}
-
-const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly = false }, ref) => {
+const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -138,15 +127,15 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
     // TODO we need a id to make sure the filter works correctlly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')
   } else {
-    isBlankAreaRightClick && (treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder')));
-    
+    isBlankAreaRightClick && (treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder')))
+
     // Removing rename and delete operations from the root of the file tree
     if (!isBlankAreaRightClick && isTreeDataRoot) {
-      const renameAndDeleteText = ['Rename', 'Delete'];
+      const renameAndDeleteText = ['Rename', 'Delete']
       treeNodeContextMenu = treeNodeContextMenu.filter(item => {
-        return item ? !renameAndDeleteText.includes(item.text) : treeNodeContextMenu.push(null);
-      });
-      !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop();
+        return item ? !renameAndDeleteText.includes(item.text) : treeNodeContextMenu.push(null)
+      })
+      !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop()
     }
 
     const { show } = useContextMenu({
@@ -154,10 +143,10 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
     })
 
     const handleContextMenu = ({ event, node }) => {
-      node.root ? setIsTreeDataRoot(true) : setIsTreeDataRoot(false);
-      event.nativeEvent.preventDefault();
-      event.stopPropagation();
-      setIsBlankAreaRightClick(false);
+      node.root ? setIsTreeDataRoot(true) : setIsTreeDataRoot(false)
+      event.nativeEvent.preventDefault()
+      event.stopPropagation()
+      setIsBlankAreaRightClick(false)
 
       handleSetSelectNode(node)
       show(event.nativeEvent, {
@@ -178,56 +167,28 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
       })
     }
 
-    const renderAllTitle = (curNode, fatherNode, value) => {
-      const pathKey = Object.keys(value)[0]
-      const matchPath = pathKey.indexOf(curNode.name) !== -1
-      const matchkey = curNode.key === pathKey
-      const showType = value[pathKey].error ? 'error' : 'warning'
-      const noError = value[pathKey].error === 0 && value[pathKey].warning === 0
-      if (fatherNode.name === 'build') return
-      if (noError && matchkey) {
-        curNode.title = curNode.name
-        fatherNode.title = fatherNode.name
-        return
-      }
-      if (matchPath && !curNode.isLeaf) {
-        curNode.title = (<StatusTitle
+    const renderTitle = (curNode, errorNode) => {
+      const matchedValue = errorNode[curNode.name]
+      if (!matchedValue) return
+      matchedValue.type === 'default' ? curNode.title = curNode.name
+        : curNode.title = (<StatusTitle
           title={curNode.name}
-          isLeaf={curNode.isLeaf}
-          showType={showType}
-          error={value[pathKey].error}
-          warning={value[pathKey].warning} />)
-        return
-      }
-      if (matchkey) {
-        curNode.title = (<StatusTitle
-          title={curNode.name}
-          isLeaf={curNode.isLeaf}
-          showType={showType}
-          error={value[pathKey].error}
-          warning={value[pathKey].warning} />)
-        fatherNode.title = (<StatusTitle
-          title={fatherNode.name}
-          isLeaf={fatherNode.isLeaf}
-          showType={showType}
-          error={value[pathKey].error}
-          warnig={value[pathKey].warning} />)
-      }
+          isLeaf={matchedValue.isLeaf}
+          showType={matchedValue.type}
+          count={matchedValue.count} />)
     }
 
-    const updateStatus = (decorations, treeData) => {
-      const newTree = cloneDeep(treeData)
-      decorations.forEach((item) => {
-        travelTree(newTree, renderAllTitle, item)
-      })
-
-      setTreeData([newTree])
+    const updateTitle = (treeData) => {
+      const rawDecoration = modelSessionManager.decorationMap
+      const hasError = Object.keys(rawDecoration) !== 0
+      if (!hasError) {
+        return
+      }
+      const errorNode = updateErrorInfo(rawDecoration, treeData.key)
+      const stopCheck = node => node.name === 'build'
+      travelTree(treeData, renderTitle, errorNode, stopCheck)
+      setTreeData([treeData])
     }
-
-    useEffect(() => {
-      if (!decorations.length) return
-      updateStatus(decorations, ...treeData)
-    }, [decorations])
 
     useEffect(() => {
       loadTree(projectManager)
@@ -252,8 +213,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
       get rootNode() {
         return treeData
       },
-      updateStatus() {
-        updateStatus(decorations, ...treeData)
+      updateTreeTitle() {
+        updateTitle(...treeData)
       }
     }))
 
@@ -307,7 +268,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, decorations, readOnly
             setTimeout(() => {
               getNewTreeData(tempTreeData, treeNode.path, newData)
               setTreeData(tempTreeData)
-              updateStatus(decorations, ...tempTreeData)
+              updateTitle(...tempTreeData)
               resolve()
             }, 500)
           })

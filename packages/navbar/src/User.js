@@ -23,10 +23,9 @@ class User extends Component {
 
   constructor(props) {
     super(props)
-    this.toHelpPage = this.toHelpPage.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const img = new Image()
     img.src = this.props.profile.get('avatar')
     img.crossOrigin = true
@@ -38,10 +37,6 @@ class User extends Component {
   onToggle = event => {
     event.preventDefault()
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
-  }
-
-  toHelpPage() {
-    window.open(HELP_PAGE_ADDRESS, '_blank')
   }
 
   renderExtraLoggedInOptions = () => {
@@ -70,9 +65,11 @@ class User extends Component {
       PROJECT_NAME,
       PROJECT_WEB_URL,
       PROJECT_DESKTOP_URL,
-      PROJECT_GITHUB_REPO
+      PROJECT_GITHUB_REPO,
+      REACT_APP_HELP_PAGE
     } = process.env
-
+  
+    const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
     let linkToOtherPlatformItem = []
     if (platform.isDesktop) {
       if (PROJECT_WEB_URL) {
@@ -102,11 +99,11 @@ class User extends Component {
           <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
         </DropdownItem>
       )
-      linkToOtherPlatformItem.push(
-        <DropdownItem key='help-page' onClick={this.toHelpPage}>
+      enableHelpPage && linkToOtherPlatformItem.push(
+        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(HELP_PAGE_ADDRESS)}>
           <i className='fas fa-info-circle w-3 mr-2' />Help page
-        </DropdownItem>
-      )
+          </DropdownItem>
+        )
     }
 
     const username = profile.get('username')
@@ -191,3 +188,4 @@ class User extends Component {
 }
 
 export default withRouter(User)
+

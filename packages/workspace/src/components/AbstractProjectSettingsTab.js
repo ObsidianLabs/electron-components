@@ -75,8 +75,8 @@ class DeleteButton extends PureComponent {
         colorConfirm='danger'
         pending={this.state.deleting && 'Deleting...'}
         noCancel={true}
-        headerCancelBtnHide={this.state.deleting}
-        cancelBtnHide={this.state.deleting}
+        headerCancelIcon={this.state.deleting}
+        footerCancelIcon={this.state.deleting}
         confirmDisabled={this.state.confirmDisableStatus}
         onConfirm={this.deleteProject}
       >
@@ -86,15 +86,21 @@ class DeleteButton extends PureComponent {
         </div>
         <DebouncedFormGroup
           ref={this.input}
+          label={
+            <div>
+              You are about to permanently delete this project. This operation <b>CANNOT</b> be undone!
+              <div>Type <kbd>{platform.isWeb ? this.state.projectRoot : this.state.projectName}</kbd> to confirm</div>
+            </div>
+          }
           placeholder={this.state.inputPlaceholder}
           maxLength='100'
           value={this.state.name}
           onChange={this.changeVal}
         />
-        <div
-          style={{color: 'var(--color-danger)'}}
-          className={(!this.state.name || (this.state.name && !this.state.confirmDisableStatus)) && 'display-none'}
-        >
+        <div 
+          className='color-danger' 
+          hidden={(!this.state.name || (this.state.name && !this.state.confirmDisableStatus))}
+          >
           Project name does not match
         </div>
       </Modal>

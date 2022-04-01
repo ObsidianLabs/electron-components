@@ -45,13 +45,12 @@ class KeypairManager {
       const networkId = networkManager.network.id
       const keypairs = await this.channel.invoke('get')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
-
       keypairs.forEach(item => item.address = networkManager.sdk.utils.simplifyAddress(item.address))
       const sorted = this.getKeypairFromRedux(networkId)
 
       const updating = sorted.map(async keypair => {
         const address = keypair.address
-        const account = await networkManager.sdk.client.getAccount(address)
+        const account = await (networkManager?.sdk?.client?.getAccount(address) || {balance: '0.0'})
         redux.dispatch('UPDATE_KEYPAIR_BALANCE', {
           address,
           networkId,

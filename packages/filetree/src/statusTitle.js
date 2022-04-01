@@ -7,13 +7,13 @@ const TYPE_COLOR = {
   // unsaved: '#FFF'
 }
 
-const StatusTitle = ({ title, isLeaf, showType, error, warning }) => {
-  const amount = showType === 'error' ? error : warning
+const StatusTitle = ({ title, isLeaf, showType, count }) => {
+  const typeColor = TYPE_COLOR[showType]
   return (
-    <div className='center' style={{ 'color': `${TYPE_COLOR[showType]}` }} >
-      <p > { title }</p>
-      { isLeaf ? <p style={{ 'fontSize': '12px' }} >{ amount }</p>
-        : <div className='circleBadge' style={{ 'backgroundColor': `${TYPE_COLOR[showType]}` }} />
+    <div className='status-title' style={{ 'color': `${typeColor}` }} >
+      <p className='status-title__title'> { title }</p>
+      {isLeaf ? <p className='status-title__count' >{ count }</p>
+        : <div className='status-title__circleBadge' style={{ 'backgroundColor': `${typeColor}` }} />
       }
     </div>
   )
@@ -25,7 +25,5 @@ StatusTitle.propTypes = {
   isLeaf: PropTypes.bool,
   title: PropTypes.string,
   showType: PropTypes.string,
-  error: PropTypes.number,
-  warning: PropTypes.number
-  // unsaved: PropTypes.number
+  count: PropTypes.number
 }
