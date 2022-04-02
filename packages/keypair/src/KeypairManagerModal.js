@@ -220,7 +220,7 @@ export default class KeypairManagerModal extends PureComponent {
           </div>
         </td>
         <td>
-          <Badge pill color='success' className='ml-1'>{keypair.balance} {networkManager.symbol}</Badge>
+          <Badge pill color='success' className='ml-1'>{keypair.balance} {networkManager?.symbol}</Badge>
         </td>
         <td align='right'>
         {
