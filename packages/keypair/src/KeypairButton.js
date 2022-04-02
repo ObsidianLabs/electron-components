@@ -19,9 +19,9 @@ class KeypairButton extends PureComponent {
 
   openModal = () => {
     const profileState = redux.getState().profile
-    const profile = Object.values(profileState.toJS())
+    const profile = profileState.toJS()
     const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
-    if (!profile.length) {
+    if (!profile.userId) {
       notification.error('Not Logged In', `Please <b>Login</b> before operation`)
       return setTimeout(() => {
         Auth.login(this.props.history, providers[0])
