@@ -22,10 +22,7 @@ class KeypairButton extends PureComponent {
     const profile = profileState.toJS()
     const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
     if (!profile.userId) {
-      notification.error('Not Logged In', `Please <b>Login</b> before operation`)
-      return setTimeout(() => {
-        Auth.login(this.props.history, providers[0])
-      },3000)
+      return Auth.login(this.props.history, providers[0])
     }
 
     let chain

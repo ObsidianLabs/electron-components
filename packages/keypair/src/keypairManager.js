@@ -43,7 +43,8 @@ class KeypairManager {
     try {
       const { networkManager } = require('@obsidians/eth-network')
       const networkId = networkManager?.network?.id
-      const keypairs = await this.channel.invoke('get')
+      let keypairs = await this.channel.invoke('get')
+      keypairs = keypairs.filter(item => item.address !== '')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
 
       keypairs.forEach(item => item.address = networkManager?.sdk?.utils?.simplifyAddress(item.address) || item.address)
@@ -77,7 +78,7 @@ class KeypairManager {
 
   async loadAndUpdateKeypairs () {
     const keypairs = await this.loadAllKeypairs()
-    this.keypairNames = {}
+
     keypairs.forEach(k => this.keypairNames[k.address] = k.name)
 
     const event = new CustomEvent('updated', { detail: keypairs })
