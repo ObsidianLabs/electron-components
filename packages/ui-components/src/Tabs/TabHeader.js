@@ -136,10 +136,23 @@ class TabHeaderItem extends PureComponent {
     )
   }
 
+  componentWillUnmount(){
+    // deregister 
+    this.timeoutList.forEach(timeoutIndex => {
+      clearTimeout(timeoutIndex)
+    })
+  }
+
+  timeoutList = new Set()
+
   render() {
     const { size, tab, active, tabText, isDragging, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
     let { canDragState } = this.state
-    setTimeout(()=>this.setState({ canDragState: canDrag }), 200)
+    let timeoutIndex = setTimeout(()=>{
+      this.setState({ canDragState: canDrag })
+      this.timeoutList.delete(timeoutIndex)
+    }, 200)
+    this.timeoutList.add(timeoutIndex)
     const opacity = isDragging ? 0 : 1
 
     return connectDragSource(

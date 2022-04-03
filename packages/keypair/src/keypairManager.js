@@ -42,13 +42,16 @@ class KeypairManager {
   async loadAllKeypairs () {
     try {
       const { networkManager } = require('@obsidians/eth-network')
-      const networkId = networkManager.network.id
-      const keypairs = await this.channel.invoke('get')
+      const networkId = networkManager?.network?.id
+      let keypairs = await this.channel.invoke('get')
+      keypairs = keypairs.filter(item => item.address !== '')
       redux.dispatch('UPDATE_FROM_REMOTE', keypairs)
-      keypairs.forEach(item => item.address = networkManager.sdk.utils.simplifyAddress(item.address))
+
+      keypairs.forEach(item => item.address = networkManager?.sdk?.utils?.simplifyAddress(item.address) || item.address)
       const sorted = this.getKeypairFromRedux(networkId)
 
       const updating = sorted.map(async keypair => {
+        if (networkId === void 0) return
         const address = keypair.address
         const account = await (networkManager?.sdk?.client?.getAccount(address) || {balance: '0.0'})
         redux.dispatch('UPDATE_KEYPAIR_BALANCE', {
@@ -75,7 +78,7 @@ class KeypairManager {
 
   async loadAndUpdateKeypairs () {
     const keypairs = await this.loadAllKeypairs()
-    this.keypairNames = {}
+
     keypairs.forEach(k => this.keypairNames[k.address] = k.name)
 
     const event = new CustomEvent('updated', { detail: keypairs })

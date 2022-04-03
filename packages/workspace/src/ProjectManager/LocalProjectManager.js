@@ -3,6 +3,7 @@ import notification from '@obsidians/notification'
 import { modelSessionManager } from '@obsidians/code-editor'
 
 import BaseProjectManager from './BaseProjectManager'
+import { sortFile } from './helper'
 
 export default class LocalProjectManager extends BaseProjectManager {
   static async createProject(options, stage = '') {
@@ -60,14 +61,16 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory() {
-    const rootResult = await BaseProjectManager.channel.invoke('loadTree', this.projectRoot);
-    const isHasFileREADME = rootResult.children.length == 0? false : rootResult.children.find(item => item.name == 'README.md');
-    !isHasFileREADME && this.createNewFile(this.projectRoot,'README.md');
+    const rootResult = await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
+    const isHasFileREADME = rootResult.children.length === 0 ? false : rootResult.children.find(item => item.name === 'README.md')
+    !isHasFileREADME && this.createNewFile(this.projectRoot, 'README.md')
+    rootResult.children = sortFile(rootResult.children)
     return rootResult
   }
 
   async loadDirectory(node) {
-    return await BaseProjectManager.channel.invoke('loadDirectory', node.path)
+    const fileNode = await BaseProjectManager.channel.invoke('loadDirectory', node.path)
+    return sortFile(fileNode)
   }
 
   async readProjectSettings() {

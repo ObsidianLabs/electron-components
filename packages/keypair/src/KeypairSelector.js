@@ -18,7 +18,6 @@ export default class KeypairSelector extends PureComponent {
       keypairs: [],
     }
     this.modal = React.createRef()
-    const { networkManager } = require('@obsidians/eth-network')
   }
 
   componentDidMount() {
@@ -64,6 +63,7 @@ export default class KeypairSelector extends PureComponent {
   }
 
   renderItems = (iconComponent) => {
+    const { networkManager } = require('@obsidians/eth-network')
     if (this.state.loading) {
       return <DropdownItem key='loading' disabled><i className='fas fa-spin fa-spinner mr-1' />Loading...</DropdownItem>
     }
@@ -85,7 +85,7 @@ export default class KeypairSelector extends PureComponent {
         >
           <div>
             {iconComponent}{k.name}
-            <div className={classnames('small code', !disabled && 'text-muted')}>{this.networkManager?.sdk.utils.formatAddress(k.address)}</div>
+            <div className={classnames('small code', !disabled && 'text-muted')}>{networkManager?.sdk.utils.formatAddress(k.address)}</div>
           </div>
         </DropdownItem>
       )

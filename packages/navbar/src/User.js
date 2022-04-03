@@ -13,7 +13,7 @@ import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
-const HELP_PAGE_ADDRESS = 'https://github.com/ObsidianLabs/EthereumStudio/blob/master/README.md'
+const HELP_PAGE_ADDRESS = 'https://github.com/ObsidianLabs/BlackIDE/blob/master/README.md'
 
 class User extends Component {
   state = {
@@ -23,7 +23,6 @@ class User extends Component {
 
   constructor(props) {
     super(props)
-    this.toHelpPage = this.toHelpPage.bind(this)
   }
 
   componentDidMount() {
@@ -38,10 +37,6 @@ class User extends Component {
   onToggle = event => {
     event.preventDefault()
     this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
-  }
-
-  toHelpPage() {
-    window.open(HELP_PAGE_ADDRESS, '_blank')
   }
 
   renderExtraLoggedInOptions = () => {
@@ -105,7 +100,7 @@ class User extends Component {
         </DropdownItem>
       )
       enableHelpPage && linkToOtherPlatformItem.push(
-        <DropdownItem key='help-page' onClick={this.toHelpPage}>
+        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(HELP_PAGE_ADDRESS)}>
           <i className='fas fa-info-circle w-3 mr-2' />Help page
           </DropdownItem>
         )
