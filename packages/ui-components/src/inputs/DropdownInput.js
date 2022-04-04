@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
-
 import {
   FormGroup,
   Label,
@@ -27,8 +26,6 @@ export default class DropdownInput extends PureComponent {
     this.dropdownOptions = null
     this.input = React.createRef()
     this.toggler = React.createRef()
-    const { networkManager } = require('@obsidians/eth-network')
-    this.networkManager = networkManager
   }
 
   componentDidUpdate (prevProps) {
@@ -112,10 +109,6 @@ export default class DropdownInput extends PureComponent {
 
   getDropdownOptions = () => {
     const { options = [] } = this.props
-    if (!this.networkManager.sdk) {
-      return []
-    }
-    const value = this.networkManager.sdk.utils.simplifyAddress(this.props.value)
     const filterMode = this.state.filterMode
     let dropdownOptions = []
 
