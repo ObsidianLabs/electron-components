@@ -9,7 +9,8 @@ import ToolbarButton from '../buttons/ToolbarButton'
 export default class NavigationBar extends PureComponent {
   constructor(props) {
     super(props)
-    const { networkManager } = require('@obsidians/eth-network')
+    const { networkManager } = require('@obsidians/network')
+  
     this.networkManager = networkManager
     this.state = {
       value: networkManager?.sdk.utils.isValidAddressReturn(props.tab.value),
