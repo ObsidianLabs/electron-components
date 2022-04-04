@@ -41,7 +41,8 @@ class KeypairManager {
 
   async loadAllKeypairs () {
     try {
-      const { networkManager } = require('@obsidians/eth-network')
+      const { networkManager } = require('@obsidians/network')
+    
       const networkId = networkManager?.network?.id
       let keypairs = await this.channel.invoke('get')
       keypairs = keypairs.filter(item => item.address !== '')

@@ -182,7 +182,7 @@ export default class KeypairManagerModal extends PureComponent {
     // 过滤地址中包含的不合法字符（禁止出现在 html attr 中的字符）
     // filter the illegal address
     const validAddress = keypair?.address?.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
-    const { networkManager } = require('@obsidians/eth-network')
+    const { networkManager } = require('@obsidians/network')
     return (
       <tr key={`key-${validAddress}`} className='hover-flex'>
         <td>

@@ -63,7 +63,7 @@ export default class KeypairSelector extends PureComponent {
   }
 
   renderItems = (iconComponent) => {
-    const { networkManager } = require('@obsidians/eth-network')
+    const { networkManager } = require('@obsidians/network')
     if (this.state.loading) {
       return <DropdownItem key='loading' disabled><i className='fas fa-spin fa-spinner mr-1' />Loading...</DropdownItem>
     }
