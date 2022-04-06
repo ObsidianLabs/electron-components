@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import redux from '@obsidians/redux'
 import Auth from '@obsidians/auth'
-import notification from '@obsidians/notification'
+import platform from '@obsidians/platform'
 import { withRouter } from 'react-router'
 
 import keypairManager from './keypairManager'
@@ -21,7 +21,7 @@ class KeypairButton extends PureComponent {
     const profileState = redux.getState().profile
     const profile = profileState.toJS()
     const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
-    if (!profile.userId) {
+    if (!profile.userId && platform.isWeb) {
       return Auth.login(this.props.history, providers[0])
     }
 
