@@ -13,8 +13,6 @@ import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
-console.log(' 数据展示 platform ====',platform);
-
 class User extends Component {
   state = {
     isDropdownOpen: false,
@@ -68,7 +66,6 @@ class User extends Component {
       PROJECT_GITHUB_REPO,
       REACT_APP_HELP_PAGE
     } = process.env
-    console.log('地址====',`${PROJECT_DESKTOP_URL}/${platform.os}`);
   
     const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
     let linkToOtherPlatformItem = []
