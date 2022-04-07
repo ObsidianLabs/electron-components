@@ -13,7 +13,7 @@ import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
-const HELP_PAGE_ADDRESS = 'https://github.com/ObsidianLabs/BlackIDE/blob/master/README.md'
+console.log(' 数据展示 platform ====',platform);
 
 class User extends Component {
   state = {
@@ -68,6 +68,7 @@ class User extends Component {
       PROJECT_GITHUB_REPO,
       REACT_APP_HELP_PAGE
     } = process.env
+    console.log('地址====',`${PROJECT_DESKTOP_URL}/${platform.os}`);
   
     const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
     let linkToOtherPlatformItem = []
@@ -100,7 +101,7 @@ class User extends Component {
         </DropdownItem>
       )
       enableHelpPage && linkToOtherPlatformItem.push(
-        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(HELP_PAGE_ADDRESS)}>
+        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/blob/master/README.md`)}>
           <i className='fas fa-info-circle w-3 mr-2' />Help page
           </DropdownItem>
         )
