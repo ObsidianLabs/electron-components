@@ -23,6 +23,9 @@
   --color-dark: #343a40;
 }
 
+$background:hsl(226,19%,21%);
+$background2: hsl(222,24%,13%);
+
 .link {
   cursor: pointer;
   color: var(--color-link) !important;
@@ -33,11 +36,11 @@
 }
 
 .bg {
-  background-color: var(--color-bg) !important;
+  background-color: $background !important;
 }
 
 .bg2 {
-  background-color: var(--color-bg2) !important;
+  background-color: $background2 !important;
 }
 
 .bg-invalid {

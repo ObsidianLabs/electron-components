@@ -66,7 +66,7 @@ export default class NavigationBar extends PureComponent {
   onChange = event => {
     const value = utils.isValidAddressReturn(event.target.value)
     this.setState({ value })
-    this.props.tab.temp = value.toLowerCase()
+    this.props.tab.temp = value
   }
 
   onKeyPress = event => {
@@ -76,12 +76,12 @@ export default class NavigationBar extends PureComponent {
         value = value.trim()
         this.setState({ value })
       }
-      this.props.updateTab({ value: value.toLowerCase(), temp: undefined })
+      this.props.updateTab({ value: value, temp: undefined })
       this.input.current.blur()
       this.forceUpdate()
 
       if (this.props.onEnter) {
-        this.props.onEnter(value.toLowerCase())
+        this.props.onEnter(value)
       }
     }
   }
@@ -123,7 +123,7 @@ export default class NavigationBar extends PureComponent {
         <div
           key='narbar-star'
           className='btn btn-sm text-warning hover-block'
-          onClick={() => this.props.onToggleStar(this.state.value.toLowerCase(), false)}
+          onClick={() => this.props.onToggleStar(this.state.value, false)}
         >
           <i className='fas fa-star hover-hide' />
           <i className='far fa-star hover-show' />
@@ -134,7 +134,7 @@ export default class NavigationBar extends PureComponent {
         <div
           key='narbar-star-o'
           className='btn btn-sm text-secondary hover-block'
-          onClick={() => this.props.onToggleStar(this.state.value.toLowerCase(), true)}
+          onClick={() => this.props.onToggleStar(this.state.value, true)}
         >
           <i className='far fa-star hover-hide' />
           <i className='fas fa-star hover-show' />
