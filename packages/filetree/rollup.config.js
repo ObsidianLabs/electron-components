@@ -31,6 +31,6 @@ export default {
     commonjs()
   ],
   watch: {
-    include: 'src/**',
+    include: 'src/**'
   }
 }

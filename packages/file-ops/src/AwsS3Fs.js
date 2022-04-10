@@ -13,7 +13,7 @@ export default class AwsS3Fs {
       readFile: this.readFile.bind(this),
       writeFile: this.writeFile.bind(this),
       stat: this.stat.bind(this),
-      ensureFile: this.ensureFile.bind(this),
+      ensureFile: this.ensureFile.bind(this)
     }
   }
 
@@ -22,7 +22,7 @@ export default class AwsS3Fs {
       region,
       accessKeyId: credential.Credentials.AccessKeyId,
       secretAccessKey: credential.Credentials.SecretAccessKey,
-      sessionToken: credential.Credentials.SessionToken,
+      sessionToken: credential.Credentials.SessionToken
     })
 
     this.s3 = new S3()
@@ -34,7 +34,7 @@ export default class AwsS3Fs {
     }
     const params = {
       Bucket,
-      Key: filePath,
+      Key: filePath
     }
     const result = await this.s3.getObject(params).promise()
     return result.Body.toString(encoding)
@@ -78,7 +78,7 @@ export default class AwsS3Fs {
       const oldParams = {
         CopySource: `/${Bucket}/${oldPath}`,
         Bucket,
-        Key: newPath,
+        Key: newPath
       }
       await this.s3.copyObject(oldParams).promise()
       await this.deleteFile(oldPath)
@@ -103,7 +103,7 @@ export default class AwsS3Fs {
   async deleteFile (filePath) {
     const params = {
       Bucket,
-      Key: filePath,
+      Key: filePath
     }
     await this.s3.deleteObject(params).promise()
   }
@@ -112,7 +112,7 @@ export default class AwsS3Fs {
     await this.emptyS3Directory(dirPath)
     const params = {
       Bucket,
-      Key: `${dirPath}/`,
+      Key: `${dirPath}/`
     }
     await this.s3.deleteObject(params).promise()
   }
@@ -121,7 +121,7 @@ export default class AwsS3Fs {
     const listedObjects = await this.s3.listObjectsV2({
       Bucket,
       Prefix: dirPath
-    }).promise();
+    }).promise()
     if (listedObjects.Contents.length === 0) {
       return
     }
@@ -131,7 +131,7 @@ export default class AwsS3Fs {
       Delete: { Objects: [] }
     }
     listedObjects.Contents.forEach(({ Key }) => {
-        deleteParams.Delete.Objects.push({ Key })
+      deleteParams.Delete.Objects.push({ Key })
     })
     await this.s3.deleteObjects(deleteParams).promise()
 
@@ -149,7 +149,7 @@ export default class AwsS3Fs {
     const match = list.find(item => item.name === base)
     return {
       isDirectory: () => match && !!match.children,
-      isFile: () => match && !match.children,
+      isFile: () => match && !match.children
     }
   }
 
@@ -164,12 +164,30 @@ export default class AwsS3Fs {
     const folders = result.CommonPrefixes.map(item => {
       const path = item.Prefix.slice(0, -1)
       const name = path.replace(`${dirPath}/`, '')
-      return { type: 'folder', title: name, key: path, children: [], isLeaf: false, name, path, loading: true, remote: true }
+      return { type: 'folder',
+        title: name,
+        key: path,
+        children: [],
+        isLeaf: false,
+        name,
+        path,
+        loading: true,
+        remote: true,
+        className: ''
+      }
     }).filter(item => item.name)
     const files = result.Contents.map(item => {
       let path = item.Key
       const name = path.replace(`${dirPath}/`, '')
-      return { type: 'file', title: name, key: path, name, path, remote: true, isLeaf: true, }
+      return { type: 'file',
+        title: name,
+        key: path,
+        name,
+        path,
+        remote: true,
+        isLeaf: true,
+        className: ''
+      }
     }).filter(item => item.name && item.name !== '.placeholder')
     return [...folders, ...files]
   }
