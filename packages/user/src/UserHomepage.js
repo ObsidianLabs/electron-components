@@ -18,12 +18,15 @@ import ProjectList from './ProjectList'
 
 const userChannel = new HttpIpcChannel('user')
 const projectChannel = new HttpIpcChannel('project')
+const {
+  PROJECT_GITHUB_REPO
+} = process.env
 
 const tutorialModalInfo = {
   header: 'Welcome to Black IDE',
   description: `Black IDE is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
   Here is an instruction for a quick scan and details of each features.`,
-  nextPage: 'https://github.com/ObsidianLabs/BlackIDE/blob/master/README.md'
+  nextPage: `${PROJECT_GITHUB_REPO}/blob/master/README.md`
 }
 
 class UserHomepage extends PureComponent {

@@ -13,8 +13,6 @@ import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
-const HELP_PAGE_ADDRESS = 'https://github.com/ObsidianLabs/BlackIDE/blob/master/README.md'
-
 class User extends Component {
   state = {
     isDropdownOpen: false,
@@ -100,7 +98,7 @@ class User extends Component {
         </DropdownItem>
       )
       enableHelpPage && linkToOtherPlatformItem.push(
-        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(HELP_PAGE_ADDRESS)}>
+        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/blob/master/README.md`)}>
           <i className='fas fa-info-circle w-3 mr-2' />Help page
           </DropdownItem>
         )
