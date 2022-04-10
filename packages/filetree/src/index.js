@@ -179,11 +179,13 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
 
     const updateTitle = (treeData) => {
       const rawDecoration = modelSessionManager.decorationMap
-      const hasError = Object.keys(rawDecoration) !== 0
+      console.log('rawDecoration', rawDecoration)
+      const hasError = Object.keys(rawDecoration).length !== 0
       if (!hasError) {
         return
       }
       const errorNode = updateErrorInfo(rawDecoration, treeData.key)
+      console.log('errorNode', errorNode)
       const stopCheck = node => node.name === 'build'
       travelTree(treeData, renderTitle, errorNode, stopCheck)
       setTreeData([treeData])
@@ -306,6 +308,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     })
 
     const handleClick = (event, node) => {
+      console.log('click', node.name)
       onDebounceExpand(event, node)
     }
 
