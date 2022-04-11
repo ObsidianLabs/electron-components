@@ -238,3 +238,14 @@ button, .btn, .nav-link {
 .btn {
   transition: none !important;
 }
+
+.custom-drag-layer {
+  .custom-drag-layer-style {
+    padding: 4px 20px;
+    background: var(--color-bg);
+    border-radius: 0;
+    .custom-drag-layer-original {
+      max-width: 200px;
+    }
+  }
+}
