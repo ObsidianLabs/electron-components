@@ -240,11 +240,11 @@ button, .btn, .nav-link {
 }
 
 .custom-drag-layer {
-  .custom-drag-layer-box1 {
-    padding: 0.25rem 1.6rem;
+  .custom-drag-layer-style {
+    padding: 4px 20px;
     background: var(--color-bg);
     border-radius: 0;
-    .custom-drag-layer-box2 {
+    .custom-drag-layer-original {
       max-width: 200px;
     }
   }

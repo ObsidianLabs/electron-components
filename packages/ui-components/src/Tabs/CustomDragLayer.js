@@ -1,7 +1,8 @@
 import React from 'react'
-import { DragLayer } from 'react-dnd';
-import { Types } from './TabHeader';
-import classnames from "classnames";
+import { DragLayer } from 'react-dnd'
+import { Types } from './TabHeader'
+import classnames from 'classnames'
+
 const layerStyles = {
     position: 'fixed',
     pointerEvents: 'none',
@@ -10,53 +11,57 @@ const layerStyles = {
     top: 0,
     width: '100%',
     height: '100%',
-};
-function getItemStyles (props) {
-    const { initialOffset, currentOffset } = props
+}
+
+function getItemStyles (initialOffset, currentOffset) {
     if (!initialOffset || !currentOffset) {
         return {
             display: 'none'
         }
     }
 
-    let { x, y } = currentOffset
-    y = initialOffset.y
-
+    const { x } = currentOffset
+    const { y } = initialOffset
     const transform = `translate(${x}px, ${y}px)`
     return {
-        transform: transform,
+        transform,
         WebkitTransform: transform
     }
 }
-const CustomDragLayer = (props) => {
 
-    const { item,isDragging, itemType, } = props;
+const CustomDragLayer = ({ item, isDragging, itemType, initialOffset, currentOffset }) => {
 
     function renderItem() {
         switch (itemType) {
             case Types.TAB:
-                return (<div className="custom-drag-layer d-flex">
-                    <div className={
-                        classnames('custom-drag-layer-box1 active btn d-flex flex-row align-items-center border-0',
-                            item.size && `btn-${item.size}`)}
-                    >
-                        <span className="custom-drag-layer-box2 text-truncate">{item.tabText}</span>
+                return (
+                    <div className="custom-drag-layer d-flex">
+                        <div className={
+                            classnames('custom-drag-layer-style active btn d-flex flex-row align-items-center border-0',
+                                item.size && `btn-${item.size}`)
+                            }
+                        >
+                            <span className="custom-drag-layer-original text-truncate">{item.tabText}</span>
+                        </div>
                     </div>
-                </div>)
+                )
 
             default:
-                return null;
+                return null
         }
     }
 
     if (!isDragging) {
-        return null;
+        return null
     }
 
-    return (<div style={layerStyles}>
-			<div style={getItemStyles(props)}>{renderItem()}</div>
-		</div>);
-};
+    return (
+        <div style={layerStyles}>
+            <div style={getItemStyles(initialOffset, currentOffset)}>{renderItem()}</div>
+        </div>
+    )
+}
+
 export default DragLayer((monitor) => {
     return ({
         item: monitor.getItem(),
@@ -65,4 +70,4 @@ export default DragLayer((monitor) => {
         currentOffset: monitor.getSourceClientOffset(),
         isDragging: monitor.isDragging(),
     })
-})(CustomDragLayer);
+})(CustomDragLayer)
