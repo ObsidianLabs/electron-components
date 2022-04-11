@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget, DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { HTML5Backend, getEmptyImage } from 'react-dnd-html5-backend'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import throttle from 'lodash/throttle'
 import platform from '@obsidians/platform'
+import CustomDragLayer from './CustomDragLayer'
 
-const Types = {
+export const Types = {
   TAB: 'tab'
 }
 
@@ -17,6 +18,7 @@ const cardSource = {
     return {
       id: props.tab.key,
       index: props.index,
+      ...props
     }
   }
 }
@@ -68,6 +70,7 @@ const sourceCollect = (connect, monitor) => {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
     canDrag: monitor.canDrag(),
+    connectDragPreview: connect.dragPreview()
   }
 }
 
@@ -134,6 +137,15 @@ class TabHeaderItem extends PureComponent {
         </span>
       </div>
     )
+  }
+
+  componentDidMount() {
+    const { connectDragPreview } = this.props;
+    if (connectDragPreview) {
+        connectDragPreview(getEmptyImage(), {
+            captureDraggingState: true,
+        });
+    }
   }
 
   componentWillUnmount(){
@@ -294,6 +306,7 @@ export default class TabHeader extends Component{
                 })
               }
             </ul>
+            <CustomDragLayer />
   
             {onNewTab &&
               <div className='nav-actions'>
