@@ -9,10 +9,21 @@
 }
 
 .tutorialPanel {
-  background-color: '#5255A5';
-  width: '10px';
-  height: '10px';
-  border-radius: '50%';
-  margin-top: '2px';
-  margin-right: '10px';
+  background-color: #5255A5;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 2px;
+  margin-right: 10px;
 }
+
+.actionConfirm__checkbox {
+  input[type='checkbox']{
+    width: 15px !important;
+    height: 15px !important;
+  }
+  input {
+    accent-color: #5255A5;
+  }
+}
+
