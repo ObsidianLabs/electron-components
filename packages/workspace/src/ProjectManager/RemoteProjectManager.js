@@ -216,6 +216,9 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async deleteFile (node) {
+    if (node.root) {
+      return
+    }
     const { response } = await fileOps.current.showMessageBox({
       message: `Are you sure you want to delete ${node.pathInProject}?`,
       buttons: ['Delete', 'Cancel']
