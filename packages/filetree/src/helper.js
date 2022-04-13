@@ -62,10 +62,10 @@ const updateErrorInfo = (decorations, fileKey) => {
   }, {})
 }
 
-const travelTree = (treeData, fn, extraValue, stopCheck) => {
+const travelTree = (treeData, fn, extraValue) => {
   const travel = (tree, fn) => {
-    fn(tree, extraValue)
-    if (!tree.children || stopCheck(tree)) return
+    const shouldStop = fn(tree, extraValue)
+    if (!tree.children || shouldStop) return
     for (let i = 0; i < tree.children.length; i++) {
       travel(tree.children[i], fn)
     }
@@ -73,7 +73,20 @@ const travelTree = (treeData, fn, extraValue, stopCheck) => {
   travel(treeData, fn)
 }
 
+const checkFatherNode = (curNode, targetNode, fn) => {
+  if (!curNode.children) return true
+  const includesNode = curNode.children.filter(item => item.name === targetNode.name).length !== 0
+  if (includesNode) {
+    fn(curNode, targetNode)
+    return true
+  }
+  return false
+}
+
+const findFather = (fn) => (curNode, targetName) => checkFatherNode(curNode, targetName, fn)
+
 export {
   updateErrorInfo,
-  travelTree
+  travelTree,
+  findFather
 }

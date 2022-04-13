@@ -7,7 +7,9 @@ import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
 import StatusTitle from './statusTitle'
-import { travelTree, updateErrorInfo } from './helper'
+import { travelTree,
+  updateErrorInfo,
+  findFather } from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
 
 const renderIcon = ({ data }) => {
@@ -115,6 +117,9 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
   const [selectedKeys, setSelectedKeys] = useState([])
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
+  const [dragTarget, setDragTarget] = useState('')
+  const [prevDragEnter, setPrevDragEnter] = useState('')
+  const [fatherNode, setFatherNode] = useState('')
   const prevTreeData = useRef()
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
   const [isTreeDataRoot, setIsTreeDataRoot] = useState(false)
@@ -157,7 +162,6 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
 
     const handleEmptyTreeContextMenu = (event) => {
       setIsBlankAreaRightClick(true)
-
       handleSetSelectNode(treeData[0])
       show(event.nativeEvent, {
         props: {
@@ -167,6 +171,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     }
 
     const renderTitle = (curNode, errorNode) => {
+      if (curNode.name === 'build') return true
       const matchedValue = errorNode[curNode.name]
       if (!matchedValue) return
       matchedValue.type === 'default' ? curNode.title = curNode.name
@@ -186,8 +191,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       }
       const errorNode = updateErrorInfo(rawDecoration, treeData.key)
       console.log('errorNode', errorNode)
-      const stopCheck = node => node.name === 'build'
-      travelTree(treeData, renderTitle, errorNode, stopCheck)
+      travelTree(treeData, renderTitle, errorNode)
       setTreeData([treeData])
     }
 
@@ -256,35 +260,28 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     }
 
     const handleLoadData = treeNode => {
-      return new Promise(resolve => {
-        if (!treeNode.children) {
-          resolve()
-        } else {
-          const tempTreeData = cloneDeep(treeData)
-          projectManager.loadDirectory(treeNode).then(newData => {
-            if (newData.length === 0) {
-              resolve()
-              return
-            }
-            setTimeout(() => {
-              getNewTreeData(tempTreeData, treeNode.path, newData)
-              setTreeData(tempTreeData)
-              updateTitle(...tempTreeData)
-              resolve()
-            }, 500)
-          })
+      return new Promise(async (resolve, reject) => {
+        !treeNode.children && resolve()
+        const tempTreeData = cloneDeep(treeData)
+        try {
+          const newData = await projectManager.loadDirectory(treeNode)
+          newData.length === 0 && resolve()
+          getNewTreeData(tempTreeData, treeNode.path, newData)
+          setTreeData(tempTreeData)
+          updateTitle(...tempTreeData)
+          setTimeout(resolve, 100)
+        } catch (e) {
+          reject(e)
         }
       })
     }
 
     const handleSelect = (_, { node }) => {
-      if (node.isLeaf) {
-        onSelect(node)
-      }
+      node.isLeaf && onSelect(node)
     }
 
     const handleExpand = (keys, { node }) => {
-      if (node.root) {
+      if (node.root || !!dragTarget) {
         return
       }
       setAutoExpandParent(false)
@@ -303,30 +300,88 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       }
     }
 
-    const onDebounceExpand = debounce(expandFolderNode, 200, {
-      leading: true
-    })
+    const enableHighLightBlock = (tree, needHighLight) => {
+      const refreshClassName = (node) => {
+        if (node.name === fatherNode.name) {
+          node.className = needHighLight ? 'father--disable node--highlight' : 'father--disable'
+          return
+        }
+        node.className = needHighLight ? 'node--highlight' : ''
+      }
+      travelTree(tree, refreshClassName)
+    }
 
-    const handleClick = (event, node) => {
-      console.log('click', node.name)
-      onDebounceExpand(event, node)
+    const handleDragStart = ({ event, node }) => {
+      travelTree(...treeData, changeOwnFather, node) // disable father node style
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.dropEffect = 'move'
+      event.currentTarget.id = 'drag--active'
+      setEnableCopy(event.altKey)
+    }
+
+    const handleDragEnter = ({ event, node }) => {
+      prevDragEnter && enableHighLightBlock(prevDragEnter, false)
+      travelTree(...treeData, changeNewFather, node)
+    }
+
+    const handleDragEnd = ({ event, node }) => {
+      enableHighLightBlock(...treeData, false)
+      travelTree(...treeData, changeOwnFather, dragTarget) // enable father node style
+      event.currentTarget.id = ''
     }
 
     const handleDrop = ({ node, dragNode }) => {
       fileOps(dragNode.path, node.path)
     }
 
-    const handleDragOver = ({ event }) => {
-      setEnableCopy(event.altKey)
+    const handleMouseEnter = ({ event }) => {
+      if (!dragTarget) {
+        event.currentTarget.parentElement.id = 'hover--active'
+      }
     }
 
-    const handleDragStart = ({ event }) => {
-      setEnableCopy(event.altKey)
+    const handleMouseLeave = ({event}) => {
+      event.currentTarget.parentElement.id = ''
     }
 
-    const onDebounceDrag = debounce(handleDrop, 2000, {
-      leading: true
-    })
+    const handleClick = (event, node) => {
+      console.log('click', node.name)
+      onDebounceExpand(event, node)
+    }
+
+    const onDebounceExpand = debounce(expandFolderNode, 200, { leading: true })
+
+    const onDebounceDrop = debounce(handleDrop, 200, { leading: true })
+
+    const onDebounceDrag = debounce(handleDragEnter, 100)
+
+    const disableFather = (node, targetNode) => {
+      if (!node.className || !node.className.includes('father--disable')) {
+        node.className = 'father--disable'
+        setDragTarget(targetNode)
+        setFatherNode(node)
+      } else {
+        node.className = ''
+        setDragTarget('')
+        setFatherNode('')
+      }
+    }
+
+    const enableFather = (node, enterNode) => {
+      if ([fatherNode.name, dragTarget.name].includes(enterNode.name)) return
+      if (enterNode.isLeaf) {
+        enableHighLightBlock(node, true)
+        setPrevDragEnter(node)
+      } else {
+        const isExist = expandedKeys.includes(enterNode.path)
+        const newKeys = isExist ? expandedKeys : [...expandedKeys, enterNode.path]
+        setExpandKeys(newKeys)
+      }
+    }
+
+    const changeOwnFather = findFather(disableFather)
+
+    const changeNewFather = findFather(enableFather)
 
     return (
       <div className='tree-wrap animation'
@@ -336,7 +391,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
           // TODO: improve the condition when support the WEB
           draggable={!platform.isWeb}
           allowDrop={(props) => allowDrop({ ...props, enableCopy })}
-          onDrop={onDebounceDrag}
+          onDrop={onDebounceDrop}
           ref={treeRef}
           itemHeight={20}
           icon={renderIcon}
@@ -353,9 +408,11 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
           onClick={handleClick}
           onExpand={handleExpand}
           onSelect={handleSelect}
-          onLoad={handleLoadData}
           onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
+          onDragEnter={onDebounceDrag}
+          onDragEnd={handleDragEnd}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         />
         <Menu animation={false} id='file-tree'>
           {

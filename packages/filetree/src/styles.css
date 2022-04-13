@@ -10,38 +10,55 @@
 }
 
 .rc-tree .rc-tree-treenode {
-  margin: 0;
   line-height: 20px;
   white-space: nowrap;
   list-style: none;
   outline: 0;
   cursor: pointer;
   position: relative;
-  padding: 2px 6px;
-  border: 1px solid #24272c;
   font-size: 14px;
+  padding: 2px 6px;
 }
 
 .rc-tree .rc-tree-treenode.drop-target {
-  background-color: #636cb4;
+  background-color: #3c3f46;
 }
 
-.rc-tree .rc-tree-treenode.drop-target ~ .rc-tree-treenode {
+.rc-tree .rc-tree-treenode .drop-target ~ .rc-tree-treenode {
   border-left: none;
 }
 
 .rc-tree .rc-tree-treenode ul {
   margin: 0;
-  padding: 0 0 0 18px;
 }
 
-.rc-tree .rc-tree-treenode:hover {
+#hover--active{
   background-color: #3c3f46;
-  border: 1px solid transparent;
 }
-.rc-tree .rc-tree-treenode.rc-tree-treenode-selected {
+
+#drag--active {
+  max-width: 100%;
+  background-color: #636cb4;
+}
+
+.father--disable {
+  pointer-events: none;
+  background-color: unset !important;
+}
+
+.node--highlight::after{
+  content: '';
+  position: absolute;
+  width: 102%;
+  left: -2px;
+  top: 0;
+  height: 100%;
   background-color: #3c3f46;
-  border: 1px solid #636cb4;
+  z-index: 1;
+}
+
+.rc-tree .rc-tree-treenode.rc-tree-treenode-selected {
+  background-color: #636cb4 !important;
 }
 
 .rc-tree .rc-tree-treenode .rc-tree-node-content-wrapper {
@@ -56,15 +73,18 @@
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  z-index: 2;
 }
 
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-icon__customize, .rc-tree .rc-tree-treenode span.rc-tree-checkbox.rc-tree-icon__customize, .rc-tree .rc-tree-treenode span.rc-tree-iconEle.rc-tree-icon__customize {
   background-image: none;
 }
+
 .rc-tree .rc-tree-treenode span.rc-tree-switcher {
   display: inline-block;
-  width: 21.5px;
+  width: 22px;
   margin-right: 0;
+  z-index: 2;
 }
 
 .rc-tree .rc-tree-treenode span.rc-tree-switcher.rc-tree-switcher-noop {
@@ -105,7 +125,6 @@
   width: 8px;
   height: 8px;
   background-color: #636cb4;
-  border: 2px solid #636cb4;
   border-radius: 50%;
   content: '';
 }

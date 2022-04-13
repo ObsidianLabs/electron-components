@@ -91,15 +91,16 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async loadRootDirectory() {
     const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      const isHasFileREADME = result.length == 0? false : result.find(item => item.name == 'README.md');
-      !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
+      this.isFirstLoad = false
+      const isHasFileREADME = result.length === 0 ? false : result.find(item => item.name === 'README.md')
+      !isHasFileREADME && await this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`, 'README.md')
     }
 
     const rawData = result.map(item => ({ ...item, pathInProject: `${this.projectName}/${item.name}` }))
     return {
       name: this.projectName,
       root: true,
+      className: '',
       key: `${this.prefix}/${this.userId}/${this.projectId}`,
       title: this.projectName,
       path: `${this.prefix}/${this.userId}/${this.projectId}`,
@@ -157,7 +158,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async readFile (filePath) {
     return await fileOps.web.readFile(filePath)
   }
-  
+
   async saveFile (filePath, content) {
     if (!this.userOwnProject) throw new Error('This Project Is Readonly!')
     await fileOps.web.writeFile(filePath, content)
