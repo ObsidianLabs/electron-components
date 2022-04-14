@@ -2,7 +2,7 @@ import React from 'react'
 import NetworkIconUrl from './NetworkIcon'
 
 export default function (props) {
-  const { title, selected, icon, Icon, iconUrl, width, noneIcon = 'fas fa-file-times' } = props
+  const { title, selected, icon, Icon, iconUrl, id, width, noneIcon = 'fas fa-file-times' } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`
@@ -17,8 +17,8 @@ export default function (props) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
     subtitle = '(None)'
   } else {
-    if (title == 'Network' && iconUrl) {
-      iconComponent = <span className={iconClassName}><img src={NetworkIconUrl[iconUrl]} className='w-100 h-100' /></span>
+    if (title == 'Network' && id) {
+      iconComponent = <span className={iconClassName}><img src={NetworkIconUrl[(iconUrl? iconUrl : id.toLowerCase())]} className='w-100 h-100' /></span>
     } else {
       iconComponent = <span key={key} className={iconClassName}><i className={`w-100 h-100 ${icon}`} /></span>
     }
