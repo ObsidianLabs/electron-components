@@ -96,7 +96,7 @@ export default class NavDropdown extends Component {
         <span key={`dropdown-item-${isSelected}`}>
           {
             (id !== 'custom' && id !== 'dev') ?
-            <img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='mr-2 svg-inline--fa  fa-w-16' />
+            <img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='mr-2 network-icon' />
             :
             <i className={classnames('mr-2', iconClassName)} />
           }
@@ -134,6 +134,7 @@ export default class NavDropdown extends Component {
         <DropdownMenu right={right} style={{ width: 'fit-content', top: 48, [right ? 'right' : 'left']: 4 }}>
           {this.renderDropdownList(list)}
         </DropdownMenu>
+        
         {
           menus.length > 0 && <Menu animation={false} id={`nav-contextmenu-${this.props.route}`}>
           {
