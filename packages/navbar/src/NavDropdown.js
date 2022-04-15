@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 
+import NetworkIconUrl from './NetworkIcon'
 import {
   ButtonDropdown,
   DropdownToggle,
@@ -67,7 +68,7 @@ export default class NavDropdown extends Component {
       return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
     }
 
-    const { id, name, icon } = item
+    const { id, name, icon, iconUrl } = item
     const isSelected = this.props.selected === id
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
 
@@ -93,7 +94,12 @@ export default class NavDropdown extends Component {
         }}
       >
         <span key={`dropdown-item-${isSelected}`}>
-          <i className={classnames('mr-2', iconClassName)} />
+          {
+            id !== 'custom' ?
+            <img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='mr-2 svg-inline--fa  fa-w-16' />
+            :
+            <i className={classnames('mr-2', iconClassName)} />
+          }
         </span>
         {name}
       </DropdownItem>
