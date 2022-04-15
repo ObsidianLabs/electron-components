@@ -96,7 +96,7 @@ export default class NavDropdown extends Component {
         <span key={`dropdown-item-${isSelected}`}>
           {
             (id !== 'custom' && id !== 'dev') ?
-            <img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='mr-2 svg-inline--fa  fa-w-16' />
+            <img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='mr-2 network-icon' />
             :
             <i className={classnames('mr-2', iconClassName)} />
           }
