@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import throttle from 'lodash/throttle'
 
 import {
@@ -15,11 +14,14 @@ import FileTree from '@obsidians/filetree'
 import WorkspaceContext from '../WorkspaceContext'
 import BaseProjectManager from '../ProjectManager/BaseProjectManager'
 import actions from '../actions'
+import RemoteProjectManager from '../ProjectManager/RemoteProjectManager'
+import {ProjectManager} from '../index'
 
 import contextMenu, { registerHandlers } from './contextMenu'
 
 import CreateFileOrFolderModals from './CreateFileOrFolderModals'
 import RenameModal from './RenameModal'
+import ActionConfirm from './ActionConfirm'
 
 const getSizeUpdate = SplitPane.getSizeUpdate
 SplitPane.getSizeUpdate = (props, state) => {
@@ -40,6 +42,7 @@ export default class Workspace extends Component {
     this.codeEditor = React.createRef()
     this.createModal = React.createRef()
     this.renameModal = React.createRef()
+    this.confirmModal = React.createRef()
     this.throttledDispatchResizeEvent = throttle(() => {
       window.dispatchEvent(new Event('resize'))
     }, 200)
@@ -63,9 +66,11 @@ export default class Workspace extends Component {
       newFile: node => this.openCreateFileModal(node),
       newFolder: node => this.openCreateFolderModal(node),
       rename: node => this.openRenameModal(node),
-      deleteFile: node => this.context.projectManager.deleteFile(node),
+      deleteFile: node => this.openDeleteModal(node),
       openFile: node => this.openFile(node, true)
     })
+
+    this.openDeleteModal = this.openDeleteModal.bind(this)
   }
 
   componentDidMount() {
@@ -144,6 +149,30 @@ export default class Workspace extends Component {
     const type = activeNode.children ? 'folder' : 'file'
     const { base } = fileOps.current.path.parse(activeNode.path)
     this.renameModal.current.openModal({ type, name: base, oldPath: activeNode.path })
+  }
+
+  openDeleteModal (node) {
+    const getDeleteModalText = (fileName, isLeaf) => {
+      return isLeaf ? {
+        title: 'Delete File',
+        description: `Are you sure you want to delete ${fileName} ？Once deleted, it cannot be restored.`,
+        colorConfirm: 'danger'
+      } : {
+        title: 'Delete Folder',
+        description: `Are you sure you want to delete ${fileName} and its contents？Once deleted, they cannot be restored.`,
+        colorConfirm: 'danger'
+      }
+    }
+
+    const nextFunc = () => {
+      this.context.projectManager.deleteFile(node)
+    }
+
+    this.confirmModal.current.open({
+      content: getDeleteModalText(node.name, node.isLeaf),
+      next: nextFunc,
+      key: 'skipDeleteConfirm'
+    })
   }
 
   saveAll = async () => {
@@ -282,12 +311,12 @@ export default class Workspace extends Component {
       </SplitPane>
       <CreateFileOrFolderModals
         ref={this.createModal}
-        projectManager={this.context.projectManager}
-      />
+        projectManager={this.context.projectManager} />
       <RenameModal
         ref={this.renameModal}
-        projectManager={this.context.projectManager}
-      />
+        projectManager={this.context.projectManager} />
+
+      <ActionConfirm ref={this.confirmModal} />
     </>
   }
 }

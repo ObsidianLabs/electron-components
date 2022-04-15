@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, forwardRef } from 'react'
 import Tree from 'rc-tree'
 import cloneDeep from 'lodash/cloneDeep'
 import debounce from 'lodash/debounce'
@@ -7,9 +7,7 @@ import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import platform from '@obsidians/platform'
 import StatusTitle from './statusTitle'
-import { travelTree,
-  updateErrorInfo,
-  findFather } from './helper'
+import { travelTree, updateErrorInfo, findFather } from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
 
 const renderIcon = ({ data }) => {
@@ -43,11 +41,7 @@ const allowDrop = (props) => {
     return true
   }
 
-  if (!dropNode.children && !dragNode.children && (dropNode.path.replace(dropNode.name, '') === dragNode.path.replace(dragNode.name, ''))) {
-    return false
-  }
-
-  return true
+  return !(!dropNode.children && !dragNode.children && (dropNode.path.replace(dropNode.name, '') === dragNode.path.replace(dragNode.name, '')))
 }
 
 const setLeaf = (treeData, curKey) => {
@@ -59,8 +53,7 @@ const setLeaf = (treeData, curKey) => {
       if (!item.title) {
         item.title = item.name
       }
-      if (
-        item.path.length > curKey.length
+      if (item.path.length > curKey.length
           ? item.path.indexOf(curKey) !== 0
           : curKey.indexOf(item.path) !== 0
       ) {
@@ -100,8 +93,7 @@ const replaceTreeNode = (treeData, curKey, child) => {
       } else if (item.root && curKey.replace(/^(public|private)\//, '') === item.path.replace(/^(public|private)\//, '')) {
         item.path = curKey
         item.children = child
-      }
-      else if (item.children) {
+      } else if (item.children) {
         loop(item.children)
       }
     })
@@ -109,7 +101,7 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
+const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -195,8 +187,8 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       setTreeData([treeData])
     }
 
-    useEffect(() => {
-      loadTree(projectManager)
+    useEffect(async () => {
+      await initTree()
     }, [])
 
     const handleSetSelectNode = (node) => {
@@ -231,32 +223,32 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
       }
     }
 
-    const loadTree = async projectManager => {
-      projectManager.onRefreshDirectory(refreshDirectory)
-      const treeData = await projectManager.loadRootDirectory()
-      setLeaf([treeData], treeData.path)
-
-      setTreeData([treeData])
-      setSelectNode(treeData)
-      setExpandKeys([treeData.path])
-      treeRef.current && (treeRef.current.state.loadedKeys = [])
-    }
-
     const refreshDirectory = async (directory) => {
       const { prefix, projectId, userId } = projectManager
-      if (directory.path === `${prefix}/${userId}/${projectId}`) {
-        await loadTree(projectManager)
-      } else {
+      if (directory.path === `${prefix}/${userId}/${projectId}`) { // update whole tree data
+        await fetchTreeData()
+      } else {  // update partial tree data
+        if (!directory) return
         const tempTree = cloneDeep(prevTreeData.current)
-        if (!directory) {
-          return
-        }
-
         replaceTreeNode(tempTree, directory.path, directory.children)
         setLeaf(tempTree, tempTree[0].path)
         setTreeData(tempTree)
         setSelectNode(tempTree[0])
       }
+    }
+
+    const initTree = async () => {
+      projectManager.onRefreshDirectory(refreshDirectory) // register refreshDirectory event to BaseProjectManager
+      await fetchTreeData()
+    }
+
+    const fetchTreeData = async () => {
+      const treeData = await projectManager.loadRootDirectory()
+      setLeaf([treeData], treeData.path)
+      setTreeData([treeData])
+      setSelectNode(treeData)
+      setExpandKeys([treeData.path])
+      treeRef.current && (treeRef.current.state.loadedKeys = [])
     }
 
     const handleLoadData = treeNode => {
@@ -281,19 +273,14 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     }
 
     const handleExpand = (keys, { node }) => {
-      if (node.root || !!dragTarget) {
-        return
-      }
+      if (node.root || !!dragTarget) return
       setAutoExpandParent(false)
       setExpandKeys(keys)
       setSelectNode(node)
     }
 
     const expandFolderNode = (event, node) => {
-      if (node.isLeaf) {
-        return
-      }
-
+      if (node.isLeaf) return
       if (treeRef.current) {
         treeRef.current.onNodeExpand(event, node)
         setSelectNode(node)
@@ -385,11 +372,10 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
 
     return (
       <div className='tree-wrap animation'
-        onContextMenu={handleEmptyTreeContextMenu}
-      >
+        onContextMenu={handleEmptyTreeContextMenu}>
         <Tree
           // TODO: improve the condition when support the WEB
-          draggable={!platform.isWeb}
+          draggable={!projectManager.remote}
           allowDrop={(props) => allowDrop({ ...props, enableCopy })}
           onDrop={onDebounceDrop}
           ref={treeRef}
@@ -416,18 +402,17 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
         />
         <Menu animation={false} id='file-tree'>
           {
-            treeNodeContextMenu.map((item, index) => item ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item> : <Separator key={`blank-${index}`} />)
+            treeNodeContextMenu.map((item, index) => item
+                ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item>
+                : <Separator key={`blank-${index}`} />)
           }
         </Menu>
       </div>
     )
   }
-}
+})
 
-const ForwardFileTree = React.forwardRef(FileTree)
-ForwardFileTree.displayName = 'FileTree'
-
-export default ForwardFileTree
+export default FileTree
 
 // TOOD: refactor the dir contruct of the service
 export { default as ClipBoardService } from './clipboard'

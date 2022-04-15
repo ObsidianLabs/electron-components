@@ -163,8 +163,8 @@ export default class LocalProjectManager extends BaseProjectManager {
   async copy(from, to) {
     const { fs } = fileOps.current
     try {
-      await fs.copy(from, to, { overwrite: false, errorOnExist: true });
-      return true;
+      await fs.copy(from, to, { overwrite: false, errorOnExist: true })
+      return true
     } catch (error) {
       return false
     }
@@ -184,17 +184,17 @@ export default class LocalProjectManager extends BaseProjectManager {
     const exsist = await this.checkExsist(dest)
 
     try {
-        if (exsist) {
-          const { response } = await fileOps.current.showMessageBox({
-            message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
-            buttons: ['Replace', 'Cancel']
-          })
-          if (response === 0) {
-            await fs.move(from, dest, { overwrite: true })
-          }
-        } else {
-          await fs.move(from, dest)
+      if (exsist) {
+        const { response } = await fileOps.current.showMessageBox({
+          message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
+          buttons: ['Replace', 'Cancel']
+        })
+        if (response === 0) {
+          await fs.move(from, dest, { overwrite: true })
         }
+      } else {
+        await fs.move(from, dest)
+      }
     } catch (e) {
       throw new Error(`Fail to move <b>${dest}</b>.`)
     }
@@ -228,17 +228,10 @@ export default class LocalProjectManager extends BaseProjectManager {
     } catch (e) {
       throw new Error(`Fail to rename <b>${oldPath}</b>.`)
     }
-
   }
 
   async deleteFile(node) {
-    const { response } = await fileOps.current.showMessageBox({
-      message: `Are you sure you want to delete ${node.path}?`,
-      buttons: ['Move to Trash', 'Cancel']
-    })
-    if (response === 0) {
-      await fileOps.current.deleteFile(node.path)
-    }
+    await fileOps.current.deleteFile(node.path)
   }
 
   onRefreshFile(data) {

@@ -1,6 +1,6 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
-import { ClipBoardService } from '@obsidians/filetree';
+import { ClipBoardService } from '@obsidians/filetree'
 const handlers = {}
 
 const showInFinder = node => {
@@ -45,7 +45,7 @@ if (platform.isDesktop) {
     { text: 'Copy Path', onClick: copyPath },
     null,
     { text: 'Rename', onClick: node => handlers.rename(node) },
-    { text: 'Delete', onClick: node => handlers.deleteFile(node) },
+    { text: 'Delete', onClick: node => handlers.deleteFile(node) }
   ]
 } else {
   contextMenu = [
@@ -57,7 +57,7 @@ if (platform.isDesktop) {
     { text: 'Copy Path', onClick: copyPath },
     null,
     { text: 'Rename', onClick: node => handlers.rename(node) },
-    { text: 'Delete', onClick: node => handlers.deleteFile(node) },
+    { text: 'Delete', onClick: node => handlers.deleteFile(node) }
   ]
 }
 

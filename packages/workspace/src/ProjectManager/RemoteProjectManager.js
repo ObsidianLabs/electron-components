@@ -20,7 +20,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     this.remote = true
     this.prefix = 'private'
     if (this.projectRoot) {
-      const projectOwner = this.projectRoot.split("/")[0]
+      const projectOwner = this.projectRoot.split('/')[0]
       this.projectOwner = projectOwner
       this.userOwnProject = Auth.profile.username === projectOwner
       this.isFirstLoad = true
@@ -31,7 +31,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     if (aim === 'public') this.prefix = 'public'
     if (aim === 'private') this.prefix = 'private'
     const project = await projectChannel.invoke('put', `${this.projectOwner}/${this.projectName}`, {
-      public: this.prefix === 'public',
+      public: this.prefix === 'public'
     })
     this.refreshDirectory()
     // await toggleFunction //
@@ -183,7 +183,6 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async createNewFolder (basePath, name) {
-
     const folderPath = this.path.join(basePath, name)
 
     try {
@@ -216,20 +215,10 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async deleteFile (node) {
-    if (node.root) {
-      return
-    }
-    const { response } = await fileOps.current.showMessageBox({
-      message: `Are you sure you want to delete ${node.pathInProject}?`,
-      buttons: ['Delete', 'Cancel']
-    })
-    if (response === 0) {
-      if (node.children) {
-        await fileOps.web.fs.deleteFolder(node.path)
-      } else {
-        await fileOps.web.fs.deleteFile(node.path)
-      }
-    }
+    if (node.root) return
+    node.children
+        ? await fileOps.web.fs.deleteFolder(node.path)
+        : await fileOps.web.fs.deleteFile(node.path)
 
     const { dir } = fileOps.web.path.parse(node.path)
     await this.refreshDirectory(dir)
