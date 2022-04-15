@@ -18,7 +18,7 @@ export default function (props) {
     subtitle = '(None)'
   } else {
     if (title == 'Network' && id) {
-      iconComponent = <span className={iconClassName}><img src={NetworkIconUrl[(iconUrl? iconUrl : id.toLowerCase())]} className='w-100 h-100' /></span>
+      iconComponent = <span className={iconClassName}><img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='w-100 h-100' /></span>
     } else {
       iconComponent = <span key={key} className={iconClassName}><i className={`w-100 h-100 ${icon}`} /></span>
     }
