@@ -17,7 +17,7 @@ export default function (props) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
     subtitle = '(None)'
   } else {
-    if (title == 'Network' && id) {
+    if (title == 'Network' && id && id !== 'dev') {
       iconComponent = <span className={iconClassName}><img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='w-100 h-100' /></span>
     } else {
       iconComponent = <span key={key} className={iconClassName}><i className={`w-100 h-100 ${icon}`} /></span>
