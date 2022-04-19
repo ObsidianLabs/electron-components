@@ -116,7 +116,7 @@ export default class DropdownInput extends PureComponent {
       if (Array.isArray(item.children)) {
         const groupOptions = []
         item.children.forEach(subitem => {
-          if (filterMode && !subitem.id.includes(value)) {
+          if (filterMode && !subitem.id.includes(item.id)) {
             return
           }
           groupOptions.push({
@@ -136,7 +136,7 @@ export default class DropdownInput extends PureComponent {
           dropdownOptions = dropdownOptions.concat(groupOptions)
         }
       } else {
-        if (filterMode && !item.id.includes(value)) {
+        if (filterMode && !item.id.includes(item.id)) {
           return
         }
         dropdownOptions.push({
@@ -173,6 +173,12 @@ export default class DropdownInput extends PureComponent {
       } else {
         const active = item.id === value
         const display = typeof item.display === 'function' ? item.display(value, active) : item.display
+        if (typeof item.id === "object"){
+        console.log("====")
+        console.log(this.dropdownOptions)
+        console.log(item.id)
+        console.trace()}
+        console.log(display)
         return (
           <DropdownItem
             key={`item-${item.id}`}
