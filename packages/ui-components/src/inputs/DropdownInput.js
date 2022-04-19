@@ -108,7 +108,7 @@ export default class DropdownInput extends PureComponent {
   }
 
   getDropdownOptions = () => {
-    const { options = [] } = this.props
+    const { options = [], value } = this.props
     const filterMode = this.state.filterMode
     let dropdownOptions = []
 
@@ -116,7 +116,7 @@ export default class DropdownInput extends PureComponent {
       if (Array.isArray(item.children)) {
         const groupOptions = []
         item.children.forEach(subitem => {
-          if (filterMode && !subitem.id.includes(item.id)) {
+          if (filterMode && !subitem.id.includes(value)) {
             return
           }
           groupOptions.push({
@@ -136,7 +136,7 @@ export default class DropdownInput extends PureComponent {
           dropdownOptions = dropdownOptions.concat(groupOptions)
         }
       } else {
-        if (filterMode && !item.id.includes(item.id)) {
+        if (filterMode && !item.id.includes(value)) {
           return
         }
         dropdownOptions.push({
