@@ -20,23 +20,24 @@ class NavLinkRight extends PureComponent {
     }
   }
 
-  render () {
-    const { route, title, selected, icon, noneIcon, network } = this.props
+  render() {
+    const { route, title, selected, icon, noneIcon } = this.props
     let { dropdown, customNetworks } = this.props
-    if (title == 'Network') {
-      const isCustomNetworkIndex = dropdown.findIndex(item => item.id == 'custom')
-      dropdown = dropdown.slice(0, isCustomNetworkIndex + 1)
-      customNetworks = customNetworks.toJS()
-      Object.keys(customNetworks).map((item) => {
+    if (title == 'Network' && customNetworks.toArray().length) {
+      const customNetworkIndex = dropdown.findIndex(item => item.id == 'custom')
+      dropdown = dropdown.slice(0, customNetworkIndex + 1)
+      customNetworks = customNetworks.toArray()
+      customNetworks.sort((a, b) => a[0].localeCompare(b[0]))
+      customNetworks.map(([name, item]) => {
         const customNetwork = {
-          id: (item.replace(/\s+/g,'')).toLowerCase(),
+          id: (name.replace(/\s+/g, '')).toLowerCase(),
           group: 'custom',
-          name: item,
+          name: name,
+          fullName: name,
           icon: 'fas fa-vial',
-          notification: `Switched to <b>${item}</b>.`,
-          url: customNetworks[item]?.url,
-          chainId: customNetworks[item]?.chainId,
-          symbol: '',
+          notification: `Switched to <b>${name}</b>.`,
+          url: item.toJS()?.url,
+          chainId: item.toJS()?.chainId,
         }
         dropdown.push(customNetwork)
       })
@@ -55,7 +56,6 @@ class NavLinkRight extends PureComponent {
           iconUrl={selected.iconUrl}
           id={selected.id}
           noneIcon={noneIcon}
-          network={network}
           width='5.9rem'
         />
         <NavDropdown
@@ -65,13 +65,10 @@ class NavLinkRight extends PureComponent {
           list={dropdown}
           onClickItem={this.onClickItem}
           icon={icon}
-          customNetworks={customNetworks}
-          network={network}
         />
       </NavLink>
     )
   }
 }
 
-export default connect(['network', 'customNetworks'])(withRouter(NavLinkRight))
-// export default withRouter(NavLinkRight)
+export default connect(['customNetworks'])(withRouter(NavLinkRight))
