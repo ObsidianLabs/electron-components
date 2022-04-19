@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 
-import NetworkIconUrl from './NetworkIcon'
+import NetworkAllLogoImg from './NetworkIcon'
 import {
   ButtonDropdown,
   DropdownToggle,
@@ -68,10 +68,10 @@ export default class NavDropdown extends Component {
       return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
     }
 
-    const { id, name, icon, iconUrl } = item
+    const { id, id: networkGroupsId, name, icon, iconUrl: networkLogoImg } = item
     const isSelected = this.props.selected === id
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
-    const imgUrl = NetworkIconUrl[(iconUrl? iconUrl : id)]
+    const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
 
     return (
       <DropdownItem
@@ -96,11 +96,7 @@ export default class NavDropdown extends Component {
       >
         <span key={`dropdown-item-${isSelected}`}>
           {
-            (id !== 'custom' && id !== 'dev' && imgUrl)
-            ?
-            <img src={imgUrl} className='mr-2 network-icon'/>
-            :
-            <i className={classnames('mr-2', iconClassName)}/>
+            imgSrc ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
           }
         </span>
         {name}
