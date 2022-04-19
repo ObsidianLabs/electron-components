@@ -173,12 +173,6 @@ export default class DropdownInput extends PureComponent {
       } else {
         const active = item.id === value
         const display = typeof item.display === 'function' ? item.display(value, active) : item.display
-        if (typeof item.id === "object"){
-        console.log("====")
-        console.log(this.dropdownOptions)
-        console.log(item.id)
-        console.trace()}
-        console.log(display)
         return (
           <DropdownItem
             key={`item-${item.id}`}
