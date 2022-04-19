@@ -18,6 +18,9 @@
 }
 
 .actionConfirm__checkbox {
+  Label {
+    cursor: pointer;
+  }
   input[type='checkbox']{
     width: 15px !important;
     height: 15px !important;

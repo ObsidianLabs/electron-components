@@ -155,11 +155,11 @@ export default class Workspace extends Component {
     const getDeleteModalText = (fileName, isLeaf) => {
       return isLeaf ? {
         title: 'Delete File',
-        description: `Are you sure you want to delete ${fileName} ？Once deleted, it cannot be restored.`,
+        description: `Are you sure you want to delete $ ${fileName} ？Once deleted, it cannot be restored.`,
         colorConfirm: 'danger'
       } : {
         title: 'Delete Folder',
-        description: `Are you sure you want to delete ${fileName} and its contents？Once deleted, they cannot be restored.`,
+        description: `Are you sure you want to delete $ ${fileName} and its contents？Once deleted, they cannot be restored.`,
         colorConfirm: 'danger'
       }
     }

@@ -333,7 +333,7 @@ class ModelSessionManager {
       decorationMap[filePath] = [...newValue]
     }
     if (curPathValue && !hasError) { // remove all node
-      decorationMap[filePath] = []
+      decorationMap[filePath] = curPathValue.filter(item => item.from !== 'linter')
     }
     if (curPathValue && hasError) { // update lint node
       decorationMap[filePath] = curPathValue.filter(item => item.from !== 'linter').concat(newValue)
