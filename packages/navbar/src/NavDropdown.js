@@ -71,6 +71,7 @@ export default class NavDropdown extends Component {
     const { id, id: networkGroupsId, name, icon, iconUrl: networkLogoImg } = item
     const isSelected = this.props.selected === id
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
+    const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
     const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
 
     return (
@@ -96,7 +97,7 @@ export default class NavDropdown extends Component {
       >
         <span key={`dropdown-item-${isSelected}`}>
           {
-            imgSrc ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
+            (projectStudioName == 'BlackIDE' && imgSrc) ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
           }
         </span>
         {name}
