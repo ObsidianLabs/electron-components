@@ -108,7 +108,7 @@ export default class DropdownInput extends PureComponent {
   }
 
   getDropdownOptions = () => {
-    const { options = [] } = this.props
+    const { options = [], value } = this.props
     const filterMode = this.state.filterMode
     let dropdownOptions = []
 
