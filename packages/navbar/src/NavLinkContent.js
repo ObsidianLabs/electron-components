@@ -1,15 +1,15 @@
 import React from 'react'
-import NetworkIconUrl from './NetworkIcon'
+import NetworkAllLogoImg from './NetworkIcon'
 
 export default function (props) {
-  const { title, selected, icon, Icon, iconUrl, id, width, noneIcon = 'fas fa-file-times' } = props
+  const { title, selected, icon, Icon, iconUrl: networkLogoImg, id: networkGroupsId, width, noneIcon = 'fas fa-file-times' } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`
   }
 
   const iconClassName = 'nav-link-icon'
-  let subtitle, iconComponent
+  let subtitle, iconComponent, networkIcon
   if (Icon) {
     iconComponent = <span key='icon' className={iconClassName}>{Icon}</span>
     subtitle = selected
@@ -17,11 +17,14 @@ export default function (props) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
     subtitle = '(None)'
   } else {
-    if (title == 'Network' && id && id !== 'dev') {
-      iconComponent = <span className={iconClassName}><img src={NetworkIconUrl[(iconUrl? iconUrl : id)]} className='w-100 h-100' /></span>
+    const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
+    const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
+    if (projectStudioName == 'BlackIDE' && title == 'Network' && imgSrc) {
+      networkIcon = <img src={imgSrc} className='w-100 h-100' />
     } else {
-      iconComponent = <span key={key} className={iconClassName}><i className={`w-100 h-100 ${icon}`} /></span>
+      networkIcon = <i className={`w-100 h-100 ${icon}`} />
     }
+    iconComponent = <span key={key} className={iconClassName}>{networkIcon}</span>
     subtitle = selected
   }
 
