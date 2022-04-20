@@ -9,7 +9,7 @@ export default function (props) {
   }
 
   const iconClassName = 'nav-link-icon'
-  let subtitle, iconComponent, networkLogoImgOrIcon
+  let subtitle, iconComponent, networkIcon
   if (Icon) {
     iconComponent = <span key='icon' className={iconClassName}>{Icon}</span>
     subtitle = selected
@@ -19,11 +19,11 @@ export default function (props) {
   } else {
     const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
     if (title == 'Network' && imgSrc) {
-      networkLogoImgOrIcon = <img src={imgSrc} className='w-100 h-100' />
+      networkIcon = <img src={imgSrc} className='w-100 h-100' />
     } else {
-      networkLogoImgOrIcon = <i className={`w-100 h-100 ${icon}`} />
+      networkIcon = <i className={`w-100 h-100 ${icon}`} />
     }
-    iconComponent = <span key={key} className={iconClassName}>{networkLogoImgOrIcon}</span>
+    iconComponent = <span key={key} className={iconClassName}>{networkIcon}</span>
     subtitle = selected
   }
 
