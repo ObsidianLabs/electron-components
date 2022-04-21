@@ -5,7 +5,8 @@ import { FormGroup, Input, Label } from 'reactstrap'
 const DEFAULT_CONTENT = {
   cancel: 'Cancel',
   confirm: 'Confirm',
-  colorConfirm: 'primary'
+  colorConfirm: 'primary',
+  description: ''
 }
 
 const ActionConfirm = forwardRef(({}, ref) => {
@@ -55,13 +56,20 @@ const ActionConfirm = forwardRef(({}, ref) => {
     setCheckVal(!checkVal)
   }
 
+  const renderText = (description) => {
+    const textArr = description.split(' ')
+    const fileName = textArr[textArr.findIndex(item => item === '$') + 1]
+    const splitContents = description.split(`$ ${fileName} `)
+    return <p> {splitContents[0]} <kbd>{ fileName }</kbd> {splitContents[1]} </p>
+  }
+
   const optionCheck = () => {
     return (
       <FormGroup check className={'actionConfirm__checkbox'}>
-        <Input type='checkbox'
+        <Input type='checkbox' id='actionCheck'
           onChange={handleInputChange}
           checked={checkVal} />
-        <Label check>Do not ask me again</Label>
+        <Label check htmlFor='actionCheck'>Do not ask me again</Label>
       </FormGroup>)
   }
 
@@ -74,7 +82,7 @@ const ActionConfirm = forwardRef(({}, ref) => {
       colorConfirm={textContent.colorConfirm}
       onConfirm={handleConfirm}
       ActionBtn={optionCheck()}>
-      <p> { textContent.description } </p>
+      { renderText(textContent.description) }
     </Modal>)
 })
 

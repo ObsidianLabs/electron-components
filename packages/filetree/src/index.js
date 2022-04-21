@@ -5,10 +5,10 @@ import debounce from 'lodash/debounce'
 import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
-import platform from '@obsidians/platform'
 import StatusTitle from './statusTitle'
 import { travelTree, updateErrorInfo, findFather } from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
+import PropTypes from 'prop-types'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -101,12 +101,13 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
+const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
-  const [selectedKeys, setSelectedKeys] = useState([])
+  const [selectedKeys, setSelectedKeys] = useState([initialPath])
+  const [persistDOM, setPersist] = useState(null)
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
   const [dragTarget, setDragTarget] = useState('')
@@ -120,7 +121,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
   if (readOnly) {
     // only leave the "Copy Path" feature
-    // TODO we need a id to make sure the filter works correctlly
+    // TODO we need a id to make sure the filter works correctly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')
   } else {
     isBlankAreaRightClick && (treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder')))
@@ -134,12 +135,30 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
       !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop()
     }
 
-    const { show } = useContextMenu({
+    const { show, hideAll } = useContextMenu({
       id: 'file-tree'
     })
 
+    const removePersist = () => {
+      if (persistDOM) {
+        persistDOM.className = persistDOM.className.toString().replace(' persist--active', '')
+        setPersist(null)
+      }
+    }
+
+    const addPersist = (event) => {
+      removePersist()
+      event.currentTarget.parentElement.className += ' persist--active'
+      setPersist(event.currentTarget.parentElement)
+    }
+
+    const rootClick = () => {
+      removePersist()
+    }
+
     const handleContextMenu = ({ event, node }) => {
       node.root ? setIsTreeDataRoot(true) : setIsTreeDataRoot(false)
+      addPersist(event)
       event.nativeEvent.preventDefault()
       event.stopPropagation()
       setIsBlankAreaRightClick(false)
@@ -155,6 +174,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
     const handleEmptyTreeContextMenu = (event) => {
       setIsBlankAreaRightClick(true)
       handleSetSelectNode(treeData[0])
+      removePersist()
       show(event.nativeEvent, {
         props: {
           key: 'value'
@@ -176,13 +196,9 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
     const updateTitle = (treeData) => {
       const rawDecoration = modelSessionManager.decorationMap
-      console.log('rawDecoration', rawDecoration)
       const hasError = Object.keys(rawDecoration).length !== 0
-      if (!hasError) {
-        return
-      }
+      if (!hasError) return
       const errorNode = updateErrorInfo(rawDecoration, treeData.key)
-      console.log('errorNode', errorNode)
       travelTree(treeData, renderTitle, errorNode)
       setTreeData([treeData])
     }
@@ -224,6 +240,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
     }
 
     const refreshDirectory = async (directory) => {
+      if (!directory) return
       const { prefix, projectId, userId } = projectManager
       if (directory.path === `${prefix}/${userId}/${projectId}`) { // update whole tree data
         await fetchTreeData()
@@ -303,6 +320,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.dropEffect = 'move'
       event.currentTarget.id = 'drag--active'
+      event.dataTransfer.setDragImage(event.target, 3, 5)
       setEnableCopy(event.altKey)
     }
 
@@ -332,7 +350,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
     }
 
     const handleClick = (event, node) => {
-      console.log('click', node.name)
       onDebounceExpand(event, node)
     }
 
@@ -372,6 +389,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
     return (
       <div className='tree-wrap animation'
+        onClick={rootClick}
         onContextMenu={handleEmptyTreeContextMenu}>
         <Tree
           // TODO: improve the condition when support the WEB
@@ -403,7 +421,11 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
         <Menu animation={false} id='file-tree'>
           {
             treeNodeContextMenu.map((item, index) => item
-                ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item>
+                ? <Item key={item.text} onClick={(e) => {
+                  item.onClick(selectNode)
+                  e.event.stopPropagation()
+                  hideAll()
+                }}>{item.text}</Item>
                 : <Separator key={`blank-${index}`} />)
           }
         </Menu>
@@ -413,6 +435,14 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 })
 
 export default FileTree
+
+FileTree.propTypes = {
+  projectManager: PropTypes.object,
+  onSelect: PropTypes.func,
+  initialPath: PropTypes.string,
+  contextMenu: PropTypes.object,
+  readOnly: PropTypes.func
+}
 
 // TOOD: refactor the dir contruct of the service
 export { default as ClipBoardService } from './clipboard'
