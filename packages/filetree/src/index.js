@@ -308,7 +308,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
 
     const enableHighLightBlock = (tree, needHighLight) => {
       const refreshClassName = (node) => {
-        if (node.name === fatherNode.name) {
+        if (node.path === fatherNode.path) {
           node.className = needHighLight ? 'father--disable node--highlight' : 'father--disable'
           return
         }
@@ -332,7 +332,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
 
     const handleDragEnd = ({ event, node }) => {
       enableHighLightBlock(...treeData, false)
-      travelTree(...treeData, changeOwnFather, dragTarget) // enable father node style
+      resetOwnFather(fatherNode) // reset father node style
       event.currentTarget.id = ''
     }
 
@@ -355,19 +355,19 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
     }
 
     const disableFather = (node, targetNode) => {
-      if (!node.className || !node.className.includes('father--disable')) {
-        node.className = 'father--disable'
-        setDragTarget(targetNode)
-        setFatherNode(node)
-      } else {
-        node.className = ''
-        setDragTarget('')
-        setFatherNode('')
-      }
+      node.className = 'father--disable'
+      setDragTarget(targetNode)
+      setFatherNode(node)
+    }
+
+    const resetOwnFather = (node) => {
+      node.className = ''
+      setDragTarget('')
+      setFatherNode('')
     }
 
     const enableFather = (node, enterNode) => {
-      if ([fatherNode.name, dragTarget.name].includes(enterNode.name)) return
+      if ([fatherNode.path, dragTarget.path].includes(enterNode.path)) return
       if (enterNode.isLeaf) {
         enableHighLightBlock(node, true)
         setPrevDragEnter(node)

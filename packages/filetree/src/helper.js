@@ -75,8 +75,7 @@ const travelTree = (treeData, fn, extraValue) => {
 
 const checkFatherNode = (curNode, targetNode, fn) => {
   if (!curNode.children) return true
-  const includesNode = curNode.children.filter(item => item.name === targetNode.name).length !== 0
-  if (includesNode) {
+  if (curNode.path === targetNode.fatherPath) {
     fn(curNode, targetNode)
     return true
   }
