@@ -14,8 +14,6 @@ import FileTree from '@obsidians/filetree'
 import WorkspaceContext from '../WorkspaceContext'
 import BaseProjectManager from '../ProjectManager/BaseProjectManager'
 import actions from '../actions'
-import RemoteProjectManager from '../ProjectManager/RemoteProjectManager'
-import {ProjectManager} from '../index'
 
 import contextMenu, { registerHandlers } from './contextMenu'
 
@@ -71,6 +69,7 @@ export default class Workspace extends Component {
     })
 
     this.openDeleteModal = this.openDeleteModal.bind(this)
+    this.openMoveConfirmModal = this.openMoveConfirmModal.bind(this)
   }
 
   componentDidMount() {
@@ -172,6 +171,46 @@ export default class Workspace extends Component {
       content: getDeleteModalText(node.name, node.isLeaf),
       next: nextFunc,
       key: 'skipDeleteConfirm'
+    })
+  }
+
+  async openMoveConfirmModal(oldNode, newNode) {
+    const notValidMove = oldNode.fatherPath === newNode.fatherPath && newNode.isLeaf
+    if (oldNode.fatherPath === newNode.key || notValidMove) return
+    const checkResult = await this.context.projectManager.checkFileName(oldNode.path, newNode.path)
+    if (!checkResult.isExisit) {
+      await this.context.projectManager.moveOps({
+        from: oldNode.path,
+        dest: checkResult.finalPath,
+        overWrite: false
+      })
+      return
+    }
+
+    const getMoveConfirmText = (fileName, isLeaf) => {
+      return isLeaf ? {
+        title: 'File Existed',
+        description: `A file with the name $ ${fileName} already exists in the destination folder. Do you want to replace it?`,
+        colorConfirm: 'danger'
+      } : {
+        title: 'Folder Existed',
+        description: `A folder with the name $ ${fileName} already exists in the destination folder. Do you want to replace it?`,
+        colorConfirm: 'danger'
+      }
+    }
+
+    const nextFunc = async () => {
+      await this.context.projectManager.moveOps({
+        from: oldNode.path,
+        dest: checkResult.finalPath,
+        overWrite: true
+      })
+    }
+
+    this.confirmModal.current.open({
+      content: getMoveConfirmText(oldNode.name, oldNode.isLeaf),
+      next: nextFunc,
+      key: 'skipMoveConfirm'
     })
   }
 
@@ -303,6 +342,7 @@ export default class Workspace extends Component {
             projectManager={this.context.projectManager}
             initialPath={initial.path}
             onSelect={this.openFile}
+            move={this.openMoveConfirmModal}
             readOnly={readOnly}
             contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />
