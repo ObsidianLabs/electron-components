@@ -1,5 +1,4 @@
 const { IpcChannel } = require('@obsidians/ipc')
-
 const FileTreeClient = require('./FileTreeClient')
 
 class FileTreeChannel extends IpcChannel {

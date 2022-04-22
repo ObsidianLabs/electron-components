@@ -64,4 +64,8 @@ export default class WebFileOps extends FileOps {
   deleteFile (filePath) {
     return this.fs.deleteFile(filePath)
   }
+
+  moveFile(filePath, newPath) {
+    return this.fs.moveFile(filePath, newPath)
+  }
 }
