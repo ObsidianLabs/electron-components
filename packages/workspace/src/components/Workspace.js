@@ -176,7 +176,7 @@ export default class Workspace extends Component {
 
   async openMoveConfirmModal(oldNode, newNode) {
     const notValidMove = oldNode.fatherPath === newNode.fatherPath && newNode.isLeaf
-    if (oldNode.fatherPath === newNode.key || notValidMove) return
+    if (oldNode.fatherPath === newNode.path || notValidMove) return
     const checkResult = await this.context.projectManager.checkFileName(oldNode.path, newNode.path)
     if (!checkResult.isExisit) {
       await this.context.projectManager.moveOps({
