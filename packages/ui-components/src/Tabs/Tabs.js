@@ -46,7 +46,7 @@ export default class Tabs extends PureComponent {
     this.header = React.createRef()
     this.state = {
       selected,
-      tabs: [selected]
+      tabs: [selected],
     }
   }
 

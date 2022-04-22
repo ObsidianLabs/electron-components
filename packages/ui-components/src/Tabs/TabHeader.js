@@ -15,6 +15,7 @@ export const Types = {
 
 const cardSource = {
   beginDrag(props) {
+    props.tabSourceIsBegin(props.index)
     return {
       id: props.tab.key,
       index: props.index,
@@ -138,6 +139,9 @@ class TabHeaderItem extends PureComponent {
       </div>
     )
   }
+  tabMouseEnter = () => {
+    this.props.isTabBeginDrag && this.props.canDrag && this.props.tabDropEnd()
+  }
 
   componentDidMount() {
     const { connectDragPreview } = this.props;
@@ -158,7 +162,7 @@ class TabHeaderItem extends PureComponent {
   timeoutList = new Set()
 
   render() {
-    const { size, tab, active, tabText, isDragging, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
+    const { size, tab, isTabBeginDrag, active, tabText, isDragging, canDrag, onSelectTab, onCloseTab, onContextMenu, connectDragSource, connectDropTarget } = this.props
     let { canDragState } = this.state
     let timeoutIndex = setTimeout(()=>{
       this.setState({ canDragState: canDrag })
@@ -170,7 +174,7 @@ class TabHeaderItem extends PureComponent {
     return connectDragSource(
       connectDropTarget(
 
-        <li className={classnames('nav-item',{ 'disable-hover': !canDragState}, { active: active && canDragState, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
+        <li className={classnames('nav-item',{'tab-drop-end': isTabBeginDrag},{ 'disable-hover': !canDragState}, { active: active && canDragState, dragging: isDragging })} style={{ opacity }} onContextMenu={(event) => { onContextMenu(event, tab) }} onClick={e => {
           e.stopPropagation()
           e.button === 0 && onSelectTab(tab)
           tab.clickCallback && tab.clickCallback()
@@ -178,7 +182,9 @@ class TabHeaderItem extends PureComponent {
           onMouseUp={e => {
             e.stopPropagation()
             e.button === 1 && onCloseTab && onCloseTab(tab)
-          }}>
+          }}
+          onMouseEnter={this.tabMouseEnter}
+          >
           <div
             className={classnames('btn d-flex flex-row align-items-center border-0 w-100', size && `btn-${size}`)}
           >
@@ -227,6 +233,7 @@ export default class TabHeader extends Component{
     const { selected, contextMenu} = props
     this.state = {
       selectNode: null,
+      isTabBeginDrag: null,
     }
     this.treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selected) : contextMenu
   }
@@ -247,6 +254,19 @@ export default class TabHeader extends Component{
       props: {
         key: 'value'
       }
+    })
+  }
+
+  tabSourceIsBegin = (index) => {
+    const isTabBeginDrag = index + 1
+    this.setState({
+      isTabBeginDrag
+    })
+  }
+
+  tabDropEnd = () => {
+    this.setState({
+      isTabBeginDrag: null
     })
   }
 
@@ -301,6 +321,9 @@ export default class TabHeader extends Component{
                       onDrag={onDragTab}
                       onContextMenu={this.handleContextMenu.bind(this)}
                       showClose={tabs[0].value === '' && tabs.length === 1}
+                      tabSourceIsBegin={this.tabSourceIsBegin}
+                      tabDropEnd={this.tabDropEnd}
+                      isTabBeginDrag={this.state.isTabBeginDrag}
                     />
                   )
                 })
