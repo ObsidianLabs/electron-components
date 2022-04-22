@@ -139,6 +139,7 @@ class TabHeaderItem extends PureComponent {
       </div>
     )
   }
+
   tabMouseEnter = () => {
     this.props.isTabBeginDrag && this.props.canDrag && this.props.tabDropEnd()
   }
@@ -258,9 +259,8 @@ export default class TabHeader extends Component{
   }
 
   tabSourceIsBegin = (index) => {
-    const isTabBeginDrag = index + 1
     this.setState({
-      isTabBeginDrag
+      isTabBeginDrag: ++index
     })
   }
 
