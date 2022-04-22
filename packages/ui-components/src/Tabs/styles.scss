@@ -28,6 +28,10 @@
         flex-shrink: 0;
         height: 30px;
 
+        &.tab-drop-end,
+        &.tab-drop-end:hover {
+          background: var(--color-bg2) !important;
+        }
         &:hover {
           background: var(--color-hover);
         }
@@ -156,7 +160,8 @@
         }
       }
 
-      &>.disable-hover:hover{
+      &>.disable-hover:hover,
+      &>.tab-drop-end:hover{
         background: none !important;
         .btn .nav-item-close .nav-item-close-times {
           opacity: 0 !important;
