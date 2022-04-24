@@ -1,11 +1,13 @@
 .tree-wrap {
   flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 .rc-tree {
   margin: 0;
+  height: 100%;
+  overflow-y: auto;
   border: 1px solid transparent;
 }
 
@@ -39,6 +41,16 @@
 #drag--active {
   max-width: 100%;
   background-color: #636cb4;
+}
+
+.persist--active:after {
+  content: '';
+  border-inline-color: #636cb4;
+  border: .5px solid;
+  left: 0;
+  position: absolute;
+  width: 99%;
+  height: 83%;
 }
 
 .father--disable {

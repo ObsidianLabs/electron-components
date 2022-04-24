@@ -1,6 +1,5 @@
 const path = require('path')
 const FileHound = require('filehound')
-
 const FileTreeWatcher = require('./FileTreeWatcher')
 
 class FileTreeClient {
@@ -64,6 +63,7 @@ class FileTreeClient {
             children: [],
             type: 'folder',
             isLeaf: false,
+            fatherPath: directory
           }
           this.treePointer[dir].children.push(this.treePointer[dirPath])
         })
@@ -84,6 +84,7 @@ class FileTreeClient {
             path: filePath,
             type: 'file',
             isLeaf: true,
+            fatherPath: directory
           })
         })
       })

@@ -5,10 +5,10 @@ import debounce from 'lodash/debounce'
 import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
-import platform from '@obsidians/platform'
 import StatusTitle from './statusTitle'
 import { travelTree, updateErrorInfo, findFather } from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
+import PropTypes from 'prop-types'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -33,13 +33,8 @@ const renderSwitcherIcon = ({ loading, expanded, data }) => {
 }
 
 const allowDrop = (props) => {
-  const { dropNode, dragNode, dropPosition, enableCopy } = props
-
+  const { dropNode, dragNode, dropPosition } = props
   if (dropPosition === -1) return false
-
-  if (enableCopy) {
-    return true
-  }
 
   return !(!dropNode.children && !dragNode.children && (dropNode.path.replace(dropNode.name, '') === dragNode.path.replace(dragNode.name, '')))
 }
@@ -101,14 +96,14 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
+const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
-  const [selectedKeys, setSelectedKeys] = useState([])
+  const [selectedKeys, setSelectedKeys] = useState([initialPath])
+  const [persistDOM, setPersist] = useState(null)
   const [selectNode, setSelectNode] = useState(null)
-  const [enableCopy, setEnableCopy] = useState(false)
   const [dragTarget, setDragTarget] = useState('')
   const [prevDragEnter, setPrevDragEnter] = useState('')
   const [fatherNode, setFatherNode] = useState('')
@@ -120,7 +115,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
   if (readOnly) {
     // only leave the "Copy Path" feature
-    // TODO we need a id to make sure the filter works correctlly
+    // TODO we need a id to make sure the filter works correctly
     treeNodeContextMenu = treeNodeContextMenu.filter(item => item && item.text === 'Copy Path')
   } else {
     isBlankAreaRightClick && (treeNodeContextMenu = treeNodeContextMenu.filter(item => item && (item.text === 'New File' || item.text === 'New Folder')))
@@ -134,16 +129,16 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
       !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop()
     }
 
-    const { show } = useContextMenu({
+    const { show, hideAll } = useContextMenu({
       id: 'file-tree'
     })
 
     const handleContextMenu = ({ event, node }) => {
       node.root ? setIsTreeDataRoot(true) : setIsTreeDataRoot(false)
+      addPersist(event)
       event.nativeEvent.preventDefault()
       event.stopPropagation()
       setIsBlankAreaRightClick(false)
-
       handleSetSelectNode(node)
       show(event.nativeEvent, {
         props: {
@@ -155,11 +150,50 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
     const handleEmptyTreeContextMenu = (event) => {
       setIsBlankAreaRightClick(true)
       handleSetSelectNode(treeData[0])
+      removePersist()
       show(event.nativeEvent, {
         props: {
           key: 'value'
         }
       })
+    }
+
+    const handleMenuItemClick = (item) => {
+      return ({ event }) => {
+        item.onClick(selectNode)
+        event.stopPropagation()
+        hideAll()
+      }
+    }
+
+    const renderMenu = (treeNodeContextMenu) => {
+      return (
+        treeNodeContextMenu.map((item, index) => item
+          ? <Item key={item.text}
+            onClick={handleMenuItemClick(item)}>{item.text}</Item>
+          : <Separator key={`blank-${index}`} />)
+      )
+    }
+
+    useEffect(async () => {
+      await initTree()
+    }, [])
+
+    const removePersist = () => {
+      if (persistDOM) {
+        persistDOM.className = persistDOM.className.toString().replace(' persist--active', '')
+        setPersist(null)
+      }
+    }
+
+    const addPersist = (event) => {
+      removePersist()
+      event.currentTarget.parentElement.className += ' persist--active'
+      setPersist(event.currentTarget.parentElement)
+    }
+
+    const rootClick = () => {
+      removePersist()
     }
 
     const renderTitle = (curNode, errorNode) => {
@@ -176,20 +210,12 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
     const updateTitle = (treeData) => {
       const rawDecoration = modelSessionManager.decorationMap
-      console.log('rawDecoration', rawDecoration)
       const hasError = Object.keys(rawDecoration).length !== 0
-      if (!hasError) {
-        return
-      }
+      if (!hasError) return
       const errorNode = updateErrorInfo(rawDecoration, treeData.key)
-      console.log('errorNode', errorNode)
       travelTree(treeData, renderTitle, errorNode)
       setTreeData([treeData])
     }
-
-    useEffect(async () => {
-      await initTree()
-    }, [])
 
     const handleSetSelectNode = (node) => {
       setSelectNode(node)
@@ -215,15 +241,8 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
       }
     }))
 
-    const fileOps = async (from, to) => {
-      if (enableCopy) {
-        await projectManager.copyOps({ from, to })
-      } else {
-        await projectManager.moveOps({ from, to })
-      }
-    }
-
     const refreshDirectory = async (directory) => {
+      if (!directory) return
       const { prefix, projectId, userId } = projectManager
       if (directory.path === `${prefix}/${userId}/${projectId}`) { // update whole tree data
         await fetchTreeData()
@@ -289,7 +308,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
     const enableHighLightBlock = (tree, needHighLight) => {
       const refreshClassName = (node) => {
-        if (node.name === fatherNode.name) {
+        if (node.path === fatherNode.path) {
           node.className = needHighLight ? 'father--disable node--highlight' : 'father--disable'
           return
         }
@@ -303,7 +322,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.dropEffect = 'move'
       event.currentTarget.id = 'drag--active'
-      setEnableCopy(event.altKey)
+      event.dataTransfer.setDragImage(event.target, 3, 5)
     }
 
     const handleDragEnter = ({ event, node }) => {
@@ -313,12 +332,12 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 
     const handleDragEnd = ({ event, node }) => {
       enableHighLightBlock(...treeData, false)
-      travelTree(...treeData, changeOwnFather, dragTarget) // enable father node style
+      resetOwnFather(fatherNode) // reset father node style
       event.currentTarget.id = ''
     }
 
     const handleDrop = ({ node, dragNode }) => {
-      fileOps(dragNode.path, node.path)
+      move(dragNode, node, dragNode)
     }
 
     const handleMouseEnter = ({ event }) => {
@@ -332,30 +351,23 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
     }
 
     const handleClick = (event, node) => {
-      console.log('click', node.name)
       onDebounceExpand(event, node)
     }
 
-    const onDebounceExpand = debounce(expandFolderNode, 200, { leading: true })
-
-    const onDebounceDrop = debounce(handleDrop, 200, { leading: true })
-
-    const onDebounceDrag = debounce(handleDragEnter, 100)
-
     const disableFather = (node, targetNode) => {
-      if (!node.className || !node.className.includes('father--disable')) {
-        node.className = 'father--disable'
-        setDragTarget(targetNode)
-        setFatherNode(node)
-      } else {
-        node.className = ''
-        setDragTarget('')
-        setFatherNode('')
-      }
+      node.className = 'father--disable'
+      setDragTarget(targetNode)
+      setFatherNode(node)
+    }
+
+    const resetOwnFather = (node) => {
+      node.className = ''
+      setDragTarget('')
+      setFatherNode('')
     }
 
     const enableFather = (node, enterNode) => {
-      if ([fatherNode.name, dragTarget.name].includes(enterNode.name)) return
+      if ([fatherNode.path, dragTarget.path].includes(enterNode.path)) return
       if (enterNode.isLeaf) {
         enableHighLightBlock(node, true)
         setPrevDragEnter(node)
@@ -366,17 +378,24 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
       }
     }
 
+    const onDebounceExpand = debounce(expandFolderNode, 200, { leading: true })
+
+    const onDebounceDrop = debounce(handleDrop, 200, { leading: true })
+
+    const onDebounceDrag = debounce(handleDragEnter, 100)
+
     const changeOwnFather = findFather(disableFather)
 
     const changeNewFather = findFather(enableFather)
 
     return (
       <div className='tree-wrap animation'
+        onClick={rootClick}
         onContextMenu={handleEmptyTreeContextMenu}>
         <Tree
           // TODO: improve the condition when support the WEB
           draggable={!projectManager.remote}
-          allowDrop={(props) => allowDrop({ ...props, enableCopy })}
+          allowDrop={(props) => allowDrop({ ...props })}
           onDrop={onDebounceDrop}
           ref={treeRef}
           itemHeight={20}
@@ -401,11 +420,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
           onMouseLeave={handleMouseLeave}
         />
         <Menu animation={false} id='file-tree'>
-          {
-            treeNodeContextMenu.map((item, index) => item
-                ? <Item key={item.text} onClick={() => item.onClick(selectNode)}>{item.text}</Item>
-                : <Separator key={`blank-${index}`} />)
-          }
+          { renderMenu(treeNodeContextMenu) }
         </Menu>
       </div>
     )
@@ -413,6 +428,14 @@ const FileTree = forwardRef(({ projectManager, onSelect, contextMenu, readOnly =
 })
 
 export default FileTree
+
+FileTree.propTypes = {
+  projectManager: PropTypes.object,
+  onSelect: PropTypes.func,
+  initialPath: PropTypes.string,
+  contextMenu: PropTypes.object,
+  readOnly: PropTypes.func
+}
 
 // TOOD: refactor the dir contruct of the service
 export { default as ClipBoardService } from './clipboard'

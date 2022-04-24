@@ -1,14 +1,14 @@
 import AWS from 'aws-sdk/global'
 import S3 from 'aws-sdk/clients/s3'
 import path from 'path-browserify'
-
 import { AWSS3Region, AWSBucket } from './config.json'
 
+const notValid = (oldValue, newVal) => oldValue === newVal
 const region = process.env.REACT_APP_AWS_S3_REGION || AWSS3Region
 const Bucket = process.env.REACT_APP_AWS_BUCKET || AWSBucket
 
 export default class AwsS3Fs {
-  constructor () {
+  constructor() {
     this.promises = {
       readFile: this.readFile.bind(this),
       writeFile: this.writeFile.bind(this),
@@ -28,7 +28,22 @@ export default class AwsS3Fs {
     this.s3 = new S3()
   }
 
-  async readFile (filePath, { encoding } = {}) {
+  async deepFind(dirPath, executor, initialData) {
+    const fetchFile = async (dirPath) => {
+      const { CommonPrefixes, Contents } = await this.s3.listObjectsV2({
+        Bucket,
+        Prefix: `${dirPath}`,
+        Delimiter: '/'
+      }).promise()
+      initialData[dirPath] = executor({ CommonPrefixes, Contents })
+      if (!CommonPrefixes.length) return
+      CommonPrefixes.forEach(item => { fetchFile(item.Prefix) })
+    }
+    await fetchFile(dirPath)
+    return initialData
+  }
+
+  async readFile(filePath, { encoding } = {}) {
     if (filePath.startsWith('/')) {
       filePath = filePath.substr(1)
     }
@@ -40,7 +55,7 @@ export default class AwsS3Fs {
     return result.Body.toString(encoding)
   }
 
-  async writeFile (filePath, content) {
+  async writeFile(filePath, content) {
     const params = {
       Bucket,
       Key: filePath,
@@ -49,21 +64,19 @@ export default class AwsS3Fs {
     await this.s3.putObject(params).promise()
   }
 
-  async ensureFile (filePath) {
+  async ensureFile(filePath) {
     return this.writeFile(filePath, '')
   }
 
-  async ensureDir (filePath) {
+  async ensureDir(filePath) {
     return this.writeFile(`${filePath}/.placeholder`)
   }
 
-  async rename (oldPath, newPath) {
-    if (oldPath === newPath) {
-      return
-    }
+  async rename(oldPath, newPath) {
+    if (notValid(oldPath, newPath)) return
     const isFile = !oldPath.endsWith('/')
 
-    if (isFile) {
+    if (isFile) { // rename file
       let fileExists = false
       try {
         await this.readFile(newPath, {})
@@ -75,30 +88,33 @@ export default class AwsS3Fs {
         throw new Error(`${newPath} exists.`)
       }
 
-      const oldParams = {
-        CopySource: `/${Bucket}/${oldPath}`,
-        Bucket,
-        Key: newPath
-      }
-      await this.s3.copyObject(oldParams).promise()
+      await this.copyFile(oldPath, newPath)
       await this.deleteFile(oldPath)
-    } else {
-      const listParams = {
-        Bucket,
-        Prefix: oldPath,
-        Delimiter: '/'
+    } else { // rename folder
+      const executor = ({ Contents }) => {
+        Contents.forEach(async ({ Key }) => {
+          await this.copyFile(Key, Key.replace(oldPath, newPath))
+          await this.deleteFile(Key)
+        })
       }
-      const listResult = await this.s3.listObjectsV2(listParams).promise()
-      const promises = listResult.Contents.map(async ({ Key }) => {
-        if (Key === oldPath) {
-          return
-        }
-        return this.rename(Key, Key.replace(oldPath, newPath))
-      })
-      await Promise.all(promises)
+      await this.deepFind(oldPath, executor, [])
       await this.deleteFolder(oldPath)
     }
   }
+
+  async copyFile (oldPath, newPath) {
+    await this.s3.copyObject({
+      CopySource: `/${Bucket}/${oldPath}`,
+      Bucket,
+      Key: newPath
+    }).promise()
+  }
+
+  async copyFolder (oldPath, newPath) {}
+
+  async moveFile (oldPath, newPath) {}
+
+  async moveFolder (oldPath, newPath) {}
 
   async deleteFile (filePath) {
     const params = {
@@ -140,7 +156,7 @@ export default class AwsS3Fs {
     }
   }
 
-  async stat (fileOrDirPath) {
+  async stat(fileOrDirPath) {
     if (fileOrDirPath.startsWith('/')) {
       fileOrDirPath = fileOrDirPath.substr(1)
     }
@@ -153,42 +169,55 @@ export default class AwsS3Fs {
     }
   }
 
-  async list (dirPath) {
-    const params = {
-      Bucket,
-      Prefix: `${dirPath}/`,
-      Delimiter: '/'
+  async list(dirPath) {
+    dirPath = dirPath.endsWith('/') ? dirPath : `${dirPath}/`
+    const formatFolders = commonPrefixes => {
+      return commonPrefixes.length ? commonPrefixes.reduce((prev, cur) => {
+        const path = cur.Prefix.slice(0, -1)
+        const name = path.replace(`${dirPath}`, '')
+        name && prev.push({
+          type: 'folder',
+          title: name,
+          key: path,
+          children: [],
+          isLeaf: false,
+          name,
+          path,
+          fatherPath: dirPath,
+          loading: true,
+          remote: true,
+          className: ''
+        })
+        return prev
+      }, []) : []
     }
-    const result = await this.s3.listObjectsV2(params).promise()
 
-    const folders = result.CommonPrefixes.map(item => {
-      const path = item.Prefix.slice(0, -1)
-      const name = path.replace(`${dirPath}/`, '')
-      return { type: 'folder',
-        title: name,
-        key: path,
-        children: [],
-        isLeaf: false,
-        name,
-        path,
-        loading: true,
-        remote: true,
-        className: ''
-      }
-    }).filter(item => item.name)
-    const files = result.Contents.map(item => {
-      let path = item.Key
-      const name = path.replace(`${dirPath}/`, '')
-      return { type: 'file',
-        title: name,
-        key: path,
-        name,
-        path,
-        remote: true,
-        isLeaf: true,
-        className: ''
-      }
-    }).filter(item => item.name && item.name !== '.placeholder')
-    return [...folders, ...files]
+    const formatFile = contents => {
+      return contents.length ? contents.reduce((prev, cur) => {
+        let path = cur.Key
+        const name = path.replace(`${dirPath}`, '')
+        const valid = name && name !== '.placeholder'
+        valid && prev.push({
+          type: 'file',
+          title: name,
+          key: path,
+          name,
+          path,
+          fatherPath: dirPath,
+          remote: true,
+          isLeaf: true,
+          className: ''
+        })
+        return prev
+      }, []) : []
+    }
+
+    const { CommonPrefixes, Contents } = await this.s3.listObjectsV2({
+      Bucket,
+      Prefix: `${dirPath}`,
+      Delimiter: '/'
+    }).promise()
+
+    return [...(formatFolders(CommonPrefixes)), ...(formatFile(Contents))]
   }
 }

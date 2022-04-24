@@ -63,7 +63,7 @@ export default class LocalProjectManager extends BaseProjectManager {
   async loadRootDirectory() {
     const rootResult = await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
     const isHasFileREADME = rootResult.children.length === 0 ? false : rootResult.children.find(item => item.name === 'README.md')
-    !isHasFileREADME && this.createNewFile(this.projectRoot, 'README.md')
+    !isHasFileREADME && await this.createNewFile(this.projectRoot, 'README.md')
     rootResult.children = sortFile(rootResult.children)
     return rootResult
   }
@@ -169,32 +169,31 @@ export default class LocalProjectManager extends BaseProjectManager {
       return false
     }
   }
+
   async checkExsist (path) {
     const { fs } = fileOps.current
     return !!(await fs.promises.stat(path).catch(() => false))
   }
 
-  async moveOps({ from, to }) {
-    const { path, fs } = fileOps.current
-    const toDir = await this.getDir(to)
-    const fromIsFile = await this.isFile(from)
-    const { name: fromName, ext: fromExt } = path.parse(from)
-    const dest = fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
+  async checkFileName(oldPath, newPath) {
+    const { path } = fileOps.current
+    const newDir = await this.getDir(newPath)
+    const isFileType = await this.isFile(oldPath)
+    const { name, ext } = path.parse(oldPath)
+    const finalPath = isFileType ? `${newDir}/${name}${ext}` : `${newDir}/${name}`
 
-    const exsist = await this.checkExsist(dest)
+    return {
+      isExisit: await this.checkExsist(finalPath),
+      finalPath
+    }
+  }
+
+  async moveOps({ from, dest, overWrite }) {
+    const { fs } = fileOps.current
 
     try {
-      if (exsist) {
-        const { response } = await fileOps.current.showMessageBox({
-          message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
-          buttons: ['Replace', 'Cancel']
-        })
-        if (response === 0) {
-          await fs.move(from, dest, { overwrite: true })
-        }
-      } else {
-        await fs.move(from, dest)
-      }
+      overWrite ? await fs.move(from, dest, { overwrite: true })
+        : await fs.move(from, dest)
     } catch (e) {
       throw new Error(`Fail to move <b>${dest}</b>.`)
     }

@@ -1,6 +1,5 @@
 // TODO: re integrate file ops with workspace
 import { IpcChannel } from '@obsidians/ipc'
-
 import FileOps from './FileOps'
 
 export default class ElectronFileOps extends FileOps {
@@ -66,7 +65,12 @@ export default class ElectronFileOps extends FileOps {
     return await Promise.all(children.map(async name => {
       const childPath = this.path.join(folderPath, name)
       const type = await this.isDirectory(childPath) ? 'folder' : 'file'
-      return { type, name, path: childPath }
+      return {
+        type,
+        name,
+        path: childPath,
+        fatherpath: folderPath
+      }
     }))
   }
 
@@ -81,7 +85,7 @@ export default class ElectronFileOps extends FileOps {
   async openItem (filePath) {
     const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
 
-    if(!exsist) {
+    if (!exsist) {
       const { response } = await this.channel.invoke('showMessageBox', {
         message: `The path '${filePath}' does not exist on this computer.`,
         buttons: ['Remove', 'Cancel']
