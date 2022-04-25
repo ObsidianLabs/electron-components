@@ -9,6 +9,7 @@ import StatusTitle from './statusTitle'
 import { travelTree, updateErrorInfo, findFather } from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
 import PropTypes from 'prop-types'
+import useBatchLoad from './hooks/useBatchLoad'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -99,6 +100,8 @@ const replaceTreeNode = (treeData, curKey, child) => {
 const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
+  const cacheRef = React.useRef()
+  cacheRef.current = treeData
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([initialPath])
@@ -276,23 +279,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
       treeRef.current && (treeRef.current.state.loadedKeys = [])
     }
 
-    const handleLoadData = treeNode => {
-      return new Promise(async (resolve, reject) => {
-        !treeNode.children && resolve()
-        const tempTreeData = cloneDeep(treeData)
-        try {
-          const newData = await projectManager.loadDirectory(treeNode)
-          newData.length === 0 && resolve()
-          getNewTreeData(tempTreeData, treeNode.path, newData)
-          setTreeData(tempTreeData)
-          updateTitle(...tempTreeData)
-          setTimeout(resolve, 100)
-        } catch (e) {
-          reject(e)
-        }
-      })
-    }
-
     const handleSelect = (_, { node }) => {
       node.isLeaf && onSelect(node)
     }
@@ -393,6 +379,13 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
     const changeOwnFather = findFather(disableFather)
 
     const changeNewFather = findFather(enableFather)
+
+    const handleLoadData = useBatchLoad({
+      treeData: prevTreeData.current,
+      projectManager,
+      getNewTreeData,
+      setTreeData
+    })
 
     return (
       <div className='tree-wrap animation'
