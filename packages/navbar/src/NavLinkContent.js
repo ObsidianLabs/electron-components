@@ -18,11 +18,11 @@ export default function (props) {
     subtitle = '(None)'
   } else {
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
-    const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
+    const imgSrc = NetworkAllLogoImg[(networkLogoImg ? networkLogoImg : networkGroupsId)]
     if (projectStudioName == 'BlackIDE' && title == 'Network' && imgSrc) {
       networkIcon = <img src={imgSrc} className='w-100 h-100' />
     } else {
-      networkIcon = <i className={`w-100 h-100 ${icon}`} />
+      networkIcon = <span key={key}><i className={`w-100 h-100 ${icon}`} /></span>
     }
     iconComponent = <span key={key} className={iconClassName}>{networkIcon}</span>
     subtitle = selected

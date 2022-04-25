@@ -13,6 +13,7 @@ import {
   DropdownItem,
   Badge,
 } from 'reactstrap'
+import { utils } from "@obsidians/sdk"
 
 export default class DropdownInput extends PureComponent {
   constructor (props) {
@@ -108,8 +109,9 @@ export default class DropdownInput extends PureComponent {
   }
 
   getDropdownOptions = () => {
-    const { options = [], value } = this.props
+    const { options = [] } = this.props
     const filterMode = this.state.filterMode
+    const value = utils.simplifyAddress(this.props.value)
     let dropdownOptions = []
 
     options.forEach((item, index) => {
