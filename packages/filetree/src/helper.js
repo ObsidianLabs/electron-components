@@ -84,8 +84,11 @@ const checkFatherNode = (curNode, targetNode, fn) => {
 
 const findFather = (fn) => (curNode, targetName) => checkFatherNode(curNode, targetName, fn)
 
+const findChildren = (treeData, name) => treeData.children.find(item => item.name.toLowerCase() === name)
+
 export {
   updateErrorInfo,
   travelTree,
-  findFather
+  findFather,
+  findChildren
 }

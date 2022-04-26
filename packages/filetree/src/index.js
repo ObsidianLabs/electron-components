@@ -6,10 +6,11 @@ import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import StatusTitle from './statusTitle'
-import { travelTree, updateErrorInfo, findFather } from './helper'
+import {travelTree, updateErrorInfo, findFather, findChildren} from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
 import PropTypes from 'prop-types'
 import useBatchLoad from './hooks/useBatchLoad'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -267,21 +268,34 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
 
     const initTree = async () => {
       projectManager.onRefreshDirectory(refreshDirectory) // register refreshDirectory event to BaseProjectManager
-      await fetchTreeData()
+      await fetchTreeData(true)
     }
 
-    const fetchTreeData = async () => {
+    const fetchTreeData = async (initFetch = false) => {
       const treeData = await projectManager.loadRootDirectory()
       setLeaf([treeData], treeData.path)
       setTreeData([treeData])
-      setSelectNode(treeData)
       setExpandKeys([treeData.path])
       treeRef.current && (treeRef.current.state.loadedKeys = [])
+      if (initFetch) {
+        const ReadMeNode = projectManager.remote
+            ? findChildren(treeData, 'readme.md')
+           : findChildren(treeData, 'config.json')
+        setSelectNode(ReadMeNode)
+      }
     }
 
     const handleSelect = (_, { node }) => {
+      setSelectNode(node)
       node.isLeaf && onSelect(node)
     }
+
+    const handleLoadData = useBatchLoad({
+      treeData: prevTreeData.current,
+      projectManager,
+      getNewTreeData,
+      setTreeData
+    })
 
     const handleExpand = (keys, { node }) => {
       if (node.root || !!dragTarget) return
@@ -370,6 +384,13 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
       }
     }
 
+    const findEvent = (name) => treeNodeContextMenu.find(item => item && item.text === name)
+
+    useHotkeys('ctrl+del, cmd+backspace', () => {
+      const deleteEvent = findEvent('Delete')
+      deleteEvent.onClick(selectNode)
+    }, [treeNodeContextMenu, selectNode])
+
     const onDebounceExpand = debounce(expandFolderNode, 200, { leading: true })
 
     const onDebounceDrop = debounce(handleDrop, 200, { leading: true })
@@ -380,12 +401,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
 
     const changeNewFather = findFather(enableFather)
 
-    const handleLoadData = useBatchLoad({
-      treeData: prevTreeData.current,
-      projectManager,
-      getNewTreeData,
-      setTreeData
-    })
 
     return (
       <div className='tree-wrap animation'
