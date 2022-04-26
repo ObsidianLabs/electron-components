@@ -20,6 +20,7 @@ export default {
   external: [
     '@obsidians/sdk',
     '@obsidians/network',
+    'react-router',
     ...Object.keys(pkg.dependencies),
     ...Object.keys(pkg.peerDependencies),
   ],

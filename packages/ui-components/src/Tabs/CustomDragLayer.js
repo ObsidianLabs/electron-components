@@ -1,6 +1,5 @@
 import React from 'react'
 import { DragLayer } from 'react-dnd'
-import { Types } from './TabHeader'
 import classnames from 'classnames'
 
 const layerStyles = {
@@ -33,7 +32,7 @@ const CustomDragLayer = ({ item, isDragging, itemType, initialOffset, currentOff
 
     function renderItem() {
         switch (itemType) {
-            case Types.TAB:
+            case 'Tab':
                 return (
                     <div className="custom-drag-layer d-flex">
                         <div className={

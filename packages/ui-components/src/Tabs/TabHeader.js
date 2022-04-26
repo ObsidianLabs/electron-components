@@ -9,10 +9,6 @@ import throttle from 'lodash/throttle'
 import platform from '@obsidians/platform'
 import CustomDragLayer from './CustomDragLayer'
 
-export const Types = {
-  TAB: 'tab'
-}
-
 const cardSource = {
   beginDrag(props) {
     props.tabSourceIsBegin(props.index)
@@ -204,7 +200,7 @@ class TabHeaderItem extends PureComponent {
   }
 }
 
-const SortableTab = DragSource(Types.TAB, cardSource, sourceCollect)(DropTarget(Types.TAB, cardTarget, targetCollect)(TabHeaderItem))
+const SortableTab = DragSource('Tab', cardSource, sourceCollect)(DropTarget('Tab', cardTarget, targetCollect)(TabHeaderItem))
 
 // const TabHeader = ({ className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [], onCloseTab, onNewTab, contextMenu, onDragTab }) => {
 // }
