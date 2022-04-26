@@ -38,12 +38,13 @@
     "@babel/preset-env": "^7.7.5",
     "@babel/preset-react": "^7.7.4",
     "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
     "@rollup/plugin-url": "^4.0.2",
     "@svgr/rollup": "^5.2.0",
     "babel-eslint": "^10.1.0",
     "cross-env": "^6.0.3",
+    "node-sass": "npm:sass",
     "rollup": "^2.37.1",
     "rollup-plugin-peer-deps-external": "^2.2.2",
     "rollup-plugin-postcss": "^2.3.0"
@@ -52,9 +53,8 @@
     "monaco-editor": "^0.20.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "react-router-dom": "^5.2.0",
     "react-highlight": "^0.13.0",
-    "node-sass": "*"
+    "react-router-dom": "^5.2.0"
   },
   "eslintConfig": {
     "extends": "react-app"

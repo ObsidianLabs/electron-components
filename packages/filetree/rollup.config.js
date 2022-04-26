@@ -18,6 +18,7 @@ export default {
     }
   ],
   external: [
+    '@obsidians/code-editor',
     ...Object.keys(pkg.dependencies),
     ...Object.keys(pkg.peerDependencies),
   ],
