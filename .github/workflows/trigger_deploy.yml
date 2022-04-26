@@ -12,7 +12,7 @@ jobs:
     steps:
       - run: |
           curl -X POST \
-          -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" \
+          -H "Authorization: Bearer ${{secrets.obsidians_token}}" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/inorthisle/Black-IDE/actions/workflows/main.yml/dispatches \
+          https://api.github.com/repos/ObsidianLabs/Black-IDE/actions/workflows/main.yml/dispatches \
           -d '{"ref": "develop"}'
