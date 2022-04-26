@@ -1,0 +1,16 @@
+name: Trigger Test Build
+on:
+  push:
+    - develop
+
+jobs:
+  deploy:
+  runs-on: ubuntu-latest
+  permissions: write-all
+  steps:
+    - run: |
+        curl -X POST \
+        -H "Authorization: Bearer ${{secrets.GITHUB_TOKEN}}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/inorthisle/Black-IDE/actions/workflows/main.yml/dispatches \
+        -d '{"ref": "develop"}'
