@@ -45,10 +45,14 @@ export default class ElectronFileOps extends FileOps {
     }
   }
 
-  async chooseFolder (defaultPath = this.workspace) {
+  async chooseFolder (defaultPath = this.workspace, chooseType) {
+    if (!(chooseType == 'openProject' && defaultPath)) {
+      defaultPath = this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath)
+    }
+
     const result = await this.channel.invoke('showOpenDialog', {
       buttonLabel: 'Open',
-      defaultPath: this.path.isAbsolute(defaultPath) ? defaultPath : this.path.join(this.workspace, defaultPath),
+      defaultPath,
       properties: ['openDirectory', 'createDirectory']
     })
 

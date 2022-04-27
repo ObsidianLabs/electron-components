@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
-import { actions, TutorialModal } from '@obsidians/workspace'
+import { actions, TutorialModal, WorkspaceSettingModal } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
 
@@ -41,6 +41,7 @@ class UserHomepage extends PureComponent {
   constructor(props) {
     super(props)
     this.modal = React.createRef()
+    this.workspaceSettingModal = React.createRef()
   }
 
   componentDidMount() {
@@ -129,10 +130,24 @@ class UserHomepage extends PureComponent {
     return (
       <Button
         color='success'
-        className='border-left-gray'
+        className='border-left-gray mr-2'
         onClick={() => actions.openProject()}
       >
         <i className='fas fa-folder-plus mr-1' />Open
+      </Button>
+    )
+  }
+
+  renderSettingButton = () => {
+    if (!this.isSelf()) {
+      return null
+    }
+    return (
+      <Button
+        className='bg-hover'
+        onClick={() => this.workspaceSettingModal.current.showModal()}
+      >
+        <i className='fas fa-cog' />
       </Button>
     )
   }
@@ -165,10 +180,13 @@ class UserHomepage extends PureComponent {
     if (platform.isDesktop) {
       if (!this.state.remote) {
         return (
-          <ButtonGroup>
-            {this.renderCreateButton()}
-            {this.renderOpenButton()}
-          </ButtonGroup>
+          <div>
+            <ButtonGroup>
+              {this.renderCreateButton()}
+              {this.renderOpenButton()}
+            </ButtonGroup>
+            {this.renderSettingButton()}
+          </div>
         )
       } else {
         return this.renderCreateButton()
@@ -220,6 +238,7 @@ class UserHomepage extends PureComponent {
           header={tutorialModalInfo.header}
           nextPage={tutorialModalInfo.nextPage}
           description={tutorialModalInfo.description} />
+        <WorkspaceSettingModal ref={this.workspaceSettingModal}/>
       </div>
     )
   }
