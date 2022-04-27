@@ -171,7 +171,8 @@ export default class CodeEditorCollection extends PureComponent {
     modelSessionManager.closeAllModelSessions()
   }
 
-  fileSaving = filePath => this.tabs.current.updateTab({ saving: true }, filePath)
+  fileSaving = filePath => {
+    this.tabs.current.updateTab({ saving: true }, filePath)}
 
   fileSaved = async (filePath, { saveAsPath, unsaved = false } = {}) => {
     const updates = { unsaved, saving: false }

@@ -98,8 +98,9 @@ export default class Workspace extends Component {
   tabFromPath = (filePath, remote, pathInProject) => ({ path: filePath, key: filePath, remote, pathInProject })
 
   openFile = ({ path, remote, pathInProject }, setTreeActive) => {
-    this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject))
-
+    if (this.filetree.current.activeNode.type !== 'folder') {
+      this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject))
+    }
     if (path.startsWith('custom:')) {
       this.filetree.current.setNoActive()
     } else if (setTreeActive) {

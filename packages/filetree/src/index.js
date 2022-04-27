@@ -226,6 +226,12 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
         if (!selectedKeys.includes(key)) {
           setSelectedKeys([key])
         }
+        if (ref.current.activeNode.type === 'folder') {
+          if (!expandedKeys.includes(key)) {
+            handleExpand(expandedKeys.concat([key]),{node: ref.current.activeNode})
+          }
+        }
+        // treeRef.current.onNodeExpand(event, node)
       },
       setNoActive() {
         setSelectedKeys([])
