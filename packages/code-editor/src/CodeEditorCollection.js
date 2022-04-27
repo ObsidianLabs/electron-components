@@ -101,7 +101,7 @@ export default class CodeEditorCollection extends PureComponent {
 
   closeCurrentFile = () => {
     const { onCloseTab } = this.tabs.current
-    onCloseTab(this.tabs.current)
+    onCloseTab(this.tabs.current.findTab())
   }
 
   // MARK: may can define a batch delete in the Tabs component
