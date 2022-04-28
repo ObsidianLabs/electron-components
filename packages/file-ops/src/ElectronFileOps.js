@@ -28,6 +28,14 @@ export default class ElectronFileOps extends FileOps {
     this.electron.ipcRenderer.on('off-focus', handler)
   }
 
+  async pathExist (path) {
+    try {
+      return await this.fs.pathExists(path)
+    } catch (e) {
+      return false
+    }
+  }
+
   async openNewFile (defaultPath = this.workspace) {
     const result = await this.channel.invoke('showOpenDialog', {
       properties: ['openFile'],
@@ -111,7 +119,7 @@ export default class ElectronFileOps extends FileOps {
   async showItemInFolder (filePath) {
     const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
 
-    if(!exsist) {
+    if (!exsist) {
       const result = await this.channel.invoke('showMessageBox', {
         message: `The path '${filePath}' does not exist on this computer.`,
         buttons: ['Remove', 'Cancel']
@@ -133,7 +141,7 @@ export default class ElectronFileOps extends FileOps {
   async openInTerminal (filePath) {
     const exsist = !!(await this.fs.promises.stat(filePath).catch(() => false))
 
-    if(!exsist) {
+    if (!exsist) {
       const result = await this.channel.invoke('showMessageBox', {
         message: `The path '${filePath}' does not exist on this computer.`,
         buttons: ['Remove', 'Cancel']

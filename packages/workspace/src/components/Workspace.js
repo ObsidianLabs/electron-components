@@ -65,9 +65,11 @@ export default class Workspace extends Component {
       newFolder: node => this.openCreateFolderModal(node),
       rename: node => this.openRenameModal(node),
       deleteFile: node => this.openDeleteModal(node),
-      openFile: node => this.openFile(node, true)
+      openFile: node => this.openFile(node, true),
+      duplicateFile: node => this.duplicateFile(node)
     })
-
+    this.copyFile = this.copyFile.bind(this)
+    this.duplicateFile = this.duplicateFile.bind(this)
     this.openDeleteModal = this.openDeleteModal.bind(this)
     this.openMoveConfirmModal = this.openMoveConfirmModal.bind(this)
   }
@@ -179,7 +181,7 @@ export default class Workspace extends Component {
     const notValidMove = oldNode.fatherPath === newNode.fatherPath && newNode.isLeaf
     if (oldNode.fatherPath === newNode.path || notValidMove) return
     const checkResult = await this.context.projectManager.checkFileName(oldNode.path, newNode.path)
-    if (!checkResult.isExisit) {
+    if (!checkResult.isExist) {
       await this.context.projectManager.moveOps({
         from: oldNode.path,
         dest: checkResult.finalPath,
@@ -213,6 +215,20 @@ export default class Workspace extends Component {
       next: nextFunc,
       key: 'skipMoveConfirm'
     })
+  }
+
+  async duplicateFile(node) {
+    await this.context.projectManager.copyOps({from: node.path, to: node.path})
+  }
+
+  async copyFile(oldNode, newNode, needMove = false) {
+    newNode
+        ? await this.context.projectManager.copyOps({
+          from: oldNode.path,
+          to: newNode.path,
+          needMove
+        })
+        : await this.duplicateFile(oldNode)
   }
 
   saveAll = async () => {
@@ -344,6 +360,7 @@ export default class Workspace extends Component {
             initialPath={initial.path}
             onSelect={this.openFile}
             move={this.openMoveConfirmModal}
+            copy={this.copyFile}
             readOnly={readOnly}
             contextMenu={makeContextMenu(contextMenu, this.context.projectManager)}
           />
