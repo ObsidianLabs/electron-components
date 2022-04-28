@@ -6,9 +6,11 @@ import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import StatusTitle from './statusTitle'
-import { travelTree, updateErrorInfo, findFather } from './helper'
+import {travelTree, updateErrorInfo, findFather, findChildren} from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
 import PropTypes from 'prop-types'
+import useBatchLoad from './hooks/useBatchLoad'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -96,14 +98,19 @@ const replaceTreeNode = (treeData, curKey, child) => {
   loop(treeData)
 }
 
-const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, contextMenu, readOnly = false }, ref) => {
+const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
+  const cacheRef = React.useRef()
+  cacheRef.current = treeData
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([initialPath])
   const [persistDOM, setPersist] = useState(null)
   const [selectNode, setSelectNode] = useState(null)
+  const [moveNode, setMoveNode] = useState(null)
+  const [copyNode, setCopyNode] = useState(null)
+  const [isCopy, setIsCopy] = useState(true)
   const [dragTarget, setDragTarget] = useState('')
   const [prevDragEnter, setPrevDragEnter] = useState('')
   const [fatherNode, setFatherNode] = useState('')
@@ -258,44 +265,39 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
         replaceTreeNode(tempTree, directory.path, directory.children)
         setLeaf(tempTree, tempTree[0].path)
         setTreeData(tempTree)
-        setSelectNode(tempTree[0])
       }
     }
 
     const initTree = async () => {
       projectManager.onRefreshDirectory(refreshDirectory) // register refreshDirectory event to BaseProjectManager
-      await fetchTreeData()
+      await fetchTreeData(true)
     }
 
-    const fetchTreeData = async () => {
+    const fetchTreeData = async (initFetch = false) => {
       const treeData = await projectManager.loadRootDirectory()
       setLeaf([treeData], treeData.path)
       setTreeData([treeData])
-      setSelectNode(treeData)
       setExpandKeys([treeData.path])
       treeRef.current && (treeRef.current.state.loadedKeys = [])
-    }
-
-    const handleLoadData = treeNode => {
-      return new Promise(async (resolve, reject) => {
-        !treeNode.children && resolve()
-        const tempTreeData = cloneDeep(treeData)
-        try {
-          const newData = await projectManager.loadDirectory(treeNode)
-          newData.length === 0 && resolve()
-          getNewTreeData(tempTreeData, treeNode.path, newData)
-          setTreeData(tempTreeData)
-          updateTitle(...tempTreeData)
-          setTimeout(resolve, 100)
-        } catch (e) {
-          reject(e)
-        }
-      })
+      if (initFetch) {
+        const ReadMeNode = projectManager.remote
+            ? findChildren(treeData, 'readme.md')
+           : findChildren(treeData, 'config.json')
+        setSelectNode(ReadMeNode)
+      }
     }
 
     const handleSelect = (_, { node }) => {
+      setSelectNode(node)
       node.isLeaf && onSelect(node)
     }
+
+    const handleLoadData = useBatchLoad({
+      treeData: prevTreeData.current,
+      projectManager,
+      getNewTreeData,
+      setTreeData
+    })
 
     const handleExpand = (keys, { node }) => {
       if (node.root || !!dragTarget) return
@@ -325,8 +327,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
 
     const handleDragStart = ({ event, node }) => {
       travelTree(...treeData, changeOwnFather, node) // disable father node style
-      event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.effectAllowed = 'copyMove'
       event.currentTarget.id = 'drag--active'
       event.dataTransfer.setDragImage(event.target, 3, 5)
     }
@@ -336,14 +337,24 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
       travelTree(...treeData, changeNewFather, node)
     }
 
+    const handleDragOver = ({ event }) => {
+      if (projectManager.remote) return
+      setIsCopy(event.altKey)
+      event.dataTransfer.dropEffect = event.altKey ? 'copy' : 'move'
+    }
+
     const handleDragEnd = ({ event, node }) => {
       enableHighLightBlock(...treeData, false)
       resetOwnFather(fatherNode) // reset father node style
       event.currentTarget.id = ''
+      setIsCopy(false)
     }
 
     const handleDrop = ({ node, dragNode }) => {
-      move(dragNode, node, dragNode)
+      if (node.path === dragNode.path) return
+      isCopy
+       ? copy(dragNode, node, true)
+          : move(dragNode, node)
     }
 
     const handleMouseEnter = ({ event }) => {
@@ -384,6 +395,41 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
       }
     }
 
+    const findEvent = (name) => treeNodeContextMenu.find(item => item && item.text === name)
+
+    useHotkeys('ctrl+del, cmd+backspace', () => {
+      const deleteEvent = findEvent('Delete')
+      deleteEvent.onClick(selectNode)
+    }, [treeNodeContextMenu, selectNode])
+
+    useHotkeys('ctrl+x, cmd+x', () => {
+      if (projectManager.remote) return
+      setMoveNode(selectNode)
+      setCopyNode(null)
+    }, [treeNodeContextMenu, selectNode, copyNode])
+
+    useHotkeys('ctrl+c, cmd+c', () => {
+      if (projectManager.remote) return
+      setCopyNode(selectNode)
+      setMoveNode(null)
+    }, [treeNodeContextMenu, selectNode, copyNode])
+
+    useHotkeys('ctrl+v, cmd+v', () => {
+      if (projectManager.remote) return
+      if (moveNode && !moveNode.root && selectNode.path !== moveNode.path) { // handle move event
+        move(moveNode, selectNode)
+        setMoveNode(null)
+        return
+      }
+
+      if (copyNode && !copyNode.root) { // handle copy event
+        const sameNode = copyNode.path === selectNode.path
+        sameNode
+            ? copy(copyNode) // handle copy event without given a new path of copied file
+            : copy(copyNode, selectNode, true) // handle copy event with given a new path of copied file
+      }
+    }, [treeNodeContextMenu, copyNode, selectNode])
+
     const onDebounceExpand = debounce(expandFolderNode, 200, { leading: true })
 
     const onDebounceDrop = debounce(handleDrop, 200, { leading: true })
@@ -421,6 +467,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, initialPath, cont
           onSelect={handleSelect}
           onDragStart={handleDragStart}
           onDragEnter={onDebounceDrag}
+          onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -440,7 +487,9 @@ FileTree.propTypes = {
   onSelect: PropTypes.func,
   initialPath: PropTypes.string,
   contextMenu: PropTypes.object,
-  readOnly: PropTypes.func
+  readOnly: PropTypes.func,
+  copy: PropTypes.func,
+  move: PropTypes.func
 }
 
 // TOOD: refactor the dir contruct of the service

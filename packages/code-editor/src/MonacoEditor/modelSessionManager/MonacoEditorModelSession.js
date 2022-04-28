@@ -143,7 +143,6 @@ export default class MonacoEditorModelSession {
     }
 
     monacoEditor.updateOptions({ readOnly: this.readOnly })
-    monacoEditor.focus()
   }
 
   set decorations (decorations = []) {
@@ -170,7 +169,7 @@ export default class MonacoEditorModelSession {
     if (!this._model) {
       return
     }
-    
+
     // const textLines = text.split('\n')
     // if (textLines.length === 4 || textLines.length === 3) {
     //   const [spaces, tildes] = textLines[2].split('^')
@@ -184,7 +183,7 @@ export default class MonacoEditorModelSession {
     //     endColumn = wordAtPosition.endColumn
     //   }
     // }
-    
+
     if (typeof row === 'number') {
       if (length) {
         return {

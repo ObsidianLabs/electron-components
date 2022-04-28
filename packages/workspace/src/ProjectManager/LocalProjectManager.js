@@ -170,7 +170,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  async checkExsist (path) {
+  async checkExist (path) {
     const { fs } = fileOps.current
     return !!(await fs.promises.stat(path).catch(() => false))
   }
@@ -180,10 +180,10 @@ export default class LocalProjectManager extends BaseProjectManager {
     const newDir = await this.getDir(newPath)
     const isFileType = await this.isFile(oldPath)
     const { name, ext } = path.parse(oldPath)
-    const finalPath = isFileType ? `${newDir}/${name}${ext}` : `${newDir}/${name}`
 
+    const finalPath = isFileType ? `${newDir}/${name}${ext}` : `${newDir}/${name}`
     return {
-      isExisit: await this.checkExsist(finalPath),
+      isExist: await this.checkExist(finalPath),
       finalPath
     }
   }
@@ -199,20 +199,41 @@ export default class LocalProjectManager extends BaseProjectManager {
     }
   }
 
-  async copyOps({ from, to }) {
+  async copyOps({ from, to, needMove = false }) {
+    let dest
     const { path } = fileOps.current
-    const toDir = await this.getDir(to)
+    let toDir = await this.getDir(to)
     const fromIsFile = await this.isFile(from)
     const { name: fromName, ext: fromExt } = path.parse(from)
-    let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
-    let safeCount = 0
+    const matchRule = fromIsFile ? /(?<=copy)\d*(?=\.)/g : /(?<=copy)\d*/g
+    const hasCopyName = from.match(matchRule)
+    const getCount = mathArr => +(Number(mathArr[0]) + 1)
 
-    while (!await this.copy(from, dest) && safeCount < 10) {
-      const matched = dest.match(/(?<=copy)\d*(?=\.)/g)
-      safeCount++
+    if (fromIsFile) {
+      dest = hasCopyName
+          ? from.replace(matchRule, getCount(hasCopyName))
+          : needMove ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}-copy1${fromExt}`
+    } else {
+      const copiedName = toDir.replace(fromName, `${fromName}-copy1`)
+      dest = hasCopyName
+          ? from.replace(matchRule, getCount(hasCopyName))
+          : needMove ? `${toDir}/${fromName}` : copiedName
+    }
+
+    while (await fileOps.current.pathExist(dest)) {
+      const matched = dest.match(matchRule)
+
       if (matched) {
-        dest = dest.replace(/(?<=copy)\d*(?=\.)/g, Number(matched[0]) + 1)
+        dest = dest.replace(matchRule, getCount(matched))
+      } else {
+        const copiedName = toDir.replace(fromName, `${fromName}-copy1`)
+        dest = fromIsFile ? `${toDir}/${fromName}-copy1${fromExt}` : copiedName
       }
+    }
+    try {
+      await this.copy(from, dest)
+    } catch (e) {
+      throw new Error(e)
     }
   }
 

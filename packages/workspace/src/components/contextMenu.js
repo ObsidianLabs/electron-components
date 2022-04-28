@@ -23,12 +23,13 @@ const openInTerminal = node => {
   fileOps.current.openInTerminal(basePath)
 }
 
-export const registerHandlers = ({ newFile, newFolder, rename, deleteFile, openFile }) => {
+export const registerHandlers = ({ newFile, newFolder, rename, deleteFile, openFile, duplicateFile }) => {
   handlers.newFile = newFile
   handlers.newFolder = newFolder
   handlers.rename = rename
   handlers.deleteFile = deleteFile
   handlers.openFile = openFile
+  handlers.duplicateFile = duplicateFile
 }
 
 let contextMenu
@@ -43,6 +44,7 @@ if (platform.isDesktop) {
     { text: 'Open in Terminal', onClick: openInTerminal },
     null,
     { text: 'Copy Path', onClick: copyPath },
+    { text: 'Duplicate', onClick: node => handlers.duplicateFile(node) },
     null,
     { text: 'Rename', onClick: node => handlers.rename(node) },
     { text: 'Delete', onClick: node => handlers.deleteFile(node) }
