@@ -36,7 +36,8 @@ export class ProjectActions {
 
   async openProject () {
     try {
-      const projectRoot = await fileOps.current.chooseFolder()
+      const workspacePath = redux.getState().workspacePath
+      const projectRoot = await fileOps.current.chooseFolder(workspacePath, 'openProject')
       const { base } = fileOps.current.path.parse(projectRoot)
       const author = 'local'
       const projectId = Base64.encode(projectRoot)
