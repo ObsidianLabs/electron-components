@@ -143,11 +143,8 @@ export default class NewProjectModal extends PureComponent {
     }
 
     let placeholder = 'Project path'
-    if (workspacePath) {
-      placeholder = workspacePath
-    }
-    if (!projectRoot && !workspacePath) {
-      placeholder = this.path.join(fileOps.current.workspace, name || '')
+    if (!projectRoot) {
+      placeholder = workspacePath ? workspacePath : this.path.join(fileOps.current.workspace, name || '')
     }
 
     return (
