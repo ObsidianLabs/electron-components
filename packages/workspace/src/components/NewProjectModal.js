@@ -18,14 +18,16 @@ import fileOps from '@obsidians/file-ops'
 import Auth from '@obsidians/auth'
 import notification from '@obsidians/notification'
 import Terminal from '@obsidians/terminal'
+import redux from '@obsidians/redux'
 
 import ProjectManager from '../ProjectManager'
 import actions from '../actions'
 
 export default class NewProjectModal extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
+    const workspacePath = redux.getState().workspacePath
     this.state = {
       remote: platform.isWeb,
       name: '',
@@ -35,6 +37,7 @@ export default class NewProjectModal extends PureComponent {
       group: props.defaultGroup,
       creating: false,
       showTerminal: false,
+      workspacePath
     }
 
     this.modal = React.createRef()
@@ -45,14 +48,16 @@ export default class NewProjectModal extends PureComponent {
     actions.newProjectModal = this
   }
 
-  openModal (remote) {
+  openModal(remote) {
     const { defaultTemplate, defaultGroup } = this.props
+    const workspacePath = redux.getState().workspacePath
     this.setState({
       remote,
       template: defaultTemplate,
       group: defaultGroup,
       creating: false,
       showTerminal: false,
+      workspacePath,
     })
     this.forceUpdate()
     this.modal.current.openModal()
@@ -61,7 +66,8 @@ export default class NewProjectModal extends PureComponent {
 
   chooseProjectPath = async () => {
     try {
-      const projectRoot = await fileOps.current.chooseFolder()
+      const { workspacePath } = this.state
+      const projectRoot = await fileOps.current.chooseFolder(workspacePath, 'openProject')
       this.setState({ projectRoot })
     } catch (e) {
 
@@ -71,12 +77,12 @@ export default class NewProjectModal extends PureComponent {
   onCreateProject = async () => {
     this.setState({ creating: true })
 
-    const { remote, name, template, group } = this.state
+    const { remote, name, template, group, workspacePath } = this.state
 
     let projectRoot
     if (!remote) {
       if (!this.state.projectRoot) {
-        projectRoot = this.path.join(fileOps.current.workspace, name)
+        projectRoot = this.path.join(workspacePath ? workspacePath : fileOps.current.workspace, name)
       } else if (!this.path.isAbsolute(this.state.projectRoot)) {
         projectRoot = this.path.join(fileOps.current.workspace, this.state.projectRoot)
       } else {
@@ -87,7 +93,7 @@ export default class NewProjectModal extends PureComponent {
     const created = await this.createProject({ projectRoot, name, template, group })
 
     if (created) {
-      this.modal.current.closeModal()
+      this.modal.current?.closeModal()
       this.onConfirm(created)
       this.setState({ name: '', projectRoot: '', template: this.props.defaultTemplate, creating: false, showTerminal: false })
     } else {
@@ -95,7 +101,7 @@ export default class NewProjectModal extends PureComponent {
     }
   }
 
-  async createProject ({ notify = true, ...options }, stage = '') {
+  async createProject({ notify = true, ...options }, stage = '') {
     try {
       const Manager = this.state.remote ? ProjectManager.Remote : ProjectManager.Local
       const created = await Manager.createProject(options, stage)
@@ -131,13 +137,17 @@ export default class NewProjectModal extends PureComponent {
   }
 
   renderProjectPath = () => {
-    if (this.state.remote) {
+    const { workspacePath, projectRoot, remote, name } = this.state
+    if (remote) {
       return null
     }
 
     let placeholder = 'Project path'
-    if (!this.state.projectRoot) {
-      placeholder = this.path.join(fileOps.current.workspace, this.state.name || '')
+    if (workspacePath) {
+      placeholder = workspacePath
+    }
+    if (!projectRoot && !workspacePath) {
+      placeholder = this.path.join(fileOps.current.workspace, name || '')
     }
 
     return (
@@ -146,7 +156,7 @@ export default class NewProjectModal extends PureComponent {
         <InputGroup>
           <Input
             placeholder={placeholder}
-            value={this.state.projectRoot}
+            value={projectRoot}
             onChange={e => this.setState({ projectRoot: e.target.value })}
           />
           <InputGroupAddon addonType='append'>
@@ -159,7 +169,7 @@ export default class NewProjectModal extends PureComponent {
     )
   }
 
-  renderTemplate () {
+  renderTemplate() {
     const { noTemplate, templates } = this.props
     const { remote, template } = this.state
     if (noTemplate) {
@@ -178,7 +188,7 @@ export default class NewProjectModal extends PureComponent {
 
   renderOtherOptions = () => null
 
-  render () {
+  render() {
     const { projectNameProps, templates } = this.props
     const { name, invalid, creating, showTerminal } = this.state
 
@@ -201,7 +211,7 @@ export default class NewProjectModal extends PureComponent {
         />
         {this.renderTemplate()}
         {this.renderOtherOptions()}
-        <div style={{ display: showTerminal ? 'block' : 'none'}}>
+        <div style={{ display: showTerminal ? 'block' : 'none' }}>
           <Terminal
             ref={this.terminal}
             active={showTerminal}
