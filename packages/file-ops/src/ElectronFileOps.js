@@ -1,6 +1,7 @@
 // TODO: re integrate file ops with workspace
 import { IpcChannel } from '@obsidians/ipc'
 import FileOps from './FileOps'
+const path = require('path')
 
 export default class ElectronFileOps extends FileOps {
   constructor () {
@@ -10,7 +11,6 @@ export default class ElectronFileOps extends FileOps {
 
     this.channel = new IpcChannel('file-ops')
     this.electron = window.require('electron')
-    this.trash = window.require('trash')
 
     this.channel.invoke('getPaths').then(result => {
       this.homePath = result.homePath
@@ -161,6 +161,10 @@ export default class ElectronFileOps extends FileOps {
   }
 
   async deleteFile (filePath) {
-    return await this.trash([filePath])
+    const dir = path.dirname(filePath)
+    const baseName = path.basename(filePath)
+    await this.channel.invoke('trashFile', path.join(dir, baseName)).catch(e => {
+      console.error(e)
+    })
   }
 }
