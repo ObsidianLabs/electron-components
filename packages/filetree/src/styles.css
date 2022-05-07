@@ -70,7 +70,7 @@
 }
 
 .rc-tree .rc-tree-treenode.rc-tree-treenode-selected {
-  background-color: #636cb4 !important;
+  background-color: var(--color-primary);
 }
 
 .rc-tree .rc-tree-treenode .rc-tree-node-content-wrapper {
