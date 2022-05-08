@@ -37,7 +37,8 @@ export default class WorkspaceSettingModal extends PureComponent {
 
   chooseProjectPath = async () => {
     try {
-      const projectRoot = await fileOps.current.chooseFolder()
+      const workspacePath = redux.getState().workspacePath
+      const projectRoot = await fileOps.current.chooseFolder(workspacePath, 'openProject')
       redux.dispatch('SETTING_WORKSPACE_PATH', projectRoot)
       this.setState({ projectRoot })
     } catch (e) {
