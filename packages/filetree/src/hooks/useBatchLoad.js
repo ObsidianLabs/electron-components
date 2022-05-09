@@ -14,13 +14,13 @@ const useBatchLoad = ({ treeData, projectManager, getNewTreeData, setTreeData })
       } catch (e) {
         reject(e)
       }
-      task.push({ key: treeNode.path, value: folderData })
+      task.push({ pathKey: treeNode.path, pathValue: folderData })
       clearTimeout(timer)
       timer = setTimeout(() => {
         let tempTreeData = cloneDeep(treeData)
         task.forEach(item => {
           Object.keys(item).length === 0 && resolve()
-          getNewTreeData(tempTreeData, item.key, item.value)
+          getNewTreeData(tempTreeData, item.pathKey, item.pathValue)
         })
         setTreeData(tempTreeData)
         waitingTime = 200
