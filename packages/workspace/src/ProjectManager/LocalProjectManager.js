@@ -42,7 +42,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     if (await this.isMainValid()) {
       return { initial: { path: this.mainFilePath, pathInProject: this.mainFilePath }, projectSettings }
     }
-    return { initial: { path: this.settingsFilePath, pathInProject: this.settingsFilePath }, projectSettings }
+    return { initial: { path: this.pathForProjectFile('README.md'), pathInProject: this.settingsFilePath }, projectSettings }
   }
 
   pathForProjectFile(relativePath) {
@@ -212,9 +212,9 @@ export default class LocalProjectManager extends BaseProjectManager {
     if (fromIsFile) {
       dest = hasCopyName
           ? from.replace(matchRule, getCount(hasCopyName))
-          : needMove ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}-copy1${fromExt}`
+          : needMove ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName} copy1${fromExt}`
     } else {
-      const copiedName = toDir.replace(fromName, `${fromName}-copy1`)
+      const copiedName = toDir.replace(fromName, `${fromName} copy1`)
       dest = hasCopyName
           ? from.replace(matchRule, getCount(hasCopyName))
           : needMove ? `${toDir}/${fromName}` : copiedName
@@ -226,10 +226,11 @@ export default class LocalProjectManager extends BaseProjectManager {
       if (matched) {
         dest = dest.replace(matchRule, getCount(matched))
       } else {
-        const copiedName = toDir.replace(fromName, `${fromName}-copy1`)
-        dest = fromIsFile ? `${toDir}/${fromName}-copy1${fromExt}` : copiedName
+        const copiedName = toDir.replace(fromName, `${fromName} copy1`)
+        dest = fromIsFile ? `${toDir}/${fromName} copy1${fromExt}` : copiedName
       }
     }
+
     try {
       await this.copy(from, dest)
     } catch (e) {

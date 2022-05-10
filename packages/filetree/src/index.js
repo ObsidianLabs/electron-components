@@ -6,7 +6,11 @@ import './styles.css'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.min.css'
 import StatusTitle from './statusTitle'
-import {travelTree, updateErrorInfo, findFather, findChildren} from './helper'
+import { travelTree,
+  updateErrorInfo,
+  findFather,
+  findChildren,
+  filterDuplicate } from './helper'
 import { modelSessionManager } from '@obsidians/code-editor'
 import PropTypes from 'prop-types'
 import useBatchLoad from './hooks/useBatchLoad'
@@ -70,11 +74,9 @@ const getNewTreeData = (treeData, curKey, child) => {
   const loop = data => {
     data.forEach(item => {
       if (curKey.indexOf(item.path) === 0) {
-        if (item.children?.length > 0) {
-          loop(item.children)
-        } else {
-          item.children = child
-        }
+        item.children?.length > 0
+            ? loop(item.children)
+            : item.children = item.key === curKey ? child : []
       }
     })
   }
@@ -101,8 +103,6 @@ const replaceTreeNode = (treeData, curKey, child) => {
 const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
-  const cacheRef = React.useRef()
-  cacheRef.current = treeData
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([initialPath])
@@ -238,7 +238,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
             handleExpand(expandedKeys.concat([key]),{node: ref.current.activeNode})
           }
         }
-        // treeRef.current.onNodeExpand(event, node)
       },
       setNoActive() {
         setSelectedKeys([])
@@ -280,11 +279,28 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
       setExpandKeys([treeData.path])
       treeRef.current && (treeRef.current.state.loadedKeys = [])
       if (initFetch) {
-        const ReadMeNode = projectManager.remote
-            ? findChildren(treeData, 'readme.md')
-           : findChildren(treeData, 'config.json')
-        setSelectNode(ReadMeNode)
+        setSelectedKeys([initialPath])
+        setSelectNode(findChildren(treeData, initialPath))
       }
+    }
+
+    const handleClick = (event, node) => {
+      onDebounceClick(event, node)
+    }
+
+    const clickFolderNode = (event, node) => {
+      if (node.isLeaf) return
+      if (treeRef.current) {
+        treeRef.current.onNodeExpand(event, node)
+        setSelectNode(node)
+      }
+    }
+
+    const handleExpand = (keys, { node }) => {
+      if (node.root || !!dragTarget || node.isLeaf) return
+      setAutoExpandParent(false)
+      setExpandKeys(keys)
+      setSelectNode(node)
     }
 
     const handleSelect = (_, { node }) => {
@@ -298,21 +314,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
       getNewTreeData,
       setTreeData
     })
-
-    const handleExpand = (keys, { node }) => {
-      if (node.root || !!dragTarget) return
-      setAutoExpandParent(false)
-      setExpandKeys(keys)
-      setSelectNode(node)
-    }
-
-    const expandFolderNode = (event, node) => {
-      if (node.isLeaf) return
-      if (treeRef.current) {
-        treeRef.current.onNodeExpand(event, node)
-        setSelectNode(node)
-      }
-    }
 
     const enableHighLightBlock = (tree, needHighLight) => {
       const refreshClassName = (node) => {
@@ -367,10 +368,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
       event.currentTarget.parentElement.id = ''
     }
 
-    const handleClick = (event, node) => {
-      onDebounceExpand(event, node)
-    }
-
     const disableFather = (node, targetNode) => {
       node.className = 'father--disable'
       setDragTarget(targetNode)
@@ -412,7 +409,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
       if (projectManager.remote) return
       setCopyNode(selectNode)
       setMoveNode(null)
-    }, [treeNodeContextMenu, selectNode, copyNode])
+    }, [treeNodeContextMenu, selectNode, copyNode, selectedKeys])
 
     useHotkeys('ctrl+v, cmd+v', () => {
       if (projectManager.remote) return
@@ -428,9 +425,10 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
             ? copy(copyNode) // handle copy event without given a new path of copied file
             : copy(copyNode, selectNode, true) // handle copy event with given a new path of copied file
       }
-    }, [treeNodeContextMenu, copyNode, selectNode])
+      setExpandKeys(filterDuplicate([...expandedKeys, selectNode.key]))
+    }, [treeNodeContextMenu, copyNode, selectNode, expandedKeys])
 
-    const onDebounceExpand = debounce(expandFolderNode, 200, { leading: true })
+    const onDebounceClick = debounce(clickFolderNode, 200, { leading: true })
 
     const onDebounceDrop = debounce(handleDrop, 200, { leading: true })
 

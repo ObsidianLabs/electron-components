@@ -53,6 +53,14 @@ class FileOpsChannel extends IpcChannel {
       this.exec(`gnome-terminal --working-directory=${filePath}`)
     }
   }
+
+  async trashFile (filePath) {
+    try {
+      await shell.trashItem(path.normalize(filePath))
+    } catch (e) {
+      throw new Error(e)
+    }
+  }
 }
 
 module.exports = FileOpsChannel
