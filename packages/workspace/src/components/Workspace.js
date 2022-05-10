@@ -68,6 +68,7 @@ export default class Workspace extends Component {
       openFile: node => this.openFile(node, true),
       duplicateFile: node => this.duplicateFile(node)
     })
+    this.setFileTreeActive = this.setFileTreeActive.bind(this)
     this.copyFile = this.copyFile.bind(this)
     this.duplicateFile = this.duplicateFile.bind(this)
     this.openDeleteModal = this.openDeleteModal.bind(this)
@@ -99,23 +100,20 @@ export default class Workspace extends Component {
 
   tabFromPath = (filePath, remote, pathInProject) => ({ path: filePath, key: filePath, remote, pathInProject })
 
+  setFileTreeActive (path = '') {
+    this.filetree.current.setActive(path)
+  }
+
   openFile = ({ path, remote, pathInProject, isLeaf }, setTreeActive) => {
-    if (isLeaf) {
-      this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject))
-    }
-    if (path.startsWith('custom:')) {
-      this.filetree.current.setNoActive()
-    } else if (setTreeActive) {
-      this.filetree.current.setActive(path)
-    }
+    isLeaf && this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject)) // it triggers onSelectTab function eventually
+    path.startsWith('custom:') && this.setFileTreeActive()
+    setTreeActive && this.setFileTreeActive(path)
   }
 
   onSelectTab = selectedTab => {
-    if (selectedTab.path && !selectedTab.path.startsWith('custom:')) {
-      this.filetree.current.setActive(selectedTab.path)
-    } else {
-      this.filetree.current.setNoActive()
-    }
+    selectedTab.path && !selectedTab.path.startsWith('custom:')
+        ? this.setFileTreeActive(selectedTab.path)
+        : this.setFileTreeActive()
   }
 
   closeAllTabs = () => {
