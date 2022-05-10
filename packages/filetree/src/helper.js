@@ -82,7 +82,7 @@ const checkFatherNode = (curNode, targetNode, fn) => {
   return false
 }
 
-const findFather = (fn) => (curNode, targetName) => checkFatherNode(curNode, targetName, fn)
+const findFather = (fn) => (curNode, targetNode) => checkFatherNode(curNode, targetNode, fn)
 
 const findChildren = (treeData, path) => treeData.children.find(item => item.path === path)
 

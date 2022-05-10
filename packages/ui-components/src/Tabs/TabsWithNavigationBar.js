@@ -9,7 +9,7 @@ export default class TabsWithNavigationBar extends PureComponent {
     this.state = {
       noTab: false,
       tab: this.props.initialSelected,
-      starredValues: new Set(this.props.starred),
+      starredValues: new Set(this.props.starred)
     }
     this.tabs = React.createRef()
     this.navbar = React.createRef()
@@ -89,7 +89,7 @@ export default class TabsWithNavigationBar extends PureComponent {
       onRefresh,
       NavbarButtons = null,
       tabContextMenu = [],
-      children,
+      children
     } = this.props
 
     return (
