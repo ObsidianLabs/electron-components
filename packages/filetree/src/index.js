@@ -183,6 +183,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
     }
 
     const handleEmptyTreeContextMenu = (event) => {
+      if (event.target.className.includes('react-contexify')) return
       setIsBlankAreaRightClick(true)
       setRightClikNode(treeData[0])
       removePersist()
