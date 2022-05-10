@@ -17,11 +17,11 @@ export default class ListItemDockerImage extends PureComponent {
     versions: []
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false
   }
 
@@ -102,7 +102,7 @@ export default class ListItemDockerImage extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const {
       title,
       link,
@@ -115,11 +115,13 @@ export default class ListItemDockerImage extends PureComponent {
           <div>
             <h5>
               {this.renderIcon()}
-              <a
-                href='#'
-                className='text-white'
-                onClick={() => fileOps.current.openLink(link)}
-              >{title}</a>
+              {
+                link ? <a
+                  href='#'
+                  className='text-white'
+                  onClick={() => fileOps.current.openLink(link)}
+                >{title}</a> : <span className='text-white'>{title}</span>
+              }
             </h5>
             {this.renderSubtitle(subtitle)}
           </div>
