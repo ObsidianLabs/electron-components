@@ -1,5 +1,6 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
+import { t } from '@obsidians/i18n'
 import actions from './actions'
 
 const projectContextMenus = id => {
@@ -43,7 +44,7 @@ export default function navbarItem(projects, selected, username = 'local') {
   if (platform.isWeb && username === 'local') {
     return {
       route: 'local',
-      title: 'Project',
+      title: t('header.title.project'),
       icon: 'fas fa-file-code',
       selected,
       dropdown: [{ none: true }],
@@ -91,21 +92,21 @@ export default function navbarItem(projects, selected, username = 'local') {
   if (platform.isDesktop) {
     projectDropdown.unshift({
       id: 'open-project',
-      name: 'Open Project...',
+      name: `${t('header.title.openProject')}...`,
       icon: 'fas fa-folder-plus',
       onClick: () => actions.openProject(),
     })
   }
   projectDropdown.unshift({
     id: 'new-project',
-    name: 'Create Project...',
+    name: `${t('header.title.createProject')}...`,
     icon: 'fas fa-plus',
     onClick: () => actions.newProject(platform.isWeb),
   })
 
   return {
     route: selected.author || username,
-    title: 'Project',
+    title: t('header.title.project'),
     icon: 'fas fa-file-code',
     selected,
     dropdown: projectDropdown,

@@ -11,8 +11,7 @@
     "filehound": "^1.17.4",
     "fs-extra": "^9.1.0",
     "lodash": "^4.17.20",
-    "path-browserify": "^1.0.1",
-    "trash": "^7.0.0"
+    "path-browserify": "^1.0.1"
   },
   "peerDependencies": {
     "aws-sdk": "^2.830.0",

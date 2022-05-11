@@ -9,6 +9,7 @@ import { withRouter } from 'react-router'
 
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
+import { t } from '@obsidians/i18n'
 
 class UserProfile extends PureComponent {
   state = {
@@ -50,7 +51,7 @@ class UserProfile extends PureComponent {
     if (!profile?.username) {
       return <>
         <Media heading className='text-muted'>
-          (not logged in)
+          ({t('header.title.notLogin')})
         </Media>
         {/* <p className='break-line'>Log in to synchronize your projects on the cloud.</p> */}
         <p className='break-line'>{this.renderLoginButton()}</p>
@@ -81,7 +82,7 @@ class UserProfile extends PureComponent {
         key={`user-profile-login-${provider}`}
         onClick={() => Auth.login(this.props.history, provider)}
       >
-        <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{providers.length > 1 ? `Login ${provider}` : 'Login'}
+        <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{providers.length > 1 ? `${t('header.title.login')} ${provider}` : t('header.title.login')}
       </Button>
     ))
   }

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { t } from '@obsidians/i18n'
 
 import {
   Modal,
@@ -85,7 +86,7 @@ export default class BaseModal extends PureComponent {
 
   toggle = () => this.closeModal()
 
-  renderConfirmButton = ({ onConfirm, colorConfirm = 'primary', confirmDisabled, textConfirm = 'Confirm', pending }) => {
+  renderConfirmButton = ({ onConfirm, colorConfirm = 'primary', confirmDisabled, textConfirm = t('component.text.confirm'), pending }) => {
     if (!onConfirm) {
       return null
     }
@@ -127,7 +128,7 @@ export default class BaseModal extends PureComponent {
       textActions,
       colorActions = [],
       onActions,
-      textCancel = 'Cancel',
+      textCancel = t('component.text.cancel'),
       colorCancel = 'default',
       noCancel,
       onAdditionAction,
