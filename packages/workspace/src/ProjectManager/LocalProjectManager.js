@@ -103,7 +103,7 @@ export default class LocalProjectManager extends BaseProjectManager {
       notification.error('No Project', 'Please open a project first.')
       return
     }
-
+    
     return await this.projectSettings.readSettings()
   }
 
