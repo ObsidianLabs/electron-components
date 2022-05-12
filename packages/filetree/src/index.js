@@ -21,6 +21,8 @@ let disablSetActive = false // stop useless setActive function when filetree tri
 
 let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
 
+let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
+
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
     return <i className='fas fa-file-code fa-fw mr-1' />
