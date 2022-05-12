@@ -14,7 +14,7 @@ const projectContextMenus = id => {
 
   return [
     {
-      text: `Open Containing Folder`,
+      text: t('project.openContainingFolder'),
       onClick: async project => {
         const result = await fileOps.current.openItem(project.path)
 
@@ -24,7 +24,7 @@ const projectContextMenus = id => {
       },
     },
     {
-      text: `Open in Terminal`,
+      text: t('project.openInTerminal'),
       onClick: async project => {
         const result = await fileOps.current.openInTerminal(project.path)
         if (result) {
@@ -34,7 +34,7 @@ const projectContextMenus = id => {
     },
     null,
     {
-      text: `Remove`,
+      text: t('remove'),
       onClick: project => actions.removeProject(project),
     },
   ]

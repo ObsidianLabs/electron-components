@@ -20,7 +20,6 @@ import notification from '@obsidians/notification'
 import Terminal from '@obsidians/terminal'
 import redux from '@obsidians/redux'
 import { t } from '@obsidians/i18n'
-
 import ProjectManager from '../ProjectManager'
 import actions from '../actions'
 
@@ -107,12 +106,12 @@ export default class NewProjectModal extends PureComponent {
       const Manager = this.state.remote ? ProjectManager.Remote : ProjectManager.Local
       const created = await Manager.createProject(options, stage)
       if (notify) {
-        notification.success('Successful', `New project <b>${options.name}</b> is created.`)
+        notification.success(t('project.success'), t('project.successText', {name: options.name}))
       }
       return created
     } catch (e) {
       // if (notify) {
-      notification.error('Cannot Create the Project', e.message)
+      notification.error(t('project.cannotCreate'), e.message)
       // }
       return false
     }

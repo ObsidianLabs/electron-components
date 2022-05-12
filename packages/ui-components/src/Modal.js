@@ -86,7 +86,7 @@ export default class BaseModal extends PureComponent {
 
   toggle = () => this.closeModal()
 
-  renderConfirmButton = ({ onConfirm, colorConfirm = 'primary', confirmDisabled, textConfirm = t('component.text.confirm'), pending }) => {
+  renderConfirmButton = ({ onConfirm, colorConfirm = 'primary', confirmDisabled, textConfirm = 'Confirm', pending }) => {
     if (!onConfirm) {
       return null
     }
@@ -100,7 +100,7 @@ export default class BaseModal extends PureComponent {
           disabled={!!confirmDisabled}
           onClick={onConfirm}
         >
-          {textConfirm}
+          {textConfirm == 'Confirm' ? t('component.text.confirm') : textConfirm}
         </Button>
       )
     }
@@ -191,7 +191,7 @@ export default class BaseModal extends PureComponent {
           </div>
           <div>
             { onAdditionAction && textAddition && <Button color={colorAddition} onClick={onAdditionAction}>{textAddition}</Button> }
-            { (!noCancel || !footerCancelIcon) && textCancel && <Button hidden={footerCancelIcon} color={colorCancel} onClick={this.toggle}>{textCancel}</Button> }
+            { (!noCancel || !footerCancelIcon) && textCancel && <Button hidden={footerCancelIcon} color={colorCancel} onClick={this.toggle}>{textCancel == 'Close' ? t('component.text.close') : textCancel}</Button> }
             {this.renderConfirmButton(this.props)}
           </div>
         </ModalFooter>
