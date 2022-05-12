@@ -15,13 +15,8 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import PropTypes from 'prop-types'
 import useBatchLoad from './hooks/useBatchLoad'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { t } from '@obsidians/i18n'
 
-let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
-
-let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
-
-let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
+let disableSetActive = false // stop useless setActive function when filetree trigger onSelect event
 
 const renderIcon = ({ data }) => {
   if (data.isLeaf) {
@@ -286,7 +281,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
     }
 
     const handleClick = (event, node) => {
-      disablSetActive = node.isLeaf
+      disableSetActive = node.isLeaf
       onDebounceClick(event, node)
     }
 
@@ -307,8 +302,8 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
     }
 
     const handleSetActive = (activeKey) => {
-      if (disablSetActive) {
-        disablSetActive = false
+      if (disableSetActive) {
+        disableSetActive = false
         return
       }
 
