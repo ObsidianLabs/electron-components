@@ -9,6 +9,7 @@ import {
 import debounce from 'lodash/debounce'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
+import { t } from '@obsidians/i18n'
 
 import actions from '../actions'
 
@@ -16,7 +17,7 @@ class DeleteButton extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      type: 'Delete Project',
+      type: t('project.del.title'),
       deleting: false,
       inputPlaceholder: '',
       name: '',
@@ -66,14 +67,14 @@ class DeleteButton extends PureComponent {
     }
 
     return <>
-      <h4 className='mt-4'>Others</h4>
-      <Button color='danger' onClick={this.openDeleteProjectModal}>Delete Project</Button>
+      <h4 className='mt-4'>{t('project.del.others')}</h4>
+      <Button color='danger' onClick={this.openDeleteProjectModal}>{t('project.del.title')}</Button>
       <Modal
         ref={this.modal}
         title={this.state.type}
-        textConfirm='Delete'
+        textConfirm={t('delete')}
         colorConfirm='danger'
-        pending={this.state.deleting && 'Deleting...'}
+        pending={this.state.deleting && t('deleting')}
         noCancel={true}
         headerCancelIcon={this.state.deleting}
         footerCancelIcon={this.state.deleting}
@@ -84,8 +85,8 @@ class DeleteButton extends PureComponent {
           ref={this.input}
           label={
             <div>
-              You are about to permanently delete this project. This operation <b>CANNOT</b> be undone!
-              <div>Type <kbd>{platform.isWeb ? this.state.projectRoot : this.state.projectName}</kbd> to confirm</div>
+              {t('project.del.delText')}
+              <div>{t('project.del.type')} <kbd>{platform.isWeb ? this.state.projectRoot : this.state.projectName}</kbd> {t('project.del.toConf')}</div>
             </div>
           }
           placeholder={this.state.inputPlaceholder}
@@ -97,7 +98,7 @@ class DeleteButton extends PureComponent {
           className='color-danger' 
           hidden={(!this.state.name || (this.state.name && !this.state.confirmDisableStatus))}
           >
-          Project name does not match
+          {t('project.del.tips')}
         </div>
       </Modal>
     </>

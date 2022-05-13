@@ -8,6 +8,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 import keypairManager from './keypairManager'
 
@@ -78,16 +79,16 @@ export default class ImportKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
-        `Import Keypair Failed`,
-        `The keypair name <b>${name}</b> has already been used.`
+        t('keypair.failImport'),
+        t('keypair.failText', {name})
       )
       return
     }
 
     if (this.props.keypairs.find(k => k.address === keypair.address)) {
       notification.error(
-        `Import Keypair Failed`,
-        `Keypair for <b>${keypair.address}</b> already exists.`
+        t('keypair.failImport'),
+        t('keypair.failImportText', {address: keypair.address}),
       )
       return
     }
@@ -132,9 +133,9 @@ export default class ImportKeypairModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='Import Keypair'
-        textConfirm='Import'
-        pending={this.state.pending && 'Importing...'}
+        title={`${t('keypair.import')} ${t('keypair.keypair')}`}
+        textConfirm={t('keypair.import')}
+        pending={this.state.pending && `${t('keypair.importing')}...`}
         onConfirm={this.onConfirm}
         confirmDisabled={!name || !valid}
       >
@@ -142,12 +143,12 @@ export default class ImportKeypairModal extends PureComponent {
           ref={this.input}
           label='Name'
           maxLength='200'
-          placeholder='Please enter a name for the keypair'
+          placeholder={t('keypair.createPlaceholder')}
           onChange={name => this.setState({ name })}
         />
         {this.renderChainOptions()}
         <DebouncedFormGroup
-          label={`Enter the ${this.props.secretName.toLowerCase()} you want to import`}
+          label={t('keypair.inportLabel', {secretName: this.props.secretName.toLowerCase()})}
           maxLength='300'
           value={secret}
           onChange={this.onChange}

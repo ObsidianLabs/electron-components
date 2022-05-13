@@ -1,5 +1,6 @@
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
+import { t } from '@obsidians/i18n'
 import { ClipBoardService } from '@obsidians/filetree'
 const handlers = {}
 
@@ -35,31 +36,31 @@ export const registerHandlers = ({ newFile, newFolder, rename, deleteFile, openF
 let contextMenu
 if (platform.isDesktop) {
   contextMenu = [
-    { text: 'New File', onClick: node => handlers.newFile(node) },
-    { text: 'New Folder', onClick: node => handlers.newFolder(node) },
+    { text: 'New File', bilingualText: t('project.newFile'), onClick: node => handlers.newFile(node) },
+    { text: 'New Folder', bilingualText: t('project.newFolder'), onClick: node => handlers.newFolder(node) },
     null,
-    { text: 'Open', onClick: node => handlers.openFile(node) },
+    { text: 'Open', bilingualText: t('open'), onClick: node => handlers.openFile(node) },
     null,
-    { text: 'Open Containing Folder', onClick: showInFinder },
-    { text: 'Open in Terminal', onClick: openInTerminal },
+    { text: 'Open Containing Folder', bilingualText: t('project.openContainingFolder'), onClick: showInFinder },
+    { text: 'Open in Terminal', bilingualText: t('project.openInTerminal'), onClick: openInTerminal },
     null,
-    { text: 'Copy Path', onClick: copyPath },
-    { text: 'Duplicate', onClick: node => handlers.duplicateFile(node) },
+    { text: 'Copy Path', bilingualText: t('project.copyPath'), onClick: copyPath },
+    { text: 'Duplicate', bilingualText: t('duplicate'), onClick: node => handlers.duplicateFile(node) },
     null,
-    { text: 'Rename', onClick: node => handlers.rename(node) },
-    { text: 'Delete', onClick: node => handlers.deleteFile(node) }
+    { text: 'Rename', bilingualText: t('rename'), onClick: node => handlers.rename(node) },
+    { text: 'Delete', bilingualText: t('delete'), onClick: node => handlers.deleteFile(node) }
   ]
 } else {
   contextMenu = [
-    { text: 'New File', onClick: node => handlers.newFile(node) },
-    { text: 'New Folder', onClick: node => handlers.newFolder(node) },
+    { text: 'New File', bilingualText: t('project.newFile'), onClick: node => handlers.newFile(node) },
+    { text: 'New Folder', bilingualText: t('project.newFolder'), onClick: node => handlers.newFolder(node) },
     // null,
-    // { text: 'Download' },
+    // { text: '', bilingualText: 'Download' },
     null,
-    { text: 'Copy Path', onClick: copyPath },
+    { text: 'Copy Path', bilingualText: t('project.copyPath'), onClick: copyPath },
     null,
-    { text: 'Rename', onClick: node => handlers.rename(node) },
-    { text: 'Delete', onClick: node => handlers.deleteFile(node) }
+    { text: 'Rename', bilingualText: t('rename'), onClick: node => handlers.rename(node) },
+    { text: 'Delete', bilingualText: t('delete'), onClick: node => handlers.deleteFile(node) }
   ]
 }
 

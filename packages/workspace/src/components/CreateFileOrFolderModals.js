@@ -4,6 +4,7 @@ import {
   Modal,
   DebouncedFormGroup
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import notification from '@obsidians/notification'
 import actions from '../actions'
@@ -41,7 +42,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
       try {
         filePath = await this.props.projectManager.createNewFile(basePath, name)
       } catch (e) {
-        notification.error('Cannot Create File', e.message)
+        notification.error(t('project.cannotCreateFile'), e.message)
         return
       }
       setTimeout(() => {
@@ -51,7 +52,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
       try {
         await this.props.projectManager.createNewFolder(basePath, name)
       } catch (e) {
-        notification.error('Cannot Create Folder', e.message)
+        notification.error(t('project.cannotCreateFolder'), e.message)
         return
       }
     }
@@ -63,9 +64,9 @@ export default class CreateFileOrFolderModals extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={this.state.type === 'file' ? 'New File' : 'New Folder'}
-        textConfirm='Create'
-        pending={this.state.loading && 'Creating...'}
+        title={this.state.type === 'file' ? t('project.newFile') : t('project.newFolder')}
+        textConfirm={t('create')}
+        pending={this.state.loading && `${t('creating')}...`}
         confirmDisabled={!this.state.name}
         onConfirm={this.onCreate}
       >

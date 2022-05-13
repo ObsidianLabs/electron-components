@@ -8,6 +8,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
@@ -109,8 +110,8 @@ export default class Markdown extends Component {
       togglePublicToggling: false,
     })
     this.state.togglePublicModal.current.closeModal()
-    notification.success('Change Visibility Successful', 
-    `This project is now <b>${isPublic ? 'public' : 'private'}</b> ${isPublic ? 'and visible to anyone with the link.' : 'and only visible to yourself.'}`)
+    notification.success(t('project.features.changeSuccess'), 
+    `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
   }
 
   renderTogglePublicButton = () => {
@@ -125,9 +126,9 @@ export default class Markdown extends Component {
       onClick={this.togglePublic.bind(this)}
       style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
     >
-      { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> Toggling</span> }
-      { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> Public</span> }
-      { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash'/> Private</span> }
+      { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
+      { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
+      { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash'/> {t('project.features.Private')}</span> }
     </Button>
     )
   }
@@ -224,7 +225,7 @@ export default class Markdown extends Component {
     if (await modelSessionManager.projectManager.isFile(openningPath)) {
       modelSessionManager.openFile(openningPath)
     } else {
-      notification.error('File not exists', `There is no file at <b>${openningPath}</b>.`)
+      notification.error(t('project.features.fail'), t('project.features.failText', {openningPath}))
     }
   }
 
@@ -281,17 +282,17 @@ export default class Markdown extends Component {
             <Modal
               ref={this.state.togglePublicModal}
               size='md'
-              title={this.state.togglePublicSaved ? 'Change Project Visibility' : 'Some files are not saved'}
+              title={this.state.togglePublicSaved ? t('project.features.visibility') : t('project.features.notSaved')}
               children={this.state.togglePublicSaved ? 
-              <span>Are you sure to change this project to 
-                <b>{this.state.isPublic ? ' private' : ' public'}</b>
+              <span>{t('project.features.title')}
+                <b>{this.state.isPublic ? t('project.features.private') : t('project.features.public')}</b>
                 ? 
-                {this.state.isPublic ? ' Private projects are only visible to your self.' : ' Public projects are visible to anyone with the link.'}
+                {this.state.isPublic ? t('project.features.privateText') : t('project.features.publicText')}
                 </span> 
-              : 'You have unsaved files in this project. Please save before changing the project visibility.'}
+              : t('project.features.remind')}
               textConfirm={this.state.togglePublicSaved ? 'Confirm' : 'OK'}
               noCancel={this.state.togglePublicToggling || !this.state.togglePublicSaved}
-              pending={this.state.togglePublicToggling ? 'Changing...' : false}
+              pending={this.state.togglePublicToggling ? t('changing') : false}
               onConfirm={this.confirmTogglePublic.bind(this)}
             />
           </div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import NetworkAllLogoImg from './NetworkIcon'
+import { t } from '@obsidians/i18n'
 
 export default function (props) {
   const { title, selected, icon, Icon, iconUrl: networkLogoImg, id: networkGroupsId, width, noneIcon = 'fas fa-file-times' } = props
@@ -15,7 +16,7 @@ export default function (props) {
     subtitle = selected
   } else if (!selected) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
-    subtitle = '(None)'
+    subtitle = `(${t('header.title.none')})`
   } else {
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
     const imgSrc = NetworkAllLogoImg[(networkLogoImg ? networkLogoImg : networkGroupsId)]

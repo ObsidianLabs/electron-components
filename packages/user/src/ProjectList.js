@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import { ProjectPath, actions } from '@obsidians/workspace'
+import { t } from '@obsidians/i18n'
 
 export default class ProjectList extends PureComponent {
   removeProject = async project => {
@@ -56,7 +57,7 @@ export default class ProjectList extends PureComponent {
     if (!project.remote) {
       return (
         <DeleteButton
-          textConfirm='Click again to remove'
+          textConfirm={t('rmClickAgain')}
           onConfirm={() => this.removeProject(project)}
         />
       )

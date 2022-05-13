@@ -10,6 +10,7 @@ import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 import CodeEditorCollection from '@obsidians/code-editor'
 import FileTree from '@obsidians/filetree'
+import { t } from '@obsidians/i18n'
 
 import WorkspaceContext from '../WorkspaceContext'
 import BaseProjectManager from '../ProjectManager/BaseProjectManager'
@@ -154,12 +155,12 @@ export default class Workspace extends Component {
   openDeleteModal (node) {
     const getDeleteModalText = (fileName, isLeaf) => {
       return isLeaf ? {
-        title: 'Delete File',
-        description: `Are you sure you want to delete $ ${fileName} ？Once deleted, it cannot be restored.`,
+        title: t('project.deleteFile'),
+        description: t('project.deleteFileText', {fileName}),
         colorConfirm: 'danger'
       } : {
-        title: 'Delete Folder',
-        description: `Are you sure you want to delete $ ${fileName} and its contents？Once deleted, they cannot be restored.`,
+        title: t('project.deleteFolder'),
+        description: t('project.deleteFolderText', {fileName}),
         colorConfirm: 'danger'
       }
     }
@@ -190,12 +191,12 @@ export default class Workspace extends Component {
 
     const getMoveConfirmText = (fileName, isLeaf) => {
       return isLeaf ? {
-        title: 'File Existed',
-        description: `A file with the name $ ${fileName} already exists in the destination folder. Do you want to replace it?`,
+        title: t('project.existedFile'),
+        description: t('project.existedFileText', {fileName}),
         colorConfirm: 'danger'
       } : {
-        title: 'Folder Existed',
-        description: `A folder with the name $ ${fileName} already exists in the destination folder. Do you want to replace it?`,
+        title: t('project.existedFolder'),
+        description: t('project.existedFolderText', {fileName}),
         colorConfirm: 'danger'
       }
     }

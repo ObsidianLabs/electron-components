@@ -12,6 +12,7 @@ import {
 
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
+import { t } from '@obsidians/i18n'
 
 export default class WorkspaceSettingModal extends PureComponent {
   constructor(props) {
@@ -50,7 +51,7 @@ export default class WorkspaceSettingModal extends PureComponent {
     const { projectRoot } = this.state
     return (
       <FormGroup>
-        <Label>Workspace</Label>
+        <Label>{t('project.workspace')}</Label>
         <InputGroup className="pl-3 input-readonly-bg">
           <div className='d-inline-block hover-inline w-3'>
             <i className='fas fa-folder-open hover-inline-show' />
@@ -65,7 +66,7 @@ export default class WorkspaceSettingModal extends PureComponent {
           />
           <InputGroupAddon addonType='append'>
             <Button color='secondary' onClick={this.chooseProjectPath}>
-              change
+              {t('project.change')}...
             </Button>
           </InputGroupAddon>
         </InputGroup>
@@ -76,7 +77,7 @@ export default class WorkspaceSettingModal extends PureComponent {
   render() {
 
     return (
-      <Modal ref={this.modal} title='Settings'>
+      <Modal ref={this.modal} title={t('project.setting')}>
         {this.renderProjectPath()}
       </Modal>
     )

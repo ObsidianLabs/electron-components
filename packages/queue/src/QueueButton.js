@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 import BaseQueueManager from './BaseQueueManager'
 
@@ -54,12 +55,12 @@ export default class QueueButton extends PureComponent {
       </DropdownItem>
     )).slice(0, 15)
     if (!txsItems.length) {
-      txsItems.push(<DropdownItem disabled key='disable' >(None)</DropdownItem>)
+      txsItems.push(<DropdownItem disabled key='disable' >({t('header.title.none')})</DropdownItem>)
     }
     // txsItems.push(<DropdownItem divider />)
     txsItems.unshift(
       <DropdownItem header key='header-txs'>
-        <i className='far fa-history mr-1' />Recent Transactions
+        <i className='far fa-history mr-1' />{t('header.title.recent')}
       </DropdownItem>
     )
 
@@ -88,7 +89,7 @@ export default class QueueButton extends PureComponent {
     return <>
       <UncontrolledButtonDropdown direction='up'>
         <DropdownToggle size='sm' color='default' className='rounded-0 px-2 text-muted'>
-          {icon}Transactions
+          {icon}{t('explorer.transactions.transactions')}
         </DropdownToggle>
         <DropdownMenu className='dropdown-menu-sm'>
           {this.renderDropdownItems(BaseQueueManager.pending, txs?.toJS() || [], QueueItem)}

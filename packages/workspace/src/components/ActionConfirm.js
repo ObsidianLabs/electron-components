@@ -1,6 +1,7 @@
 import React, { useRef, forwardRef, useState } from 'react'
 import { Modal } from '@obsidians/ui-components'
 import { FormGroup, Input, Label } from 'reactstrap'
+import { t } from '@obsidians/i18n'
 
 const DEFAULT_CONTENT = {
   cancel: 'Cancel',
@@ -69,7 +70,7 @@ const ActionConfirm = forwardRef(({}, ref) => {
         <Input type='checkbox' id='actionCheck'
           onChange={handleInputChange}
           checked={checkVal} />
-        <Label check htmlFor='actionCheck'>Do not ask me again</Label>
+        <Label check htmlFor='actionCheck'>{t('project.donotAskAgain')}</Label>
       </FormGroup>)
   }
 

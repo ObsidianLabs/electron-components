@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { t } from '@obsidians/i18n'
 
 import {
   Modal,
@@ -99,7 +100,7 @@ export default class BaseModal extends PureComponent {
           disabled={!!confirmDisabled}
           onClick={onConfirm}
         >
-          {textConfirm}
+          {textConfirm == 'Confirm' ? t('component.text.confirm') : textConfirm}
         </Button>
       )
     }
@@ -127,7 +128,7 @@ export default class BaseModal extends PureComponent {
       textActions,
       colorActions = [],
       onActions,
-      textCancel = 'Cancel',
+      textCancel = t('component.text.cancel'),
       colorCancel = 'default',
       noCancel,
       onAdditionAction,
@@ -190,7 +191,7 @@ export default class BaseModal extends PureComponent {
           </div>
           <div>
             { onAdditionAction && textAddition && <Button color={colorAddition} onClick={onAdditionAction}>{textAddition}</Button> }
-            { (!noCancel || !footerCancelIcon) && textCancel && <Button hidden={footerCancelIcon} color={colorCancel} onClick={this.toggle}>{textCancel}</Button> }
+            { (!noCancel || !footerCancelIcon) && textCancel && <Button hidden={footerCancelIcon} color={colorCancel} onClick={this.toggle}>{textCancel == 'Close' ? t('component.text.close') : textCancel}</Button> }
             {this.renderConfirmButton(this.props)}
           </div>
         </ModalFooter>

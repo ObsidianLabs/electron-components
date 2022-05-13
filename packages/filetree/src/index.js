@@ -15,6 +15,11 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import PropTypes from 'prop-types'
 import useBatchLoad from './hooks/useBatchLoad'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { t } from '@obsidians/i18n'
+
+let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
+
+let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
 
 let disablSetActive = false // stop useless setActive function when filetree trigger onSelect event
 
@@ -206,7 +211,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
       return (
         treeNodeContextMenu.map((item, index) => item
           ? <Item key={item.text}
-            onClick={handleMenuItemClick(item)}>{item.text}</Item>
+            onClick={handleMenuItemClick(item)}>{item.bilingualText}</Item>
           : <Separator key={`blank-${index}`} />)
       )
     }
