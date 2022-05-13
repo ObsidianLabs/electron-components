@@ -15,6 +15,7 @@ import { HttpIpcChannel } from '@obsidians/ipc'
 import { actions, TutorialModal, WorkspaceSettingModal } from '@obsidians/workspace'
 import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
+import { t } from '@obsidians/i18n'
 
 const userChannel = new HttpIpcChannel('user')
 const projectChannel = new HttpIpcChannel('project')
@@ -118,7 +119,7 @@ class UserHomepage extends PureComponent {
         color='success'
         onClick={() => actions.newProject(this.state.remote)}
       >
-        <i className='fas fa-plus mr-1' />New
+        <i className='fas fa-plus mr-1' />{t('header.title.new')}
       </Button>
     )
   }
@@ -133,7 +134,7 @@ class UserHomepage extends PureComponent {
         className='border-left-gray mr-2'
         onClick={() => actions.openProject()}
       >
-        <i className='fas fa-folder-plus mr-1' />Open
+        <i className='fas fa-folder-plus mr-1' />{t('header.title.open')}
       </Button>
     )
   }
@@ -169,7 +170,7 @@ class UserHomepage extends PureComponent {
       return (
         <ButtonGroup>
           <h4 color='primary'>
-            <i className='fas fa-th-list mr-2' />Projects
+            <i className='fas fa-th-list mr-2' />{t('header.title.projects')}
           </h4>
         </ButtonGroup>
       )

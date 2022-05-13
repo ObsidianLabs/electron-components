@@ -6,6 +6,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 export default class RenameModal extends PureComponent {
   constructor(props) {
@@ -34,7 +35,7 @@ export default class RenameModal extends PureComponent {
     try {
       await this.props.projectManager.rename(oldPath, name, { type })
     } catch (e) {
-      notification.error('Cannot Rename File', e.message)
+      notification.error(t('project.cannotRenameFile'), e.message)
       return
     }
     this.setState({ loading: false })
@@ -45,9 +46,9 @@ export default class RenameModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={this.state.type === 'file' ? 'Rename File' : 'Rename Folder'}
-        textConfirm='Rename'
-        pending={this.state.loading && 'Renaming...'}
+        title={this.state.type === 'file' ? t('project.renameFile') : t('project.renameFolder')}
+        textConfirm={t('rename')}
+        pending={this.state.loading && `${t('renaming')}...`}
         confirmDisabled={!this.state.name}
         onConfirm={this.onRename}
       >

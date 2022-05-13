@@ -19,7 +19,7 @@ import Auth from '@obsidians/auth'
 import notification from '@obsidians/notification'
 import Terminal from '@obsidians/terminal'
 import redux from '@obsidians/redux'
-
+import { t } from '@obsidians/i18n'
 import ProjectManager from '../ProjectManager'
 import actions from '../actions'
 
@@ -106,12 +106,12 @@ export default class NewProjectModal extends PureComponent {
       const Manager = this.state.remote ? ProjectManager.Remote : ProjectManager.Local
       const created = await Manager.createProject(options, stage)
       if (notify) {
-        notification.success('Successful', `New project <b>${options.name}</b> is created.`)
+        notification.success(t('project.success'), t('project.successText', {name: options.name}))
       }
       return created
     } catch (e) {
       // if (notify) {
-      notification.error('Cannot Create the Project', e.message)
+      notification.error(t('project.cannotCreate'), e.message)
       // }
       return false
     }
@@ -149,7 +149,7 @@ export default class NewProjectModal extends PureComponent {
 
     return (
       <FormGroup>
-        <Label>Project location</Label>
+        <Label>{t('project.location')}</Label>
         <InputGroup>
           <Input
             placeholder={placeholder}
@@ -158,7 +158,7 @@ export default class NewProjectModal extends PureComponent {
           />
           <InputGroupAddon addonType='append'>
             <Button color='secondary' onClick={this.chooseProjectPath}>
-              Choose...
+              {t('project.choose')}...
             </Button>
           </InputGroupAddon>
         </InputGroup>
@@ -174,7 +174,7 @@ export default class NewProjectModal extends PureComponent {
     }
     return (
       <DropdownInput
-        label='Template'
+        label={t('project.template')}
         options={templates.filter(t => !remote || !t.local)}
         placeholder='(Please select a template)'
         value={template}
@@ -192,16 +192,16 @@ export default class NewProjectModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='Create a New Project'
-        textConfirm='Create Project'
+        title={t('project.title')}
+        textConfirm={t('project.textConfirm')}
         onConfirm={this.onCreateProject}
-        pending={creating && 'Creating...'}
+        pending={creating && `${t('keypair.creating')}...`}
         confirmDisabled={!name || invalid}
       >
         {this.renderLocation()}
         {this.renderProjectPath()}
         <DebouncedFormGroup
-          label='Project name'
+          label={t('project.name')}
           value={name}
           onChange={(name, invalid) => this.setState({ name, invalid })}
           {...projectNameProps}

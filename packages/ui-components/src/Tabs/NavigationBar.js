@@ -6,6 +6,7 @@ import {
 } from 'reactstrap'
 import ToolbarButton from '../buttons/ToolbarButton'
 import { utils } from '@obsidians/sdk'
+import { t } from '@obsidians/i18n'
 export default class NavigationBar extends PureComponent {
   constructor(props) {
     super(props)
@@ -152,7 +153,7 @@ export default class NavigationBar extends PureComponent {
           id='navbar-refresh'
           size={size}
           icon='fas fa-redo-alt'
-          tooltip='Refresh'
+          tooltip={t('refresh')}
           onClick={this.props.onRefresh}
         />
         <div

@@ -15,6 +15,7 @@ import {
 } from '@obsidians/ui-components'
 
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 import keypairManager from './keypairManager'
 
@@ -66,8 +67,8 @@ export default class CreateKeypairModal extends PureComponent {
 
     if (this.props.keypairs.find(k => k.name === name)) {
       notification.error(
-        `Create Keypair Failed`,
-        `The keypair name <b>${name}</b> has already been used.`
+        t('keypair.fail'),
+        t('keypair.failText', {name})
       )
       return
     }
@@ -88,7 +89,7 @@ export default class CreateKeypairModal extends PureComponent {
       return null
     }
     return <>
-      <Label>The keypair can be used on</Label>
+      <Label>{t('keypair.used')}</Label>
       <div>
         <ButtonOptions
           size='sm'
@@ -105,22 +106,22 @@ export default class CreateKeypairModal extends PureComponent {
     if (this.props.mnemonic) {
       return (
         <ButtonGroup>
-          <Button color='success' onClick={this.regenerateKeypair}>Regenerate</Button>
+          <Button color='success' onClick={this.regenerateKeypair}>{t('keypair.regenerate')}</Button>
           <UncontrolledButtonDropdown>
             <DropdownToggle color='success' className='pr-2 pl-1' caret />
             <DropdownMenu>
               <DropdownItem onClick={() => this.setState({ secretType: 'privkey' }, this.regenerateKeypair)}>
-                Regenerate from private key
+                {t('keypair.fromPrivateKey')}
               </DropdownItem>
               <DropdownItem onClick={() => this.setState({ secretType: 'mnemonic' }, this.regenerateKeypair)}>
-                Regenerate from mnemonic
+                {t('keypair.fromMnemonic')}
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledButtonDropdown>
         </ButtonGroup>
       )
     } else {
-      return <Button color='success' onClick={this.regenerateKeypair}>Regenerate</Button>
+      return <Button color='success' onClick={this.regenerateKeypair}>{t('keypair.regenerate')}</Button>
     }
   }
 
@@ -134,9 +135,9 @@ export default class CreateKeypairModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title='Create Keypair'
-        textConfirm='Create'
-        pending={this.state.pending && 'Creating...'}
+        title={`${t('keypair.create')} ${t('keypair.keypair')}`}
+        textConfirm={t('keypair.create')}
+        pending={this.state.pending && `${t('keypair.creating')}...`}
         onConfirm={this.onConfirm}
         confirmDisabled={!this.state.name || !address}
         colorActions={['info']}
@@ -146,7 +147,7 @@ export default class CreateKeypairModal extends PureComponent {
           ref={this.input}
           label='Name'
           maxLength='200'
-          placeholder='Please enter a name for the keypair'
+          placeholder={t('keypair.createPlaceholder')}
           onChange={name => this.setState({ name })}
         />
         {this.renderChainOptions()}

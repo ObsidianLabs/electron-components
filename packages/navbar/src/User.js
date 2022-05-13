@@ -12,6 +12,7 @@ import { withRouter } from 'react-router'
 import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
+import { t } from '@obsidians/i18n'
 
 class User extends Component {
   state = {
@@ -82,24 +83,24 @@ class User extends Component {
       linkToOtherPlatformItem = [
         <DropdownItem key='divider2' divider />,
         <DropdownItem key='project-desktop-url' onClick={() => fileOps.current.openLink(`${PROJECT_DESKTOP_URL}/${platform.os}`)}>
-          <i className='fas fa-download w-3 mr-2' />Desktop App
+          <i className='fas fa-download w-3 mr-2' />{t('header.title.desktopApp')}
         </DropdownItem>
       ]
     }
     if (PROJECT_GITHUB_REPO) {
       linkToOtherPlatformItem.push(
         <DropdownItem key='github-repo' onClick={() => fileOps.current.openLink(PROJECT_GITHUB_REPO)}>
-          <i className='fab fa-github w-3 mr-2' />GitHub Repo
+          <i className='fab fa-github w-3 mr-2' />{t('header.title.githubRepo')}
         </DropdownItem>
       )
       linkToOtherPlatformItem.push(
         <DropdownItem key='report-issue' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/issues/new`)}>
-          <i className='fad fa-question-circle w-3 mr-2' />Report an Issue
+          <i className='fad fa-question-circle w-3 mr-2' />{t('header.title.reportIssue')}
         </DropdownItem>
       )
       enableHelpPage && linkToOtherPlatformItem.push(
         <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/blob/master/README.md`)}>
-          <i className='fas fa-info-circle w-3 mr-2' />Help page
+          <i className='fas fa-info-circle w-3 mr-2' />{t('header.title.helpPage')}
           </DropdownItem>
         )
     }
@@ -108,13 +109,13 @@ class User extends Component {
     if (platform.isDesktop && !ENABLE_AUTH) {
       dropdownItems = [
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-          <i className='fas fa-th-list w-3 mr-2' />My Projects
+          <i className='fas fa-th-list w-3 mr-2' />{t('header.title.myProjects')}
         </DropdownItem>,
         ...linkToOtherPlatformItem
       ]
     } else if (username) {
       dropdownItems = [
-        <DropdownItem key='header' header>Logged in as</DropdownItem>,
+        <DropdownItem key='header' header>{t('header.title.loginInAs')}</DropdownItem>,
         <DropdownItem key='sign-user' onClick={() => this.props.history.push(`/${username}`)}>
           <i className='fas fa-user w-3 mr-2' />
           {username}
@@ -123,7 +124,7 @@ class User extends Component {
         ...linkToOtherPlatformItem,
         <DropdownItem key='divider' divider />,
         <DropdownItem key='sign-out' onClick={() => Auth.logout(this.props.history)}>
-          <i className='fas fa-sign-out w-3 mr-2' />Log out
+          <i className='fas fa-sign-out w-3 mr-2' />{t('header.title.logout')}
         </DropdownItem>
       ]
     } else {
@@ -131,7 +132,7 @@ class User extends Component {
         ...this.renderLoginButton(),
         <DropdownItem key='divider-2' divider />,
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
-          <i className='fas fa-th-list w-3 mr-2' />My Projects
+          <i className='fas fa-th-list w-3 mr-2' />{t('header.title.myProjects')}
         </DropdownItem>,
         this.renderExtraLoggedInOptions(),
         ...linkToOtherPlatformItem
@@ -156,7 +157,7 @@ class User extends Component {
         key={`login-${provider}`}
         onClick={() => Auth.login(this.props.history, provider)}
       >
-        <i className='fas fa-sign-in w-3 mr-2' />{ providers.length > 1 ? `Login ${provider}` : 'Login' }
+        <i className='fas fa-sign-in w-3 mr-2' />{ providers.length > 1 ? `${t('header.title.login')} ${provider}` : t('header.title.login') }
       </DropdownItem>
     ))
   }

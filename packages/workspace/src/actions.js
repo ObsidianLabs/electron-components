@@ -3,6 +3,7 @@ import Auth from '@obsidians/auth'
 import fileOps from '@obsidians/file-ops'
 import redux from '@obsidians/redux'
 import notification from '@obsidians/notification'
+import { t } from '@obsidians/i18n'
 
 import BaseProjectManager from './ProjectManager/BaseProjectManager'
 
@@ -81,11 +82,11 @@ export class ProjectActions {
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id })
-    let notificationTitle = 'Remove Project Successful';
-    let notificationDescription = `Project <b>${name}</b> is removed`;
+    let notificationTitle = t('project.del.rmSuccess');
+    let notificationDescription = t('project.del.rmSuccessText', {name});
     if (type == 'delete') {
-      notificationTitle = 'Delete Project Successful';
-      notificationDescription = `You have permanently delete project <b>${name}</b>`;
+      notificationTitle = t('project.del.delSuccess');
+      notificationDescription = t('project.del.delSuccessText', {name});
     }
     notification.info(notificationTitle, notificationDescription)
   }

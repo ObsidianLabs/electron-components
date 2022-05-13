@@ -22,6 +22,7 @@
     "@obsidians/ipc": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
     "@obsidians/redux": "^0.3.0",
+    "@obsidians/i18n": "^0.3.0",
     "@obsidians/ui-components": "^0.3.0",
     "@obsidians/workspace": "^0.3.0"
   },

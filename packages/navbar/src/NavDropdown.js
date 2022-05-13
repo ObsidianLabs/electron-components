@@ -10,6 +10,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@obsidians/ui-components'
+import { t } from '@obsidians/i18n'
 
 export default class NavDropdown extends Component {
   static propTypes = {
@@ -54,7 +55,7 @@ export default class NavDropdown extends Component {
 
   renderDropdownList = list => {
     if (!list.length) {
-      return <DropdownItem disabled>(None)</DropdownItem>
+      return <DropdownItem disabled>({t('header.title.none')})</DropdownItem>
     }
     return list.map(this.renderDropdownItem)
   }
@@ -65,7 +66,7 @@ export default class NavDropdown extends Component {
     } else if (item.header) {
       return <DropdownItem className='cursor-default' header key={`dropdown-item-header-${index}`}>{item.header}</DropdownItem>
     } else if (item.none) {
-      return <DropdownItem disabled key={`dropdown-item-none-${index}`}>(None)</DropdownItem>
+      return <DropdownItem disabled key={`dropdown-item-none-${index}`}>({t('header.title.none')})</DropdownItem>
     }
 
     const { id, id: networkGroupsId, name, icon, iconUrl: networkLogoImg } = item
