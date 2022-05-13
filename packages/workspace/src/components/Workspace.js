@@ -155,10 +155,12 @@ export default class Workspace extends Component {
   openDeleteModal (node) {
     const getDeleteModalText = (fileName, isLeaf) => {
       return isLeaf ? {
+        mainKey: fileName,
         title: t('project.deleteFile'),
         description: t('project.deleteFileText', {fileName}),
         colorConfirm: 'danger'
       } : {
+        mainKey: fileName,
         title: t('project.deleteFolder'),
         description: t('project.deleteFolderText', {fileName}),
         colorConfirm: 'danger'
@@ -191,10 +193,12 @@ export default class Workspace extends Component {
 
     const getMoveConfirmText = (fileName, isLeaf) => {
       return isLeaf ? {
+        mainKey: fileName,
         title: t('project.existedFile'),
         description: t('project.existedFileText', {fileName}),
         colorConfirm: 'danger'
       } : {
+        mainKey: fileName,
         title: t('project.existedFolder'),
         description: t('project.existedFolderText', {fileName}),
         colorConfirm: 'danger'

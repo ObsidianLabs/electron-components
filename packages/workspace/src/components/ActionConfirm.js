@@ -7,7 +7,8 @@ const DEFAULT_CONTENT = {
   cancel: 'Cancel',
   confirm: 'Confirm',
   colorConfirm: 'primary',
-  description: ''
+  description: '',
+  mainKey: ''
 }
 
 const ActionConfirm = forwardRef(({}, ref) => {
@@ -57,11 +58,10 @@ const ActionConfirm = forwardRef(({}, ref) => {
     setCheckVal(!checkVal)
   }
 
-  const renderText = (description) => {
-    const textArr = description.split(' ')
-    const fileName = textArr[textArr.findIndex(item => item === '$') + 1]
-    const splitContents = description.split(`$ ${fileName} `)
-    return <p> {splitContents[0]} <kbd>{ fileName }</kbd> {splitContents[1]} </p>
+  const renderText = (textContent) => {
+    const { mainKey, description } = textContent
+    const splitContents = description.split(mainKey)
+    return <p> {splitContents[0]} <kbd>{ mainKey }</kbd> {splitContents[1]} </p>
   }
 
   const optionCheck = () => {
@@ -83,7 +83,7 @@ const ActionConfirm = forwardRef(({}, ref) => {
       colorConfirm={textContent.colorConfirm}
       onConfirm={handleConfirm}
       ActionBtn={optionCheck()}>
-      { renderText(textContent.description) }
+      { renderText(textContent) }
     </Modal>)
 })
 
