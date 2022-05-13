@@ -205,7 +205,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     let toDir = await this.getDir(to)
     const fromIsFile = await this.isFile(from)
     const { name: fromName, ext: fromExt } = path.parse(from)
-    const matchRule = fromIsFile ? /(?<=copy)\d*(?=\.)/g : /(?<=copy)\d*/g
+    const matchRule = fromIsFile ? /(?<=copy)\d*/g : /(?<=copy)\d*/g
     const hasCopyName = from.match(matchRule)
     const getCount = mathArr => +(Number(mathArr[0]) + 1)
 
