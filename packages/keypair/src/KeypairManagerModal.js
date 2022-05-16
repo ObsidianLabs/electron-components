@@ -256,7 +256,7 @@ export default class KeypairManagerModal extends PureComponent {
         <div className='d-flex flex-row align-items-center mb-3'>
           <div className='h4 m-0 mr-3'><i className='fas fa-exclamation-triangle text-warning' /></div>
           <div>
-            <div><b>{t('keypair.donot')}</b> {t('keypair.warn')}</div>
+            <div><b>{t('keypair.donot')}{t('keypair.warn')}</b></div>
             <div className='small text-muted'>
               {t('keypair.description')}
             </div>
