@@ -26,19 +26,22 @@ export default class ListItemDockerImage extends PureComponent {
   }
 
   refresh = async () => {
+
     if (!await dockerChannel.check()) {
       this.mounted && this.setState({ status: 'NO_DOCKER' })
       return
     }
-
+    console.log(2)
     let versions
     try {
       versions = await this.props.channel.versions()
     } catch (e) {
+      console.log(e)
       this.mounted && this.setState({ status: 'NO_DOCKER' })
       return
     }
-
+    console.log(3)
+    console.log(versions)
     if (versions && versions.length) {
       this.mounted && this.setState({
         status: 'INSTALLED',
@@ -47,6 +50,7 @@ export default class ListItemDockerImage extends PureComponent {
     } else {
       this.mounted && this.setState({ status: 'NONE', versions: [] })
     }
+    console.log(4)
   }
 
   renderIcon = () => {

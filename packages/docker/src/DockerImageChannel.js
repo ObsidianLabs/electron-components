@@ -13,6 +13,7 @@ const getHandler = (opt, defaultHandler) => {
 
 export default class DockerImageChannel extends IpcChannel {
   constructor(imageName, opts = {}) {
+    console.log(imageName, 'imageName')
     super('docker-image', imageName)
     this.eventTarget = new EventTarget()
 
@@ -32,7 +33,9 @@ export default class DockerImageChannel extends IpcChannel {
   async versions () {
     let versions = []
     try {
+      console.log('invoke:versions')
       versions = await this.invoke('versions')
+      console.log(versions)
     } catch(e) {}
     versions = this._organizeVersionsByKey(versions, 'Tag')
     const event = new CustomEvent('versions', { detail: versions })

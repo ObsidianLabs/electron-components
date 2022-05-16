@@ -3,14 +3,16 @@ const { IpcChannel } = require('@obsidians/ipc')
 class DockerImageChannel extends IpcChannel {
   constructor (imageName) {
     super('docker-image', imageName)
+    this.imageName = imageName
   }
 
-  get imageName () {
-    return this.uid
-  }
+  // get imageName () {
+  //   return this.uid
+  // }
 
   async versions () {
     const { logs } = await this.exec(`docker images ${this.imageName} --format "{{json . }}"`)
+    console.log(logs, 'logs')
     let versions = logs.split('\n')
       .filter(Boolean)
       .map(JSON.parse)

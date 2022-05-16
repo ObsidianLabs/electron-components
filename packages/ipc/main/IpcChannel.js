@@ -6,6 +6,7 @@ const ChildProcess = require('./ChildProcess')
 
 class IpcChannel {
   constructor(channel = 'default', uid = '') {
+    console.log(channel, uid)
     this.ipc = ipc
     this.channel = channel
     this.uid = uid

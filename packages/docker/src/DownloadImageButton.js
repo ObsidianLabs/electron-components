@@ -38,6 +38,7 @@ export default class DownloadImageButton extends PureComponent {
     this.setState({ loading: true })
     let versions
     try {
+      console.log('remote:versions')
       versions = await this.channel.remoteVersions()
     } catch (e) {
       this.setState({ loading: false })
