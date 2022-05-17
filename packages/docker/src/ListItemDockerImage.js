@@ -80,6 +80,7 @@ export default class ListItemDockerImage extends PureComponent {
   }
 
   renderButton = () => {
+    console.log(this.state.status)
     switch (this.state.status) {
       case '':
         return null

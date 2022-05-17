@@ -27,6 +27,7 @@ export default class DownloadImageButton extends PureComponent {
   }
 
   get channel () {
+    console.log(this.props.channel.imageName, 'imageName')
     return this.props.channel || new DockerImageChannel(this.props.imageName)
   }
 
@@ -40,6 +41,7 @@ export default class DownloadImageButton extends PureComponent {
     try {
       console.log('remote:versions')
       versions = await this.channel.remoteVersions()
+      console.log(versions, 'fetchRemoteVersions')
     } catch (e) {
       this.setState({ loading: false })
       notification.error(e.message)

@@ -50,6 +50,7 @@ export default class DockerImageChannel extends IpcChannel {
 
   async remoteVersions (size = this.size) {
     const versions = await this.invoke('remoteVersions', size)
+    console.log('remoteVersions', versions)
     return this._organizeVersionsByKey(versions, 'name').slice(0, size)
   }
 
