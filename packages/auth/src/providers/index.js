@@ -8,4 +8,4 @@ export default {
   bsn: new BsnProvider(),
   nouser: new NoUsere(),
   tencent,
-}
+} 
