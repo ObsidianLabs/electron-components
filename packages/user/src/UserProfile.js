@@ -17,10 +17,7 @@ class UserProfile extends PureComponent {
   }
 
   renderAvatar = () => {
-    const { location, history, profile } = this.props
-    if (profile?.username && location?.pathname == '/local') {
-      history.push('/')
-    }
+    const { profile } = this.props
     const img = new Image()
     img.src = profile?.avatar
     img.crossOrigin = true

@@ -16,6 +16,7 @@ import { actions, TutorialModal, WorkspaceSettingModal } from '@obsidians/worksp
 import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
 import { t } from '@obsidians/i18n'
+import { withRouter } from 'react-router'
 
 const userChannel = new HttpIpcChannel('user')
 const projectChannel = new HttpIpcChannel('project')
@@ -52,10 +53,13 @@ class UserHomepage extends PureComponent {
   }
 
   componentDidUpdate (props) {
+    const { location, history, profile } = this.props
     const { username } = this.props.match.params
     const { username: prev } = props.match.params
     if (username !== prev) {
       this.getProjectList(username)
+    } else if (profile?.get('username') && location?.pathname == '/local') {
+      history.push('/')
     }
   }
 
@@ -245,7 +249,7 @@ class UserHomepage extends PureComponent {
   }
 }
 
-export default connect(['profile', 'projects'])(UserHomepage)
+export default connect(['profile', 'projects'])(withRouter(UserHomepage))
 export {
   UserHomepage as BaseUserHomepage
 }
