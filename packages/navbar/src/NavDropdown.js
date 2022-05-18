@@ -9,6 +9,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  UncontrolledTooltip,
 } from '@obsidians/ui-components'
 import { t } from '@obsidians/i18n'
 
@@ -95,13 +96,20 @@ export default class NavDropdown extends Component {
             activeItem: item
           })
         }}
+        id={name.length > 10 && `custom-nav-${index}`}
       >
         <span key={`dropdown-item-${isSelected}`}>
           {
             (projectStudioName == 'BlackIDE' && imgSrc) ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
           }
         </span>
-        {name}
+        {name.length > 10 ? (`${name.substr(0,10)}...`) : name}
+        {
+          name.length > 10 &&
+          <UncontrolledTooltip placement='bottom' target={`custom-nav-${index}`}>
+            {name}
+          </UncontrolledTooltip>
+        }
       </DropdownItem>
     )
   }
