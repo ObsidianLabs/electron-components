@@ -120,6 +120,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   openProjectSettings () {
+    console.log(this.settingsFilePath)
     this.project.openProjectSettings(this.settingsFilePath)
   }
 
