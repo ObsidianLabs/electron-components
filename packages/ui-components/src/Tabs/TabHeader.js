@@ -124,7 +124,7 @@ class TabHeaderItem extends PureComponent {
           key='nav-item-loading'
           className={classnames('nav-item-close-loading', { active: saving })}
         >
-          <i className='fas fa-spin fa-spinner' />
+          <i className='fas fa-pulse fa-spinner' />
         </span>
         <span
           key='nav-item-close'

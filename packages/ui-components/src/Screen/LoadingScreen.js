@@ -8,7 +8,7 @@ export default function (props) {
   const { text = t('loading') } = props
   return (
     <CenterScreen>
-      <i className='fas fa-spin fa-spinner mr-2' />{text}
+      <i className='fas fa-pulse fa-spinner mr-2' />{text}
     </CenterScreen>
   )
 }

@@ -69,7 +69,7 @@ export default class DownloadImageButton extends PureComponent {
     if (loading) {
       return (
         <DropdownItem key='icon-loading-versions'>
-          <i className='fas fa-spin fa-spinner mr-1' />Loading...
+          <i className='fas fa-pulse fa-spinner mr-1' />Loading...
         </DropdownItem>
       )
     }
@@ -105,7 +105,7 @@ export default class DownloadImageButton extends PureComponent {
     if (this.state.downloading) {
       title = (
         <div key='icon-downloading'>
-          <i className='fas fa-spinner fa-spin mr-2' />{downloadingTitle} {this.state.downloadVersion}...
+          <i className='fas fa-spinner fa-pulse mr-2' />{downloadingTitle} {this.state.downloadVersion}...
         </div>
       )
     } else {

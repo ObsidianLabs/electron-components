@@ -67,7 +67,7 @@ export default class DockerImageManager extends PureComponent {
       return (
         <tr key='loading'>
           <td align='middle' colSpan={4}>
-            <i className='fas fa-spin fa-spinner mr-1' />Loading...
+            <i className='fas fa-pulse fa-spinner mr-1' />Loading...
           </td>
         </tr>
       )

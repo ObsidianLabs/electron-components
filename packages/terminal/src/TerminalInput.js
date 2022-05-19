@@ -5,7 +5,7 @@ function TerminalInputIcon (props) {
     return (
       <div key='xterm-icon-executing' className='xterm-form-icon xterm-form-icon-executing hover-block'>
         <span className='hover-hide'>
-          <i className='fas fa-spin fa-spinner' />
+          <i className='fas fa-pulse fa-spinner' />
         </span>
         <span className='hover-show' onClick={props.onStop}>
           <i className='fas fa-stop-circle' />

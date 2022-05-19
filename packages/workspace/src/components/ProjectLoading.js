@@ -6,7 +6,7 @@ import {
 export default function ({ projectRoot }) {
   return (
     <CenterScreen>
-      <i className='fas fa-spin fa-spinner mr-2' />Loading Project <kbd>{projectRoot}</kbd>...
+      <i className='fas fa-pulse fa-spinner mr-2' />Loading Project <kbd>{projectRoot}</kbd>...
     </CenterScreen>
   )
 }

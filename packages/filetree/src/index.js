@@ -26,7 +26,7 @@ const renderIcon = ({ data }) => {
 
 const renderSwitcherIcon = ({ loading, expanded, data }) => {
   if (loading && !data.isLeaf) {
-    return <span key='loading'><span className='fas fa-sm fa-spin fa-spinner fa-fw' /></span>
+    return <span key='loading'><span className='fas fa-sm fa-pulse fa-spinner fa-fw' /></span>
   }
 
   if (data.isLeaf) {
