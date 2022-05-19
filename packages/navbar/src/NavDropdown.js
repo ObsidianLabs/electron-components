@@ -75,6 +75,7 @@ export default class NavDropdown extends Component {
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
     const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
+    const tooltipId = Math.random().toString(36).substring(2)
 
     return (
       <DropdownItem
@@ -96,20 +97,22 @@ export default class NavDropdown extends Component {
             activeItem: item
           })
         }}
-        id={name.length > 10 && `custom-nav-${index}`}
+        id={`custom-nav-${tooltipId}`}
       >
-        <span key={`dropdown-item-${isSelected}`}>
+        <div className='text-overflow-dots'>
+          <span key={`dropdown-item-${isSelected}`}>
+            {
+              (projectStudioName == 'BlackIDE' && imgSrc) ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
+            }
+          </span>
+          {name}
           {
-            (projectStudioName == 'BlackIDE' && imgSrc) ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
+            item.group === 'others' && id !== 'custom' &&
+            <UncontrolledTooltip placement='bottom' target={`custom-nav-${tooltipId}`}>
+              {name}
+            </UncontrolledTooltip>
           }
-        </span>
-        {name.length > 10 ? (`${name.substr(0,10)}...`) : name}
-        {
-          name.length > 10 &&
-          <UncontrolledTooltip placement='bottom' target={`custom-nav-${index}`}>
-            {name}
-          </UncontrolledTooltip>
-        }
+        </div>
       </DropdownItem>
     )
   }
@@ -139,7 +142,7 @@ export default class NavDropdown extends Component {
         >
           {children}
         </DropdownToggle>
-        <DropdownMenu right={right} style={{ width: 'fit-content', top: 48, [right ? 'right' : 'left']: 4 }}>
+        <DropdownMenu right={right} style={{ width: 'fit-content', 'max-width': '175px', top: 48, [right ? 'right' : 'left']: 4 }}>
           {this.renderDropdownList(list)}
         </DropdownMenu>
         
