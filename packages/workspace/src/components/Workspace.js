@@ -106,7 +106,9 @@ export default class Workspace extends Component {
   }
 
   openFile = ({ path, remote, pathInProject, isLeaf }, setTreeActive) => {
-    isLeaf && this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject)) // it triggers onSelectTab function eventually
+    if (isLeaf || path.endsWith('config.json')) {
+      this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject)) // it triggers onSelectTab function eventually
+    }
     path.startsWith('custom:') && this.setFileTreeActive()
     setTreeActive && this.setFileTreeActive(path)
   }
