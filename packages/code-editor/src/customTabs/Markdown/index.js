@@ -74,7 +74,7 @@ export default class Markdown extends Component {
     let saved = true
     for (let key in modelSessionManager.sessions) {
       const session = modelSessionManager.sessions[key]
-      if (session.saved) continue
+      if (!session || session.saved) continue
       saved = false
       break
     }
