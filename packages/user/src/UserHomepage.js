@@ -58,7 +58,7 @@ class UserHomepage extends PureComponent {
     const { username: prev } = props.match.params
     if (username !== prev) {
       this.getProjectList(username)
-    } else if (profile?.get('username') && location?.pathname == '/local') {
+    } else if (!this.state.remote && profile?.get('username') && location?.pathname == '/local') {
       history.push('/')
     }
   }
