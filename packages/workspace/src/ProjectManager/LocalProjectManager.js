@@ -38,10 +38,6 @@ export default class LocalProjectManager extends BaseProjectManager {
       console.warn(e)
       return { initial: { path: this.settingsFilePath, pathInProject: this.settingsFilePath }, projectSettings: null }
     }
-
-    if (await this.isMainValid()) {
-      return { initial: { path: this.mainFilePath, pathInProject: this.mainFilePath }, projectSettings }
-    }
     return { initial: { path: this.pathForProjectFile('README.md'), pathInProject: this.settingsFilePath }, projectSettings }
   }
 

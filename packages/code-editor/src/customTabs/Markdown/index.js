@@ -1,39 +1,26 @@
 import React, { Component } from 'react'
-
 import fileOps from '@obsidians/file-ops'
-
-import {
-  Modal,
-  Button,
-} from '@obsidians/ui-components'
-
+import { Modal, Button } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 import { t } from '@obsidians/i18n'
-
+import './styles.scss'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import slug from 'remark-slug'
 import Highlight from 'react-highlight'
-
 import modelSessionManager from '../../MonacoEditor/modelSessionManager'
-
-import './styles.scss'
-
-// import ShareButton from './ShareButton'
-// import StarButton from './StarButton'
-// import ForkButton from './ForkButton'
 
 export default class Markdown extends Component {
   state = {
     isPublic: false,
     togglePublicModal: React.createRef(),
     togglePublicSaved: true,
-    togglePublicToggling: false,
+    togglePublicToggling: false
   }
 
   componentDidMount () {
     this.setState({
-      isPublic: modelSessionManager.projectManager.prefix === "public",
+      isPublic: modelSessionManager.projectManager.prefix === 'public'
     })
     // this.getAvatar(this.props)
   }
@@ -62,6 +49,7 @@ export default class Markdown extends Component {
 
   onEditButton = () => {
     this.props.modelSession.toggleCustomTab()
+    this.display && modelSessionManager.saveCurrentFile()
     this.forceUpdate()
   }
 
@@ -82,11 +70,11 @@ export default class Markdown extends Component {
     )
   }
 
-  async togglePublic(){
+  async togglePublic() {
     let saved = true
-    for(let key in modelSessionManager.sessions) {
+    for (let key in modelSessionManager.sessions) {
       const session = modelSessionManager.sessions[key]
-      if (session.saved) continue
+      if (!session || session.saved) continue
       saved = false
       break
     }
@@ -95,22 +83,21 @@ export default class Markdown extends Component {
     })
   }
 
-  async confirmTogglePublic(){
-
-    if (!this.state.togglePublicSaved)  return this.state.togglePublicModal.current.closeModal()
+  async confirmTogglePublic() {
+    if (!this.state.togglePublicSaved) return this.state.togglePublicModal.current.closeModal()
 
     await this.setState({
-      togglePublicToggling: true,
+      togglePublicToggling: true
     })
     // if (save) await modelSessionManager.projectManager.project.saveAll()
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
     modelSessionManager.currentModelSession._public = isPublic
     this.setState({
       isPublic,
-      togglePublicToggling: false,
+      togglePublicToggling: false
     })
     this.state.togglePublicModal.current.closeModal()
-    notification.success(t('project.features.changeSuccess'), 
+    notification.success(t('project.features.changeSuccess'),
     `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
   }
 
@@ -119,17 +106,17 @@ export default class Markdown extends Component {
     if (!modelSessionManager.projectManager.userOwnProject) return false
     if (!this.display) return false
     return (
-    <Button
-      color='primary'
-      size='sm'
-      className='ml-2'
-      onClick={this.togglePublic.bind(this)}
-      style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
+      <Button
+        color='primary'
+        size='sm'
+        className='ml-2'
+        onClick={this.togglePublic.bind(this)}
+        style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
     >
-      { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
-      { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
-      { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash'/> {t('project.features.Private')}</span> }
-    </Button>
+        { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
+        { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
+        { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
+      </Button>
     )
   }
 
@@ -236,7 +223,7 @@ export default class Markdown extends Component {
 
     let value = this.props.modelSession.value
     if (this.filePath.endsWith('contracts.md') || this.filePath.endsWith('contracts.md.in')) {
-      value = value.replace(/---/g, '```').replace(/\{\{(\S+)\}\}/g, '`$1`');
+      value = value.replace(/---/g, '```').replace(/\{\{(\S+)\}\}/g, '`$1`')
     }
 
     return (
@@ -283,12 +270,12 @@ export default class Markdown extends Component {
               ref={this.state.togglePublicModal}
               size='md'
               title={this.state.togglePublicSaved ? t('project.features.visibility') : t('project.features.notSaved')}
-              children={this.state.togglePublicSaved ? 
-              <span>{t('project.features.title')}
-                <b>{this.state.isPublic ? t('project.features.private') : t('project.features.public')}</b>
-                ? 
+              children={this.state.togglePublicSaved
+                ? <span>{t('project.features.title')}
+                  <b>{this.state.isPublic ? t('project.features.private') : t('project.features.public')}</b>
+                ?
                 {this.state.isPublic ? t('project.features.privateText') : t('project.features.publicText')}
-                </span> 
+                </span>
               : t('project.features.remind')}
               textConfirm={this.state.togglePublicSaved ? 'Confirm' : 'OK'}
               noCancel={this.state.togglePublicToggling || !this.state.togglePublicSaved}

@@ -4,31 +4,20 @@ import providers from './providers'
 export default {
   profile: null,
   credentials: null,
-  refreshPromise: null,
+  suspendPromise: false,
   modal: null,
   provider: null,
   history: null,
 
-  get username () {
+  get username() {
     return this.profile && this.profile.username
   },
 
-  get isLogin () {
+  get isLogin() {
     return !!this.username
   },
 
-  get shouldRefresh () {
-    if (!this.isLogin) {
-      return false
-    }
-    if (!this.credentials || !this.credentials.token) {
-      return true
-    }
-    return this.provider.shouldRefresh(this.credentials.token)
-  },
-
-
-  async login (history, provider) {
+  async login(history, provider) {
     this.history = history
     this.provider = providers[provider] || this.provider
     if (!this.provider) {
@@ -46,8 +35,8 @@ export default {
     await this.provider.done()
   },
 
-  async callback ({ location, history, provider: providerName }) {
-    const query = new URLSearchParams(location.search);
+  async callback({ location, history, provider: providerName }) {
+    const query = new URLSearchParams(location.search)
     const code = query.get('code')
     const state = query.get('state')
     const envProviders = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : []
@@ -66,10 +55,10 @@ export default {
     this.redirect(path)
   },
 
-  async logout (history) {
+  async logout(history) {
     this.profile = null
     this.credentials = null
-    this.refreshPromise = null
+    this.suspendPromise = null
     redux.dispatch('CLEAR_USER_PROFILE')
 
     if (this.provider) {
@@ -82,31 +71,44 @@ export default {
     this.redirect()
   },
 
-  async getToken () {
-    if (!this.refreshPromise) {
-      this.refreshPromise = this.refresh()
+  needRefresh() {
+    if (!this.isLogin) return false
+    if (!this.credentials) return true
+    return this.provider.shouldRefresh(this.credentials.token)
+  },
+
+  async refreshCheck() {
+    if (this.needRefresh()) {
+      this.restore()
+      await this.grant()
     }
-    await this.refreshPromise
-    this.refreshPromise = null
+    // TODO: should invoke it when direct to the project page
+    if (!this.provider) {
+      this.provider = providers['nouser']
+      await this.getNoUserAuth()
+    }
+  },
+
+  async getToken() {
+    if (!this.suspendPromise) {
+      this.suspendPromise = this.refreshCheck()
+    }
+    await this.suspendPromise
+    this.suspendPromise = null
     return this.credentials && this.credentials.token
   },
 
-  async grant (code) {
-    if (!this.provider) {
-      return
-    }
+  async grant(code) {
+    if (!this.provider) return
     const { credentials, profile } = await this.provider.grant(code)
-    if (!credentials) {
-      return
-    }
+    if (!credentials) return
 
     this.credentials = credentials
     this.profile = profile
-
     this.update()
   },
 
-  async getNoUserAuth(){
+  async getNoUserAuth () {
     this.credentials = await this.provider.getNoUserAuth()
     this.update()
   },
@@ -139,18 +141,6 @@ export default {
     }
     if (this.provider) {
       this.provider.restore(this.profile)
-    }
-  },
-
-  async refresh () {
-    if (this.shouldRefresh) {
-      this.restore()
-      await this.grant()
-    }
-    // TODO: should invoke it when direct to the project page
-    if (!this.provider){ 
-      this.provider = providers['nouser']
-      await this.getNoUserAuth()
     }
   },
 
