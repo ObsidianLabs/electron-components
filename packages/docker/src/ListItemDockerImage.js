@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, version } from 'react'
 import {
   Button,
   Badge,
@@ -34,7 +34,9 @@ export default class ListItemDockerImage extends PureComponent {
     console.log(2)
     let versions
     try {
+      console.log(this.props.channel)
       versions = await this.props.channel.versions()
+      console.log(versions, 'versions')
     } catch (e) {
       console.log(e)
       this.mounted && this.setState({ status: 'NO_DOCKER' })

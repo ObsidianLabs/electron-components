@@ -34,10 +34,12 @@ export default class DockerImageChannel extends IpcChannel {
     let versions = []
     try {
       console.log('invoke:versions')
+      console.log('=============')
       versions = await this.invoke('versions')
-      console.log(versions)
+      console.log('--===',versions)
     } catch(e) {}
-    versions = this._organizeVersionsByKey(versions, 'Tag')
+    // versions = this._organizeVersionsByKey(versions, 'Tag')
+    console.log(versions, '111')
     const event = new CustomEvent('versions', { detail: versions })
     this.eventTarget.dispatchEvent(event)
     return versions
@@ -50,8 +52,9 @@ export default class DockerImageChannel extends IpcChannel {
 
   async remoteVersions (size = this.size) {
     const versions = await this.invoke('remoteVersions', size)
-    console.log('remoteVersions', versions)
-    return this._organizeVersionsByKey(versions, 'name').slice(0, size)
+    console.log(versions, 'remote::::::versions')
+    return versions
+    // return this._organizeVersionsByKey(versions, 'name').slice(0, size)
   }
 
   _organizeVersionsByKey (versions, key) {
