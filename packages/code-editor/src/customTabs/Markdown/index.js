@@ -121,6 +121,7 @@ export default class Markdown extends Component {
   }
 
   renderHovers = () => {
+    if (!modelSessionManager.projectManager.userOwnProject) return
     if (!this.display || !this.filePath.endsWith(':/README.md')) {
       return (
         <div style={{
