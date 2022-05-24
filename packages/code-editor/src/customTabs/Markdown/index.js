@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import fileOps from '@obsidians/file-ops'
-import { Modal, Button } from '@obsidians/ui-components'
+import { Modal, Button, UncontrolledTooltip } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 import { t } from '@obsidians/i18n'
 import './styles.scss'
@@ -8,14 +8,18 @@ import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import slug from 'remark-slug'
 import Highlight from 'react-highlight'
+import copy from "copy-to-clipboard"
 import modelSessionManager from '../../MonacoEditor/modelSessionManager'
 
 export default class Markdown extends Component {
   state = {
     isPublic: false,
     togglePublicModal: React.createRef(),
+    projectShareModal: React.createRef(),
+    copyStatue: false,
     togglePublicSaved: true,
-    togglePublicToggling: false
+    togglePublicToggling: false,
+    projectSharePath: ''
   }
 
   componentDidMount () {
@@ -83,6 +87,24 @@ export default class Markdown extends Component {
     })
   }
 
+  projectShare = () => {
+    const projectSharePath = `https://hub-ide-black.vercel.app/shared/${modelSessionManager.projectManager.projectRoot}`
+    this.setState({ projectSharePath, copyStatue: false })
+    this.state.projectShareModal.current.openModal()
+  }
+
+  copyProjectPath = () => {
+    const { projectSharePath, copyStatue } = this.state
+    if (!copyStatue) {
+      if (copy(projectSharePath)) {
+        this.setState({copyStatue: true})
+        setTimeout(() => {
+          this.setState({copyStatue: false})
+        }, 2000)
+      } else notification.error(t('project.share.copyFailure'),t('project.share.copyFailureText'))
+    }
+  }
+
   async confirmTogglePublic() {
     if (!this.state.togglePublicSaved) return this.state.togglePublicModal.current.closeModal()
 
@@ -106,17 +128,30 @@ export default class Markdown extends Component {
     if (!modelSessionManager.projectManager.userOwnProject) return false
     if (!this.display) return false
     return (
+      <>
       <Button
         color='primary'
         size='sm'
         className='ml-2'
         onClick={this.togglePublic.bind(this)}
         style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
-    >
+      >
         { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
         { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
         { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
       </Button>
+      {
+        !this.state.togglePublicToggling && this.state.isPublic &&
+        <Button
+        color='primary'
+        size='sm'
+        className='ml-2'
+        onClick={this.projectShare}
+        >
+          <span key='mode-share'><i className='fas fa-share' /> {t('project.share.share')}</span>
+        </Button>
+      }
+      </>
     )
   }
 
@@ -282,6 +317,30 @@ export default class Markdown extends Component {
               pending={this.state.togglePublicToggling ? t('changing') : false}
               onConfirm={this.confirmTogglePublic.bind(this)}
             />
+            <Modal
+              ref={this.state.projectShareModal}
+              size='md'
+              textConfirm={this.state.copyStatue ? t('project.share.copied') : t('project.share.copyLink')}
+              onConfirm={this.copyProjectPath}
+              headerCancelIcon={true}
+              noCancel={true}
+            >
+              <div className='mt-1'>
+                <h5 className='mb-3'>{t('project.share.project')}</h5>
+                <div>{t('project.share.descStart')}<b>{t('project.share.descCopy')}</b>{t('project.share.descText')}<b>{t('project.share.descShare')}</b>{t('project.share.descEnd')}</div>
+                <div className='mt-4'>
+                  <div>{t('project.share.shareLink')}</div>
+                  <div id='project-links-share'>
+                    <div className='text-overflow-dots'>
+                      <kbd>{this.state.projectSharePath}</kbd>
+                    </div>
+                  </div>
+                  <UncontrolledTooltip target='project-links-share'>
+                    {this.state.projectSharePath}
+                  </UncontrolledTooltip>
+                </div>
+              </div>
+            </Modal>
           </div>
           {this.renderHovers()}
         </div>

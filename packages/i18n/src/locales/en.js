@@ -213,6 +213,21 @@ const translation = {
       rmSuccessText: 'Project <b>{{name}}</b> is removed',
       delSuccess: 'Delete Project Successful',
       delSuccessText: 'You have permanently delete project <b>{{name}}</b>',
+    },
+    share: {
+      share: 'Share',
+      shareLink: 'Share Link',
+      project: 'Share Project',
+      descStart: 'You can ',
+      descCopy: 'copy',
+      descShare: ' share ',
+      descText: ' the link of this project and',
+      descEnd: 'it with anyone.',
+      copyLink: 'Copy Link',
+      copy: ' Copy ',
+      copied: 'Copied!',
+      copyFailure: 'Copy failure',
+      copyFailureText: 'Place try again.',
     }
   },
   component: {
