@@ -48,9 +48,9 @@ export default class DockerImageInputSelector extends PureComponent {
       }
       return
     }
-    if (!this.state.versions.find(v => v.id === selected) && !this.props.extraOptions?.find(i => i.id === selected)) {
-      return { badge: 'not installed', badgeColor: 'danger' }
-    }
+    // if (!this.state.versions.find(v => v.id === selected) && !this.props.extraOptions?.find(i => i.id === selected)) {
+    //   return { badge: 'not installed', badgeColor: 'danger' }
+    // }
   }
 
   render () {
