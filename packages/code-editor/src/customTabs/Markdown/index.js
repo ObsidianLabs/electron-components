@@ -88,8 +88,10 @@ export default class Markdown extends Component {
   }
 
   projectShare = () => {
-    const projectSharePath = `https://hub-ide-black.vercel.app/shared/${modelSessionManager.projectManager.projectRoot}`
-    this.setState({ projectSharePath, copyStatue: false })
+    this.setState({ 
+      projectSharePath: `https://hub-ide-black.vercel.app/shared/${modelSessionManager.projectManager.projectRoot}`,
+      copyStatue: false 
+    })
     this.state.projectShareModal.current.openModal()
   }
 
