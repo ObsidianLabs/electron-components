@@ -1,12 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-
-import {
-  LoadingScreen,
-} from '@obsidians/ui-components'
-
+import { LoadingScreen } from '@obsidians/ui-components'
 import modelSessionManager from './modelSessionManager'
-
 import MonacoEditor from './MonacoEditor'
 import CustomTabContainer from './CustomTabContainer'
 
@@ -15,7 +10,8 @@ export default class MonacoEditorContainer extends PureComponent {
     readOnly: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     onCommand: PropTypes.func.isRequired,
-    onChangeDecorations: PropTypes.func.isRequired
+    onChangeDecorations: PropTypes.func.isRequired,
+    updateTabPath: PropTypes.func.isRequired
   }
 
   state = {
@@ -83,7 +79,7 @@ export default class MonacoEditorContainer extends PureComponent {
       return <LoadingScreen />
     }
 
-    const { theme, editorConfig, onCommand, onChange, readOnly } = this.props
+    const { theme, editorConfig, onCommand, onChange, readOnly, updateTabPath } = this.props
 
     let topbar = null
     if (modelSession.topbar) {
@@ -114,6 +110,7 @@ export default class MonacoEditorContainer extends PureComponent {
       <CustomTabContainer
         loading={loading}
         modelSession={modelSession}
+        updateTabPath={updateTabPath}
       />
     </>
   }
