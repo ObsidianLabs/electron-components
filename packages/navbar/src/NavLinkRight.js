@@ -32,7 +32,7 @@ class NavLinkRight extends PureComponent {
           title={title}
           selected={selected.name}
           icon={icon}
-          iconUrl={selected.iconUrl}
+          logoIcon={selected.logoIcon}
           id={selected.id}
           noneIcon={noneIcon}
           width='5.9rem'
