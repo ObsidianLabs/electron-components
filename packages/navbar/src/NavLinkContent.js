@@ -1,9 +1,8 @@
 import React from 'react'
-import NetworkAllLogoImg from './NetworkIcon'
 import { t } from '@obsidians/i18n'
 
 export default function (props) {
-  const { title, selected, icon, Icon, iconUrl: networkLogoImg, id: networkGroupsId, width, noneIcon = 'fas fa-file-times' } = props
+  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-times' } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`
@@ -19,9 +18,8 @@ export default function (props) {
     subtitle = `(${t('header.title.none')})`
   } else {
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
-    const imgSrc = NetworkAllLogoImg[(networkLogoImg ? networkLogoImg : networkGroupsId)]
-    if (projectStudioName == 'BlackIDE' && title == 'Network' && imgSrc) {
-      networkIcon = <img src={imgSrc} className='w-100 h-100' />
+    if (projectStudioName == 'BlackIDE' && title == 'Network' && logoIcon) {
+      networkIcon = <img src={logoIcon} className='w-100 h-100' />
     } else {
       networkIcon = <span key={key}><i className={`w-100 h-100 ${icon}`} /></span>
     }

@@ -17,7 +17,6 @@ import gnosistest from './assets/gnosistest.png'
 import auroramain from './assets/auroramain.png'
 import auroratest from './assets/auroratest.png'
 import evmostest from './assets/evmostest.png'
-import evmosmain from './assets/evmosmain.png'
 
 export default {
     ethereummain,
@@ -39,5 +38,4 @@ export default {
     auroramain,
     auroratest,
     evmostest,
-    evmosmain,
 }
