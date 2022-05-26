@@ -88,9 +88,9 @@ export default class Markdown extends Component {
   }
 
   projectShare = () => {
-    this.setState({ 
+    this.setState({
       projectSharePath: `https://hub-ide-black.vercel.app/shared/${modelSessionManager.projectManager.projectRoot}`,
-      copyStatue: false 
+      copyStatue: false
     })
     this.state.projectShareModal.current.openModal()
   }
@@ -109,7 +109,6 @@ export default class Markdown extends Component {
 
   async confirmTogglePublic() {
     if (!this.state.togglePublicSaved) return this.state.togglePublicModal.current.closeModal()
-
     await this.setState({
       togglePublicToggling: true
     })
@@ -121,13 +120,13 @@ export default class Markdown extends Component {
       togglePublicToggling: false
     })
     this.state.togglePublicModal.current.closeModal()
+    this.props.updateTabPath(isPublic)
     notification.success(t('project.features.changeSuccess'),
     `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
   }
 
   renderTogglePublicButton = () => {
-    if (!modelSessionManager.projectManager.remote) return false
-    if (!modelSessionManager.projectManager.userOwnProject) return false
+    if (!modelSessionManager.projectManager.remote || !modelSessionManager.projectManager.userOwnProject) return false
     if (!this.display) return false
     return (
       <>
