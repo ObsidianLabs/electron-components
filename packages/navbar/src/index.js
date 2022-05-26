@@ -13,7 +13,7 @@ import User from './User'
 import platform from '@obsidians/platform'
 import './styles.scss'
 
-export default class Header extends PureComponent {
+class Header extends PureComponent {
   renderLeftNavbar = (links, disable) => {
     return links.map(link => (
       <NavLinkLeft
@@ -87,10 +87,16 @@ export default class Header extends PureComponent {
             className='nav-link d-flex p-0'
             activeClassName='active'
           >
-            <User profile={profile} extraLoggedInOptions={extraLoggedInOptions} />
+            <User noUser={this.props.noUser} profile={profile} extraLoggedInOptions={extraLoggedInOptions} />
           </NavLink>
         </Nav>
       </Navbar>
     )
   }
 }
+
+Header.defaultProps = {
+  noUser: false
+}
+
+export default Header

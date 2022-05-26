@@ -222,7 +222,9 @@ class UserHomepage extends PureComponent {
     return (
       <div className='d-flex w-100 h-100' style={{ overflow: 'auto' }}>
         <div className='container py-5'>
-          <UserProfile profile={this.isSelf() ? profile.toJS() : user} />
+          {
+            !this.props.noUser && <UserProfile profile={this.isSelf() ? profile.toJS() : user} />
+          }
           <div className='d-flex flex-row justify-content-between my-3'>
             {this.renderProjectListOptions()}
             {this.renderActionButtons()}
@@ -246,6 +248,7 @@ class UserHomepage extends PureComponent {
 }
 
 export default connect(['profile', 'projects'])(UserHomepage)
+
 export {
   UserHomepage as BaseUserHomepage
 }
@@ -255,5 +258,6 @@ UserHomepage.propTypes = {
 }
 
 UserHomepage.defaultProps = {
-  enableTutorial: false
+  enableTutorial: false,
+  noUser: false
 }

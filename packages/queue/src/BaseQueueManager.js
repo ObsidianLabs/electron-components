@@ -54,7 +54,7 @@ export default class BaseQueueManager {
 
   async add (sender, data, callbacks = {}) {
     const pendingTransaction = sender()
-
+    
     const txHash = pendingTransaction.txHash || await pendingTransaction
     
     this.process(pendingTransaction, txHash, data, callbacks)
