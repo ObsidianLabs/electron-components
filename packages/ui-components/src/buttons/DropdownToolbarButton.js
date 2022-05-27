@@ -5,7 +5,7 @@ import {
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
+  DropdownItem
 } from 'reactstrap'
 
 import ToolbarButton from './ToolbarButton'
@@ -17,6 +17,7 @@ export default function DropdownToolbarButton ({
   rounded,
   icon,
   options = [],
+  readOnly = false,
   className,
 }) {
   const [isOpen, setOpen] = React.useState(false)
@@ -42,6 +43,7 @@ export default function DropdownToolbarButton ({
           onClick={toggle}
           icon={icon}
           className={className}
+          readOnly={readOnly}
         />
       </DropdownToggle>
       <DropdownMenu className='dropdown-menu-sm'>

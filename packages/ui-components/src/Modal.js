@@ -175,6 +175,7 @@ export default class BaseModal extends PureComponent {
               <i className='fas fa-times' />
             </Button>
           }
+          hidden={!title && headerCancelIcon}
         >
           {title}
         </ModalHeader>

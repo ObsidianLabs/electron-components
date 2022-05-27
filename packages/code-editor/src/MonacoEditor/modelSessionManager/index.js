@@ -2,7 +2,6 @@ import React from 'react'
 import * as monaco from 'monaco-editor'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
-
 import MonacoEditorModelSession from './MonacoEditorModelSession'
 
 export function defaultModeDetector(filePath) {
@@ -167,7 +166,7 @@ class ModelSessionManager {
           model = monaco.editor.createModel(content, mode, uri)
         }
       }
-      this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationMap[filePath] || [])
+      this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationMap[filePath], filePath || [])
     }
     return this.sessions[filePath]
   }
