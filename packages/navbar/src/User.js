@@ -151,6 +151,9 @@ class User extends Component {
   }
 
   renderLoginButton = () => {
+    if(this.props.noUser) {
+      return []
+    }
     const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
     return providers.map(provider => (
       <DropdownItem
@@ -184,6 +187,10 @@ class User extends Component {
       </ButtonDropdown>
     )
   }
+}
+
+User.defaultProps = {
+  noUser: false
 }
 
 export default withRouter(User)
