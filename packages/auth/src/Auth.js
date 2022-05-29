@@ -43,7 +43,7 @@ export default {
 
     await this.grant(code)
 
-    await this.provider.done()
+    await this.provider.done(history)
   },
 
   async callback ({ location, history, provider: providerName }) {
