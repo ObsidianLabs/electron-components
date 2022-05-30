@@ -85,7 +85,7 @@ class DeleteButton extends PureComponent {
           ref={this.input}
           label={
             <div>
-              {t('project.del.delText')}
+              {t('project.del.delText')}<b>{t('project.del.canont')}</b>{t('project.del.delTextEnd')}
               <div>{t('project.del.type')} <kbd>{platform.isWeb ? this.state.projectRoot : this.state.projectName}</kbd> {t('project.del.toConf')}</div>
             </div>
           }
