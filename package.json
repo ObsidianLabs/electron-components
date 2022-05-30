@@ -22,7 +22,8 @@
   },
   "resolutions": {
     "node-abi": "^3.5.0",
-    "node-sass": "npm:sass"
+    "node-sass": "npm:sass",
+    "rollup": "^2.68.0"
   },
   "workspaces": [
     "packages/*"
