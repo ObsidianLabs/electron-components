@@ -27,7 +27,6 @@ export default class NewProjectModal extends PureComponent {
   constructor(props) {
     super(props)
 
-    const workspacePath = redux.getState().workspacePath
     this.state = {
       remote: platform.isWeb,
       name: '',
@@ -37,7 +36,7 @@ export default class NewProjectModal extends PureComponent {
       group: props.defaultGroup,
       creating: false,
       showTerminal: false,
-      workspacePath
+      workspacePath: redux.getState().workspacePath
     }
 
     this.modal = React.createRef()
@@ -50,14 +49,13 @@ export default class NewProjectModal extends PureComponent {
 
   openModal(remote) {
     const { defaultTemplate, defaultGroup } = this.props
-    const workspacePath = redux.getState().workspacePath
     this.setState({
       remote,
       template: defaultTemplate,
       group: defaultGroup,
       creating: false,
       showTerminal: false,
-      workspacePath,
+      workspacePath: redux.getState().workspacePath
     })
     this.forceUpdate()
     this.modal.current.openModal()
@@ -66,8 +64,7 @@ export default class NewProjectModal extends PureComponent {
 
   chooseProjectPath = async () => {
     try {
-      const { workspacePath } = this.state
-      const projectRoot = await fileOps.current.chooseFolder(workspacePath, 'openProject')
+      const projectRoot = await fileOps.current.chooseFolder(this.state.workspacePath, 'openProject')
       this.setState({ projectRoot })
     } catch (e) {
 
@@ -110,9 +107,7 @@ export default class NewProjectModal extends PureComponent {
       }
       return created
     } catch (e) {
-      // if (notify) {
       notification.error(t('project.cannotCreate'), e.message)
-      // }
       return false
     }
   }
@@ -196,7 +191,7 @@ export default class NewProjectModal extends PureComponent {
         textConfirm={t('project.textConfirm')}
         onConfirm={this.onCreateProject}
         pending={creating && `${t('keypair.creating')}...`}
-        confirmDisabled={!name || invalid}
+        confirmDisabled={!name || invalid || !/^[0-9a-zA-Z\-_]*$/.test(name)}
       >
         {this.renderLocation()}
         {this.renderProjectPath()}
@@ -204,6 +199,7 @@ export default class NewProjectModal extends PureComponent {
           label={t('project.name')}
           value={name}
           onChange={(name, invalid) => this.setState({ name, invalid })}
+          validator={v => !/^[0-9a-zA-Z\-_]*$/.test(v) && 'Project name can only contain letters, digits, dash or underscore.'}
           {...projectNameProps}
         />
         {this.renderTemplate()}
