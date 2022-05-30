@@ -151,7 +151,7 @@ export default class KeypairManagerModal extends PureComponent {
       return (
         <tr key='keys-loading' >
           <td align='middle' colSpan={3}>
-            <i className='fas fa-spin fa-spinner mr-1' />{t('loading')}...
+            <i className='fas fa-pulse fa-spinner mr-1' />{t('loading')}...
           </td>
         </tr>
       )

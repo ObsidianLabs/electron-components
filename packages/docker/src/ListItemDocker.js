@@ -61,7 +61,7 @@ export default class ListItemDocker extends PureComponent {
       case 'INSTALLED':
         return <span key='fail'><i className='fas fa-minus-circle mr-2 text-muted' /></span>
       case 'STARTING':
-        return <span key='spin'><i className='fas fa-spin fa-spinner mr-2 text-muted' /></span>
+        return <span key='spin'><i className='fas fa-pulse fa-spinner mr-2 text-muted' /></span>
       default:
         return <span key='success'><i className='fas fa-check-circle mr-2 text-success' /></span>
     }
@@ -97,7 +97,7 @@ export default class ListItemDocker extends PureComponent {
       case 'STARTING':
         return (
           <Button color='primary' disabled>
-            <span><i className='fas fa-spin fa-spinner mr-1' /></span>Starting Docker
+            <span><i className='fas fa-pulse fa-spinner mr-1' /></span>Starting Docker
           </Button>
         )
       default:

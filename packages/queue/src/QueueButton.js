@@ -44,7 +44,7 @@ export default class QueueButton extends PureComponent {
       pendingItems.push(<DropdownItem divider key='divider-pending' />)
       pendingItems.unshift(
         <DropdownItem header key='header-pending'>
-          <i className='fas fa-spin fa-spinner mr-1' />Pending
+          <i className='fas fa-pulse fa-spinner mr-1' />Pending
         </DropdownItem>
       )
     }
@@ -77,7 +77,7 @@ export default class QueueButton extends PureComponent {
   render () {
     let icon = null
     if (BaseQueueManager.pending.length) {
-      icon = <div key='icon-pending' className='d-inline-block w-3 mr-1'><i className='fas fa-spin fa-spinner' /></div>
+      icon = <div key='icon-pending' className='d-inline-block w-3 mr-1'><i className='fas fa-pulse fa-spinner' /></div>
     } else {
       icon = <div key='icon-no-pending' className='d-inline-block w-3 mr-1'><i className='fas fa-receipt' /></div>
     }

@@ -43,7 +43,7 @@ export default class DockerImageSelector extends PureComponent {
   renderItems = () => {
     if (this.state.loading) {
       return (
-        <DropdownItem key='images-loading' disabled><i className='fas fa-spin fa-spinner mr-1' />Loading...</DropdownItem>
+        <DropdownItem key='images-loading' disabled><i className='fas fa-pulse fa-spinner mr-1' />Loading...</DropdownItem>
       )
     }
 
