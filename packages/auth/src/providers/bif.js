@@ -21,6 +21,9 @@ class BifProvider extends BaseProvider {
 		const { networkManager } = require('@obsidians/network')
 		if (networkManager.browserExtension) {
 			return await networkManager.browserExtension.auth();
+		} else {
+			networkManager.browserExtension = networkManager.Sdk.InitBrowserExtension(networkManager)
+			return await networkManager.browserExtension.auth();
 		}
 	}
 
