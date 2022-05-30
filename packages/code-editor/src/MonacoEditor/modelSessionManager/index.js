@@ -141,7 +141,6 @@ class ModelSessionManager {
   }
 
   openFile(filePath, remote = this.projectManager.remote) {
-    console.log(111111)
     if (!fileOps.current.path.isAbsolute(filePath)) {
       filePath = fileOps.current.path.join(this.projectRoot, filePath)
     }

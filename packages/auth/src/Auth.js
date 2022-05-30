@@ -137,15 +137,20 @@ export default {
         console.warn('Restore failed', error)
       }
     }
-    if (this.provider) {
-      this.provider.restore(this.profile)
+    if (providers[this.profile.provider]) {
+      providers[this.profile.provider].restore(this.profile)
     }
   },
 
   async refresh () {
     if (this.shouldRefresh) {
       this.restore()
-      await this.grant()
+      const code = await this.provider.request()
+      if (!code) {
+        return
+      }
+  
+      await this.grant(code)
     }
     // TODO: should invoke it when direct to the project page
     if (!this.provider){ 

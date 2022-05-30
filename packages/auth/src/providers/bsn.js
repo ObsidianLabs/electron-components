@@ -187,7 +187,6 @@ class BsnProvider extends BaseProvider {
   }
 
   handleError({ status, modal }) {
-    console.log(status, modal)
     if (!modal) {
       return
     }

@@ -213,7 +213,6 @@ export default class Markdown extends Component {
   }
 
   openFile = async filePath => {
-    console.log('editor:filepath', filePath)
     const path = modelSessionManager.projectManager.path
     let openningPath
     if (path.isAbsolute(filePath)) {

@@ -31,19 +31,13 @@ export default class ListItemDockerImage extends PureComponent {
       this.mounted && this.setState({ status: 'NO_DOCKER' })
       return
     }
-    console.log(2)
     let versions
     try {
-      console.log(this.props.channel)
       versions = await this.props.channel.versions()
-      console.log(versions, 'versions')
     } catch (e) {
-      console.log(e)
       this.mounted && this.setState({ status: 'NO_DOCKER' })
       return
     }
-    console.log(3)
-    console.log(versions)
     if (versions && versions.length) {
       this.mounted && this.setState({
         status: 'INSTALLED',
@@ -52,7 +46,6 @@ export default class ListItemDockerImage extends PureComponent {
     } else {
       this.mounted && this.setState({ status: 'NONE', versions: [] })
     }
-    console.log(4)
   }
 
   renderIcon = () => {
@@ -82,7 +75,6 @@ export default class ListItemDockerImage extends PureComponent {
   }
 
   renderButton = () => {
-    console.log(this.state.status)
     switch (this.state.status) {
       case '':
         return null

@@ -11,11 +11,9 @@ class DockerImageChannel extends IpcChannel {
 
   async versions () {
     const { logs } = await this.exec(`docker images ${this.imageName} --format "{{json . }}"`)
-    console.log(logs, 'logs')
     let versions = logs.split('\n')
       .filter(Boolean)
       .map(JSON.parse)
-    console.log('versions:log', versions)
     return versions
   }
 
@@ -25,7 +23,6 @@ class DockerImageChannel extends IpcChannel {
 
   async remoteVersions () {
     const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/${this.imageName}/tags`)
-    console.log('remote:version', res)
     return JSON.parse(res)
   }
 

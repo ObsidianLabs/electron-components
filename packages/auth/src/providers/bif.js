@@ -1,9 +1,12 @@
 import BaseProvider from './base'
 import decode from 'jwt-decode'
+import fileOps from '@obsidians/file-ops'
+import platform from '@obsidians/platform'
+import { BuildService, IpcChannel } from '@obsidians/ipc'
 
-class WalletProvider extends BaseProvider {
+class BifProvider extends BaseProvider {
 	constructor() {
-		super('wallet')
+		super('bif')
 	}
 
 	get awsConfig() {
@@ -35,6 +38,7 @@ class WalletProvider extends BaseProvider {
 
 		const credentials = { token, awsCredential }
 		const profile = decode(token)
+
 		this.profile = profile
 		return {
 			credentials, profile
@@ -97,6 +101,26 @@ class WalletProvider extends BaseProvider {
 	done(history) {
 		history.replace(`/${this.profile.username}`)
 	}
+
+	async update (credentials) {
+    if (platform.isDesktop) {
+      if (credentials && credentials.token) {
+        await this.channel.invoke('updateToken', {
+          token: credentials.token
+        })
+      }
+    } else {
+      if (credentials && credentials.awsCredential) {
+        fileOps.web.fs.updateCredential(credentials.awsCredential)
+        BuildService.updateCredential(credentials.awsCredential)
+      }
+    }
+  }
+	// restore (profile) {
+	// 	console.log(this)
+	// 	this.profile = profile
+	// 	this.provider = this.providers[this.profile.provider]
+	// }
 }
 
-export default WalletProvider
+export default BifProvider

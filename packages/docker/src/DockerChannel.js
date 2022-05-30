@@ -11,8 +11,6 @@ class DockerChannel extends IpcChannel {
   }
 
   async version () {
-    console.log('channel:version')
-    console.log('invoke:version', await this.invoke('version'))
     return await this.invoke('version')
   }
 
