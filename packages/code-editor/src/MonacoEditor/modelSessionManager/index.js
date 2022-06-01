@@ -165,6 +165,7 @@ class ModelSessionManager {
         if (!model) {
           model = monaco.editor.createModel(content, mode, uri)
         }
+        content !== model.getValue() && model.setValue(content)
       }
       this.sessions[filePath] = new MonacoEditorModelSession(model, remote, this.CustomTabs[mode], this.decorationMap[filePath], filePath || [])
     }
