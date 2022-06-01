@@ -204,7 +204,9 @@ const translation = {
     },
     del: {
       title: 'Delete Project',
-      delText: 'You are about to permanently delete this project. This operation <b>CANNOT</b> be undone!',
+      delText: 'You are about to permanently delete this project. This operation ',
+      canont: 'CANNOT',
+      delTextEnd: ' be undone!',
       type: 'Type',
       toConf: 'to confirm',
       tips: 'Project name does not match',

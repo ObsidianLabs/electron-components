@@ -204,7 +204,9 @@ const translation = {
     },
     del: {
       title: '删除项目',
-      delText: '您的操作将永久删除此项目，此操作不能被撤销！',
+      delText: '您的操作将永久删除此项目，此操作',
+      canont: '不能',
+      delTextEnd: '被撤销！',
       type: '输入',
       toConf: '来确认',
       tips: '项目名称不匹配',
