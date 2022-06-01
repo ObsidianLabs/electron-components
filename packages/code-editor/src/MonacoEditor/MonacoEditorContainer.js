@@ -14,10 +14,14 @@ export default class MonacoEditorContainer extends PureComponent {
     updateTabPath: PropTypes.func.isRequired
   }
 
-  state = {
-    initialized: false,
-    loading: false,
-    modelSession: null
+  constructor(props) {
+    super(props)
+    this.state = {
+      initialized: false,
+      loading: false,
+      modelSession: null
+    }
+    this.customTab = React.createRef()
   }
 
   componentDidMount () {
@@ -69,6 +73,11 @@ export default class MonacoEditorContainer extends PureComponent {
     // }
   }
 
+  proxyCommand = (eventType) => {
+    this.props.onCommand(eventType)
+    eventType === 'save' && this.customTab.current.syncEditStatus()
+  }
+
   quickCommand() {
     this.editor && this.editor.quickCommand()
   }
@@ -79,7 +88,7 @@ export default class MonacoEditorContainer extends PureComponent {
       return <LoadingScreen />
     }
 
-    const { theme, editorConfig, onCommand, onChange, readOnly, updateTabPath } = this.props
+    const { theme, editorConfig, onChange, readOnly, updateTabPath } = this.props
 
     let topbar = null
     if (modelSession.topbar) {
@@ -102,12 +111,13 @@ export default class MonacoEditorContainer extends PureComponent {
         modelSession={modelSession}
         theme={theme}
         editorConfig={editorConfig}
-        onCommand={onCommand}
+        onCommand={this.proxyCommand}
         readOnly={readOnly}
         onChange={() => onChange(true)}
         onChangeDecorations={this.props.onChangeDecorations}
       />
       <CustomTabContainer
+        ref={this.customTab}
         loading={loading}
         modelSession={modelSession}
         updateTabPath={updateTabPath}

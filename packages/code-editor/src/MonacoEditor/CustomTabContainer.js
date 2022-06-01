@@ -1,17 +1,33 @@
-import React from 'react'
+import React, { forwardRef, useRef } from 'react'
+import { LoadingScreen } from '@obsidians/ui-components'
+import PropTypes from 'prop-types'
 
-import {
-  LoadingScreen,
-} from '@obsidians/ui-components'
+const CustomTabContainer = forwardRef(({ loading, modelSession, updateTabPath }, ref) => {
+  const markdownTab = useRef(null)
 
-export default function ({ loading, modelSession, updateTabPath }) {
+  if (ref) {
+    ref.current = {
+      syncEditStatus: () => {
+        markdownTab.current.onEditButton()
+      }
+    }
+  }
+
+  if (!modelSession.CustomTab) return null
   if (loading) {
     return <div className='custom-tab bg2'><LoadingScreen /></div>
-  } else if (!modelSession.CustomTab) {
-    return null
-  } else {
-    return <modelSession.CustomTab
-      updateTabPath={updateTabPath}
-      modelSession={modelSession} />
   }
+  return <modelSession.CustomTab
+    ref={markdownTab}
+    updateTabPath={updateTabPath}
+    modelSession={modelSession} />
+})
+
+CustomTabContainer.displayName = 'CustomTabContainer'
+export default CustomTabContainer
+
+CustomTabContainer.propTypes = {
+  loading: PropTypes.string,
+  modelSession: PropTypes.string,
+  updateTabPath: PropTypes.string
 }
