@@ -23,6 +23,11 @@ class ChildProcess {
 
       proc.on('close', code => {
         this.promise = null
+        if (process.platform === 'win32') {
+          // Windows PowerShell 在启动后会输出 “活动代码页：936 这种文字，需要过滤”
+          // 需要检查英文的 windows 系统是否也存在这种问题
+          logs = logs.replace(/^.*: \d+\r\n/, '')
+        }
         resolve({ code, logs: stripAnsi(logs) })
       })
 
