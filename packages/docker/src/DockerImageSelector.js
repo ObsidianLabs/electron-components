@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-
+import { t } from '@obsidians/i18n'
 import {
   UncontrolledButtonDropdown,
   DropdownToggle,
@@ -113,7 +113,7 @@ export default class DockerImageSelector extends PureComponent {
           {icon}
           {this.props.title || this.imageName} ({selectedText})
           <UncontrolledTooltip placement='bottom' target='docker-version'>
-            VERSIONS
+            {t('version')}
           </UncontrolledTooltip>
         </DropdownToggle>
         <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>

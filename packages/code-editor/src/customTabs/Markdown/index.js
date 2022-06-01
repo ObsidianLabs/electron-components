@@ -74,7 +74,7 @@ export default class Markdown extends Component {
         }
       </Button>
       <UncontrolledTooltip target='project-edit' placement='top'>
-        {this.display ? 'Edit' : 'Save'}
+        {this.display ? t('edit') : t('save')}
       </UncontrolledTooltip>
       </>
     )
