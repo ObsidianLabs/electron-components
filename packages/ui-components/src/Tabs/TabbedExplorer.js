@@ -131,6 +131,7 @@ export default class TabbedExplorer extends PureComponent {
               onDisplay={this.onPageDisplay}
               value={props.match?.params?.value}
               tabs={this.tabs.current}
+              onRefresh={this.onRefresh}
               {...otherProps}
             />
           )}

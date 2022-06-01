@@ -29,16 +29,15 @@ function generateAnnotation ({ type, text, row = 1, column = 1, length = 0 }) {
       isWholeLine: true,
       minimap: type !== 'note',
       // className: EditorSession.decos.classNames[type],
-      glyphMarginClassName: decos.glyphMarginClassNames[type],
+      glyphMarginClassName: decos.glyphMarginClassNames[type]
       // hoverMessage: { value: text }
       // glyphMarginHoverMessage: { value: d.type }
     }
   }
 }
 
-
 export default class MonacoEditorModelSession {
-  constructor (model, remote, CustomTab, decorations = []) {
+  constructor(model, remote, CustomTab, decorations = [], filePath = '') {
     this._model = model
     this._remote = remote
     this._CustomTab = CustomTab
@@ -50,23 +49,28 @@ export default class MonacoEditorModelSession {
     this._topbar = null
     this.decorations = decorations
     this._public = null
-    if (this.filePath.startsWith('/public')) this._public = true
-    if (this.filePath.startsWith('/private')) this._public = false
+
+    this.initFileType(filePath)
+  }
+
+  initFileType(filePath) {
+    if (filePath.startsWith('/public') || filePath.startsWith('public')) this._public = true
+    if (filePath.startsWith('/private') || filePath.startsWith('private')) this._public = false
   }
 
   get model () {
     return this._model
   }
-  get filePath () {
+
+  get filePath() {
     let filePath = decodeURIComponent(this._model.uri.toString().replace('file://', ''))
     if (this._remote) {
-      if (this._public === true) {
-        filePath = filePath.replace(/^\/public/, 'public')
-        this._model.uri.path = this._model.uri.path.replace(/^\/public/, 'public')
-      }
-      if (this._public === false) {
-        filePath = filePath.replace(/^\/private/, 'private')
-        this._model.uri.path = this._model.uri.path.replace(/^\/private/, 'private')
+      if (filePath.startsWith('/')) {
+        const slicedPath = filePath.substring(1)
+        const pathArr = slicedPath.split('/')
+        pathArr[0] = this._public ? 'public' : 'private'
+        const finalPath = pathArr.join('/')
+        filePath = this._model.uri.path = finalPath
       }
     } else if (process.env.OS_IS_WINDOWS) {
       filePath = fileOps.current.path.normalize(filePath.substr(1))
@@ -214,7 +218,7 @@ export default class MonacoEditorModelSession {
         startLineNumber: row,
         startColumn: word ? word.startColumn : column,
         endLineNumber: row,
-        endColumn: word ? word.startColumn : column + 1,
+        endColumn: word ? word.startColumn : column + 1
       }
     }
 

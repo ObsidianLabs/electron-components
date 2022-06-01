@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
 
-import NetworkAllLogoImg from './NetworkIcon'
 import {
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  UncontrolledTooltip,
 } from '@obsidians/ui-components'
 import { t } from '@obsidians/i18n'
 
@@ -69,11 +69,11 @@ export default class NavDropdown extends Component {
       return <DropdownItem disabled key={`dropdown-item-none-${index}`}>({t('header.title.none')})</DropdownItem>
     }
 
-    const { id, id: networkGroupsId, name, icon, iconUrl: networkLogoImg } = item
+    const { id, name, icon, logoIcon } = item
     const isSelected = this.props.selected === id
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
-    const imgSrc = NetworkAllLogoImg[(networkLogoImg? networkLogoImg : networkGroupsId)]
+    const tooltipId = Math.random().toString(36).substring(2)
 
     return (
       <DropdownItem
@@ -95,13 +95,22 @@ export default class NavDropdown extends Component {
             activeItem: item
           })
         }}
+        id={`custom-nav-${tooltipId}`}
       >
-        <span key={`dropdown-item-${isSelected}`}>
+        <div className='text-overflow-dots'>
+          <span key={`dropdown-item-${isSelected}`}>
+            {
+              (projectStudioName == 'BlackIDE' && logoIcon) ? <img src={logoIcon} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
+            }
+          </span>
+          {name}
           {
-            (projectStudioName == 'BlackIDE' && imgSrc) ? <img src={imgSrc} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
+            item.group === 'others' && id !== 'custom' &&
+            <UncontrolledTooltip placement='bottom' target={`custom-nav-${tooltipId}`}>
+              {name}
+            </UncontrolledTooltip>
           }
-        </span>
-        {name}
+        </div>
       </DropdownItem>
     )
   }
@@ -131,7 +140,7 @@ export default class NavDropdown extends Component {
         >
           {children}
         </DropdownToggle>
-        <DropdownMenu right={right} style={{ width: 'fit-content', top: 48, [right ? 'right' : 'left']: 4 }}>
+        <DropdownMenu right={right} style={{ width: 'fit-content', 'max-width': '175px', top: 48, [right ? 'right' : 'left']: 4 }}>
           {this.renderDropdownList(list)}
         </DropdownMenu>
         

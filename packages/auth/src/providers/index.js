@@ -10,4 +10,4 @@ export default {
   nouser: new NoUsere(),
   bif: new BifProvider(),
   tencent,
-}
+} 

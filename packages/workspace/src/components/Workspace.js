@@ -106,7 +106,9 @@ export default class Workspace extends Component {
   }
 
   openFile = ({ path, remote, pathInProject, isLeaf }, setTreeActive) => {
-    isLeaf && this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject)) // it triggers onSelectTab function eventually
+    if (isLeaf || path.endsWith('config.json')) {
+      this.codeEditor.current.openTab(this.tabFromPath(path, remote, pathInProject)) // it triggers onSelectTab function eventually
+    }
     path.startsWith('custom:') && this.setFileTreeActive()
     setTreeActive && this.setFileTreeActive(path)
   }
@@ -126,7 +128,7 @@ export default class Workspace extends Component {
   }
 
   openCreateFileModal = node => {
-    const activeNode = node || this.filetree.current.activeNode || this.filetree.current.rootNode
+    const activeNode = node|| this.filetree.current.activeNode || this.filetree.current.rootNode[0]
     const basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     let baseName = basePath
     if (platform.isWeb) {

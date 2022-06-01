@@ -1,39 +1,30 @@
 import React, { Component } from 'react'
-
 import fileOps from '@obsidians/file-ops'
-
-import {
-  Modal,
-  Button,
-} from '@obsidians/ui-components'
-
+import { Modal, Button, UncontrolledTooltip } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 import { t } from '@obsidians/i18n'
-
+import './styles.scss'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import slug from 'remark-slug'
 import Highlight from 'react-highlight'
-
+import copy from "copy-to-clipboard"
 import modelSessionManager from '../../MonacoEditor/modelSessionManager'
-
-import './styles.scss'
-
-// import ShareButton from './ShareButton'
-// import StarButton from './StarButton'
-// import ForkButton from './ForkButton'
 
 export default class Markdown extends Component {
   state = {
     isPublic: false,
     togglePublicModal: React.createRef(),
+    projectShareModal: React.createRef(),
+    copyStatue: false,
     togglePublicSaved: true,
     togglePublicToggling: false,
+    projectSharePath: ''
   }
 
   componentDidMount () {
     this.setState({
-      isPublic: modelSessionManager.projectManager.prefix === "public",
+      isPublic: modelSessionManager.projectManager.prefix === 'public'
     })
     // this.getAvatar(this.props)
   }
@@ -62,6 +53,7 @@ export default class Markdown extends Component {
 
   onEditButton = () => {
     this.props.modelSession.toggleCustomTab()
+    this.display && modelSessionManager.saveCurrentFile()
     this.forceUpdate()
   }
 
@@ -82,11 +74,11 @@ export default class Markdown extends Component {
     )
   }
 
-  async togglePublic(){
+  async togglePublic() {
     let saved = true
-    for(let key in modelSessionManager.sessions) {
+    for (let key in modelSessionManager.sessions) {
       const session = modelSessionManager.sessions[key]
-      if (session.saved) continue
+      if (!session || session.saved) continue
       saved = false
       break
     }
@@ -95,45 +87,77 @@ export default class Markdown extends Component {
     })
   }
 
-  async confirmTogglePublic(){
+  projectShare = () => {
+    this.setState({
+      projectSharePath: `https://hub-ide-black.vercel.app/shared/${modelSessionManager.projectManager.projectRoot}`,
+      copyStatue: false
+    })
+    this.state.projectShareModal.current.openModal()
+  }
 
-    if (!this.state.togglePublicSaved)  return this.state.togglePublicModal.current.closeModal()
+  copyProjectPath = () => {
+    const { projectSharePath, copyStatue } = this.state
+    if (!copyStatue) {
+      if (copy(projectSharePath)) {
+        this.setState({copyStatue: true})
+        setTimeout(() => {
+          this.setState({copyStatue: false})
+        }, 2000)
+      } else notification.error(t('project.share.copyFailure'),t('project.share.copyFailureText'))
+    }
+  }
 
+  async confirmTogglePublic() {
+    if (!this.state.togglePublicSaved) return this.state.togglePublicModal.current.closeModal()
     await this.setState({
-      togglePublicToggling: true,
+      togglePublicToggling: true
     })
     // if (save) await modelSessionManager.projectManager.project.saveAll()
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
     modelSessionManager.currentModelSession._public = isPublic
     this.setState({
       isPublic,
-      togglePublicToggling: false,
+      togglePublicToggling: false
     })
     this.state.togglePublicModal.current.closeModal()
-    notification.success(t('project.features.changeSuccess'), 
+    this.props.updateTabPath(isPublic)
+    notification.success(t('project.features.changeSuccess'),
     `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
   }
 
   renderTogglePublicButton = () => {
-    if (!modelSessionManager.projectManager.remote) return false
-    if (!modelSessionManager.projectManager.userOwnProject) return false
+    if (!modelSessionManager.projectManager.remote || !modelSessionManager.projectManager.userOwnProject) return false
     if (!this.display) return false
     return (
-    <Button
-      color='primary'
-      size='sm'
-      className='ml-2'
-      onClick={this.togglePublic.bind(this)}
-      style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
-    >
-      { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
-      { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
-      { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash'/> {t('project.features.Private')}</span> }
-    </Button>
+      <>
+      <Button
+        color='primary'
+        size='sm'
+        className='ml-2'
+        onClick={this.togglePublic.bind(this)}
+        style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
+      >
+        { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
+        { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
+        { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
+      </Button>
+      {
+        !this.state.togglePublicToggling && this.state.isPublic &&
+        <Button
+        color='primary'
+        size='sm'
+        className='ml-2'
+        onClick={this.projectShare}
+        >
+          <span key='mode-share'><i className='fas fa-share' /> {t('project.share.share')}</span>
+        </Button>
+      }
+      </>
     )
   }
 
   renderHovers = () => {
+    if (!modelSessionManager.projectManager.userOwnProject) return
     if (!this.display || !this.filePath.endsWith(':/README.md')) {
       return (
         <div style={{
@@ -236,7 +260,7 @@ export default class Markdown extends Component {
 
     let value = this.props.modelSession.value
     if (this.filePath.endsWith('contracts.md') || this.filePath.endsWith('contracts.md.in')) {
-      value = value.replace(/---/g, '```').replace(/\{\{(\S+)\}\}/g, '`$1`');
+      value = value.replace(/---/g, '```').replace(/\{\{(\S+)\}\}/g, '`$1`')
     }
 
     return (
@@ -283,18 +307,42 @@ export default class Markdown extends Component {
               ref={this.state.togglePublicModal}
               size='md'
               title={this.state.togglePublicSaved ? t('project.features.visibility') : t('project.features.notSaved')}
-              children={this.state.togglePublicSaved ? 
-              <span>{t('project.features.title')}
-                <b>{this.state.isPublic ? t('project.features.private') : t('project.features.public')}</b>
-                ? 
+              children={this.state.togglePublicSaved
+                ? <span>{t('project.features.title')}
+                  <b>{this.state.isPublic ? t('project.features.private') : t('project.features.public')}</b>
+                ?
                 {this.state.isPublic ? t('project.features.privateText') : t('project.features.publicText')}
-                </span> 
+                </span>
               : t('project.features.remind')}
               textConfirm={this.state.togglePublicSaved ? 'Confirm' : 'OK'}
               noCancel={this.state.togglePublicToggling || !this.state.togglePublicSaved}
               pending={this.state.togglePublicToggling ? t('changing') : false}
               onConfirm={this.confirmTogglePublic.bind(this)}
             />
+            <Modal
+              ref={this.state.projectShareModal}
+              size='md'
+              textConfirm={this.state.copyStatue ? t('project.share.copied') : t('project.share.copyLink')}
+              onConfirm={this.copyProjectPath}
+              headerCancelIcon={true}
+              noCancel={true}
+            >
+              <div className='mt-1'>
+                <h5 className='mb-3'>{t('project.share.project')}</h5>
+                <div>{t('project.share.descStart')}<b>{t('project.share.descCopy')}</b>{t('project.share.descText')}<b>{t('project.share.descShare')}</b>{t('project.share.descEnd')}</div>
+                <div className='mt-4'>
+                  <div>{t('project.share.shareLink')}</div>
+                  <div id='project-links-share'>
+                    <div className='text-overflow-dots'>
+                      <kbd>{this.state.projectSharePath}</kbd>
+                    </div>
+                  </div>
+                  <UncontrolledTooltip target='project-links-share'>
+                    {this.state.projectSharePath}
+                  </UncontrolledTooltip>
+                </div>
+              </div>
+            </Modal>
           </div>
           {this.renderHovers()}
         </div>

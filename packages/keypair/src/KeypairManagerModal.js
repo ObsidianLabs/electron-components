@@ -256,7 +256,7 @@ export default class KeypairManagerModal extends PureComponent {
         <div className='d-flex flex-row align-items-center mb-3'>
           <div className='h4 m-0 mr-3'><i className='fas fa-exclamation-triangle text-warning' /></div>
           <div>
-            <div><b>{t('keypair.donot')}{t('keypair.warn')}</b></div>
+            <div><b>{t('keypair.donot')} {t('keypair.warn')}</b></div>
             <div className='small text-muted'>
               {t('keypair.description')}
             </div>
@@ -280,9 +280,9 @@ export default class KeypairManagerModal extends PureComponent {
           tableSm
           TableHead={(
             <tr>
-              <th style={{ width: '25%' }}>{head[0]}</th>
-              <th style={{ width: '58%' }}>{head[1]}</th>
-              <th style={{ width: '12%' }}>{head[2]}</th>
+              <th style={{ width: '15%' }}>{head[0]}</th>
+              <th style={{ width: '50%' }}>{head[1]}</th>
+              <th style={{ width: '30%' }}>{head[2]}</th>
               <th></th>
             </tr>
           )}

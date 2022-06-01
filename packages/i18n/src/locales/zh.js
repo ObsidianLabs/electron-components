@@ -213,6 +213,21 @@ const translation = {
       rmSuccessText: '项目<b>{{name}}</b>已经被移除',
       delSuccess: '删除项目成功',
       delSuccessText: '你已经永久地删除了项目<b>{{name}}</b>',
+    },
+    share: {
+      share: '分享',
+      shareLink: '分享链接',
+      project: '分享项目',
+      descStart: '你可以',
+      descCopy: '复制',
+      descShare: '分享',
+      descText: '这个项目的链接并',
+      descEnd: '给任何人',
+      copyLink: '复制链接',
+      copy: '复制',
+      copied: '已复制',
+      copyFailure: '复制失败',
+      copyFailureText: '请重新点击',
     }
   },
   component: {

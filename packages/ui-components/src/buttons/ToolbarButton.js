@@ -18,7 +18,7 @@ export default function ToolbarButton ({
   tooltipPlacement = 'bottom',
   className,
   children,
-  readOnly,
+  readOnly
 }) {
   const childrenComponent = loading
     ? <span key='loading'><i className='fas fa-spin fa-spinner' /></span>
