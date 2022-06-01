@@ -59,11 +59,13 @@ export default class Markdown extends Component {
 
   renderSwitchToEditorBtn = () => {
     return (
+      <>
       <Button
         color='primary'
         size='sm'
         className='ml-2'
         onClick={this.onEditButton}
+        id='project-edit'
       >
         {
           this.display
@@ -71,6 +73,10 @@ export default class Markdown extends Component {
             : <span key='mode-render'><i className='fas fa-check' /></span>
         }
       </Button>
+      <UncontrolledTooltip target='project-edit' placement='top'>
+        {this.display ? 'Edit' : 'Save'}
+      </UncontrolledTooltip>
+      </>
     )
   }
 

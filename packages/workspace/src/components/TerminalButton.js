@@ -18,6 +18,7 @@ export default class TerminalButton extends PureComponent {
     return (
       <ToolbarButton
         id='terminal'
+        tooltip='Compiler'
         size={size}
         icon='fas fa-terminal'
         color={this.state.terminal ? 'primary' : 'default'}
