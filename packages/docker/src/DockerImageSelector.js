@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react'
-
+import { t } from '@obsidians/i18n'
 import {
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  UncontrolledTooltip
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
@@ -107,9 +108,13 @@ export default class DockerImageSelector extends PureComponent {
           color='default'
           className='rounded-0 text-muted px-2 text-nowrap overflow-hidden text-overflow-dots'
           style={{ maxWidth: 240 }}
+          id='docker-version'
         >
           {icon}
           {this.props.title || this.imageName} ({selectedText})
+          <UncontrolledTooltip placement='bottom' target='docker-version'>
+            {t('version')}
+          </UncontrolledTooltip>
         </DropdownToggle>
         <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
           {children}

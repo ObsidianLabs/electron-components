@@ -16,6 +16,8 @@ const translation = {
   import: '引入',
   importing: '引入中',
   changing: '切换中...',
+  edit: '编辑',
+  version: '版本',
   delClickAgain: '再次点击删除',
   rmClickAgain: '再次点击移除',
   welcome: {
@@ -142,6 +144,7 @@ const translation = {
   project: {
     projectSetting: '项目设置',
     general: '常规',
+    compiler: '编译器',
     compilers: '编译器',
     editor: '编辑',
     fontFamily: '字体',

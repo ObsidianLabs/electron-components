@@ -16,6 +16,8 @@ const translation = {
   import: 'Import',
   importing: 'Importing',
   changing: 'Changing...',
+  edit: 'Edit',
+  version: 'VERSIONS',
   delClickAgain: 'Click again to delete',
   rmClickAgain: 'Click again to remove',
   welcome: {
@@ -142,6 +144,7 @@ const translation = {
   project: {
     projectSetting: 'Project Settings',
     general: 'General',
+    compiler: 'Compiler',
     compilers: 'Compilers',
     editor: 'Editor',
     fontFamily: 'Font Family',
