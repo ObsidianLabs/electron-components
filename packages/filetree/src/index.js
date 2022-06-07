@@ -303,6 +303,15 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
   }
 
   const handleSetActive = (activeKey) => {
+    const folderArr = activeKey.replace(projectManager.projectRoot + '/', '').split('/').reduce((prev, cur, index) => { 
+      if (index === 0) {
+        cur = projectManager.projectRoot + '/' + cur
+        prev.push(cur)
+        return prev
+      }
+      prev.push(prev[index - 1] + '/' + cur)
+      return prev
+    }, [])
     if (disableSetActive) {
       disableSetActive = false
       return
@@ -312,9 +321,11 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
       let stop = false
       if (curNode.path === nodeKey) {
         setSelectNode(curNode)
-        if (!expandedKeys.includes(curNode.fatherPath)) {
-          setExpandKeys([...expandedKeys, curNode.fatherPath])
-        }
+        folderArr.forEach(item => {
+          if (!expandedKeys.includes(item) && item !== nodeKey) {
+            setExpandKeys([...expandedKeys, item])
+          }
+        })
         stop = true
       }
       return stop
