@@ -166,7 +166,7 @@ export default class Markdown extends Component {
           top: '1.25rem',
           zIndex: 10
         }}>
-          {this.renderTogglePublicButton()}
+          {/* {this.renderTogglePublicButton()} */}
           {this.renderSwitchToEditorBtn()}
         </div>
       )
@@ -185,35 +185,11 @@ export default class Markdown extends Component {
         justifyContent: 'space-between',
         padding: 0
       }}>
-        <div className='flex-row-center mx-2'>
-          {/* <div
-            className='rounded bg-secondary'
-            style={{ width: '24px', height: '24px', overflow: 'hidden' }}
-          >
-            <Link to={`/${projectAuthor}`}>
-              <img
-                style={{ display: 'block', width: '24px', height: '24px' }}
-                src={this.state.avatar}
-              />
-            </Link>
-          </div>
-          <ol className='breadcrumb mb-0 ml-2 p-0'>
-            <BreadcrumbItem><Link to={`/${projectAuthor}`}>{projectAuthor}</Link></BreadcrumbItem>
-            <BreadcrumbItem active>{projectName}</BreadcrumbItem>
-          </ol> */}
-        </div>
-
         <div style={{
           padding: '0.5rem',
           display: 'flex',
           alignItems: 'center'
         }}>
-          {/* <ShareButton eosProject={this.props.eosProject} />
-          <StarButton eosProject={this.props.eosProject} />
-          <ForkButton
-            eosProject={this.props.eosProject}
-            profile={this.props.profile}
-          /> */}
           {this.renderSwitchToEditorBtn()}
         </div>
       </div>
