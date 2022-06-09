@@ -102,7 +102,7 @@ class BifProvider extends BaseProvider {
 	}
 
 	done(history) {
-		history.replace(`/${this.profile.username}`)
+		this.profile && history.replace(`/${this.profile.username}`)
 	}
 
 	async update (credentials) {
