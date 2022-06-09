@@ -12,7 +12,7 @@ export default function TableCardRow ({
   badgeColor = 'secondary',
   tooltip = null,
   onClickBadge = () => {},
-  loadIcon,
+  loading,
   children
 }) {
   const id = `table-card-row-${Math.floor(Math.random() * 1000)}`
@@ -35,7 +35,7 @@ export default function TableCardRow ({
             >{badge}</Badge>
           }
           {
-            loadIcon &&
+            loading &&
             <Badge pill color={badgeColor}>
               <span><i className="fas fa-spinner fa-pulse"/></span>
             </Badge>
