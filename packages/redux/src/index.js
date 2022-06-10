@@ -60,7 +60,7 @@ class Redux {
 
   dispatch (action, params) {
     if (this.actions[action] === void 0) {
-      console.error(new Error('there is no such redux action.'))
+      console.error(new Error(`There is no such redux action named ${action}`))
     }
     else {
       this.store.dispatch(this.actions[action](params))

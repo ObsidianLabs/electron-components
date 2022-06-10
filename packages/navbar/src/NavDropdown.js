@@ -74,10 +74,12 @@ export default class NavDropdown extends Component {
     const isSelected = this.props.selected === id
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
+    // fix old version error
+    const nameToId = btoa(name)
 
     return (
       <DropdownItem
-        key={`dropdown-item-header-${id}-${index}`}
+        key={`dropdown-item-header-${nameToId}`}
         className={classnames({ active: isSelected })}
         onClick={event => {
           event.preventDefault()
@@ -95,7 +97,7 @@ export default class NavDropdown extends Component {
             activeItem: item
           })
         }}
-        id={`custom-nav-${name}`}
+        id={`custom-nav-${nameToId}`}
       >
         <div className='text-overflow-dots'>
           <span key={`dropdown-item-${isSelected}`}>
@@ -106,7 +108,7 @@ export default class NavDropdown extends Component {
           {name}
           {
             item.group === 'others' && id !== 'custom' &&
-            <UncontrolledTooltip placement='bottom' target={`custom-nav-${name}`}>
+            <UncontrolledTooltip placement='bottom' target={`custom-nav-${nameToId}`}>
               {name}
             </UncontrolledTooltip>
           }
