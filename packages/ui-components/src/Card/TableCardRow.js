@@ -12,6 +12,7 @@ export default function TableCardRow ({
   badgeColor = 'secondary',
   tooltip = null,
   onClickBadge = () => {},
+  loading,
   children
 }) {
   const id = `table-card-row-${Math.floor(Math.random() * 1000)}`
@@ -32,6 +33,12 @@ export default function TableCardRow ({
               style={{ cursor: tooltip ? 'pointer' : undefined }}
               onClick={onClickBadge}
             >{badge}</Badge>
+          }
+          {
+            loading &&
+            <Badge pill color={badgeColor}>
+              <span><i className="fas fa-spinner fa-pulse"/></span>
+            </Badge>
           }
           {
             tooltip &&
