@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import slug from 'remark-slug'
 import Highlight from 'react-highlight'
-import copy from "copy-to-clipboard"
+import copy from 'copy-to-clipboard'
 import modelSessionManager from '../../MonacoEditor/modelSessionManager'
 
 export default class Markdown extends Component {
@@ -51,33 +51,10 @@ export default class Markdown extends Component {
     return this.props.modelSession.showCustomTab
   }
 
-  onEditButton = () => {
+  onEditButton = (needSave = true) => {
     this.props.modelSession.toggleCustomTab()
-    this.display && modelSessionManager.saveCurrentFile()
+    needSave && this.display && modelSessionManager.saveCurrentFile()
     this.forceUpdate()
-  }
-
-  renderSwitchToEditorBtn = () => {
-    return (
-      <>
-      <Button
-        color='primary'
-        size='sm'
-        className='ml-2'
-        onClick={this.onEditButton}
-        id='project-edit'
-      >
-        {
-          this.display
-            ? <span key='mode-edit'><i className='fas fa-pencil-alt' /></span>
-            : <span key='mode-render'><i className='fas fa-check' /></span>
-        }
-      </Button>
-      <UncontrolledTooltip target='project-edit' placement='top'>
-        {this.display ? t('edit') : t('save')}
-      </UncontrolledTooltip>
-      </>
-    )
   }
 
   async togglePublic() {
@@ -109,15 +86,13 @@ export default class Markdown extends Component {
         setTimeout(() => {
           this.setState({copyStatue: false})
         }, 2000)
-      } else notification.error(t('project.share.copyFailure'),t('project.share.copyFailureText'))
+      } else notification.error(t('project.share.copyFailure'), t('project.share.copyFailureText'))
     }
   }
 
   async confirmTogglePublic() {
     if (!this.state.togglePublicSaved) return this.state.togglePublicModal.current.closeModal()
-    await this.setState({
-      togglePublicToggling: true
-    })
+    await this.setState({ togglePublicToggling: true })
     // if (save) await modelSessionManager.projectManager.project.saveAll()
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
     modelSessionManager.currentModelSession._public = isPublic
@@ -131,30 +106,85 @@ export default class Markdown extends Component {
     `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
   }
 
+  openLink = link => {
+    fileOps.current.openLink(link)
+  }
+
+  scrollTo = id => {
+    const el = window.document.querySelector(id)
+    if (!el) {
+      return
+    }
+    el.scrollIntoViewIfNeeded()
+    el.style.background = 'var(--color-secondary)'
+    setTimeout(() => {
+      el.style.background = ''
+    }, 1000)
+  }
+
+  openFile = async filePath => {
+    const path = modelSessionManager.projectManager.path
+    let openningPath
+    if (path.isAbsolute(filePath)) {
+      openningPath = filePath
+    } else {
+      const { dir } = path.parse(this.filePath)
+      openningPath = path.join(dir, filePath)
+    }
+
+    if (await modelSessionManager.projectManager.isFile(openningPath)) {
+      modelSessionManager.openFile(openningPath)
+    } else {
+      notification.error(t('project.features.fail'), t('project.features.failText', { openningPath }))
+    }
+  }
+
+  renderSwitchToEditorBtn = () => {
+    return (
+      <>
+        <Button
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={this.onEditButton}
+          id='project-edit'
+        >
+          {
+            this.display
+              ? <span key='mode-edit'><i className='fas fa-pencil-alt' /></span>
+              : <span key='mode-render'><i className='fas fa-check' /></span>
+          }
+        </Button>
+        <UncontrolledTooltip target='project-edit' placement='top'>
+          {this.display ? t('edit') : t('save')}
+        </UncontrolledTooltip>
+      </>
+    )
+  }
+
   renderTogglePublicButton = () => {
     if (!modelSessionManager.projectManager.remote || !modelSessionManager.projectManager.userOwnProject) return false
     if (!this.display) return false
     return (
       <>
-      <Button
-        color='primary'
-        size='sm'
-        className='ml-2'
-        onClick={this.togglePublic.bind(this)}
-        style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
+        <Button
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={this.togglePublic.bind(this)}
+          style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
       >
-        { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
-        { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
-        { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
-      </Button>
-      {
+          { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
+          { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
+          { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
+        </Button>
+        {
         process.env.PROJECT_NAME.replace(/\s+/g, '') === 'BlackIDE' && !this.state.togglePublicToggling && this.state.isPublic &&
         <Button
-        color='primary'
-        size='sm'
-        className='ml-2'
-        onClick={this.projectShare}
-        >
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={this.projectShare}>
           <span key='mode-share'><i className='fas fa-share' /> {t('project.share.share')}</span>
         </Button>
       }
@@ -162,18 +192,51 @@ export default class Markdown extends Component {
     )
   }
 
+  renderTouristButton() {
+    const handleClick = () => {
+      this.onEditButton(false)
+    }
+
+    return (
+      <div className='tab-container'>
+        <Button
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={handleClick}
+          id='project-edit'>
+          {
+            this.display
+              ? <span key='mode-public'>
+                <i className='fas fa-code' /> {t('project.share.code')}
+              </span>
+              : <span key='mode-public'>
+                <i className='fas fa-eye' /> {t('project.share.preview')}
+              </span>
+           }
+        </Button>
+      </div>
+    )
+  }
+
   renderHovers = () => {
-    if (!modelSessionManager.projectManager.userOwnProject) return
     if (!this.display || !this.filePath.endsWith(':/README.md')) {
+      if (!modelSessionManager.projectManager.remote) {
+        return (
+          <div className='tab-container'>
+            {this.renderSwitchToEditorBtn()}
+          </div>
+        )
+      }
+
+      if (!modelSessionManager.projectManager.userOwnProject) {
+        return this.renderTouristButton()
+      }
+
       return (
-        <div style={{
-          position: 'absolute',
-          right: '1.5rem',
-          top: '1.25rem',
-          zIndex: 10
-        }}>
-          {this.renderTogglePublicButton()}
-          {this.renderSwitchToEditorBtn()}
+        <div className='tab-container'>
+          { this.renderTogglePublicButton() }
+          { this.renderSwitchToEditorBtn() }
         </div>
       )
     }
@@ -182,7 +245,7 @@ export default class Markdown extends Component {
     return (
       <div className='breadcrumb' style={{
         position: 'absolute',
-        top: '.75rem',
+        top: '1rem',
         right: '1rem',
         left: '1rem',
         zIndex: 10,
@@ -224,39 +287,6 @@ export default class Markdown extends Component {
         </div>
       </div>
     )
-  }
-
-  openLink = link => {
-    fileOps.current.openLink(link)
-  }
-
-  scrollTo = id => {
-    const el = window.document.querySelector(id)
-    if (!el) {
-      return
-    }
-    el.scrollIntoViewIfNeeded()
-    el.style.background = 'var(--color-secondary)'
-    setTimeout(() => {
-      el.style.background = ''
-    }, 1000)
-  }
-
-  openFile = async filePath => {
-    const path = modelSessionManager.projectManager.path
-    let openningPath
-    if (path.isAbsolute(filePath)) {
-      openningPath = filePath
-    } else {
-      const { dir } = path.parse(this.filePath)
-      openningPath = path.join(dir, filePath)
-    }
-
-    if (await modelSessionManager.projectManager.isFile(openningPath)) {
-      modelSessionManager.openFile(openningPath)
-    } else {
-      notification.error(t('project.features.fail'), t('project.features.failText', {openningPath}))
-    }
   }
 
   render () {
