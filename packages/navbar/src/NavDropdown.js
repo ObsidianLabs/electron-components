@@ -18,6 +18,7 @@ export default class NavDropdown extends Component {
     list: PropTypes.array.isRequired,
     onClickItem: PropTypes.func.isRequired,
     icon: PropTypes.string,
+    logoIcon: PropTypes.string
   }
 
   state = {
@@ -99,7 +100,7 @@ export default class NavDropdown extends Component {
         <div className='text-overflow-dots'>
           <span key={`dropdown-item-${isSelected}`}>
             {
-              (projectStudioName == 'BlackIDE' && logoIcon) ? <img src={logoIcon} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
+              (projectStudioName === 'BlackIDE' && logoIcon) ? <img src={logoIcon} className='mr-2 network-icon'/> : <i className={classnames('mr-2', iconClassName)}/>
             }
           </span>
           {name}

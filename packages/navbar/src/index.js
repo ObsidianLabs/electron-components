@@ -40,6 +40,7 @@ export default class Header extends PureComponent {
         noneIcon={link.noneIcon}
         selected={link.selected}
         dropdown={link.dropdown}
+        logoIcon={link.logoIcon}
         onClickItem={link.onClickItem}
       />
     ))
