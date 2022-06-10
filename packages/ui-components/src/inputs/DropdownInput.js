@@ -11,9 +11,9 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Badge,
+  Badge
 } from 'reactstrap'
-import { utils } from "@obsidians/sdk"
+import { utils } from '@obsidians/sdk'
 
 export default class DropdownInput extends PureComponent {
   constructor (props) {
@@ -21,7 +21,7 @@ export default class DropdownInput extends PureComponent {
     this.state = {
       dropdownOpen: false,
       paddingRight: 0,
-      filterMode: false,
+      filterMode: false
     }
 
     this.dropdownOptions = null
@@ -126,7 +126,7 @@ export default class DropdownInput extends PureComponent {
             group: item.group,
             display: subitem.display,
             disabled: subitem.disabled,
-            onClick: subitem.onClick,
+            onClick: subitem.onClick
           })
         })
         if (groupOptions.length) {
@@ -145,7 +145,7 @@ export default class DropdownInput extends PureComponent {
           id: item.id,
           display: item.display,
           disabled: item.disabled,
-          onClick: item.onClick,
+          onClick: item.onClick
         })
       }
     })
@@ -180,8 +180,7 @@ export default class DropdownInput extends PureComponent {
             key={`item-${item.id}`}
             active={active}
             disabled={item.disabled}
-            onClick={() => item.onClick ? item.onClick() : onChange(item.id, item.group)}
-          >
+            onClick={() => item.onClick ? item.onClick() : onChange(item.id, item.group)}>
             {display}
           </DropdownItem>
         )
@@ -214,7 +213,7 @@ export default class DropdownInput extends PureComponent {
       invalid,
       onClick,
       value,
-      readOnly,
+      readOnly
     } = this.props
     const selectedOption = this.findSelectedOption(options, value)
     const dropdownOptions = this.renderOptions()
@@ -231,7 +230,7 @@ export default class DropdownInput extends PureComponent {
         {
           addon &&
             <InputGroupAddon addonType='prepend'>
-              <Button color='secondary' tabIndex={-1} className={[classnames(size === 'sm' ? 'px-0' : 'px-1','cursor-default')]}>
+              <Button color='secondary' tabIndex={-1} className={[classnames(size === 'sm' ? 'px-0' : 'px-1', 'cursor-default')]}>
                 <div className='w-5'>{addon}</div>
               </Button>
             </InputGroupAddon>

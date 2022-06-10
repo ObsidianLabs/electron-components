@@ -1,22 +1,19 @@
 import React, { PureComponent } from 'react'
-
-import {
-  DropdownInput,
-  Badge,
-} from '@obsidians/ui-components'
-
+import { DropdownInput, Badge } from '@obsidians/ui-components'
 import notification from '@obsidians/notification'
 import keypairManager from './keypairManager'
 import { utils } from '@obsidians/sdk'
+
 export default class KeypairInputSelector extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      keypairs: [],
+      keypairs: []
     }
     const { networkManager } = require('@obsidians/network')
-  
     this.networkManager = networkManager
+
+    this.abbriviFunc = this.abbriviFunc.bind(this)
   }
 
   componentDidMount() {
@@ -48,11 +45,14 @@ export default class KeypairInputSelector extends PureComponent {
     this.setState({ keypairs })
   }
 
+  abbriviFunc(address) {
+    return utils.isValidAddressReturn(address).substr(0, 6) + '...' + utils.isValidAddressReturn(address).substr(-6)
+  }
+
   renderDisplay = key => {
     const { name } = key
-    
+    const abbreviationOption = this.props.abbreviationOption
     const address = utils.formatAddress(key.address, this.networkManager?.current?.chainId)
-
     return (highlight, active) => {
       let highlightAddress = address
       if (!active && highlight) {
@@ -60,13 +60,24 @@ export default class KeypairInputSelector extends PureComponent {
         let reg = new RegExp(highlight, 'ig')
         let tempArr = address.replaceAll(reg, text => `,spc-${text},`)
         tempArr.split(',').forEach(part => {
-          if (part !== '') {
-            part.indexOf('spc') !== -1
-              ? highlightAddress.push(<b className='text-primary'>{part.split('spc-')[1]}</b>)
-              : highlightAddress.push(part)
+          if (part === '') return
+          if (part.indexOf('spc') !== -1) {
+            let splitAddress = part.split('spc-')[1]
+            splitAddress = abbreviationOption ? this.abbriviFunc(splitAddress) : splitAddress
+            highlightAddress.push(<b className='text-primary'>{splitAddress}</b>)
+          } else {
+            highlightAddress.push(part)
           }
         })
       }
+
+      if (abbreviationOption) {
+        if (typeof highlightAddress[0] === 'string') {
+          const validValue = Array.isArray(highlightAddress) ? highlightAddress[0] : highlightAddress
+          highlightAddress = this.abbriviFunc(validValue)
+        }
+      }
+
       return (
         <div className='w-100 d-flex align-items-center justify-content-between'>
           <code className='text-overflow-dots mr-1'>{highlightAddress}</code>
@@ -95,7 +106,8 @@ export default class KeypairInputSelector extends PureComponent {
       value,
       onChange,
       extra = [],
-      invalid,
+      abbreviationOption = false,
+      invalid
     } = this.props
 
     const options = this.state.keypairs.map(this.mapKeyToOption)

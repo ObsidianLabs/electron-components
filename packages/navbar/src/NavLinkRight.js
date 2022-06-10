@@ -20,7 +20,7 @@ class NavLinkRight extends PureComponent {
   }
 
   render () {
-    const { route, title, selected, dropdown, icon, noneIcon } = this.props
+    const { route, title, selected, dropdown, icon, noneIcon, logoIcon } = this.props
 
     return (
       <NavLink
@@ -44,6 +44,7 @@ class NavLinkRight extends PureComponent {
           list={dropdown}
           onClickItem={this.onClickItem}
           icon={icon}
+          logoIcon={logoIcon}
         />
       </NavLink>
     )
