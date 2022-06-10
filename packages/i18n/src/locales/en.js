@@ -223,6 +223,8 @@ const translation = {
       share: 'Share',
       shareLink: 'Share Link',
       project: 'Share Project',
+      code: 'Code',
+      preview: 'Preview',
       descStart: 'You can ',
       descCopy: 'copy',
       descShare: ' share ',
@@ -232,7 +234,7 @@ const translation = {
       copy: ' Copy ',
       copied: 'Copied!',
       copyFailure: 'Copy failure',
-      copyFailureText: 'Place try again.',
+      copyFailureText: 'Place try again.'
     }
   },
   component: {

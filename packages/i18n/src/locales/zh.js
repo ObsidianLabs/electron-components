@@ -223,6 +223,8 @@ const translation = {
       share: '分享',
       shareLink: '分享链接',
       project: '分享项目',
+      code: '代码',
+      preview: '预览',
       descStart: '你可以',
       descCopy: '复制',
       descShare: '分享',
