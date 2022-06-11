@@ -2,6 +2,7 @@ import React, { Component, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Menu, Item, useContextMenu, Separator } from 'react-contexify'
+import { v4 as uuidv4 } from 'uuid'
 
 import {
   ButtonDropdown,
@@ -75,7 +76,8 @@ export default class NavDropdown extends Component {
     const iconClassName = typeof icon === 'function' ? icon(isSelected) : icon || this.props.icon
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
     // fix old version error
-    const nameToId = btoa(name)
+
+    const nameToId = uuidv4()
 
     return (
       <DropdownItem
