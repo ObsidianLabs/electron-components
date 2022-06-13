@@ -3,6 +3,10 @@ import React, { PureComponent } from 'react'
 import CacheRoute from 'react-router-cache-route'
 import TabsWithNavigationBar from './TabsWithNavigationBar'
 import LoadingScreen from '../Screen/LoadingScreen'
+import Screen from '../Screen/Screen'
+import { Button } from 'reactstrap'
+import platform from '@obsidians/platform'
+import { t } from '@obsidians/i18n'
 
 export default class TabbedExplorer extends PureComponent {
   constructor (props) {
@@ -87,12 +91,24 @@ export default class TabbedExplorer extends PureComponent {
       Page,
       cacheLifecycles,
       tabContextMenu,
+      history,
       ...otherProps
     } = { ...props, ...this.props }
     const { initialized, initialTabs, initialSelected, value } = this.state
 
     if (!initialized || initialized !== subroute) {
-      return <LoadingScreen />
+      return (
+        <>
+          <Screen>
+            <h4 className='display-4'>{t('network.network.noNetwork')}</h4>
+            <p className='lead'>{platform.isWeb ? t('network.network.webNoNetworkText') :  t('network.network.noNetworkText')}</p>
+            <hr />
+            <span>
+              <Button icon='' color='primary' onClick={() => history.push(`/network`)}>{t('network.network.gotoNetwork')}</Button>
+            </span>
+          </Screen>
+        </>
+      )
     }
 
     return <>
