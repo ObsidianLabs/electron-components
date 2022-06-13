@@ -52,6 +52,8 @@ export default class WorkspaceLoader extends PureComponent {
       const projectManager = new ProjectManager[type](this, projectRoot)
 
       const result = await projectManager.prepareProject()
+      const fileTreeData = await projectManager.loadRootDirectory()
+      const hasBuildFolder = fileTreeData?.children.find(item => item.type === 'folder' && item.title === 'build')?.name === 'build' || false
       if (result.error) {
         this.setState({ loading: false, invalid: true })
       } else {
@@ -62,6 +64,7 @@ export default class WorkspaceLoader extends PureComponent {
             projectRoot,
             projectManager,
             projectSettings: result.projectSettings,
+            hasBuildFolder
           }
         })
         redux.dispatch('PROJECT_LOADED')
