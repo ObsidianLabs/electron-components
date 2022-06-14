@@ -191,6 +191,7 @@ export default class NewProjectModal extends PureComponent {
 
     return (
       <Modal
+        className='new-project-modal'
         ref={this.modal}
         title={t('project.title')}
         textConfirm={t('project.textConfirm')}
