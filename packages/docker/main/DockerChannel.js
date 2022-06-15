@@ -26,11 +26,11 @@ class DockerChannel extends IpcChannel {
       return false
     } else {
       // Try to start Docker Toolbox
-      const toolboxResult = await this.exec('docker-machine start')
-      if (toolboxResult.code) {
-        // Get Docker Desktop path
+      try{
+        await this.exec('docker-machine start')
+      }finally{
         const { logs = ''} = await this.exec('(Get-Command docker).Path')
-        const desktopPath = logs.replace('Resources\\bin\\docker.exe', 'Docker Desktop.exe').trim()
+        const desktopPath = logs.replace(/Resources\\bin\\docker.exe/i, 'Docker Desktop.exe').trim()
         if (!desktopPath.endsWith('Desktop.exe')) {
           return false
         }
