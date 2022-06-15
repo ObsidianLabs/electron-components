@@ -2,11 +2,10 @@ import React, { PureComponent } from 'react'
 
 import CacheRoute from 'react-router-cache-route'
 import TabsWithNavigationBar from './TabsWithNavigationBar'
-import LoadingScreen from '../Screen/LoadingScreen'
 import Screen from '../Screen/Screen'
-import { Button } from 'reactstrap'
 import platform from '@obsidians/platform'
 import { t } from '@obsidians/i18n'
+import ErrorPage from '../ErrorPage/ErrorPage'
 
 export default class TabbedExplorer extends PureComponent {
   constructor (props) {
@@ -15,7 +14,7 @@ export default class TabbedExplorer extends PureComponent {
     this.tabs = React.createRef()
     this.page = React.createRef()
     this.state = {
-      initialized: false,
+      initialized: false
     }
   }
 
@@ -40,7 +39,7 @@ export default class TabbedExplorer extends PureComponent {
       initialized: initial.subroute,
       initialSelected,
       initialTabs,
-      value: initial.value,
+      value: initial.value
     })
   }
 
@@ -61,9 +60,7 @@ export default class TabbedExplorer extends PureComponent {
   onValue = value => {
     if (this.props.valueFormatter) {
       const formatted = this.props.valueFormatter(value)
-      if (formatted !== value) {
-        value = formatted
-      }
+      if (formatted !== value) value = formatted
     }
     this.tabs.current?.updateTab({ value, text: '' })
     this.setState({ value })
@@ -75,6 +72,8 @@ export default class TabbedExplorer extends PureComponent {
   }
 
   onRefresh = () => this.currentPage?.refresh()
+
+  handleClickJump = () => this.props.history?.push(`/network`)
 
   render (props) {
     const {
@@ -91,23 +90,21 @@ export default class TabbedExplorer extends PureComponent {
       Page,
       cacheLifecycles,
       tabContextMenu,
-      history,
       ...otherProps
     } = { ...props, ...this.props }
     const { initialized, initialTabs, initialSelected, value } = this.state
 
     if (!initialized || initialized !== subroute) {
       return (
-        <>
-          <Screen>
-            <h4 className='display-4'>{t('network.network.noNetwork')}</h4>
-            <p className='lead'>{platform.isWeb ? t('network.network.webNoNetworkText') :  t('network.network.noNetworkText')}</p>
-            <hr />
-            <span>
-              <Button icon='' color='primary' onClick={() => history.push(`/network`)}>{t('network.network.gotoNetwork')}</Button>
-            </span>
-          </Screen>
-        </>
+        <Screen>
+          <ErrorPage 
+            btnText={t('network.network.gotoNetwork')}
+            btnClick={this.handleClickJump}
+            divider={false}
+            title={t('network.network.noNetwork')}
+            description={platform.isWeb ? t('network.network.webNoNetworkText') :  t('network.network.noNetworkText')}
+          />
+        </Screen>
       )
     }
 
