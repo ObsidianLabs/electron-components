@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import slug from 'remark-slug'
 import Highlight from 'react-highlight'
-import copy from "copy-to-clipboard"
+import copy from 'copy-to-clipboard'
 import modelSessionManager from '../../MonacoEditor/modelSessionManager'
 
 export default class Markdown extends Component {
@@ -22,56 +22,24 @@ export default class Markdown extends Component {
     projectSharePath: ''
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({
       isPublic: modelSessionManager.projectManager.prefix === 'public'
     })
-    // this.getAvatar(this.props)
   }
 
-  // getAvatar = async (props) => {
-  //   this.setState({ avatar: '' })
-
-  //   const projectAuthor = props.eosProject.projectAuthor
-  //   if (projectAuthor) {
-  //     const user = await api.server.loadUser(projectAuthor)
-  //     if (user) {
-  //       this.setState({ avatar: user.avatar })
-  //     }
-  //   } else {
-  //     this.setState({ avatar: props.profile.get('avatar') })
-  //   }
-  // }
-
-  get filePath () {
+  get filePath() {
     return this.props.modelSession.filePath
   }
 
-  get display () {
+  get display() {
     return this.props.modelSession.showCustomTab
   }
 
-  onEditButton = () => {
+  onEditButton = (needSave = true) => {
     this.props.modelSession.toggleCustomTab()
-    this.display && modelSessionManager.saveCurrentFile()
+    needSave && this.display && modelSessionManager.saveCurrentFile()
     this.forceUpdate()
-  }
-
-  renderSwitchToEditorBtn = () => {
-    return (
-      <Button
-        color='primary'
-        size='sm'
-        className='ml-2'
-        onClick={this.onEditButton}
-      >
-        {
-          this.display
-            ? <span key='mode-edit'><i className='fas fa-pencil-alt' /></span>
-            : <span key='mode-render'><i className='fas fa-check' /></span>
-        }
-      </Button>
-    )
   }
 
   async togglePublic() {
@@ -82,14 +50,14 @@ export default class Markdown extends Component {
       saved = false
       break
     }
-    this.setState({togglePublicSaved: saved}, () => {
+    this.setState({ togglePublicSaved: saved }, () => {
       this.state.togglePublicModal.current.openModal()
     })
   }
 
   projectShare = () => {
     this.setState({
-      projectSharePath: `https://hub-ide-black.vercel.app/shared/${modelSessionManager.projectManager.projectRoot}`,
+      projectSharePath: `${process.env.REACT_APP_PROJECT_SHARE_URL}/${modelSessionManager.projectManager.projectRoot}`,
       copyStatue: false
     })
     this.state.projectShareModal.current.openModal()
@@ -99,19 +67,17 @@ export default class Markdown extends Component {
     const { projectSharePath, copyStatue } = this.state
     if (!copyStatue) {
       if (copy(projectSharePath)) {
-        this.setState({copyStatue: true})
+        this.setState({ copyStatue: true })
         setTimeout(() => {
-          this.setState({copyStatue: false})
+          this.setState({ copyStatue: false })
         }, 2000)
-      } else notification.error(t('project.share.copyFailure'),t('project.share.copyFailureText'))
+      } else notification.error(t('project.share.copyFailure'), t('project.share.copyFailureText'))
     }
   }
 
   async confirmTogglePublic() {
     if (!this.state.togglePublicSaved) return this.state.togglePublicModal.current.closeModal()
-    await this.setState({
-      togglePublicToggling: true
-    })
+    await this.setState({ togglePublicToggling: true })
     // if (save) await modelSessionManager.projectManager.project.saveAll()
     const isPublic = await modelSessionManager.projectManager.togglePublic(this.state.isPublic ? 'private' : 'public')
     modelSessionManager.currentModelSession._public = isPublic
@@ -122,78 +88,7 @@ export default class Markdown extends Component {
     this.state.togglePublicModal.current.closeModal()
     this.props.updateTabPath(isPublic)
     notification.success(t('project.features.changeSuccess'),
-    `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
-  }
-
-  renderTogglePublicButton = () => {
-    if (!modelSessionManager.projectManager.remote || !modelSessionManager.projectManager.userOwnProject) return false
-    if (!this.display) return false
-    return (
-      <>
-      <Button
-        color='primary'
-        size='sm'
-        className='ml-2'
-        onClick={this.togglePublic.bind(this)}
-        style={this.state.togglePublicToggling ? {background: 'var(--color-secondary)'} : this.state.isPublic ? {} : {background: 'var(--color-danger)'}}
-      >
-        { this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span> }
-        { !this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span> }
-        { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
-      </Button>
-      {
-        !this.state.togglePublicToggling && this.state.isPublic &&
-        <Button
-        color='primary'
-        size='sm'
-        className='ml-2'
-        onClick={this.projectShare}
-        >
-          <span key='mode-share'><i className='fas fa-share' /> {t('project.share.share')}</span>
-        </Button>
-      }
-      </>
-    )
-  }
-
-  renderHovers = () => {
-    if (!modelSessionManager.projectManager.userOwnProject) return
-    if (!this.display || !this.filePath.endsWith(':/README.md')) {
-      return (
-        <div style={{
-          position: 'absolute',
-          right: '1.5rem',
-          top: '1.25rem',
-          zIndex: 10
-        }}>
-          {/* {this.renderTogglePublicButton()} */}
-          {this.renderSwitchToEditorBtn()}
-        </div>
-      )
-    }
-
-    const { projectAuthor, projectName } = this.props.eosProject
-    return (
-      <div className='breadcrumb' style={{
-        position: 'absolute',
-        top: '.75rem',
-        right: '1rem',
-        left: '1rem',
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 0
-      }}>
-        <div style={{
-          padding: '0.5rem',
-          display: 'flex',
-          alignItems: 'center'
-        }}>
-          {this.renderSwitchToEditorBtn()}
-        </div>
-      </div>
-    )
+      `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
   }
 
   openLink = link => {
@@ -225,11 +120,136 @@ export default class Markdown extends Component {
     if (await modelSessionManager.projectManager.isFile(openningPath)) {
       modelSessionManager.openFile(openningPath)
     } else {
-      notification.error(t('project.features.fail'), t('project.features.failText', {openningPath}))
+      notification.error(t('project.features.fail'), t('project.features.failText', { openningPath }))
     }
   }
 
-  render () {
+  renderSwitchToEditorBtn = () => {
+    return (
+      <>
+        <Button
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={this.onEditButton}
+          id='project-edit'
+        >
+          {
+            this.display
+              ? <span key='mode-edit'><i className='fas fa-pencil-alt' /></span>
+              : <span key='mode-render'><i className='fas fa-check' /></span>
+          }
+        </Button>
+        <UncontrolledTooltip target='project-edit' placement='top'>
+          {this.display ? t('edit') : t('save')}
+        </UncontrolledTooltip>
+      </>
+    )
+  }
+
+  renderTogglePublicButton = () => {
+    if (!modelSessionManager.projectManager.remote || !modelSessionManager.projectManager.userOwnProject) return false
+    if (!this.display) return false
+    return (
+      <>
+        <Button
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={this.togglePublic.bind(this)}
+          style={this.state.togglePublicToggling ? { background: 'var(--color-secondary)' } : this.state.isPublic ? {} : { background: 'var(--color-danger)' }}
+        >
+          {this.state.togglePublicToggling && <span key='mode-toggling'><i className='fas fa-spinner fa-pulse' /> {t('project.features.Toggling')}</span>}
+          {!this.state.togglePublicToggling && this.state.isPublic && <span key='mode-public'><i className='fas fa-eye' /> {t('project.features.Public')}</span>}
+          {!this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span>}
+        </Button>
+        {
+          process.env.PROJECT_NAME.replace(/\s+/g, '') === 'BlackIDE' && !this.state.togglePublicToggling && this.state.isPublic &&
+          <Button
+            color='primary'
+            size='sm'
+            className='ml-2'
+            onClick={this.projectShare}>
+            <span key='mode-share'><i className='fas fa-share' /> {t('project.share.share')}</span>
+          </Button>
+        }
+      </>
+    )
+  }
+
+  renderTouristButton() {
+    const handleClick = () => {
+      this.onEditButton(false)
+    }
+
+    return (
+      <div className='tab-container'>
+        <Button
+          color='primary'
+          size='sm'
+          className='ml-2'
+          onClick={handleClick}
+          id='project-edit'>
+          {
+            this.display
+              ? <span key='mode-public'>
+                <i className='fas fa-code' /> {t('project.share.code')}
+              </span>
+              : <span key='mode-public'>
+                <i className='fas fa-eye' /> {t('project.share.preview')}
+              </span>
+          }
+        </Button>
+      </div>
+    )
+  }
+
+  renderHovers = () => {
+    if (!this.display || !this.filePath.endsWith(':/README.md')) {
+      if (!modelSessionManager.projectManager.remote) {
+        return (
+          <div className='tab-container'>
+            {this.renderSwitchToEditorBtn()}
+          </div>
+        )
+      }
+
+      if (!modelSessionManager.projectManager.userOwnProject) {
+        return this.renderTouristButton()
+      }
+
+      return (
+        <div className='tab-container'>
+          {this.renderSwitchToEditorBtn()}
+        </div>
+      )
+    }
+
+    const { projectAuthor, projectName } = this.props.eosProject
+    return (
+      <div className='breadcrumb' style={{
+        position: 'absolute',
+        top: '1rem',
+        right: '1rem',
+        left: '1rem',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 0
+      }}>
+        <div style={{
+          padding: '0.5rem',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          {this.renderSwitchToEditorBtn()}
+        </div>
+      </div>
+    )
+  }
+
+  render() {
     if (!this.display) {
       return this.renderHovers()
     }
@@ -286,10 +306,10 @@ export default class Markdown extends Component {
               children={this.state.togglePublicSaved
                 ? <span>{t('project.features.title')}
                   <b>{this.state.isPublic ? t('project.features.private') : t('project.features.public')}</b>
-                ?
-                {this.state.isPublic ? t('project.features.privateText') : t('project.features.publicText')}
+                  ?
+                  {this.state.isPublic ? t('project.features.privateText') : t('project.features.publicText')}
                 </span>
-              : t('project.features.remind')}
+                : t('project.features.remind')}
               textConfirm={this.state.togglePublicSaved ? 'Confirm' : 'OK'}
               noCancel={this.state.togglePublicToggling || !this.state.togglePublicSaved}
               pending={this.state.togglePublicToggling ? t('changing') : false}
