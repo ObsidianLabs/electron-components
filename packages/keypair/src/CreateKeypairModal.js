@@ -139,7 +139,7 @@ export default class CreateKeypairModal extends PureComponent {
         textConfirm={t('keypair.create')}
         pending={this.state.pending && `${t('keypair.creating')}...`}
         onConfirm={this.onConfirm}
-        confirmDisabled={!this.state.name || !address}
+        confirmDisabled={!this.state.name || !address ||  !/^[0-9a-zA-Z\-_]*$/.test(this.state.name)}
         colorActions={['info']}
         ActionBtn={this.renderRegenerateBtn()}
       >

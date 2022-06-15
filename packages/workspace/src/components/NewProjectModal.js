@@ -197,7 +197,7 @@ export default class NewProjectModal extends PureComponent {
         textConfirm={t('project.textConfirm')}
         onConfirm={this.onCreateProject}
         pending={creating && `${t('keypair.creating')}...`}
-        confirmDisabled={!name || invalid}
+        confirmDisabled={!name || invalid || !/^[0-9a-zA-Z\-_]*$/.test(name)}
         scrollable={false}
       >
         {this.renderLocation()}
