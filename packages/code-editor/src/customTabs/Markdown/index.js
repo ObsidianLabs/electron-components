@@ -72,7 +72,7 @@ export default class Markdown extends Component {
 
   projectShare = () => {
     this.setState({
-      projectSharePath: `${process.env.REACT_APP_PROJECT_SHARE_URL}/${modelSessionManager.projectManager.projectRoot}`,
+      projectSharePath: `${process.env.REACT_APP_PROJECT_SHARE_URL}/shared/${modelSessionManager.projectManager.projectRoot}`,
       copyStatue: false
     })
     this.state.projectShareModal.current.openModal()
@@ -179,7 +179,7 @@ export default class Markdown extends Component {
           { !this.state.togglePublicToggling && !this.state.isPublic && <span key='mode-private'><i className='fas fa-eye-slash' /> {t('project.features.Private')}</span> }
         </Button>
         {
-        process.env.PROJECT_NAME.replace(/\s+/g, '') === 'BlackIDE' && !this.state.togglePublicToggling && this.state.isPublic &&
+        process.env.REACT_APP_PROJECT_SHARE_URL && !this.state.togglePublicToggling && this.state.isPublic &&
         <Button
           color='primary'
           size='sm'
