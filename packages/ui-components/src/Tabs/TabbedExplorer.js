@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react'
 
 import CacheRoute from 'react-router-cache-route'
 import TabsWithNavigationBar from './TabsWithNavigationBar'
-import LoadingScreen from '../Screen/LoadingScreen'
+import Screen from '../Screen/Screen'
+import platform from '@obsidians/platform'
+import { t } from '@obsidians/i18n'
+import ErrorPage from '../ErrorPage/ErrorPage'
 
 export default class TabbedExplorer extends PureComponent {
   constructor (props) {
@@ -11,7 +14,7 @@ export default class TabbedExplorer extends PureComponent {
     this.tabs = React.createRef()
     this.page = React.createRef()
     this.state = {
-      initialized: false,
+      initialized: false
     }
   }
 
@@ -36,7 +39,7 @@ export default class TabbedExplorer extends PureComponent {
       initialized: initial.subroute,
       initialSelected,
       initialTabs,
-      value: initial.value,
+      value: initial.value
     })
   }
 
@@ -57,9 +60,7 @@ export default class TabbedExplorer extends PureComponent {
   onValue = value => {
     if (this.props.valueFormatter) {
       const formatted = this.props.valueFormatter(value)
-      if (formatted !== value) {
-        value = formatted
-      }
+      if (formatted !== value) value = formatted
     }
     this.tabs.current?.updateTab({ value, text: '' })
     this.setState({ value })
@@ -71,6 +72,8 @@ export default class TabbedExplorer extends PureComponent {
   }
 
   onRefresh = () => this.currentPage?.refresh()
+
+  handleClickJump = () => this.props.history?.push(`/network`)
 
   render (props) {
     const {
@@ -92,7 +95,17 @@ export default class TabbedExplorer extends PureComponent {
     const { initialized, initialTabs, initialSelected, value } = this.state
 
     if (!initialized || initialized !== subroute) {
-      return <LoadingScreen />
+      return (
+        <Screen>
+          <ErrorPage 
+            btnText={t('network.network.gotoNetwork')}
+            btnClick={this.handleClickJump}
+            divider={false}
+            title={t('network.network.noNetwork')}
+            description={platform.isWeb ? t('network.network.webNoNetworkText') :  t('network.network.noNetworkText')}
+          />
+        </Screen>
+      )
     }
 
     return <>

@@ -26,6 +26,8 @@ export { default as Table } from './Table'
 
 export { default as getColor } from './getColor'
 
+export { default as ErrorPage } from './ErrorPage/ErrorPage'
+
 export {
   Navbar,
   Nav,
