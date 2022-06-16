@@ -184,6 +184,12 @@ export default class KeypairManagerModal extends PureComponent {
     // filter the illegal address
     const validAddress = keypair?.address?.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
     const { networkManager } = require('@obsidians/network')
+    // get short address length
+    let address = networkManager?.sdk?.utils?.formatAddress(keypair.address, networkManager.network.chainId) || keypair.address
+    const maxAddressLength = 42 // normal eth length
+    if (address.length > maxAddressLength) {
+      address = address.substring(0, 20) + `...` + address.substring(address.length - 15, address.length)
+    }
     return (
       <tr key={`key-${validAddress}`} className='hover-flex'>
         <td>
@@ -209,7 +215,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td>
           <div className='d-flex align-items-center'>
-            <code className='small'>{networkManager?.sdk?.utils?.formatAddress(keypair.address, networkManager.network.chainId) || keypair.address}</code>
+            <code className='small'>{address}</code>
             <span className='text-transparent'>.</span>
             <DeleteButton
               color='primary'
