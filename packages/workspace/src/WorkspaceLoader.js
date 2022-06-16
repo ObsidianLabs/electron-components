@@ -12,6 +12,7 @@ import ProjectLoading from './components/ProjectLoading'
 import ProjectInvalid from './components/ProjectInvalid'
 
 import actions from './actions'
+import fileOps from '@obsidians/file-ops'
 
 export default class WorkspaceLoader extends PureComponent {
   constructor(props) {
@@ -52,6 +53,9 @@ export default class WorkspaceLoader extends PureComponent {
       const projectManager = new ProjectManager[type](this, projectRoot)
 
       const result = await projectManager.prepareProject()
+      const deployPath = result?.projectSettings?.get('deploy')?.split('/').splice(1).join('/')
+      const deployFullPath = `${projectManager.prefix}/${projectManager.userId}/${projectManager.projectId}/${deployPath}`
+      const hasDeployFile = await fileOps.current.isFile(deployFullPath) && true
       if (result.error) {
         this.setState({ loading: false, invalid: true })
       } else {
@@ -62,6 +66,7 @@ export default class WorkspaceLoader extends PureComponent {
             projectRoot,
             projectManager,
             projectSettings: result.projectSettings,
+            hasDeployFile
           }
         })
         redux.dispatch('PROJECT_LOADED')
