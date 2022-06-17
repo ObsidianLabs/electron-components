@@ -12,6 +12,7 @@ import {
 
 import notification from '@obsidians/notification'
 
+import { utils } from '@obsidians/sdk'
 import keypairManager from './keypairManager'
 
 import RevealSecretModal from './RevealSecretModal'
@@ -185,10 +186,11 @@ export default class KeypairManagerModal extends PureComponent {
     const validAddress = keypair?.address?.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
     const { networkManager } = require('@obsidians/network')
     // get short address length
-    let address = networkManager?.sdk?.utils?.formatAddress(keypair.address, networkManager.network.chainId) || keypair.address
+    let address = utils.formatAddress(keypair.address, networkManager.network.chainId) || keypair.address
     const maxAddressLength = 42 // normal eth length
     if (address.length > maxAddressLength) {
-      address = address.substring(0, 20) + `...` + address.substring(address.length - 15, address.length)
+      console.log(utils)
+      address = utils.abbreviateAddress(address)
     }
     return (
       <tr key={`key-${validAddress}`} className='hover-flex'>
