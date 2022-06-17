@@ -189,7 +189,6 @@ export default class KeypairManagerModal extends PureComponent {
     let address = utils.formatAddress(keypair.address, networkManager.network.chainId) || keypair.address
     const maxAddressLength = 42 // normal eth length
     if (address.length > maxAddressLength) {
-      console.log(utils)
       address = utils.abbreviateAddress(address)
     }
     return (
