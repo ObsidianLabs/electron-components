@@ -186,6 +186,7 @@ const translation = {
     existedFolder: '存在的文件夹',
     existedFolderText: '目标文件夹中已经存在一个名称为 {{fileName}} 的文件夹，你想替换它吗？',
     donotAskAgain: '无需再次询问',
+    formatSolidity: '保存时自动格式化solidity文件',
     features: {
       private: '私有',
       public: '公开',

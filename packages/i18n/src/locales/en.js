@@ -186,6 +186,7 @@ const translation = {
     existedFolder: 'Folder Existed',
     existedFolderText: 'A folder with the name {{fileName}} already exists in the destination folder. Do you want to replace it?',
     donotAskAgain: 'Do not ask me again',
+    formatSolidity: 'Auto format solidity files on save',
     features: {
       private: ' private',
       public: ' public',
