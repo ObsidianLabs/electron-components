@@ -186,7 +186,7 @@ export default class KeypairManagerModal extends PureComponent {
     const validAddress = keypair?.address?.replaceAll(/[^-_a-zA-Z0-9]/g, '-')
     const { networkManager } = require('@obsidians/network')
     // get short address length
-    let address = utils.formatAddress(keypair.address, networkManager.network.chainId) || keypair.address
+    let address = utils.formatAddress(keypair.address, networkManager?.network?.chainId) || keypair.address
     const maxAddressLength = 42 // normal eth length
     if (address.length > maxAddressLength) {
       address = utils.abbreviateAddress(address)
