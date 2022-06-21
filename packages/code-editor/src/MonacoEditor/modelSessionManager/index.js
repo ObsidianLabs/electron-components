@@ -172,7 +172,7 @@ class ModelSessionManager {
     return this.sessions[filePath]
   }
 
-  async saveFile(filePath, formatDocumentStatus = false) {
+  async saveFile(filePath, autoFormat = false) {
     if (!this.sessions[filePath]) {
       throw new Error(`File "${filePath}" is not open in the current workspace.`)
     }
@@ -185,17 +185,20 @@ class ModelSessionManager {
     await this.projectManager.saveFile(filePath, this.sessions[filePath].value)
     this._editorContainer.fileSaved(filePath)
     this.sessions[filePath].saved = true
-    formatDocumentStatus && await this.saveFile(filePath)
+    autoFormat && await this.saveFile(filePath)
   }
 
   async saveCurrentFile() {
     if (!this.currentFilePath) {
       throw new Error('No current file open.')
     }
-    let formatDocumentStatus = false
-    this.projectManager.projectSettings?.settings?.formatSolidity && this.currentFilePath.endsWith('.sol') && this._editor?.getAction('editor.action.formatDocument').run() && (formatDocumentStatus = true)
+    let autoFormat = false
+    if(this.projectManager.projectSettings?.settings?.formatSolidity && this.currentFilePath.endsWith('.sol')) {
+      this._editor?.getAction('editor.action.formatDocument').run()
+      autoFormat = true
+    }
     try {
-      await this.saveFile(this.currentFilePath, formatDocumentStatus)
+      await this.saveFile(this.currentFilePath, autoFormat)
     } catch (e) {
       console.warn(e)
       notification.error('Save Failed', e.message)
