@@ -72,7 +72,7 @@ export default class KeypairInputSelector extends PureComponent {
       }
 
       if (abbreviationOption) {
-        if (typeof highlightAddress[0] === 'string') {
+        if (highlightAddress && typeof highlightAddress[0] === 'string') {
           const validValue = Array.isArray(highlightAddress) ? highlightAddress[0] : highlightAddress
           highlightAddress = this.abbriviFunc(validValue)
         }
@@ -111,15 +111,14 @@ export default class KeypairInputSelector extends PureComponent {
     } = this.props
 
     const options = this.state.keypairs.map(this.mapKeyToOption)
-    const extraOptions = extra.map(item => {
+    const extraOptions = extra ? extra.map(item => {
       if (item.children) {
         return {
           ...item,
           children: item.children.map(this.mapKeyToOption)
         }
       }
-      return this.mapKeypairToOption(item)
-    })
+    }) : []
 
     let placeholder = this.props.placeholder
     if (!placeholder) {
