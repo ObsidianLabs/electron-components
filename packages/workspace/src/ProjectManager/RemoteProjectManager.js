@@ -6,6 +6,7 @@ import { modelSessionManager } from '@obsidians/code-editor'
 import BaseProjectManager from './BaseProjectManager'
 import Auth from '@obsidians/auth'
 import { sortFile } from './helper'
+import { t } from '@obsidians/i18n'
 
 const projectChannel = new HttpIpcChannel('project')
 
@@ -127,7 +128,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     if (this.projectSettings?.get('main')) {
       return this.pathForProjectFile(this.projectSettings.get('main'))
     }
-    throw new Error('No main file in project settings')
+    throw new Error(t('project.setting.noMainFile'))
   }
 
   async isMainValid () {
@@ -140,7 +141,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async checkSettings () {
     if (!this.project || !this.projectRoot) {
-      notification.error('No Project', 'Please open a project first.')
+      notification.error(t('project.setting.noProject'), t('project.setting.openProject'))
       return
     }
 
@@ -160,7 +161,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async saveFile (filePath, content) {
-    if (!this.userOwnProject) throw new Error('This Project Is Readonly!')
+    if (!this.userOwnProject) throw new Error(t('project.save.failText'))
     await fileOps.web.writeFile(filePath, content)
   }
 

@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor'
 import fileOps from '@obsidians/file-ops'
 import notification from '@obsidians/notification'
 import MonacoEditorModelSession from './MonacoEditorModelSession'
+import { t } from '@obsidians/i18n'
 
 export function defaultModeDetector(filePath) {
   if (filePath.startsWith('custom:')) {
@@ -188,6 +189,9 @@ class ModelSessionManager {
   }
 
   async saveCurrentFile() {
+    if (!this.projectManager.userOwnProject) {
+      return notification.error(t('project.save.fail'), t('project.save.failText'))
+    }
     if (!this.currentFilePath) {
       throw new Error('No current file open.')
     }
@@ -195,7 +199,7 @@ class ModelSessionManager {
       await this.saveFile(this.currentFilePath)
     } catch (e) {
       console.warn(e)
-      notification.error('Save Failed', e.message)
+      notification.error(t('project.save.fail'), e.message)
     }
   }
 

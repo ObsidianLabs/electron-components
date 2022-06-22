@@ -235,6 +235,15 @@ const translation = {
       copied: 'Copied!',
       copyFailure: 'Copy failure',
       copyFailureText: 'Place try again.'
+    },
+    save: {
+      fail: 'Save Failed',
+      failText: 'This Project Is Readonly!',
+    },
+    setting: {
+      noMainFile: 'No main file in project settings',
+      noProject: 'No Project',
+      openProject: 'Please open a project first.',
     }
   },
   component: {
