@@ -4,6 +4,7 @@ import { modelSessionManager } from '@obsidians/code-editor'
 
 import BaseProjectManager from './BaseProjectManager'
 import { sortFile } from './helper'
+import { t } from '@obsidians/i18n'
 
 export default class LocalProjectManager extends BaseProjectManager {
   static async createProject(options, stage = '') {
@@ -83,7 +84,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     if (this.projectSettings?.get('main')) {
       return this.pathForProjectFile(this.projectSettings.get('main'))
     }
-    throw new Error('No main file in project settings')
+    throw new Error(t('project.setting.noMainFile'))
   }
 
   async isMainValid() {
@@ -96,7 +97,7 @@ export default class LocalProjectManager extends BaseProjectManager {
 
   async checkSettings() {
     if (!this.project || !this.projectRoot) {
-      notification.error('No Project', 'Please open a project first.')
+      notification.error(t('project.setting.noProject'), t('project.setting.openProject'))
       return
     }
 

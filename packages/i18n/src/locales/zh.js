@@ -236,6 +236,15 @@ const translation = {
       copied: '已复制',
       copyFailure: '复制失败',
       copyFailureText: '请重新点击',
+    },
+    save: {
+      fail: '保存失败',
+      failText: '这个项目是只读的！',
+    },
+    setting: {
+      noMainFile: '在项目设置中没有主文件',
+      noProject: '无项目',
+      openProject: '请先打开一个项目。',
     }
   },
   component: {

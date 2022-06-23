@@ -53,7 +53,9 @@ export default class Markdown extends Component {
 
   onEditButton = (needSave = true) => {
     this.props.modelSession.toggleCustomTab()
-    needSave && this.display && modelSessionManager.saveCurrentFile()
+    if (needSave && this.display && modelSessionManager.projectManager.userOwnProject) {
+      modelSessionManager.saveCurrentFile()
+    }
     this.forceUpdate()
   }
 
