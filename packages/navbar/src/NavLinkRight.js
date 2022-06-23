@@ -14,7 +14,7 @@ class NavLinkRight extends PureComponent {
   onClickItem = item => {
     const { route, history } = this.props
     this.props.onClickItem(item.id, item)
-    if (history.location.pathname.startsWith(`/${route}`)) {
+    if (history.location.pathname.startsWith(`/${route}`) && item.id !== 'custom') {
       history.push(`/${route}/${item.id}`)
     }
   }
