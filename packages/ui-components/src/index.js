@@ -28,10 +28,11 @@ export { default as getColor } from './getColor'
 
 export { default as ErrorPage } from './ErrorPage/ErrorPage'
 
+export { default as Button } from './ported/Button'
+
 export {
   Navbar,
   Nav,
-  Button,
   ButtonGroup,
   Badge,
   FormGroup,
