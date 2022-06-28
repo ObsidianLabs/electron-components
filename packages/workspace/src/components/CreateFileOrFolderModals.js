@@ -36,6 +36,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
   }
 
   onCreate = async () => {
+    this.setState({ loading: true })
     const { basePath, name } = this.state
     if (this.state.type === 'file') {
       let filePath
