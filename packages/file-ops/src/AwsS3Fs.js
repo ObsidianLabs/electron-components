@@ -161,7 +161,7 @@ export default class AwsS3Fs {
       fileOrDirPath = fileOrDirPath.substr(1)
     }
     const { dir, base } = path.parse(fileOrDirPath)
-    const list = await this.list(dir)
+    const list = await this.list(dir, null, false)
     const match = list.find(item => item.name === base)
     return {
       isDirectory: () => match && !!match.children,
@@ -169,7 +169,7 @@ export default class AwsS3Fs {
     }
   }
 
-  async list(dirPath) {
+  async list(dirPath, projectRootPath, placeholderFileStatue = true) {
     dirPath = dirPath.endsWith('/') ? dirPath : `${dirPath}/`
     const formatFolders = commonPrefixes => {
       return commonPrefixes.length ? commonPrefixes.reduce((prev, cur) => {
@@ -218,6 +218,10 @@ export default class AwsS3Fs {
       Delimiter: '/'
     }).promise()
 
+    const hasPlaceholderFile = Contents.find(item => item.Key.endsWith('.placeholder'))
+    if (placeholderFileStatue && dirPath !== projectRootPath && !hasPlaceholderFile) {
+      this.ensureDir(dirPath.substr(0, dirPath.length - 1))
+    }
     return [...(formatFolders(CommonPrefixes)), ...(formatFile(Contents))]
   }
 }
