@@ -169,7 +169,7 @@ export default class AwsS3Fs {
     }
   }
 
-  async list(dirPath, projectRootPath, placeholderFileStatue = true) {
+  async list(dirPath, projectRootPath, status = true) {
     dirPath = dirPath.endsWith('/') ? dirPath : `${dirPath}/`
     const formatFolders = commonPrefixes => {
       return commonPrefixes.length ? commonPrefixes.reduce((prev, cur) => {
@@ -219,7 +219,7 @@ export default class AwsS3Fs {
     }).promise()
 
     const hasPlaceholderFile = Contents.find(item => item.Key.endsWith('.placeholder'))
-    if (placeholderFileStatue && dirPath !== projectRootPath && !hasPlaceholderFile) {
+    if (status && dirPath !== projectRootPath && !hasPlaceholderFile) {
       this.ensureDir(dirPath.substr(0, dirPath.length - 1))
     }
     return [...(formatFolders(CommonPrefixes)), ...(formatFile(Contents))]
