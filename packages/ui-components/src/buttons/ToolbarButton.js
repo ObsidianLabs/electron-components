@@ -1,8 +1,10 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import Button from '../ported/Button'
-import { UncontrolledTooltip } from 'reactstrap'
+import {
+  Button,
+  UncontrolledTooltip
+} from 'reactstrap'
 
 export default function ToolbarButton ({
   id,

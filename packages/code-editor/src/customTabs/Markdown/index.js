@@ -306,7 +306,7 @@ export default class Markdown extends Component {
         <div className='jumbotron bg-transparent break-all' style={{ overflowX: 'hidden' }}>
           <div className='container'>
             <ReactMarkdown
-              className='prose user-select'
+              className='user-select'
               remarkPlugins={[gfm, slug]}
               components={{
                 a: props => {

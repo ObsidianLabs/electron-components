@@ -1,8 +1,10 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import Button from '../ported/Button'
-import { ButtonGroup } from 'reactstrap'
+import {
+  Button,
+  ButtonGroup,
+} from 'reactstrap'
 
 export default function ButtonOptions ({ size, options, selected, className = 'mb-2', onSelect }) {
   return (
