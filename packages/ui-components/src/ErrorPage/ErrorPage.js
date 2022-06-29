@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'reactstrap'
+import Button from '../ported/Button'
 
 export default function ErrorPage({ title, description, divider = true, btnStatus = false, btnSize='md', btnColor = 'primary', btnText, btnClick }) {
 
