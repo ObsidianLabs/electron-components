@@ -86,7 +86,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async listFolder (folderPath) {
-    return await fileOps.web.listFolder(folderPath)
+    return await fileOps.web.listFolder(folderPath, `${this.prefix}/${this.userId}/${this.projectId}/`)
   }
 
   async loadRootDirectory() {

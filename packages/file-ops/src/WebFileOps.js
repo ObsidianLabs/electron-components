@@ -29,8 +29,8 @@ export default class WebFileOps extends FileOps {
     // TODO
   }
 
-  async listFolder (folderPath) {
-    return await this.fs.list(folderPath)
+  async listFolder (folderPath, projectRootPath) {
+    return await this.fs.list(folderPath, projectRootPath)
   }
 
   showMessageBox ({ message, buttons }) {
