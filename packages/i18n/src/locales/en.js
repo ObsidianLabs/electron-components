@@ -245,6 +245,10 @@ const translation = {
       noMainFile: 'No main file in project settings',
       noProject: 'No Project',
       openProject: 'Please open a project first.',
+    },
+    fork: {
+      desc: 'Forking will duplicate the current project just for your own, which allows you to modify freely without affecting the original project.',
+      visibilityDesc: 'By default, new forked projects are public. You can customize to private later in README.md when forked successfully.',
     }
   },
   component: {

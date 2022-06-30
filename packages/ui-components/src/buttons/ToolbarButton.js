@@ -18,7 +18,8 @@ export default function ToolbarButton ({
   tooltipPlacement = 'bottom',
   className,
   children,
-  readOnly
+  readOnly,
+  iconComponent,
 }) {
   const childrenComponent = loading
     ? <span key='loading'><i className='fas fa-pulse fa-spinner' /></span>
@@ -39,7 +40,7 @@ export default function ToolbarButton ({
       onClick={onClick}
       disabled={readOnly}
     >
-      {childrenComponent}
+      {iconComponent ? iconComponent : childrenComponent}
     </Button>
     {tooltipComponent}
   </>
