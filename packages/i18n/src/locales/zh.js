@@ -245,6 +245,10 @@ const translation = {
       noMainFile: '在项目设置中没有主文件',
       noProject: '无项目',
       openProject: '请先打开一个项目。',
+    },
+    fork: {
+      desc: 'Forking将为你自己复制当前的项目，这允许你在不影响原项目的情况下自由修改。',
+      visibilityDesc: '默认情况下，新分叉的项目是公开的。当分叉成功后，你可以在 README.md 中自定义为私有。',
     }
   },
   component: {
