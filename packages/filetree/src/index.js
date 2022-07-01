@@ -207,7 +207,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, move, copy, initialPath
     return (
         treeNodeContextMenu.map((item, index) => item
           ? <Item key={item.text}
-            onClick={handleMenuItemClick(item)}>{item.bilingualText}</Item>
+            onClick={handleMenuItemClick(item)}>{item.bilingualText || item.text}</Item>
           : <Separator key={`blank-${index}`} />)
       )
   }
