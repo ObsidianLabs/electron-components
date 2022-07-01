@@ -39,6 +39,17 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return project.public
   }
 
+  forkToPublic = async (aim = void 0, copiedUserId, copiedProjectId, projectName) => {
+    if (aim === 'public') this.prefix = 'public'
+    if (aim === 'private') this.prefix = 'private'
+    return await projectChannel.invoke('post', `${this.projectOwner}/${this.projectName}`, {
+      public: this.prefix === 'public',
+      copiedUserId,
+      copiedProjectId,
+      projectName,
+    })
+  }
+
   get path () {
     return fileOps.web.path
   }
@@ -86,7 +97,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async listFolder (folderPath) {
-    return await fileOps.web.listFolder(folderPath)
+    return await fileOps.web.listFolder(folderPath, `${this.prefix}/${this.userId}/${this.projectId}/`)
   }
 
   async loadRootDirectory() {
