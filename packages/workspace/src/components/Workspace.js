@@ -128,7 +128,7 @@ export default class Workspace extends Component {
   }
 
   openCreateFileModal = node => {
-    const activeNode = node|| this.filetree.current.activeNode || this.filetree.current.rootNode[0]
+    const activeNode = node || this.filetree.current.activeNode || this.filetree.current.rootNode[0]
     const basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     let baseName = basePath
     if (platform.isWeb) {
