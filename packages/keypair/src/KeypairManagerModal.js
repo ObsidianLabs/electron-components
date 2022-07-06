@@ -49,6 +49,7 @@ export default class KeypairManagerModal extends PureComponent {
       keypairs: [],
       keypairFilter: null,
       showPrivateKeys: false,
+      delBtnStatus: true,
     }
   }
 
@@ -71,7 +72,7 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   async refresh () {
-    this.setState({ loading: true })
+    this.setState({ loading: true, delBtnStatus: true })
     const keypairs = await keypairManager.loadAllKeypairs()
     this.setState({ keypairs, loading: false })
   }
@@ -113,6 +114,7 @@ export default class KeypairManagerModal extends PureComponent {
   }
 
   deleteKey = async keypair => {
+    this.setState({ delBtnStatus: false })
     const { keypairText } = this.props
     await keypairManager.deleteKeypair(keypair)
     notification.info(
@@ -232,7 +234,7 @@ export default class KeypairManagerModal extends PureComponent {
         </td>
         <td align='right'>
         {
-          !this.props.deletionDisabled &&
+          !this.props.deletionDisabled && this.state.delBtnStatus &&
           <DeleteButton
             className='hover-show'
             onConfirm={() => this.deleteKey(keypair)}
