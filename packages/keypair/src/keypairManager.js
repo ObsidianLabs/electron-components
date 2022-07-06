@@ -30,7 +30,6 @@ class KeypairManager {
       address: keypair.address,
       name: keypair.name,
       balance: keypair.balance && keypair.balance[networkId] || '0',
-      delBtnStatus: true,
     }))
     unsorted = unsorted.filter(item => item.address && item)
     return unsorted.sort((a, b) => {
