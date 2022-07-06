@@ -26,11 +26,13 @@ class KeypairManager {
   getKeypairFromRedux (networkId) {
     const keypairsState = redux.getState().keypairs
     const formatjs = Object.values(keypairsState.toJS())
-    const unsorted =  formatjs.map(keypair => ({
+    let unsorted =  formatjs.map(keypair => ({
       address: keypair.address,
       name: keypair.name,
       balance: keypair.balance && keypair.balance[networkId] || '0',
+      delBtnStatus: true,
     }))
+    unsorted = unsorted.filter(item => item.address && item)
     return unsorted.sort((a, b) => {
       if (!a.name || !b.name) {
         return 0
