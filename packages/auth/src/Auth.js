@@ -18,7 +18,7 @@ export default {
   },
 
   async login(history, provider) {
-    redux.dispatch('SET_LOGIN_REDIRECT_PATH', history.location.pathname)
+    redux.dispatch('SET_LOGIN_REDIRECT_PATH', history?.location.pathname)
     this.history = history
     this.provider = providers[provider] || this.provider
     if (!this.provider) {
