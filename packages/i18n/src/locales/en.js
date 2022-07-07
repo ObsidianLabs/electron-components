@@ -33,6 +33,7 @@ const translation = {
       fail: 'Deploy Failed',
       failText: 'No connected network. Please start a local network or switch to a remote network.',
       connot: 'Cannot Deploy',
+      projectNotFound: 'Project not found, may have been deleted or unshared. Please refresh the page.',
       cannotTextFolder: 'Cannot locate the built folder. Please make sure you have built the project successfully.',
       connotTextProject: 'No built contracts found. Please make sure you have built the project successfully.',
       error: 'Deployment Error',
