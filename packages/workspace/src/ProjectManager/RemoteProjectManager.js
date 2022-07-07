@@ -180,12 +180,20 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   checkFileName() {}
 
-  async moveOps () {}
+  async moveOps() { }
+
+  async hasFileOrFolder(path) {
+    if (await fileOps.web.isFile(path) || await fileOps.web.isDirectory(path)) {
+      return false
+    }
+    return true
+  }
 
   async createNewFile (basePath, name) {
     const filePath = this.path.join(basePath, name)
-    if (await fileOps.web.isFile(filePath)) {
-      throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
+
+    if (!await this.hasFileOrFolder(filePath)) {
+      throw new Error(`File or Folder <b>${filePath}</b> already exists.`)
     }
 
     try {
@@ -200,6 +208,9 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async createNewFolder (basePath, name) {
     const folderPath = this.path.join(basePath, name)
+    if (!await this.hasFileOrFolder(folderPath)) {
+      throw new Error(`File or Folder <b>${folderPath}</b> already exists.`)
+    }
 
     try {
       await fileOps.web.fs.ensureDir(folderPath)
