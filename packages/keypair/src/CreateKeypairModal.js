@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-
 import {
   Modal,
   Badge,
@@ -11,12 +10,10 @@ import {
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
+  DropdownItem
 } from '@obsidians/ui-components'
-
 import notification from '@obsidians/notification'
 import { t } from '@obsidians/i18n'
-
 import keypairManager from './keypairManager'
 
 export default class CreateKeypairModal extends PureComponent {
@@ -28,14 +25,14 @@ export default class CreateKeypairModal extends PureComponent {
       name: '',
       chain: defaultChain,
       secretType: 'privkey',
-      keypair: null,
+      keypair: null
     }
 
     this.modal = React.createRef()
     this.input = React.createRef()
   }
 
-  openModal (chain) {
+  openModal(chain) {
     this.modal.current.openModal()
     if (chain) {
       this.setState({ chain }, this.regenerateKeypair)
@@ -147,8 +144,10 @@ export default class CreateKeypairModal extends PureComponent {
           ref={this.input}
           label='Name'
           maxLength='200'
+          value={this.state.name}
           placeholder={t('keypair.createPlaceholder')}
           onChange={name => this.setState({ name })}
+          validator={v => !/^[0-9a-zA-Z\-_]*$/.test(v) && 'Keypair name can only contain letters, digits, dash or underscore.'}
         />
         {this.renderChainOptions()}
         <Label>Keypair info</Label>
