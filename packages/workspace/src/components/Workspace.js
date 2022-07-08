@@ -357,7 +357,8 @@ export default class Workspace extends Component {
             />
             <ProjectToolbar
               finalCall={this.updateTree}
-              signer={signer} />
+              signer={signer}
+              readOnly={readOnly}/>
           </div>
           <FileTree
             ref={this.filetree}
