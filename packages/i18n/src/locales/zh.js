@@ -32,6 +32,7 @@ const translation = {
       deploy: '部署',
       fail: '部署失败',
       failText: '没有连接的网络，请启动本地网络或切换到远程网络。',
+      projectNotFound: '无效项目， 项目可能被移除或失效。请刷新页面',
       connot: '无法部署',
       cannotTextFolder: '无法找到构建的文件夹，请确认你已经成功建立了该项目。',
       connotTextProject: '没有发现已构建的合约，请确认你已经成功建立了该项目。',

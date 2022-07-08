@@ -18,6 +18,9 @@ export default {
   },
 
   async login(history, provider) {
+    if (history?.location && !history.location.pathname.endsWith('local')) {
+      redux.dispatch('SET_LOGIN_REDIRECT_PATH', history?.location.pathname)
+    }
     this.history = history
     this.provider = providers[provider] || this.provider
     if (!this.provider) {
@@ -120,6 +123,11 @@ export default {
       await this.update()
     } else if (this.profile) {
       redux.dispatch('UPDATE_PROFILE', this.profile)
+      const redirectPath = redux.getState().loginRedirectPath
+      if (redirectPath && this.profile.userId) {
+        this.redirect(redirectPath)
+        redux.dispatch('SET_LOGIN_REDIRECT_PATH', '')
+      }
     }
     if (this.credentials && this.provider) {
       this.provider.update(this.credentials)

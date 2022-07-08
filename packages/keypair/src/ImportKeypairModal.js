@@ -1,15 +1,12 @@
 import React, { PureComponent } from 'react'
-
 import {
   Modal,
   DebouncedFormGroup,
   ButtonOptions,
-  Label,
+  Label
 } from '@obsidians/ui-components'
-
 import notification from '@obsidians/notification'
 import { t } from '@obsidians/i18n'
-
 import keypairManager from './keypairManager'
 
 export default class ImportKeypairModal extends PureComponent {
@@ -23,7 +20,7 @@ export default class ImportKeypairModal extends PureComponent {
       secret: '',
       valid: false,
       feedback: '',
-      keypair: null,
+      keypair: null
     }
 
     this.modal = React.createRef()
@@ -143,8 +140,10 @@ export default class ImportKeypairModal extends PureComponent {
           ref={this.input}
           label='Name'
           maxLength='200'
+          value={this.state.name}
           placeholder={t('keypair.createPlaceholder')}
           onChange={name => this.setState({ name })}
+          validator={v => !/^[0-9a-zA-Z\-_]*$/.test(v) && 'Keypair name can only contain letters, digits, dash or underscore.'}
         />
         {this.renderChainOptions()}
         <DebouncedFormGroup
