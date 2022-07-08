@@ -23,7 +23,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     if (this.projectRoot) {
       const projectOwner = this.projectRoot.split('/')[0]
       this.projectOwner = projectOwner
-      this.userOwnProject = Auth.profile.username === projectOwner
+      this.userOwnProject = Auth.profile?.username === projectOwner
       this.isFirstLoad = true
     }
   }
