@@ -309,6 +309,7 @@ export default class Markdown extends Component {
               className='user-select'
               remarkPlugins={[gfm, slug]}
               components={{
+                img: ({ src, alt }) => <img crossOrigin='true' alt={alt} src={src} />,
                 a: props => {
                   if (props.href.startsWith('#')) {
                     return <span className='link' onClick={() => this.scrollTo(props.href)}>{props.children}</span>
