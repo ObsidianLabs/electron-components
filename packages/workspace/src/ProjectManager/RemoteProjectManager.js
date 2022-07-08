@@ -54,13 +54,17 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return fileOps.web.path
   }
 
-  async prepareProject () {
-    let project
+  async getProjectInfo () {
     try {
-      project = await projectChannel.invoke('get', this.projectRoot)
+      return await projectChannel.invoke('get', this.projectRoot)
     } catch (e) {
       return { error: e.message }
     }
+  }
+
+  async prepareProject () {
+    const project = await this.getProjectInfo()
+    if (project.error) return { error: project.error }
 
     this.prefix = project.public ? 'public' : 'private'
     this.projectName = project.name
