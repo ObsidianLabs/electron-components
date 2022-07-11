@@ -97,3 +97,14 @@
   overflow: visible;
   vertical-align: -0.125em;
 }
+
+.homebottom{
+  display: flex;
+  width: 3rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  svg, i{
+    color: var(--color-primary);
+  }
+}
