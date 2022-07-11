@@ -125,16 +125,16 @@ export default class LocalProjectManager extends BaseProjectManager {
   async createNewFile(basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
-      throw new Error(`File <b>${filePath}</b> already exists.`)
+      throw new Error(`File <b>${name}</b> already exists.`)
     }
 
     try {
       await this.ensureFile(filePath)
     } catch (e) {
       if (e.code === 'EISDIR') {
-        throw new Error(`Folder <b>${filePath}</b> already exists.`)
+        throw new Error(`Folder <b>${name}</b> already exists.`)
       } else {
-        throw new Error(`Fail to create the file <b>${filePath}</b>.`)
+        throw new Error(`Fail to create the file <b>${name}</b>.`)
       }
     }
     return filePath
@@ -143,16 +143,16 @@ export default class LocalProjectManager extends BaseProjectManager {
   async createNewFolder(basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isDirectory(folderPath)) {
-      throw new Error(`Folder <b>${folderPath}</b> already exists.`)
+      throw new Error(`Folder <b>${name}</b> already exists.`)
     }
 
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
       if (e.code === 'EISDIR') {
-        throw new Error(`File <b>${folderPath}</b> already exists.`)
+        throw new Error(`File <b>${name}</b> already exists.`)
       } else {
-        throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+        throw new Error(`Fail to create the folder <b>${name}</b>.`)
       }
     }
   }
