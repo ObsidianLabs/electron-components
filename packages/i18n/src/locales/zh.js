@@ -250,6 +250,8 @@ const translation = {
     fork: {
       desc: 'Forking将为你自己复制当前的项目，这允许你在不影响原项目的情况下自由修改。',
       visibilityDesc: '默认情况下，新分叉的项目是公开的。当分叉成功后，你可以在 README.md 中自定义为私有。',
+      connot: '无法Fork',
+      projectNotFound: '无效项目，项目可能被移除或取消共享。',
     }
   },
   component: {

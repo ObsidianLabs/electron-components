@@ -250,6 +250,8 @@ const translation = {
     fork: {
       desc: 'Forking will duplicate the current project just for your own, which allows you to modify freely without affecting the original project.',
       visibilityDesc: 'By default, new forked projects are public. You can customize to private later in README.md when forked successfully.',
+      connot: 'Cannot Fork',
+      projectNotFound: 'Project not found, may have been deleted or unshared.',
     }
   },
   component: {
