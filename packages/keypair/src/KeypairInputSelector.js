@@ -8,27 +8,22 @@ export default class KeypairInputSelector extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      keypairs: []
+      keypairs: [],
+      options: [],
+      extraOptions: []
     }
     const { networkManager } = require('@obsidians/network')
     this.networkManager = networkManager
 
     this.abbriviFunc = this.abbriviFunc.bind(this)
-  }
-
-  componentDidMount() {
+    this.findPlaceholder = this.findPlaceholder.bind(this)
+    this.findExtraOptions = this.findExtraOptions.bind(this)
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
     this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
   }
 
-  componentWillUnmount() {
-    this.listenKeypairChange && this.listenKeypairChange()
-  }
-
   componentDidUpdate(prevProps) {
-    if (prevProps.filter !== this.props.filter) {
-      this.updateKeypairs(this.allKeypairs || [])
-    }
+    prevProps.filter !== this.props.filter && this.updateKeypairs(this.allKeypairs || [])
   }
 
   updateKeypairs = allKeypairs => {
@@ -42,11 +37,36 @@ export default class KeypairInputSelector extends PureComponent {
         this.props.onChange(keypairs[0].address)
       }
     }
-    this.setState({ keypairs })
+    this.setState({keypairs, options: keypairs.map(this.mapKeyToOption)})
+    this.findExtraOptions()
   }
 
   abbriviFunc(address) {
     return utils.isValidAddressReturn(address).substr(0, 6) + '...' + utils.isValidAddressReturn(address).substr(-6)
+  }
+
+  findExtraOptions() {
+    const extraOptions = this.props.extra ? this.props.extra.map(item => {
+      if (item.children) {
+        return {
+          ...item,
+          children: item.children.map(this.mapKeyToOption)
+        }
+      }
+    }) : []
+    this.setState({ extraOptions })
+  }
+
+  findPlaceholder() {
+    const { placeholder, editable } = this.props
+    const { options, extraOptions } = this.state
+    if (!placeholder) {
+      if (options.length || extraOptions.length) {
+        return editable ? 'Select or type an address' : 'Select an address'
+      } else {
+        return '(No keys in keypair manager)'
+      }
+    }
   }
 
   renderDisplay = key => {
@@ -110,28 +130,7 @@ export default class KeypairInputSelector extends PureComponent {
       invalid
     } = this.props
 
-    const options = this.state.keypairs.map(this.mapKeyToOption)
-    const extraOptions = extra ? extra.map(item => {
-      if (item.children) {
-        return {
-          ...item,
-          children: item.children.map(this.mapKeyToOption)
-        }
-      }
-    }) : []
-
-    let placeholder = this.props.placeholder
-    if (!placeholder) {
-      if (options.length || extraOptions.length) {
-        if (editable) {
-          placeholder = 'Select or type an address'
-        } else {
-          placeholder = 'Select an address'
-        }
-      } else {
-        placeholder = '(No keys in keypair manager)'
-      }
-    }
+    const { options, extraOptions } = this.state
 
     const onClick = () => {
       if (!editable && !options.length && !extraOptions.length) {
@@ -143,13 +142,13 @@ export default class KeypairInputSelector extends PureComponent {
       <DropdownInput
         size={size}
         label={label}
-        placeholder={placeholder}
+        placeholder={this.findPlaceholder()}
         editable={editable}
         maxLength={maxLength}
         inputClassName={value ? 'code' : ''}
         addon={<span key={`key-icon-${icon.replace(/\s/g, '-')}`}><i className={icon} /></span>}
         noCaret={typeof noCaret === 'boolean' ? noCaret : size === 'sm'}
-        options={[...options, ...extraOptions]}
+        options={[...this.state.options, ...this.state.extraOptions]}
         renderText={!editable && (option => option ? <code>{utils.isValidAddressReturn(option.id)}</code> : null)}
         value={value}
         onChange={onChange}
