@@ -79,7 +79,7 @@ export default class Header extends PureComponent {
         <NavLink
           to={'/welcome'}
           exact
-          className='navbar-left homebottom'
+          className='navbar-left home-bottom'
           activeClassName='active'
           >
           <i class="fas fa-home-lg-alt"></i>
