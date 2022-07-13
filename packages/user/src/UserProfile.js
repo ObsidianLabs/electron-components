@@ -46,8 +46,6 @@ class UserProfile extends PureComponent {
   }
 
   renderUserInfo = () => {
-    console.log(Auth)
-    const { profile } = this.props
 
     if (!Auth.login) {
       return <>
