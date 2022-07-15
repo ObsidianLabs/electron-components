@@ -54,13 +54,17 @@ export default class RemoteProjectManager extends BaseProjectManager {
     return fileOps.web.path
   }
 
-  async prepareProject () {
-    let project
+  async getProjectInfo () {
     try {
-      project = await projectChannel.invoke('get', this.projectRoot)
+      return await projectChannel.invoke('get', this.projectRoot)
     } catch (e) {
       return { error: e.message }
     }
+  }
+
+  async prepareProject () {
+    const project = await this.getProjectInfo()
+    if (project.error) return { error: project.error }
 
     this.prefix = project.public ? 'public' : 'private'
     this.projectName = project.name
@@ -193,29 +197,29 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const filePath = this.path.join(basePath, name)
 
     if (!await this.hasFileOrFolder(filePath)) {
-      throw new Error(`File or Folder <b>${filePath}</b> already exists.`)
+      throw new Error(`File or Folder <b>${name}</b> already exists.`)
     }
 
     try {
       await this.ensureFile(filePath)
     } catch (e) {
-      throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
+      throw new Error(`Fail to create the file <b>${name}</b>.`)
     }
 
     await this.refreshDirectory(basePath)
     return filePath
   }
 
-  async createNewFolder (basePath, name) {
+  async createNewFolder(basePath, name) {
     const folderPath = this.path.join(basePath, name)
     if (!await this.hasFileOrFolder(folderPath)) {
-      throw new Error(`File or Folder <b>${folderPath}</b> already exists.`)
+      throw new Error(`File or Folder <b>${name}</b> already exists.`)
     }
 
     try {
       await fileOps.web.fs.ensureDir(folderPath)
     } catch (e) {
-      throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
+      throw new Error(`Fail to create the folder <b>${name}</b>.`)
     }
 
     await this.refreshDirectory(basePath)

@@ -44,6 +44,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
         filePath = await this.props.projectManager.createNewFile(basePath, name)
       } catch (e) {
         notification.error(t('project.cannotCreateFile'), e.message)
+        this.setState({ loading: false })
         return
       }
       setTimeout(() => {
@@ -54,6 +55,7 @@ export default class CreateFileOrFolderModals extends PureComponent {
         await this.props.projectManager.createNewFolder(basePath, name)
       } catch (e) {
         notification.error(t('project.cannotCreateFolder'), e.message)
+        this.setState({ loading: false })
         return
       }
     }

@@ -36,7 +36,7 @@ function execValidator (value, validator) {
 }
 
 function DebouncedFormGroup (props, ref) {
-  const { size, label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, validator, importFromFile, ...otherProps } = props
+  const { size, label, disabled, placeholder, inputType = 'input', onTextClick, formGroupClassName, validator, importFromFile, labelStatus = true, ...otherProps } = props
 
   const [invalid, feedback] = execValidator(otherProps.value, validator)
 
@@ -62,15 +62,20 @@ function DebouncedFormGroup (props, ref) {
 
   return (
     <FormGroup className={classnames(size === 'sm' && 'mb-2', formGroupClassName)}>
-      <Label className={classnames(size === 'sm' && 'mb-1 small')}>{label}
-      {importFromFile && <Button
-        color='secondary'
-        size='sm'
-        className='ml-2'
-        onClick={onChooseFile}
-      >Import from file {typeof importFromFile === 'string' && `(${importFromFile})`}
-      </Button>}
-      </Label>
+      {
+        labelStatus &&
+        <Label className={classnames(size === 'sm' && 'mb-1 small')}>{label}
+          {importFromFile &&
+            <Button
+              color='secondary'
+              size='sm'
+              className='ml-2'
+              onClick={onChooseFile}
+            >Import from file {typeof importFromFile === 'string' && `(${importFromFile})`}
+            </Button>
+          }
+        </Label>
+      }
       <LabelTooltip tooltip={props.tooltip} size={size} />
       {
         inputType === 'input' &&

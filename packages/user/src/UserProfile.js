@@ -17,7 +17,7 @@ class UserProfile extends PureComponent {
   }
 
   renderAvatar = () => {
-    const { profile } = this.props
+    const { profile } = Auth
     const img = new Image()
     img.src = profile?.avatar
     img.crossOrigin = true
@@ -46,9 +46,8 @@ class UserProfile extends PureComponent {
   }
 
   renderUserInfo = () => {
-    const { profile } = this.props
 
-    if (!profile?.username) {
+    if (!Auth.login) {
       return <>
         <Media heading className='text-muted'>
           ({t('header.title.notLogin')})
@@ -58,7 +57,7 @@ class UserProfile extends PureComponent {
       </>
     }
 
-    const { username, desc } = profile
+    const { username, desc } = Auth.profile
     return <>
       <Media heading className='d-flex align-items-end'>
         {username}
