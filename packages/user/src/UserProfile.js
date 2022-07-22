@@ -47,7 +47,7 @@ class UserProfile extends PureComponent {
 
   renderUserInfo = () => {
 
-    if (!Auth.login) {
+    if (!Auth.isLogin) {
       return <>
         <Media heading className='text-muted'>
           ({t('header.title.notLogin')})
@@ -56,7 +56,6 @@ class UserProfile extends PureComponent {
         <p className='break-line'>{this.renderLoginButton()}</p>
       </>
     }
-
     const { username, desc } = Auth.profile
     return <>
       <Media heading className='d-flex align-items-end'>
