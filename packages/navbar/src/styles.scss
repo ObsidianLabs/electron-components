@@ -105,6 +105,10 @@
   justify-content: center;
   cursor: pointer;
   svg, i{
-    color: var(--color-primary);
+      color: white;
+  }
+  border-right: 1px solid var(--color-border);
+  &.active{
+    background-color: var(--color-primary);
   }
 }
