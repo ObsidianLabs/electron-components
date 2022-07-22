@@ -212,6 +212,7 @@ const translation = {
       delText: 'You are about to permanently delete this project. This operation ',
       canont: 'CANNOT',
       delTextEnd: ' be undone!',
+      desktopDelText: 'You are about to remove this project from Black IDE. The original files will still remain in your drive.',
       type: 'Type',
       toConf: 'to confirm',
       tips: 'Project name does not match',
