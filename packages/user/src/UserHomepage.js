@@ -63,6 +63,10 @@ class UserHomepage extends PureComponent {
     }
   }
 
+  projectListUpdate () {
+    this.getProjectList(this.props.match?.params?.username)
+  }
+
   checkIsNewUser() {
     if (!localStorage.getItem('hasMark') && this.isSelf() && this.props.enableTutorial) {
       localStorage.setItem('hasMark', 'true')
@@ -235,6 +239,7 @@ class UserHomepage extends PureComponent {
             projects={projects}
             loading={loading}
             ListItem={ProjectListItem}
+            projectListUpdate={() => this.projectListUpdate()}
           />
         </div>
 

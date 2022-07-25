@@ -7,6 +7,7 @@ export { default as TutorialModal } from './components/TutorialModal'
 export { default as NewProjectModal } from './components/NewProjectModal'
 export { default as WorkspaceSettingModal } from './components/WorkspaceSettingModal'
 export { default as AbstractProjectSettingsTab } from './components/AbstractProjectSettingsTab'
+export { default as DeleteProjectModal } from './components/DeleteProjectModal'
 export { default as ProjectPath } from './components/ProjectPath'
 export { default as TerminalButton } from './components/TerminalButton'
 
