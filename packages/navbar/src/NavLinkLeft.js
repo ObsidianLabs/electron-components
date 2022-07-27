@@ -44,6 +44,7 @@ class NavLinkLeft extends PureComponent {
     return (
       <NavLink
         to={url}
+        exact={true}
         className='nav-link d-flex p-0'
         style={{ width: 273 }}
         activeClassName='active'
