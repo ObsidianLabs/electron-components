@@ -8,6 +8,7 @@ import {
   DropdownItem,
 } from '@obsidians/ui-components'
 import { t } from '@obsidians/i18n'
+import redux from '@obsidians/redux'
 
 import BaseQueueManager from './BaseQueueManager'
 
@@ -17,6 +18,7 @@ export default class QueueButton extends PureComponent {
     this.state = {
       data: null,
       tx: {},
+      explorerUrl: null,
     }
     BaseQueueManager.button = this
 
@@ -35,6 +37,10 @@ export default class QueueButton extends PureComponent {
   }
 
   renderDropdownItems = (pending, txs, QueueItem) => {
+    const { network: networkId } = redux.getState()
+    const { networkManager } = require('@obsidians/network')
+    const explorerUrl = networkManager.networks.find(item => networkId === item.id)?.explorerUrl
+    this.setState({ explorerUrl })
     const pendingItems = pending.map((item, index) => (
       <DropdownItem key={`pending-${index}`} onClick={() => this.openTransaction(item)}>
         <QueueItem {...item} />
@@ -74,6 +80,13 @@ export default class QueueButton extends PureComponent {
     return [...pendingItems, ...txsItems]
   }
 
+  openBlockExplorer = () => {
+    const fileOps = require('@obsidians/file-ops')
+    const { explorerUrl, tx } = this.state
+    explorerUrl && fileOps.default?.current?.openLink(`${explorerUrl}/tx/${tx?.txHash}`)
+    this.txModal.current.closeModal()
+  }
+
   render () {
     let icon = null
     if (BaseQueueManager.pending.length) {
@@ -83,8 +96,9 @@ export default class QueueButton extends PureComponent {
     }
 
     const { txs, QueueItem, TransactionDetails, ...otherProps } = this.props
-    const { tx = {} } = this.state
+    const { tx = {}, explorerUrl } = this.state
     const title = tx.data?.title || tx.data?.name
+    const transferDetail = tx.data?.name === 'Transfer' && 'Transaction Detail'
 
     return <>
       <UncontrolledButtonDropdown direction='up'>
@@ -97,12 +111,16 @@ export default class QueueButton extends PureComponent {
       </UncontrolledButtonDropdown>
       <Modal
         ref={this.txModal}
-        title={title || 'Transaction'}
+        title={transferDetail || title || 'Transaction'}
         textCancel='Close'
+        textConfirm={transferDetail && 'View More on Block Explorer'}
+        onConfirm={transferDetail && this.openBlockExplorer}
       >
         <TransactionDetails
           {...otherProps}
           tx={tx}
+          explorerUrl={explorerUrl}
+          transferType={transferDetail ? 'generalTransfer' : 'contractTransfer'}
           closeModal={() => this.txModal.current.closeModal()}
         />
       </Modal>
