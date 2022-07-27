@@ -9,6 +9,7 @@ export default function TableCardRow ({
   icon,
   right,
   badge,
+  badgeList = [badge],
   badgeColor = 'secondary',
   tooltip = null,
   onClickBadge = () => {},
@@ -26,13 +27,24 @@ export default function TableCardRow ({
           </div>
           {
             right ||
-            <Badge
-              pill
-              id={id}
-              color={badgeColor}
-              style={{ cursor: tooltip ? 'pointer' : undefined }}
-              onClick={onClickBadge}
-            >{badge}</Badge>
+            <div>
+              {
+                badgeList.map((elem, elIndex) => {
+                  const elemId = Math.floor(Math.random() * 1000)
+                  const itemClassName = !badge && elIndex === (badgeList.length - 1) && 'ml-2'
+                  return (
+                    <Badge
+                      pill
+                      id={`${id}${!badge && elemId}`}
+                      color={badgeColor}
+                      className={itemClassName}
+                      style={{ cursor: tooltip ? 'pointer' : undefined }}
+                      onClick={onClickBadge}
+                    >{elem}</Badge>
+                  )
+                })
+              }
+            </div>
           }
           {
             loading &&
