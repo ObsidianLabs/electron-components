@@ -212,6 +212,7 @@ const translation = {
       delText: '您的操作将永久删除此项目，此操作',
       canont: '不能',
       delTextEnd: '被撤销！',
+      desktopDelText: '你即将从Black IDE中删除这个项目，原始文件仍将保留在你的驱动器中。',
       type: '输入',
       toConf: '来确认',
       tips: '项目名称不匹配',
