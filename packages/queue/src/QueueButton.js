@@ -84,7 +84,6 @@ export default class QueueButton extends PureComponent {
     const fileOps = require('@obsidians/file-ops')
     const { explorerUrl, tx } = this.state
     explorerUrl && fileOps.default?.current?.openLink(`${explorerUrl}/tx/${tx?.txHash}`)
-    this.txModal.current.closeModal()
   }
 
   render () {
