@@ -82,7 +82,7 @@ export default class Header extends PureComponent {
           className='navbar-left home-button'
           activeClassName='active'
           >
-          <i class="fas fa-home-lg-alt"></i>
+          <i className="fas fa-home-lg-alt"></i>
         </NavLink>
         <Nav navbar className='navbar-left'>
           {this.renderLeftNavbar(navbarLeft, disable)}

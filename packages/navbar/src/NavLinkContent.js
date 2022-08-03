@@ -2,7 +2,7 @@ import React from 'react'
 import { t } from '@obsidians/i18n'
 
 export default function (props) {
-  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-times' } = props
+  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-times', networkName } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`
@@ -17,14 +17,13 @@ export default function (props) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
     subtitle = `(${t('header.title.none')})`
   } else {
-    const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
-    if (projectStudioName == 'BlackIDE' && title == 'Network' && logoIcon) {
+    if (process.env.REACT_APP_PROJECT_SHARE_URL && title === 'Network' && logoIcon) {
       networkIcon = <img src={logoIcon} className='w-100 h-100' />
     } else {
       networkIcon = <span key={key}><i className={`w-100 h-100 ${icon}`} /></span>
     }
     iconComponent = <span key={key} className={iconClassName}>{networkIcon}</span>
-    subtitle = selected
+    subtitle = title === 'Network' && networkName ? networkName : selected
   }
 
   return (
