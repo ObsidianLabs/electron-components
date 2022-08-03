@@ -10,6 +10,7 @@ import {
 
 import PropTypes from 'prop-types'
 import platform from '@obsidians/platform'
+import Auth from '@obsidians/auth'
 import redux, { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
 import { actions, TutorialModal, WorkspaceSettingModal } from '@obsidians/workspace'
@@ -75,6 +76,7 @@ class UserHomepage extends PureComponent {
   }
 
   getProjectList = async username => {
+    if (username === 'local') username = Auth?.profile?.username || 'local'
     if (username === 'local') {
       this.setState({ loading: false, notfound: false, user: null, projects: null })
       return
