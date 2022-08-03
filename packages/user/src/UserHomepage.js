@@ -76,7 +76,7 @@ class UserHomepage extends PureComponent {
   }
 
   getProjectList = async username => {
-    if (username === 'local') username = Auth?.profile?.username || 'local'
+    if (username === 'local' && platform.isWeb) username = Auth?.profile?.username || 'local'
     if (username === 'local') {
       this.setState({ loading: false, notfound: false, user: null, projects: null })
       return
