@@ -21,8 +21,6 @@ class NavLinkRight extends PureComponent {
 
   render () {
     const { route, title, selected, dropdown, icon, noneIcon, logoIcon } = this.props
-    const networkName = selected?.name?.constructor === String &&
-      (selected?.name?.includes('Mainnet') ? 'Mainnet' : (selected?.fullName?.includes('Testnet') && 'Testnet'))
 
     return (
       <NavLink
@@ -33,7 +31,6 @@ class NavLinkRight extends PureComponent {
         <NavLinkContent
           title={title}
           selected={selected.name}
-          networkName={(selected?.id !== 'dev' && selected?.group !== 'others') && networkName}
           icon={icon}
           logoIcon={selected.logoIcon}
           id={selected.id}
