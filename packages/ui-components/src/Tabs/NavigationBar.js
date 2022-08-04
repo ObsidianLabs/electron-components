@@ -16,6 +16,13 @@ export default class NavigationBar extends PureComponent {
     this.input = React.createRef()
   }
 
+  onRefresh(){
+    this.setState({
+      value: utils.isValidAddressReturn(this.props.tab.value),
+    })
+    this.props.onRefresh()
+  }
+
   componentDidUpdate(prevProps) {
     this.setState({ value: utils.isValidAddressReturn(this.state.value) })
     if (prevProps.tab.key === this.props.tab.key) {
@@ -155,7 +162,7 @@ export default class NavigationBar extends PureComponent {
           size={size}
           icon='fas fa-redo-alt'
           tooltip={t('refresh')}
-          onClick={this.props.onRefresh}
+          onClick={this.onRefresh.bind(this)}
         />
         <div
           className={classnames('d-flex flex-1 align-items-center navbar-input-wrapper ml-1', children ? 'mr-1' : 'mr-2')}
