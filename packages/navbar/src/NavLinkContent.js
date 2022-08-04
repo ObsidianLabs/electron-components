@@ -2,7 +2,7 @@ import React from 'react'
 import { t } from '@obsidians/i18n'
 
 export default function (props) {
-  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-times', networkName } = props
+  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-times' } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`
@@ -23,7 +23,7 @@ export default function (props) {
       networkIcon = <span key={key}><i className={`w-100 h-100 ${icon}`} /></span>
     }
     iconComponent = <span key={key} className={iconClassName}>{networkIcon}</span>
-    subtitle = title === 'Network' && networkName ? networkName : selected
+    subtitle = selected
   }
 
   return (
