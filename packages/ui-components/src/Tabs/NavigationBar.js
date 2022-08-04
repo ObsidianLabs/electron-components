@@ -73,6 +73,7 @@ export default class NavigationBar extends PureComponent {
   onKeyPress = event => {
     if (event.key === 'Enter') {
       let value = event.target.value
+      if (value.trim() === '') return
       if (value.trim() !== value) {
         value = value.trim()
         this.setState({ value })
