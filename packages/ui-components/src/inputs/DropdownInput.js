@@ -10,9 +10,9 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  Badge
+  DropdownItem
 } from 'reactstrap'
+import Badge from '../ported/Badge'
 import { utils } from '@obsidians/sdk'
 
 export default class DropdownInput extends PureComponent {

@@ -58,4 +58,6 @@ export {
   Media,
 } from 'reactstrap'
 
+export * from './ported'
+
 import './styles/index.scss'
