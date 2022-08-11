@@ -37,10 +37,8 @@ export default class QueueButton extends PureComponent {
   }
 
   renderDropdownItems = (pending, txs, QueueItem) => {
-    const { network: networkId } = redux.getState()
     const { networkManager } = require('@obsidians/network')
-    const explorerUrl = networkManager.networks.find(item => networkId === item.id)?.explorerUrl
-    this.setState({ explorerUrl })
+    this.setState({ explorerUrl: networkManager.getExplorerUrl })
     const pendingItems = pending.map((item, index) => (
       <DropdownItem key={`pending-${index}`} onClick={() => this.openTransaction(item)}>
         <QueueItem {...item} />
@@ -112,8 +110,8 @@ export default class QueueButton extends PureComponent {
         ref={this.txModal}
         title={transferDetail || title || 'Transaction'}
         textCancel='Close'
-        textConfirm={transferDetail && 'View More on Block Explorer'}
-        onConfirm={transferDetail && this.openBlockExplorer}
+        textConfirm={explorerUrl && transferDetail && 'View More on Block Explorer'}
+        onConfirm={explorerUrl && transferDetail && this.openBlockExplorer}
       >
         <TransactionDetails
           {...otherProps}
