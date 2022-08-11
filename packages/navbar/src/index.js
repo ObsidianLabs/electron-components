@@ -94,7 +94,7 @@ export default class Header extends PureComponent {
             to={`/${username}`}
             exact
             className='nav-link d-flex p-0'
-            activeClassName='active'
+            activeClassName='un-active'
           >
             <User profile={profile} extraLoggedInOptions={extraLoggedInOptions} />
           </NavLink>
