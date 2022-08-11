@@ -1,6 +1,7 @@
 .markdown {
   color: var(--color-text);
 
+
   & h1:not(:first-child), & h2, & h3 {
     margin-top: 1.25rem;
     transition: background-color 0.25s linear;
@@ -15,6 +16,7 @@
   & img {
     display: block;
     max-width: 100%;
+    margin: 1.5rem auto;
   }
   & a {
     color: var(--color-link);
@@ -28,5 +30,17 @@
   }
   & .table-hover tbody tr:hover {
     background-color: var(--color-hover);
+  }
+
+  & p {
+    margin-bottom: 1rem;
+  }
+
+  & h1 {
+    margin-bottom: 3rem;
+  }
+  & h2, & h3 {
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
   }
 }
