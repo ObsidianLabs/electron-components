@@ -17,6 +17,7 @@ export default class KeypairInputSelector extends PureComponent {
 
     this.abbriviFunc = this.abbriviFunc.bind(this)
     this.findPlaceholder = this.findPlaceholder.bind(this)
+    this.getBadgeName = this.getBadgeName.bind(this)
     this.findExtraOptions = this.findExtraOptions.bind(this)
     keypairManager.loadAllKeypairs().then(this.updateKeypairs)
     this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
@@ -24,6 +25,22 @@ export default class KeypairInputSelector extends PureComponent {
 
   componentDidUpdate(prevProps) {
     prevProps.filter !== this.props.filter && this.updateKeypairs(this.allKeypairs || [])
+  } 
+
+  getBadgeName() {
+    if (!this.allKeypairs || !this.props.value) return ''
+    const sameString = (valueStr, valueStr2) => valueStr.toLowerCase() === valueStr2.toLowerCase()
+    const result = this.allKeypairs.find(item => sameString(item.address, this.props.value))
+
+    if (result) {
+      return result.name
+    } else {
+      if (!this.props.extra) return ''
+      const extraItem = this.props.extra[0]
+      const findAddress = extraItem?.children.find(item => sameString(item.address, this.props.value))
+      if (findAddress) return 'MetaMask'
+    }
+    return ''
   }
 
   updateKeypairs = allKeypairs => {
@@ -153,6 +170,7 @@ export default class KeypairInputSelector extends PureComponent {
         value={value}
         onChange={onChange}
         invalid={invalid}
+        badgeName={this.getBadgeName()}
         onClick={onClick}
       />
     )

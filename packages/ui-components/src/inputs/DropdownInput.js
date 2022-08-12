@@ -14,6 +14,7 @@ import {
 } from 'reactstrap'
 import Badge from '../ported/Badge'
 import { utils } from '@obsidians/sdk'
+import './dropdownInput.scss'
 
 export default class DropdownInput extends PureComponent {
   constructor (props) {
@@ -21,12 +22,16 @@ export default class DropdownInput extends PureComponent {
     this.state = {
       dropdownOpen: false,
       paddingRight: 0,
-      filterMode: false
+      filterMode: false,
+      focusing: false
     }
 
     this.dropdownOptions = null
     this.input = React.createRef()
     this.toggler = React.createRef()
+    this.renderEditableDropDown = this.renderEditableDropDown.bind(this)
+    this.onBlur = this.onBlur.bind(this)
+    this.onFocus = this.onFocus.bind(this)
   }
 
   componentDidUpdate (prevProps) {
@@ -88,9 +93,65 @@ export default class DropdownInput extends PureComponent {
     }
   }
 
+  onBlur = event => {
+    event.stopPropagation()
+    this.setState({ focusing: false })
+  }
+
+  onFocus = event => {
+    event.stopPropagation()
+    this.setState({ focusing: true })
+  }
+
   toggleDropdown = () => {
     this.dropdownOptions = null
     this.setState({ dropdownOpen: !this.state.dropdownOpen, filterMode: false })
+  }
+
+  renderEditableDropDown(badgeColor) {
+    const {
+      size,
+      label,
+      addon,
+      placeholder,
+      editable,
+      maxLength,
+      bg,
+      inputClassName,
+      invalid,
+      onClick,
+      value,
+      readOnly,
+      badgeName
+    } = this.props
+
+    const { focusing } = this.state
+
+    return (
+      <div className={classnames(badgeName ? 'showBagge' : 'hidenBadge')} onClick={this.toggleDropdown}>
+        <Input
+          innerRef={this.input}
+          bsSize={size}
+          className={classnames('editableInput', inputClassName, bg)}
+          style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: this.state.paddingRight + 8 } : null}
+          value={value}
+          onChange={this.onChange}
+          maxLength={maxLength}
+          onKeyDown={this.onKeyDown}
+          onBlur={this.onBlur}
+          onFocus={this.onFocus}
+          onClick={this.onClickInput}
+          placeholder={placeholder}
+          disabled={!editable}
+          invalid={typeof invalid === 'boolean' ? invalid : undefined}
+        />
+        {
+          badgeName && !focusing && <Badge color={badgeColor} className='editableBadge ml-1'>
+            {badgeName}
+          </Badge>
+        }
+      </div>
+    )
   }
 
   findSelectedOption = (options, id) => {
@@ -242,25 +303,7 @@ export default class DropdownInput extends PureComponent {
           toggle={this.toggleDropdown}
           disabled={readOnly}
         >
-          {
-            editable &&
-              <div className='d-flex flex-grow-1' onClick={this.toggleDropdown}>
-                <Input
-                  innerRef={this.input}
-                  bsSize={size}
-                  className={classnames(inputClassName, bg)}
-                  style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: this.state.paddingRight + 8 } : null}
-                  value={value}
-                  onChange={this.onChange}
-                  maxLength={maxLength}
-                  onKeyDown={this.onKeyDown}
-                  onClick={this.onClickInput}
-                  placeholder={placeholder}
-                  disabled={!editable}
-                  invalid={typeof invalid === 'boolean' ? invalid : undefined}
-                />
-              </div>
-          }
+          { editable && this.renderEditableDropDown(badgeColor) }
           <DropdownToggle
             tag='div'
             size={size}

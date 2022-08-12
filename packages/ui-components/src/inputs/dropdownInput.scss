@@ -1,0 +1,23 @@
+.showBagge {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  background-color: #17181B;
+}
+
+.hidenBadge {
+  display: flex;
+  flex-grow: 1;
+  border-radius: 6px;
+}
+
+.editableInput {
+  width: 100%;
+}
+
+.editableBadge {
+  position: absolute;
+  right: 2%;
+  top: 20%;
+  font-size: 11px;
+}
