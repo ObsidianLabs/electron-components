@@ -1,8 +1,6 @@
 import React from 'react'
-import {
-  Badge,
-  UncontrolledTooltip
-} from 'reactstrap'
+import { UncontrolledTooltip } from 'reactstrap'
+import Badge from '../ported/Badge'
 
 export default function TableCardRow ({
   name,

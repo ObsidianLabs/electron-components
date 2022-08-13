@@ -117,6 +117,7 @@ class UserHomepage extends PureComponent {
 
   isSelf = () => {
     const { profile, match } = this.props
+    if (platform.isWeb && match.params.username === 'local') return true
     return platform.isDesktop || match.params.username === profile.get('username')
   }
 

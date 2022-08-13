@@ -10,9 +10,9 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  Badge
+  DropdownItem
 } from 'reactstrap'
+import Badge from '../ported/Badge'
 import { utils } from '@obsidians/sdk'
 
 export default class DropdownInput extends PureComponent {
@@ -21,7 +21,8 @@ export default class DropdownInput extends PureComponent {
     this.state = {
       dropdownOpen: false,
       paddingRight: 0,
-      filterMode: false
+      filterMode: false,
+      focusing: false
     }
 
     this.dropdownOptions = null
@@ -95,12 +96,12 @@ export default class DropdownInput extends PureComponent {
 
   findSelectedOption = (options, id) => {
     for (const item of options) {
-      if (item.id && item.id === id) {
+      if (item.id && item.id.toLowerCase() === id.toLowerCase()) {
         return item
       }
       if (Array.isArray(item.children)) {
         for (const subitem of item.children) {
-          if (subitem.id && subitem.id === id) {
+          if (subitem.id && subitem.id.toLowerCase() === id.toLowerCase()) {
             return { group: item.group, badge: item.badge, ...subitem }
           }
         }
@@ -217,7 +218,6 @@ export default class DropdownInput extends PureComponent {
     } = this.props
     const selectedOption = this.findSelectedOption(options, value)
     const dropdownOptions = this.renderOptions()
-
     const badge = selectedOption?.badge || this.props.badge
     const badgeColor = selectedOption?.badgeColor || this.props.badgeColor || 'info'
 
@@ -244,22 +244,22 @@ export default class DropdownInput extends PureComponent {
         >
           {
             editable &&
-              <div className='d-flex flex-grow-1' onClick={this.toggleDropdown}>
-                <Input
-                  innerRef={this.input}
-                  bsSize={size}
-                  className={classnames(inputClassName, bg)}
-                  style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: this.state.paddingRight + 8 } : null}
-                  value={value}
-                  onChange={this.onChange}
-                  maxLength={maxLength}
-                  onKeyDown={this.onKeyDown}
-                  onClick={this.onClickInput}
-                  placeholder={placeholder}
-                  disabled={!editable}
-                  invalid={typeof invalid === 'boolean' ? invalid : undefined}
-                />
-              </div>
+            <div className='d-flex flex-grow-1' onClick={this.toggleDropdown}>
+              <Input
+                innerRef={this.input}
+                bsSize={size}
+                className={classnames(inputClassName, bg)}
+                style={addon ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: this.state.paddingRight + 8 } : null}
+                value={value}
+                onChange={this.onChange}
+                maxLength={maxLength}
+                onKeyDown={this.onKeyDown}
+                onClick={this.onClickInput}
+                placeholder={placeholder}
+                disabled={!editable}
+                invalid={typeof invalid === 'boolean' ? invalid : undefined}
+              />
+            </div>
           }
           <DropdownToggle
             tag='div'
@@ -284,9 +284,10 @@ export default class DropdownInput extends PureComponent {
                   {text || placeholder}
                 </div>
               }
-              <Badge color={badgeColor} className='ml-1' style={{ top: 0 }}>
+              { <Badge color={badgeColor} className='ml-1' style={{ top: 0 }}>
                 {badge}
               </Badge>
+              }
             </div>
           </DropdownToggle>
           <DropdownMenu right className={classnames('input-dropdown-menu', size && `dropdown-menu-${size}`)}>
