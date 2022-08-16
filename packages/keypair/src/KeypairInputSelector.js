@@ -12,17 +12,17 @@ export default class KeypairInputSelector extends PureComponent {
       options: [],
       extraOptions: []
     }
+    this.initKeyPair()
     const { networkManager } = require('@obsidians/network')
     this.networkManager = networkManager
-    this.initKeyPair()
     this.abbriviFunc = this.abbriviFunc.bind(this)
     this.findPlaceholder = this.findPlaceholder.bind(this)
     this.findExtraOptions = this.findExtraOptions.bind(this)
   }
 
-  async initKeyPair() {
+  initKeyPair() {
     keypairManager.onUpdated(this.updateKeypairs)
-    await keypairManager.loadAllKeypairs()
+    keypairManager.loadAndUpdateKeypairs()
   }
 
   componentDidUpdate(prevProps) {
