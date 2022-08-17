@@ -121,6 +121,7 @@ export default class MonacoEditorContainer extends PureComponent {
         loading={loading}
         modelSession={modelSession}
         updateTabPath={updateTabPath}
+        updateProjectInfo={this.props.updateProjectInfo}
       />
     </>
   }
