@@ -25,13 +25,19 @@ export default class WorkspaceLoader extends PureComponent {
       terminal: false,
       context: {}
     }
+    
+    this.updateProjectInfo = this.updateProjectInfo.bind(this)
   }
 
   componentDidMount() {
-    this.prepareProject(this.props)
+    this.updateProjectInfo()
     if (this.props.addLanguages) {
       this.props.addLanguages()
     }
+  }
+
+  updateProjectInfo() {
+    this.prepareProject(this.props)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -42,7 +48,7 @@ export default class WorkspaceLoader extends PureComponent {
       if (this.state.context.projectManager) {
         this.state.context.projectManager.dispose()
       }
-      this.prepareProject(this.props)
+      this.updateProjectInfo()
     }
   }
 
@@ -66,7 +72,8 @@ export default class WorkspaceLoader extends PureComponent {
             projectRoot,
             projectManager,
             projectSettings: result.projectSettings,
-            hasDeployFile
+            hasDeployFile,
+            updateProjectInfo: this.updateProjectInfo
           }
         })
         redux.dispatch('PROJECT_LOADED')
@@ -137,6 +144,7 @@ export default class WorkspaceLoader extends PureComponent {
           makeContextMenu={this.props.makeContextMenu}
           ProjectToolbar={ProjectToolbar}
           signer={signer}
+          updateProjectInfo={this.updateProjectInfo}
           Terminal={
             CompilerTerminal &&
             <CompilerTerminal projectManager={context.projectManager} active={terminal} cwd={projectRoot} />

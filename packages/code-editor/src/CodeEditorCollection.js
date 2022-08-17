@@ -187,7 +187,8 @@ export default class CodeEditorCollection extends PureComponent {
   }
 
   fileSaving = filePath => {
-    this.tabs.current.updateTab({ saving: true }, filePath) }
+    this.tabs.current.updateTab({ saving: true }, filePath)
+  }
 
   fileSaved = async (filePath, { saveAsPath, unsaved = false } = {}) => {
     const updates = { unsaved, saving: false }
@@ -268,6 +269,7 @@ export default class CodeEditorCollection extends PureComponent {
             onCommand={this.onCommand}
             updateTabPath={this.updateTabPath}
             onChangeDecorations={this.props.onChangeDecorations}
+            updateProjectInfo={this.props.updateProjectInfo}
           />
         </Tabs>
       </div>
