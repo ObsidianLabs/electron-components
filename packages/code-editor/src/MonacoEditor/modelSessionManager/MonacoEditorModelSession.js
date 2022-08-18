@@ -1,6 +1,8 @@
 import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
 
+import tags from './breadcrumb-data'
+
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
 const SEVERITIES = {
@@ -47,6 +49,7 @@ export default class MonacoEditorModelSession {
     this._saved = true
     this._saving = false
     this._topbar = null
+    this._breadcrumb = null
     this.decorations = decorations
     this._public = null
 
@@ -131,6 +134,125 @@ export default class MonacoEditorModelSession {
   }
   dismissTopbar () {
     this._topbar = null
+  }
+
+  get breadcrumb () {
+    return this._breadcrumb
+  }
+  setBreadcrumb (value) {
+    this._breadcrumb = value
+    this.refreshEditorContainer && this.refreshEditorContainer()
+  }
+
+  setToCurrentCallback() {
+    this.getBreadcrumbData({
+      lineNumber:1,
+      column: 1,
+    })
+  }
+
+  getBreadcrumbData(position){
+    if (!this.props?.modelSession?.model) this.setBreadcrumb(null)
+    const model = this._model
+
+    const language = model.getLanguageIdentifier()
+    const value = model.getValue()
+    const token = monaco.editor.tokenize(value, language.language)
+    const tag = tags[language.language]
+    if (!tag) {
+      this.setBreadcrumb(null)
+      return
+    }
+
+    const handleToken = {
+      position,
+      data: {},
+      breadcrumb:[],
+      currentScope: {
+        current: {
+          name: '(anonymous scope)',
+          position: {
+            lineNumber: 1,
+            column: 1,
+          },
+        },
+        brothers: [],
+      },
+      currentDepth: 0,
+      afterCursorLock: false,
+      afterCursorDepth: 0,
+      addScope(name, position){
+        const scope = {
+          name,
+          position,
+        }
+        if (this.afterCursorLock && this.afterCursorDepth > 0) return
+        if (!this.afterCursorLock) this.currentScope.current = scope
+        if (this.afterCursorLock) this.breadcrumb[this.currentDepth].brothers.push(scope)
+        else this.currentScope.brothers.push(scope)
+      },
+      jumpIn(position){
+        this.currentDepth++
+        if (this.afterCursorLock) {
+          this.afterCursorDepth++
+          return
+        }
+        this.breadcrumb.push(this.currentScope)
+        this.currentScope = {
+          current: {
+            name: '(anonymous scope)',
+            position,
+          },
+          brothers: [],
+        }
+      },
+      jumpOut(position){
+        this.currentDepth--
+        if (this.afterCursorLock) {
+          this.afterCursorDepth > 0 && this.afterCursorDepth--
+          return
+        }
+        this.currentScope = this.breadcrumb.pop()
+      },
+      end(){
+        if (this.afterCursorLock) return
+        this.afterCursorLock = true
+        this.breadcrumb.push(this.currentScope)
+      },
+    }
+    token.forEach((line, count) => {
+      const lineNumber = count + 1
+      line.forEach((item) => {
+        const column = item.offset + 1
+        const position = {
+          lineNumber,
+          column,
+        }
+        if (lineNumber > handleToken.position.lineNumber || 
+          lineNumber === handleToken.position.lineNumber && column >= handleToken.position.column) handleToken.end()
+        if (tag.variable.includes(item.type)){
+            const variable = model.getWordAtPosition(position)
+            handleToken.addScope(variable.word, position)
+        }
+        if (tag.scope.length === 2 && tag.scope[0] === item.type) handleToken.jumpIn()
+        if (tag.scope.length === 2 && tag.scope[1] === item.type) handleToken.jumpOut()
+        if (tag.scope.length === 1 && tag.scope[0] === item.type) {
+          const scopeValue = model.getValueInRange({
+            startColumn: column,
+            endColumn: column + 1,
+            startLineNumber: lineNumber,
+            endLineNumber: lineNumber,
+          })
+          if (scopeValue === '{') handleToken.jumpIn(position) 
+          if (scopeValue === '}') handleToken.jumpOut(position)
+        }
+      })
+    })
+    handleToken.end()
+    handleToken.breadcrumb.forEach(item => {
+      if (item.brothers.length === 0) item.brothers.push(item.current)
+    })
+    this.setBreadcrumb(handleToken.breadcrumb)
   }
 
   async recoverInEditor (monacoEditor) {

@@ -36,6 +36,7 @@ class ModelSessionManager {
     this.decorationMap = {}
     this.lintMarkerMap = {}
     this.compileMarkerMap = {}
+    this.monacoEditor = null
   }
 
   tabsRef = null
@@ -102,6 +103,10 @@ class ModelSessionManager {
       this._editorContainer.refresh()
     }
     this._currentModelSession = modelSession
+    modelSession.refreshEditorContainer = () => {
+      this._editorContainer.refresh()
+    }
+    modelSession.setToCurrentCallback && modelSession.setToCurrentCallback()
   }
 
   get currentModelSession() {

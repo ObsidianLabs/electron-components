@@ -4,6 +4,12 @@ import { LoadingScreen } from '@obsidians/ui-components'
 import modelSessionManager from './modelSessionManager'
 import MonacoEditor from './MonacoEditor'
 import CustomTabContainer from './CustomTabContainer'
+import {
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from '@obsidians/ui-components'
 
 export default class MonacoEditorContainer extends PureComponent {
   static propTypes = {
@@ -91,6 +97,7 @@ export default class MonacoEditorContainer extends PureComponent {
     const { theme, editorConfig, onChange, readOnly, updateTabPath } = this.props
 
     let topbar = null
+    let breadcrumb = null
     if (modelSession.topbar) {
       topbar = (
         <small className='px-2 border-bottom-black text-muted'>
@@ -104,8 +111,46 @@ export default class MonacoEditorContainer extends PureComponent {
       )
     }
 
+    if (modelSession.breadcrumb) {
+      console.log(modelSession.breadcrumb)
+      breadcrumb = (
+        <div className='px-2 border-bottom-black text-muted topbar-breadcrumb'>
+          { modelSession.breadcrumb.map((item, index) => 
+            <>
+            <UncontrolledButtonDropdown direction='bottom'>
+            <DropdownToggle
+              size='sm'
+              color='default'
+              className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
+              style={{ maxWidth: 240 }}
+              id='docker-version'
+            >
+              {index > 0 && <div className='breadcrumb-delimiter'></div>}
+              {item.current.name}
+            </DropdownToggle>
+            <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
+              {item.brothers.map(brother => 
+              <DropdownItem onClick={
+                () => {
+                  if (modelSessionManager.monacoEditor) {
+                    modelSessionManager.monacoEditor.setPosition(brother.position)
+                  }
+                }
+              }>
+                <small>{brother.name}</small>
+              </DropdownItem>
+              )}
+            </DropdownMenu>
+            </UncontrolledButtonDropdown>
+            </>
+          ) }
+        </div>
+      )
+    }
+
     return <>
-      {topbar}
+      { topbar }
+      { breadcrumb }
       <MonacoEditor
         ref={editor => (this.editor = editor)}
         modelSession={modelSession}

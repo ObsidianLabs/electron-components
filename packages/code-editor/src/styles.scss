@@ -167,3 +167,22 @@
     }
   }
 }
+
+.breadcrumb-delimiter{
+  float: left;
+  height: 100%;
+  width: 1rem;
+  position: relative;
+  &::after{
+    content: '·';
+    position: absolute;
+    height: 1rem;
+    width: 1rem;
+    text-align: left;
+    line-height: 1rem;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+  }
+}
