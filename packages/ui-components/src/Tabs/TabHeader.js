@@ -235,6 +235,10 @@ export default class TabHeader extends Component{
     this.treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selected) : contextMenu
   }
 
+  componentDidMount() {
+    this.dndContainerId = document.getElementById('DndContainer')
+  }
+
   tabsRef = React.createRef()
 
   handleContextMenu = (event, tab) => {
@@ -295,8 +299,8 @@ export default class TabHeader extends Component{
     const { className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [], onCloseTab, onNewTab, onDragTab } = this.props
   
     return (
-      <div className='nav-top-bar overflow-hidden'>
-        <DndProvider backend={HTML5Backend}>
+      <div className='nav-top-bar overflow-hidden' id="DndContainer">
+        <DndProvider backend={HTML5Backend} options={{ rootElement: this.dndContainerId }}>
           <div className="nav-wrap w-100 d-flex" >
             <ul onWheel={this.handleWheelThrottled.bind(this)} ref={this.tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
               {
@@ -304,7 +308,7 @@ export default class TabHeader extends Component{
                   const tabText = getTabText ? getTabText(tab) : tab.text
                   return (
                     <SortableTab
-                      key={tab.key}
+                      key={Math.random()}
                       size={size}
                       tab={tab}
                       index={index}
