@@ -112,7 +112,6 @@ export default class MonacoEditorContainer extends PureComponent {
     }
 
     if (modelSession.breadcrumb) {
-      console.log(modelSession.breadcrumb)
       breadcrumb = (
         <div className='px-2 border-bottom-black text-muted topbar-breadcrumb'>
           { modelSession.breadcrumb.map((item, index) => 
