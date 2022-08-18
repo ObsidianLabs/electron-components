@@ -234,7 +234,7 @@ export default class MonacoEditorModelSession {
             const variable = model.getWordAtPosition(position)
             handleToken.addScope(variable.word, position)
         }
-        if (tag.scope.length === 2 && tag.scope[0] === item.type) handleToken.jumpIn()
+        if (tag.scope.length === 2 && tag.scope[0] === item.type) handleToken.jumpIn(position)
         if (tag.scope.length === 2 && tag.scope[1] === item.type) handleToken.jumpOut()
         if (tag.scope.length === 1 && tag.scope[0] === item.type) {
           const scopeValue = model.getValueInRange({
