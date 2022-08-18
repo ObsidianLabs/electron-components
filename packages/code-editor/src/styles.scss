@@ -233,6 +233,12 @@
   text-decoration: underline;
 }
 
+.scope-label > div > button{
+  padding: 0 1rem !important;
+  height: 24px;
+  line-height: 24px;
+}
+
 .scope-label > div > button:hover{
   background: var(--color-primary);
 }
