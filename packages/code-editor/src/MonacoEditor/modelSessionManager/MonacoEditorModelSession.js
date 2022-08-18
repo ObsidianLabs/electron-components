@@ -251,6 +251,7 @@ export default class MonacoEditorModelSession {
     handleToken.end()
     handleToken.breadcrumb.forEach(item => {
       if (item.brothers.length === 0) item.brothers.push(item.current)
+      if (item.brothers.length > 0 && item.current.name === '(anonymous scope)') item.current = item.brothers[0]
     })
     this.setBreadcrumb(handleToken.breadcrumb)
   }

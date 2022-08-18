@@ -118,20 +118,31 @@ export default class MonacoEditorContainer extends PureComponent {
     }
 
     if (modelSession.breadcrumb) {
+      const filename = modelSession.filePath.split('/').pop()
       breadcrumb = (
+        <div className='topbar-breadcrumb-box'>
         <div className='px-2 border-bottom-black text-muted topbar-breadcrumb'>
-          { modelSession.breadcrumb.map((item, index) => 
+          <UncontrolledButtonDropdown direction='start' className={'scope-label'}>
+          <DropdownToggle
+            size='sm'
+            color='default'
+            className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
+          >
+            {filename}
+          </DropdownToggle>
+          </UncontrolledButtonDropdown>
+          { modelSession.breadcrumb.map((item) => 
             <>
-            <UncontrolledButtonDropdown direction='bottom'>
+            <div className='breadcrumb-delimiter'></div>
+            <UncontrolledButtonDropdown direction='start' className={'scope-label'}>
             <DropdownToggle
               size='sm'
               color='default'
               className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
             >
-              {index > 0 && <div className='breadcrumb-delimiter'></div>}
               {item.current.name}
             </DropdownToggle>
-            <DropdownMenu right className={'dropdown-menu-sm'}>
+            <DropdownMenu right className={'dropdown-menu-sm breadcrumb-dropdown'}>
               {item.brothers.map(brother => 
               <DropdownItem onClick={this.handleSetPosition.bind(this, brother.position)}>
                 <small>{brother.name}</small>
@@ -141,6 +152,7 @@ export default class MonacoEditorContainer extends PureComponent {
             </UncontrolledButtonDropdown>
             </>
           ) }
+        </div>
         </div>
       )
     }
