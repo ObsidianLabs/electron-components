@@ -88,6 +88,12 @@ export default class MonacoEditorContainer extends PureComponent {
     this.editor && this.editor.quickCommand()
   }
 
+  handleSetPosition(position){
+    if (modelSessionManager.monacoEditor) {
+      modelSessionManager.monacoEditor.setPosition(position)
+    }
+  }
+
   render () {
     const { initialized, loading, modelSession } = this.state
     if (!initialized) {
@@ -127,15 +133,9 @@ export default class MonacoEditorContainer extends PureComponent {
               {index > 0 && <div className='breadcrumb-delimiter'></div>}
               {item.current.name}
             </DropdownToggle>
-            <DropdownMenu right className={this.props.size === 'sm' && 'dropdown-menu-sm'}>
+            <DropdownMenu right className={'dropdown-menu-sm'}>
               {item.brothers.map(brother => 
-              <DropdownItem onClick={
-                () => {
-                  if (modelSessionManager.monacoEditor) {
-                    modelSessionManager.monacoEditor.setPosition(brother.position)
-                  }
-                }
-              }>
+              <DropdownItem onClick={this.handleSetPosition.bind(this, brother.position)}>
                 <small>{brother.name}</small>
               </DropdownItem>
               )}
