@@ -127,8 +127,6 @@ export default class MonacoEditorContainer extends PureComponent {
               size='sm'
               color='default'
               className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
-              style={{ maxWidth: 240 }}
-              id='docker-version'
             >
               {index > 0 && <div className='breadcrumb-delimiter'></div>}
               {item.current.name}
