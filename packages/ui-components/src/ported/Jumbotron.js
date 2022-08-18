@@ -6,7 +6,7 @@ const Jumbotron = ({ className, ...attributes }) => {
   return (
     <div
       {...attributes}
-      className={classNames(className, 'py-8 sm:py-16 px-4 sm:px-8 mb-8 bg-jumbotron rounded-1.2')}
+      className={classNames(className, 'tailwind py-8 sm:py-16 px-4 sm:px-8 mb-8 bg-jumbotron rounded-1.2')}
     />
   )
 }
