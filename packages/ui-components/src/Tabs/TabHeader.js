@@ -236,6 +236,7 @@ export default class TabHeader extends Component{
   }
 
   componentDidMount() {
+    // solve issue with Cannot have two HTML5 backends at the same time. Please visit https://github.com/react-dnd/react-dnd/issues/186
     this.dndContainerId = document.getElementById('DndContainer')
   }
 
