@@ -8,7 +8,7 @@ const CustomTabContainer = forwardRef(({ loading, modelSession, updateTabPath, u
   if (ref) {
     ref.current = {
       syncEditStatus: () => {
-        markdownTab.current.onEditButton()
+        markdownTab.current.onEditButton(true, false)
       }
     }
   }
