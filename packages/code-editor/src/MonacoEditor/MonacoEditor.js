@@ -25,9 +25,14 @@ export default class MonacoEditor extends Component {
     this.monacoEditor = this.createEditorWith(this.props.modelSession.model)
 
     this.monacoEditor.onDidChangeModelDecorations(this.props.onChangeDecorations)
+    this.monacoEditor.onDidChangeCursorPosition(({position}) => {
+      this.props.modelSession.getBreadcrumbData(position)
+    })
 
     this.throttledLayoutEditor()
     // api.bridge.send('languageClient.create')
+
+    modelSessionManager.monacoEditor = this.monacoEditor
 
     if (modelSessionManager.projectManager.onEditorReady) {
       modelSessionManager.projectManager.onEditorReady(this.monacoEditor, this)

@@ -12,14 +12,17 @@ export default class KeypairInputSelector extends PureComponent {
       options: [],
       extraOptions: []
     }
+    this.initKeyPair()
     const { networkManager } = require('@obsidians/network')
     this.networkManager = networkManager
-
     this.abbriviFunc = this.abbriviFunc.bind(this)
     this.findPlaceholder = this.findPlaceholder.bind(this)
     this.findExtraOptions = this.findExtraOptions.bind(this)
-    keypairManager.loadAllKeypairs().then(this.updateKeypairs)
-    this.listenKeypairChange = keypairManager.onUpdated(this.updateKeypairs)
+  }
+
+  initKeyPair() {
+    keypairManager.onUpdated(this.updateKeypairs)
+    keypairManager.loadAndUpdateKeypairs()
   }
 
   componentDidUpdate(prevProps) {
@@ -27,18 +30,23 @@ export default class KeypairInputSelector extends PureComponent {
   }
 
   updateKeypairs = allKeypairs => {
+    const { extraOptions, extraAdrress } = this.findExtraOptions()
     this.allKeypairs = allKeypairs
     const keypairs = this.props.filter ? allKeypairs.filter(this.props.filter) : allKeypairs
+    const AllAddress = Array.from(new Set(keypairs.map(el => el.address).concat(extraAdrress)))
     if (!this.props.editable) {
       if (this.state.keypairs.length && !keypairs.length) {
         this.props.onChange()
       }
-      if (keypairs.length && !keypairs.find(k => k.address === this.props.value)) {
+      if (keypairs.length && !AllAddress.includes(this.props.value)) {
         this.props.onChange(keypairs[0].address)
       }
     }
-    this.setState({keypairs, options: keypairs.map(this.mapKeyToOption)})
-    this.findExtraOptions()
+    this.setState({
+      extraOptions,
+      keypairs,
+      options: keypairs.map(this.mapKeyToOption)
+    })
   }
 
   abbriviFunc(address) {
@@ -46,15 +54,21 @@ export default class KeypairInputSelector extends PureComponent {
   }
 
   findExtraOptions() {
+    let extraAdrress = []
     const extraOptions = this.props.extra ? this.props.extra.map(item => {
       if (item.children) {
+        item.children.forEach((ele) => { ele.address && extraAdrress.push(ele.address) })
         return {
           ...item,
           children: item.children.map(this.mapKeyToOption)
         }
       }
     }) : []
-    this.setState({ extraOptions })
+
+    return {
+      extraAdrress,
+      extraOptions
+    }
   }
 
   findPlaceholder() {

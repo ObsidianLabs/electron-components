@@ -10,7 +10,7 @@ const Badge = ({
 }) => {
   const classes = classNames(
     className,
-    'inline py-[0.25em] px-[0.4em] text-[75%] font-bold',
+    'tailwind inline py-[0.25em] px-[0.4em] text-[75%] font-bold',
     'leading-none text-center whitespace-nowrap align-baseline',
     'rounded transition-colors transition-shadow duration-150 ease-in-out',
     'print:border-1 print:border-black motion-reduce:transition-none',

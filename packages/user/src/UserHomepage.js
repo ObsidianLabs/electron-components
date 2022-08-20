@@ -174,7 +174,10 @@ class UserHomepage extends PureComponent {
             { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' }
           ]}
           selected={this.state.remote ? 'cloud' : 'local'}
-          onSelect={key => this.setState({ remote: key === 'cloud' })}
+          onSelect={key => {
+            if (key === 'cloud') this.projectListUpdate()
+            this.setState({ remote: key === 'cloud' })
+          }}
         />
       )
     } else {

@@ -4,6 +4,12 @@ import { LoadingScreen } from '@obsidians/ui-components'
 import modelSessionManager from './modelSessionManager'
 import MonacoEditor from './MonacoEditor'
 import CustomTabContainer from './CustomTabContainer'
+import {
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from '@obsidians/ui-components'
 
 export default class MonacoEditorContainer extends PureComponent {
   static propTypes = {
@@ -82,6 +88,12 @@ export default class MonacoEditorContainer extends PureComponent {
     this.editor && this.editor.quickCommand()
   }
 
+  handleSetPosition(position){
+    if (modelSessionManager.monacoEditor) {
+      modelSessionManager.monacoEditor.setPosition(position)
+    }
+  }
+
   render () {
     const { initialized, loading, modelSession } = this.state
     if (!initialized) {
@@ -91,6 +103,7 @@ export default class MonacoEditorContainer extends PureComponent {
     const { theme, editorConfig, onChange, readOnly, updateTabPath } = this.props
 
     let topbar = null
+    let breadcrumb = null
     if (modelSession.topbar) {
       topbar = (
         <small className='px-2 border-bottom-black text-muted'>
@@ -104,8 +117,49 @@ export default class MonacoEditorContainer extends PureComponent {
       )
     }
 
+    if (modelSession.breadcrumb) {
+      const filename = modelSession.filePath.split('/').pop()
+      breadcrumb = (
+        <div className='topbar-breadcrumb-box'>
+        <div className='px-2 border-bottom-black text-muted topbar-breadcrumb'>
+          <UncontrolledButtonDropdown direction='start' className={'scope-label'}>
+          <DropdownToggle
+            size='sm'
+            color='default'
+            className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
+          >
+            {filename}
+          </DropdownToggle>
+          </UncontrolledButtonDropdown>
+          { modelSession.breadcrumb.map((item) => 
+            <>
+            <div className='breadcrumb-delimiter'></div>
+            <UncontrolledButtonDropdown direction='start' className={'scope-label'}>
+            <DropdownToggle
+              size='sm'
+              color='default'
+              className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
+            >
+              {item.current.name}
+            </DropdownToggle>
+            <DropdownMenu right className={'dropdown-menu-sm breadcrumb-dropdown'}>
+              {item.brothers.map(brother => 
+              <DropdownItem onClick={this.handleSetPosition.bind(this, brother.position)}>
+                <small>{brother.name}</small>
+              </DropdownItem>
+              )}
+            </DropdownMenu>
+            </UncontrolledButtonDropdown>
+            </>
+          ) }
+        </div>
+        </div>
+      )
+    }
+
     return <>
-      {topbar}
+      { topbar }
+      { breadcrumb }
       <MonacoEditor
         ref={editor => (this.editor = editor)}
         modelSession={modelSession}
@@ -121,6 +175,7 @@ export default class MonacoEditorContainer extends PureComponent {
         loading={loading}
         modelSession={modelSession}
         updateTabPath={updateTabPath}
+        updateProjectInfo={this.props.updateProjectInfo}
       />
     </>
   }

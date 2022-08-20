@@ -233,6 +233,13 @@ export default class TabHeader extends Component{
       isTabBeginDrag: null,
     }
     this.treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selected) : contextMenu
+    this.containerId = Math.random().toString(36).substring(2, 8)
+  }
+
+  componentDidMount() {
+    // solve issue with Cannot have two HTML5 backends at the same time. Please visit https://github.com/react-dnd/react-dnd/issues/186
+    this.dndContainer = document.getElementById(this.containerId)
+    this.forceUpdate()
   }
 
   tabsRef = React.createRef()
@@ -295,8 +302,8 @@ export default class TabHeader extends Component{
     const { className, size, tabs, selected, getTabText, onSelectTab, ToolButtons = [], onCloseTab, onNewTab, onDragTab } = this.props
   
     return (
-      <div className='nav-top-bar overflow-hidden'>
-        <DndProvider backend={HTML5Backend}>
+      <div className='nav-top-bar overflow-hidden' id={this.containerId}>
+        <DndProvider backend={HTML5Backend} options={{ rootElement: this.dndContainer }}>
           <div className="nav-wrap w-100 d-flex" >
             <ul onWheel={this.handleWheelThrottled.bind(this)} ref={this.tabsRef} className={classnames('d-flex nav nav-tabs ', className)}>
               {
@@ -304,7 +311,7 @@ export default class TabHeader extends Component{
                   const tabText = getTabText ? getTabText(tab) : tab.text
                   return (
                     <SortableTab
-                      key={tab.key}
+                      key={Math.random()}
                       size={size}
                       tab={tab}
                       index={index}

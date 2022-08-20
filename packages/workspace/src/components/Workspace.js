@@ -312,6 +312,7 @@ export default class Workspace extends Component {
             onSelectTab={this.onSelectTab}
             readOnly={readOnly}
             onChangeDecorations={this.updateTree}
+            updateProjectInfo={this.props.updateProjectInfo}
           />
           {Terminal}
         </SplitPane>
@@ -329,6 +330,7 @@ export default class Workspace extends Component {
           onSelectTab={this.onSelectTab}
           readOnly={readOnly}
           onChangeDecorations={this.updateTree}
+          updateProjectInfo={this.props.updateProjectInfo}
         />
       )
     }

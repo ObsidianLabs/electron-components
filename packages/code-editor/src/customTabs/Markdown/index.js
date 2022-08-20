@@ -105,7 +105,8 @@ export default class Markdown extends Component {
     this.state.togglePublicModal.current.closeModal()
     this.props.updateTabPath(isPublic)
     notification.success(t('project.features.changeSuccess'),
-    `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
+      `${t('project.features.nowFeatures')}<b>${isPublic ? t('project.features.public') : t('project.features.private')}</b> ${isPublic ? t('project.features.publicDescription') : t('project.features.privateDescription')}`)
+    this.props.updateProjectInfo()
   }
 
   openLink = link => {

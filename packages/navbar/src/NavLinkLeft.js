@@ -17,6 +17,7 @@ class NavLinkLeft extends PureComponent {
     if (selected.id) {
       url = `/${route}/${selected.id}`
     }
+    if (!route) url = '/local'
     const match = location.pathname.startsWith(url)
     if (!match) {
       history.push(url)
@@ -41,6 +42,7 @@ class NavLinkLeft extends PureComponent {
     if (selected.id) {
       url = `/${route}/${selected.id}`
     }
+    if (!route) url = '/local'
     return (
       <NavLink
         to={url}
