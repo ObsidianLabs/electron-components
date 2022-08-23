@@ -38,7 +38,7 @@ const translation = {
       success: '部署成功',
       parameters: '构造函数参数',
       signer: '签名账户',
-      compiled: '已编译合约（编译器输出JSON）',
+      compiled: '已编译合约',
       maxFee: '最高收费',
       tip: '费用',
       gasLimit: 'Gas上限',

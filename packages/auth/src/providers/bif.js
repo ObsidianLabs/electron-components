@@ -2,7 +2,7 @@ import BaseProvider from './base'
 import decode from 'jwt-decode'
 import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
-import { BuildService, IpcChannel } from '@obsidians/ipc'
+import { BuildService } from '@obsidians/ipc'
 
 class BifProvider extends BaseProvider {
 	constructor() {
@@ -21,7 +21,7 @@ class BifProvider extends BaseProvider {
 		const { networkManager } = require('@obsidians/network')
 		if (networkManager.browserExtension) {
 			return await networkManager.browserExtension.auth();
-		} else if(networkManager.Sdk ) {
+		} else if (networkManager.Sdk) {
 			networkManager.browserExtension = new networkManager.Sdk.BrowserExtension(networkManager, window.bifWallet)
 			return await networkManager.browserExtension.auth();
 		}
@@ -105,25 +105,20 @@ class BifProvider extends BaseProvider {
 		this.profile && history.replace(`/${this.profile.username}`)
 	}
 
-	async update (credentials) {
-    if (platform.isDesktop) {
-      if (credentials && credentials.token) {
-        await this.channel.invoke('updateToken', {
-          token: credentials.token
-        })
-      }
-    } else {
-      if (credentials && credentials.awsCredential) {
-        fileOps.web.fs.updateCredential(credentials.awsCredential)
-        BuildService.updateCredential(credentials.awsCredential)
-      }
-    }
-  }
-	// restore (profile) {
-	// 	console.log(this)
-	// 	this.profile = profile
-	// 	this.provider = this.providers[this.profile.provider]
-	// }
+	async update(credentials) {
+		if (platform.isDesktop) {
+			if (credentials && credentials.token) {
+				await this.channel.invoke('updateToken', {
+					token: credentials.token
+				})
+			}
+		} else {
+			if (credentials && credentials.awsCredential) {
+				fileOps.web.fs.updateCredential(credentials.awsCredential)
+				BuildService.updateCredential(credentials.awsCredential)
+			}
+		}
+	}
 }
 
 export default BifProvider

@@ -82,11 +82,6 @@ export default {
       this.restore()
       await this.grant()
     }
-    // TODO: should invoke it when direct to the project page
-    if (!this.provider) {
-      this.provider = providers['nouser']
-      await this.getNoUserAuth()
-    }
   },
 
   async getToken() {

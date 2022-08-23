@@ -139,6 +139,7 @@ export default class BaseModal extends PureComponent {
       children,
       headerCancelIcon,
       footerCancelIcon,
+      autoFit
     } = this.props
 
     let errorComponent = null
@@ -160,6 +161,7 @@ export default class BaseModal extends PureComponent {
           'modal-dialog-scrollable': scrollable,
         }, size && `modal-${size}`, className)}
         onClosed={onClosed}
+        contentClassName={autoFit ?  'auto-fit-content' : ''}
       >
         <ModalHeader
           toggle={noCancel ? undefined : this.toggle}

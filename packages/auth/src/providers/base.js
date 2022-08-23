@@ -9,34 +9,34 @@ class BaseProvider {
     this._channel = null
   }
 
-  get channel () {
+  get channel() {
     if (!this._channel) {
       this._channel = new IpcChannel('auth')
     }
     return this._channel
   }
 
-  get serverUrl () {
+  get serverUrl() {
     return process.env.REACT_APP_OAUTH_SERVER_URL
   }
 
-  get providerUrl () {
+  get providerUrl() {
     return ''
   }
 
-  get clientId () {
+  get clientId() {
     return ''
   }
 
-  get redirectUri () {
+  get redirectUri() {
     return ''
   }
 
-  get loginUrl () {
+  get loginUrl() {
     return ''
   }
 
-  async request () {
+  async request() {
     if (platform.isDesktop) {
       const code = await this.channel.invoke('request', {
         loginUrl: this.loginUrl,
@@ -48,19 +48,19 @@ class BaseProvider {
     }
   }
 
-  async grant (code) {
+  async grant(code) {
     return { credentials: {}, profile: '' }
   }
 
-  async update (credentials) {
+  async update(credentials) {
     return
   }
 
-  async restore (profile) {
+  async restore(profile) {
     return
   }
 
-  shouldRefresh (token) {
+  shouldRefresh(token) {
     // Check token expiration
     try {
       const { exp } = decode(token)
@@ -71,18 +71,18 @@ class BaseProvider {
     }
   }
 
-  async done () {
+  async done() {
     // Close window for desktop
     if (platform.isDesktop) {
       await this.channel.invoke('close')
     }
   }
 
-  async logout () {
+  async logout() {
     // Clear token
   }
 
-  handleError ({ status, modal }) {
+  handleError({ status, modal }) {
     // Handle Error
   }
 
