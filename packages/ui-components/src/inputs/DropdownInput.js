@@ -31,9 +31,7 @@ export default class DropdownInput extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.value === this.props.value) {
-      return
-    }
+    if (prevProps.value === this.props.value) return
     setTimeout(() => {
       const togglerWidth = this.toggler.current?.offsetWidth
       if (typeof togglerWidth === 'number') {
@@ -96,12 +94,12 @@ export default class DropdownInput extends PureComponent {
 
   findSelectedOption = (options, id) => {
     for (const item of options) {
-      if (item.id && item.id.toLowerCase() === id.toLowerCase()) {
+      if (item.id && item.id.toLowerCase() === id?.toLowerCase()) {
         return item
       }
       if (Array.isArray(item.children)) {
         for (const subitem of item.children) {
-          if (subitem.id && subitem.id.toLowerCase() === id.toLowerCase()) {
+          if (subitem.id && subitem.id.toLowerCase() === id?.toLowerCase()) {
             return { group: item.group, badge: item.badge, ...subitem }
           }
         }
@@ -119,9 +117,7 @@ export default class DropdownInput extends PureComponent {
       if (Array.isArray(item.children)) {
         const groupOptions = []
         item.children.forEach(subitem => {
-          if (filterMode && !subitem.id.includes(value)) {
-            return
-          }
+          if (filterMode && !subitem.id?.includes(value)) return
           groupOptions.push({
             id: subitem.id,
             group: item.group,
@@ -139,9 +135,7 @@ export default class DropdownInput extends PureComponent {
           dropdownOptions = dropdownOptions.concat(groupOptions)
         }
       } else {
-        if (filterMode && !item.id.includes(value)) {
-          return
-        }
+        if (filterMode && !item.id?.includes(value)) return
         dropdownOptions.push({
           id: item.id,
           display: item.display,
@@ -284,9 +278,10 @@ export default class DropdownInput extends PureComponent {
                   {text || placeholder}
                 </div>
               }
-              { <Badge color={badgeColor} className='ml-1' style={{ top: 0 }}>
-                {badge}
-              </Badge>
+              {
+                <Badge color={badgeColor} className='ml-1' style={{ top: 0 }}>
+                  {badge}
+                </Badge>
               }
             </div>
           </DropdownToggle>
