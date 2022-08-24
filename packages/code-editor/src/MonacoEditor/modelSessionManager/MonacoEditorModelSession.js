@@ -1,7 +1,7 @@
 import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
 import solidity_parser from 'solidity-parser-diligence'
-const debounce = require('lodash/debounce')
+import debounce from 'lodash/debounce'
 
 
 const delay = ms => new Promise(res => setTimeout(res, ms))

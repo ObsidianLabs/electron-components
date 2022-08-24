@@ -117,19 +117,21 @@ export default class MonacoEditorContainer extends PureComponent {
   renderDropDownMenu(label){
     const { modelSession } = this.state
     let expandKeys = []
-   for(let item of modelSession.breadcrumb){
-    if (item.key === label.key) break
-    expandKeys.push(item.key)
-   }
-    return <Tree
-    treeData={modelSession._breadcrumbTree}
-    switcherIcon={(nodeProps) =>
-        this.renderSwitcherIcon(nodeProps)
+    for(let item of modelSession.breadcrumb){
+      if (item.key === label.key) break
+      expandKeys.push(item.key)
     }
-    defaultSelectedKeys={[label.key]}
-    defaultExpandedKeys={expandKeys}
-    onSelect={this.handleSetPosition.bind(this)}
-    ></Tree>
+    return (
+    <Tree
+      treeData={modelSession._breadcrumbTree}
+      switcherIcon={(nodeProps) =>
+          this.renderSwitcherIcon(nodeProps)
+      }
+      defaultSelectedKeys={[label.key]}
+      defaultExpandedKeys={expandKeys}
+      onSelect={this.handleSetPosition.bind(this)}
+      />
+    )
   }
 
   render () {
