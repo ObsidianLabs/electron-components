@@ -243,7 +243,7 @@ export default class NavDropdown extends Component {
   }
 
   render() {
-    const { list, children, right, contextMenu, route } = this.props
+    const { list, children, right, left, contextMenu, route } = this.props
     let menus = []
     let dropdownMenuStyle = {width: 'fit-content', maxWidth: '175px', [right ? 'right' : 'left']: 4}
     if (route === 'network') dropdownMenuStyle = {width: 'auto', maxHeight: 'calc(100vh - 80px)'}
@@ -269,7 +269,10 @@ export default class NavDropdown extends Component {
         >
           {children}
         </DropdownToggle>
-        <DropdownMenu right={right} className={classnames(route === 'network' && 'dropdown-menu-right-auto')} style={{ ...dropdownMenuStyle, top: 48 }}>
+        <DropdownMenu right={right}
+          className={classnames(route === 'network' && 'dropdown-menu-right-auto', left && 'dropdown-menu-position-left')}
+          style={{ ...dropdownMenuStyle, top: 48 }}
+        >
           {this.renderDropdownList(list)}
         </DropdownMenu>
         

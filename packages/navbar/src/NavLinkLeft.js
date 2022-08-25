@@ -48,26 +48,24 @@ class NavLinkLeft extends PureComponent {
         to={url}
         exact={true}
         className='nav-link d-flex p-0'
-        style={{ width: 273 }}
         activeClassName='active'
       >
+        <NavLinkContent
+          title={title}
+          selected={selected.name}
+          icon={icon}
+          width='12.4rem'
+        />
         <NavDropdown
           route={route}
           selected={selected.id || ''}
           list={dropdown}
-          onToggle={this.onToggle}
           onClickItem={this.onClickItem}
+          left
           icon={icon}
           disable={disable}
           contextMenu={contextMenu}
-        >
-          <NavLinkContent
-            title={title}
-            selected={selected.name}
-            icon={icon}
-            width='100%'
-          />
-        </NavDropdown>
+        />
       </NavLink>
     )
   }
