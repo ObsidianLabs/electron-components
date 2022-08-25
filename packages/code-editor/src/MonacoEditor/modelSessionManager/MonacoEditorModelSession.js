@@ -1,6 +1,6 @@
 import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
-import solidity_parser from 'solidity-parser-diligence'
+// import solidity_parser from 'solidity-parser-diligence'
 import debounce from 'lodash/debounce'
 
 
@@ -240,13 +240,20 @@ export default class MonacoEditorModelSession {
 
     handleTree.start()
 
-    if (language === 'javascript') {
+    if (language === 'javascript' || language === 'solidity') {
 
-      const token = monaco.editor.tokenize(value, language.language)
-      const tag = {
-        variable: ['type.identifier.js'],
-        scope: ['delimiter.bracket.js'],
-      }
+      const token = monaco.editor.tokenize(value, language)
+      const tags = {
+        javascript: {
+            variable: ['type.identifier.js'],
+            scope: ['delimiter.bracket.js'],
+        },
+        solidity: {
+            variable: ['identifier'],
+            scope: ['paren.lparen', 'paren.rparen'],
+        },
+    }
+      const tag = tags[language]
       token.forEach((line, count) => {
         const lineNumber = count + 1
         line.forEach((item) => {
@@ -277,52 +284,52 @@ export default class MonacoEditorModelSession {
       })
     }
 
-    if (language === 'solidity') {
-      try{
-        const ast = solidity_parser.parse(value, {loc: true})
-        const dealWithAst = function(array){
-          array.forEach(item => {
-            if (item.loc.start.line > handleTree.position.lineNumber
-              || item.loc.start.line === handleTree.position.lineNumber && item.loc.start.column >= handleTree.position.column
-              ){
-                handleTree.mark()
-              }
+    // if (language === 'solidity') {
+    //   try{
+    //     const ast = solidity_parser.parse(value, {loc: true})
+    //     const dealWithAst = function(array){
+    //       array.forEach(item => {
+    //         if (item.loc.start.line > handleTree.position.lineNumber
+    //           || item.loc.start.line === handleTree.position.lineNumber && item.loc.start.column >= handleTree.position.column
+    //           ){
+    //             handleTree.mark()
+    //           }
 
-            if (item.type === "ContractDefinition") {
-              handleTree.addNode(item.name, {
-                column: item.loc.start.column,
-                lineNumber: item.loc.start.line,
-              })
-              if (item.subNodes) {
-                handleTree.jumpIn()
-                dealWithAst(item.subNodes)
-                handleTree.jumpOut()
-              }
-            }
-            if (item.type === "StateVariableDeclaration") {
-              handleTree.addNode(item.variables[0].name, {
-                column: item.loc.start.column,
-                lineNumber: item.loc.start.line,
-              })
-            }
+    //         if (item.type === "ContractDefinition") {
+    //           handleTree.addNode(item.name, {
+    //             column: item.loc.start.column,
+    //             lineNumber: item.loc.start.line,
+    //           })
+    //           if (item.subNodes) {
+    //             handleTree.jumpIn()
+    //             dealWithAst(item.subNodes)
+    //             handleTree.jumpOut()
+    //           }
+    //         }
+    //         if (item.type === "StateVariableDeclaration") {
+    //           handleTree.addNode(item.variables[0].name, {
+    //             column: item.loc.start.column,
+    //             lineNumber: item.loc.start.line,
+    //           })
+    //         }
 
-            if (["EventDefinition", "FunctionDefinition"].includes(item.type)) {
-              let name = item.name
-              if (!name && item.isConstructor) name = 'constructor()'
-              if (!name && !item.isConstructor) name = 'anonymous'
-              handleTree.addNode(name, {
-                column: item.loc.start.column,
-                lineNumber: item.loc.start.line,
-              })
-            }
-          })
-        }
-        dealWithAst(ast.children)
-      }catch(e){
-        console.log(e)
-        getError = true
-      }
-    }
+    //         if (["EventDefinition", "FunctionDefinition"].includes(item.type)) {
+    //           let name = item.name
+    //           if (!name && item.isConstructor) name = 'constructor()'
+    //           if (!name && !item.isConstructor) name = 'anonymous'
+    //           handleTree.addNode(name, {
+    //             column: item.loc.start.column,
+    //             lineNumber: item.loc.start.line,
+    //           })
+    //         }
+    //       })
+    //     }
+    //     dealWithAst(ast.children)
+    //   }catch(e){
+    //     console.log(e)
+    //     getError = true
+    //   }
+    // }
     handleTree.end()
     if (!getError) this.setBreadcrumb(handleTree.breadcrumb, handleTree.tree)
   }
