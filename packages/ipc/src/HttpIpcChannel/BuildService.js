@@ -1,8 +1,9 @@
 import AWS from 'aws-sdk/global'
 import CloudWatchLogs from 'aws-sdk/clients/cloudwatchlogs'
+import io from 'socket.io-client'
+
 const PROJECT = process.env.PROJECT
 const region = process.env.REACT_APP_AWS_REGION
-
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
 export default class BuildService {
@@ -57,40 +58,29 @@ export default class BuildService {
     if (this.abort) {
       return
     }
+    await this.streamLogs()
 
-    await delay(1000)
+    // await delay(1000)
 
-    const result = await this.client.queryApiPath(`build/${this.buildId}`)
-    this.status = result.status
+    // const result = await this.client.queryApiPath(`build/${this.buildId}`)
+    // this.status = result.status
 
-    try {
-      if (this.status === 'PENDING' || this.status === 'QUEUED') {
-        await this.checkStatus()
-      } else if (this.status === 'BUILDING' || !this.noMoreLog) {
-        await this.streamLogs()
-        await this.checkStatus()
-      }
-    } catch (e) {
-      await this.checkStatus()
-    }
+    // try {
+    //   if (this.status === 'PENDING' || this.status === 'QUEUED') {
+    //     await this.checkStatus()
+    //   } else if (this.status === 'BUILDING' || !this.noMoreLog) {
+    //     await this.streamLogs()
+    //     await this.checkStatus()
+    //   }
+    // } catch (e) {
+    //   await this.checkStatus()
+    // }
   }
 
   async streamLogs () {
-    const params = {
-      logGroupName: 'webIDEbuildLogs',
-      logStreamName: this.buildId,
-      startFromHead: true,
-      nextToken: this.nextToken
-    }
-    const data = await BuildService.watcher.getLogEvents(params).promise()
-    data.events.forEach(e => {
-      const msg = e.message
-      if (msg === this.buildId) {
-        this.noMoreLog = true
-      } else {
-        this.onData(`${msg}\n\r`)
-      }
+    const socket = io("http://localhost:7001")
+    socket.on("buildLog", (socket) => {
+        this.onData(`${socket}\n\r`)
     })
-    this.nextToken = data.nextForwardToken
   }
 }

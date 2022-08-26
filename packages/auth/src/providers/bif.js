@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk/global'
 import BaseProvider from './base'
 import decode from 'jwt-decode'
 import fileOps from '@obsidians/file-ops'
@@ -7,6 +8,7 @@ import { BuildService } from '@obsidians/ipc'
 class BifProvider extends BaseProvider {
 	constructor() {
 		super('bif')
+		AWS.config.update({ region: this.awsConfig.region })
 	}
 
 	get awsConfig() {
