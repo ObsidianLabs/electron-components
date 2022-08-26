@@ -1,7 +1,8 @@
 import fileOps from '@obsidians/file-ops'
 import * as monaco from 'monaco-editor'
+// import solidity_parser from 'solidity-parser-diligence'
+import debounce from 'lodash/debounce'
 
-import tags from './breadcrumb-data'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
@@ -139,8 +140,9 @@ export default class MonacoEditorModelSession {
   get breadcrumb () {
     return this._breadcrumb
   }
-  setBreadcrumb (value) {
-    this._breadcrumb = value
+  setBreadcrumb (breadcrumb, tree) {
+    this._breadcrumbTree = tree,
+    this._breadcrumb = breadcrumb
     this.refreshEditorContainer && this.refreshEditorContainer()
   }
 
@@ -151,109 +153,185 @@ export default class MonacoEditorModelSession {
     })
   }
 
-  getBreadcrumbData(position){
+  getBreadcrumbData = debounce(this._getBreadcrumbData.bind(this), 100)
+
+  _getBreadcrumbData(position){
     if (!this.props?.modelSession?.model) this.setBreadcrumb(null)
     const model = this._model
-
-    const language = model.getLanguageIdentifier()
+    const language = model.getLanguageIdentifier().language
     const value = model.getValue()
-    const token = monaco.editor.tokenize(value, language.language)
-    const tag = tags[language.language]
-    if (!tag) {
+    const LANGUAGE_SUPPORT = ['javascript', 'solidity']
+    if (!LANGUAGE_SUPPORT.includes(language)) {
       this.setBreadcrumb(null)
       return
     }
+    let getError = false
 
-    const handleToken = {
+    const handleTree = {
       position,
-      data: {},
-      breadcrumb:[],
-      currentScope: {
-        current: {
-          name: '(anonymous scope)',
-          position: {
-            lineNumber: 1,
-            column: 1,
-          },
-        },
-        brothers: [],
+      tree: [{}],
+      breadcrumbTmp: [],
+      breadcrumb: [],
+      currentNode: null,
+      indexCurrent: 0,
+      marked: false,
+      start(){
+        this.currentNode = this.tree[0]
+        this.currentNode.title = '/FILE_NAME/'
+        this.currentNode.key = this.indexCurrent
+        this.currentNode.parent = this.tree
+        this.currentNode.position = {
+          lineNumber: 1,
+          column: 1,
+        }
+        this.breadcrumb.push({
+          title: this.currentNode.title,
+          key: this.currentNode.key,
+        })
+        this.jumpIn()
       },
-      currentDepth: 0,
-      afterCursorLock: false,
-      afterCursorDepth: 0,
-      addScope(name, position){
-        const scope = {
-          name,
-          position,
-        }
-        if (this.afterCursorLock && this.afterCursorDepth > 0) return
-        if (!this.afterCursorLock) this.currentScope.current = scope
-        if (this.afterCursorLock) this.breadcrumb[this.currentDepth].brothers.push(scope)
-        else this.currentScope.brothers.push(scope)
+      jumpIn(){
+        this.breadcrumbTmp.push(null)
+        if (!this.marked) this.breadcrumb.push(null)
       },
-      jumpIn(position){
-        this.currentDepth++
-        if (this.afterCursorLock) {
-          this.afterCursorDepth++
-          return
+      addNode(title, position){
+        this.indexCurrent++
+        if (this.breadcrumbTmp[this.breadcrumbTmp.length - 1] === null) {
+          this.currentNode.children = [{
+            parent: this.currentNode,
+          }]
+          this.currentNode = this.currentNode.children[0]
+        } else {
+          const currentNode = {
+            parent: this.currentNode.parent,
+          }
+          this.currentNode.parent.children.push(currentNode)
+          this.currentNode = currentNode
         }
-        this.breadcrumb.push(this.currentScope)
-        this.currentScope = {
-          current: {
-            name: '(anonymous scope)',
-            position,
-          },
-          brothers: [],
-        }
+        this.currentNode.title = title
+        this.currentNode.key = this.indexCurrent,
+        this.currentNode.position = position
+        this.breadcrumbTmp[this.breadcrumbTmp.length - 1] = ({
+          title,
+          key: this.indexCurrent,
+        })
+        if (!this.marked) this.breadcrumb[this.breadcrumb.length - 1] = ({
+          title,
+          key: this.indexCurrent,
+        })
       },
-      jumpOut(position){
-        this.currentDepth--
-        if (this.afterCursorLock) {
-          this.afterCursorDepth > 0 && this.afterCursorDepth--
-          return
-        }
-        this.currentScope = this.breadcrumb.pop()
+      jumpOut(){
+        this.breadcrumbTmp.pop()
+        if (!this.marked) this.breadcrumb.pop()
       },
       end(){
-        if (this.afterCursorLock) return
-        this.afterCursorLock = true
-        this.breadcrumb.push(this.currentScope)
+        if (this.breadcrumb[this.breadcrumb.length - 1] === null) this.breadcrumb.pop()
+        if (this.breadcrumb.length === 1 && this.tree[0]?.children?.length) {
+          this.breadcrumb.push({
+            title: this.tree[0].children[0].title,
+            key: this.tree[0].children[0].key,
+          })
+        }
+      },
+      mark(){
+        this.marked = true
       },
     }
-    token.forEach((line, count) => {
-      const lineNumber = count + 1
-      line.forEach((item) => {
-        const column = item.offset + 1
-        const position = {
-          lineNumber,
-          column,
-        }
-        if (lineNumber > handleToken.position.lineNumber || 
-          lineNumber === handleToken.position.lineNumber && column >= handleToken.position.column) handleToken.end()
-        if (tag.variable.includes(item.type)){
-            const variable = model.getWordAtPosition(position)
-            handleToken.addScope(variable.word, position)
-        }
-        if (tag.scope.length === 2 && tag.scope[0] === item.type) handleToken.jumpIn(position)
-        if (tag.scope.length === 2 && tag.scope[1] === item.type) handleToken.jumpOut()
-        if (tag.scope.length === 1 && tag.scope[0] === item.type) {
-          const scopeValue = model.getValueInRange({
-            startColumn: column,
-            endColumn: column + 1,
-            startLineNumber: lineNumber,
-            endLineNumber: lineNumber,
-          })
-          if (scopeValue === '{') handleToken.jumpIn(position) 
-          if (scopeValue === '}') handleToken.jumpOut(position)
-        }
+
+    handleTree.start()
+
+    if (language === 'javascript' || language === 'solidity') {
+
+      const token = monaco.editor.tokenize(value, language)
+      const tags = {
+        javascript: {
+            variable: ['type.identifier.js'],
+            scope: ['delimiter.bracket.js'],
+        },
+        solidity: {
+            variable: ['identifier'],
+            scope: ['paren.lparen', 'paren.rparen'],
+        },
+    }
+      const tag = tags[language]
+      token.forEach((line, count) => {
+        const lineNumber = count + 1
+        line.forEach((item) => {
+          const column = item.offset + 1
+          const position = {
+            lineNumber,
+            column,
+          }
+          if (lineNumber > handleTree.position.lineNumber || 
+            lineNumber === handleTree.position.lineNumber && column >= handleTree.position.column) handleTree.mark()
+          if (tag.variable.includes(item.type)){
+              const variable = model.getWordAtPosition(position)
+              handleTree.addNode(variable.word, position)
+          }
+          if (tag.scope.length === 2 && tag.scope[0] === item.type) handleTree.jumpIn()
+          if (tag.scope.length === 2 && tag.scope[1] === item.type) handleTree.jumpOut()
+          if (tag.scope.length === 1 && tag.scope[0] === item.type) {
+            const scopeValue = model.getValueInRange({
+              startColumn: column,
+              endColumn: column + 1,
+              startLineNumber: lineNumber,
+              endLineNumber: lineNumber,
+            })
+            if (scopeValue === '{') handleTree.jumpIn() 
+            if (scopeValue === '}') handleTree.jumpOut()
+          }
+        })
       })
-    })
-    handleToken.end()
-    handleToken.breadcrumb.forEach(item => {
-      if (item.brothers.length === 0) item.brothers.push(item.current)
-      if (item.brothers.length > 0 && item.current.name === '(anonymous scope)') item.current = item.brothers[0]
-    })
-    this.setBreadcrumb(handleToken.breadcrumb)
+    }
+
+    // if (language === 'solidity') {
+    //   try{
+    //     const ast = solidity_parser.parse(value, {loc: true})
+    //     const dealWithAst = function(array){
+    //       array.forEach(item => {
+    //         if (item.loc.start.line > handleTree.position.lineNumber
+    //           || item.loc.start.line === handleTree.position.lineNumber && item.loc.start.column >= handleTree.position.column
+    //           ){
+    //             handleTree.mark()
+    //           }
+
+    //         if (item.type === "ContractDefinition") {
+    //           handleTree.addNode(item.name, {
+    //             column: item.loc.start.column,
+    //             lineNumber: item.loc.start.line,
+    //           })
+    //           if (item.subNodes) {
+    //             handleTree.jumpIn()
+    //             dealWithAst(item.subNodes)
+    //             handleTree.jumpOut()
+    //           }
+    //         }
+    //         if (item.type === "StateVariableDeclaration") {
+    //           handleTree.addNode(item.variables[0].name, {
+    //             column: item.loc.start.column,
+    //             lineNumber: item.loc.start.line,
+    //           })
+    //         }
+
+    //         if (["EventDefinition", "FunctionDefinition"].includes(item.type)) {
+    //           let name = item.name
+    //           if (!name && item.isConstructor) name = 'constructor()'
+    //           if (!name && !item.isConstructor) name = 'anonymous'
+    //           handleTree.addNode(name, {
+    //             column: item.loc.start.column,
+    //             lineNumber: item.loc.start.line,
+    //           })
+    //         }
+    //       })
+    //     }
+    //     dealWithAst(ast.children)
+    //   }catch(e){
+    //     console.log(e)
+    //     getError = true
+    //   }
+    // }
+    handleTree.end()
+    if (!getError) this.setBreadcrumb(handleTree.breadcrumb, handleTree.tree)
   }
 
   async recoverInEditor (monacoEditor) {

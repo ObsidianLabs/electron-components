@@ -37,9 +37,6 @@
     margin: 0 0.5rem !important;
   }
 }
-.navbar-left .nav-link:not(.active) .nav-dropdown-toggle:after {
-  display: none;
-}
 
 .nav-link-content {
   height: 100%;
@@ -56,7 +53,8 @@
     margin: 0 0.6rem;
   }
 }
-.navbar-right .nav-link-content:after {
+.navbar-right .nav-link-content:after,
+.navbar-left .nav-link-content:after {
   display: inline-block;
   content: "";
   width: 1px;
@@ -118,6 +116,10 @@
   .btn.btn-secondary.active{
     background: var(--color-primary);
   }
+}
+
+.dropdown-menu-position-left{
+  left: -15.4rem !important;
 }
 
 .dropdown-item-network,

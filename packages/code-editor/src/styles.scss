@@ -170,14 +170,14 @@
 
 .topbar-breadcrumb-box{
   height: 30px;
-  background: var(--color-bg)
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .topbar-breadcrumb{
   overflow-x: auto;
   height: 250px;
   width: 100%;
-
 }
 
 .breadcrumb-delimiter{
@@ -185,15 +185,20 @@
   height: 30px;
   line-height: 30px;
   vertical-align: middle;
-  &::after{
-    content: '>';
-  }
 }
 
 .breadcrumb-dropdown{
   transform: none !important;
   top: 32px !important;
   max-height: 200px;
+  border-radius: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  margin: 0;
+  padding: 4px 0 4px 0;
+  .rc-tree-treenode{
+    padding: 2px 12px 2px 10px;
+  }
 }
 
 .topbar-breadcrumb {

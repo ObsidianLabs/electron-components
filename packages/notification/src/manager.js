@@ -61,6 +61,10 @@ class NotificationManager {
   info (title, message, autoDismiss = 2, actions = undefined) {
     return this.displayNotification({ title, message, level: 'info', autoDismiss, actions })
   }
+
+  clearAll() {
+    this._ref && this._ref.clearNotifications()
+  }
 }
 
 export default new NotificationManager()

@@ -51,8 +51,8 @@ export default class Markdown extends Component {
     return this.props.modelSession.showCustomTab
   }
 
-  onEditButton = (needSave = true) => {
-    this.props.modelSession.toggleCustomTab()
+  onEditButton = (needSave = true, switchButtonStatus = true) => {
+    switchButtonStatus && this.props.modelSession.toggleCustomTab()
     if (needSave && this.display && modelSessionManager.projectManager.userOwnProject) {
       modelSessionManager.saveCurrentFile()
     }
@@ -149,7 +149,7 @@ export default class Markdown extends Component {
           color='primary'
           size='sm'
           className='ml-2'
-          onClick={this.onEditButton}
+          onClick={ e => this.onEditButton()}
           id='project-edit'
         >
           {
