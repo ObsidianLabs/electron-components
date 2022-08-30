@@ -97,7 +97,8 @@ class UserHomepage extends PureComponent {
     let projects
     try {
       const res = await projectChannel.invoke('get', username)
-      projects = res.map(p => ({
+      const sortedRes = res.sort((r1, r2) => new Date(r2.updatedAt).getTime() - new Date(r1.updatedAt).getTime())
+      projects = sortedRes.map(p => ({
         remote: true,
         id: p.name,
         name: p.name,
