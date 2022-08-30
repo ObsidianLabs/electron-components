@@ -130,7 +130,7 @@ export default class NavDropdown extends Component {
             >
               <div className='d-flex nav-dropdown-testnet-list'>
                 <Button size='sm' className={classnames({ active: isTestnetSelected })}>
-                  {isTestnetSelected ? isTestnetSelected?.name : list[0]?.name}
+                  {isTestnetSelected?.name || list[0]?.name}
                 </Button>
                 <div className={classnames('icon cursor-pointer')}>
                   <i className='fas-icon fas fa-solid fa-sort-down'/>
@@ -142,6 +142,7 @@ export default class NavDropdown extends Component {
               {
                 list.map(item => (
                   <DropdownItem
+                  className={classnames({ active: (isTestnetSelected?.name === item.name) })}
                   key={`test-network-item-${uuidv4()}`}
                   onClick={e => this.onClickItem(e, item)}
                   >{item.name}</DropdownItem>

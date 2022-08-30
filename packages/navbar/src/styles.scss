@@ -113,7 +113,11 @@
 
 .dropdown-menu-right-auto{
   left: auto !important;
-  .btn.btn-secondary.active{
+  .btn.btn-secondary.active,
+  .dropdown-item.active{
+    background: var(--color-success) !important;
+  }
+  .btn.btn-secondary:hover{
     background: var(--color-primary);
   }
 }
