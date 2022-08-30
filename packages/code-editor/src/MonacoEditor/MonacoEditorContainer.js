@@ -12,6 +12,8 @@ import {
 } from '@obsidians/ui-components'
 import Tree from 'rc-tree'
 
+import FileTree from '@obsidians/filetree'
+
 export default class MonacoEditorContainer extends PureComponent {
   static propTypes = {
     readOnly: PropTypes.bool,
@@ -29,6 +31,7 @@ export default class MonacoEditorContainer extends PureComponent {
       modelSession: null,
       dropdownMenuLists: [],
     }
+    this.filetree = React.createRef()
     this.customTab = React.createRef()
   }
 
@@ -103,7 +106,7 @@ export default class MonacoEditorContainer extends PureComponent {
       return <span key='loading'><span className='fas fa-sm fa-pulse fa-spinner fa-fw' /></span>
     }
   
-    if (!data.children) {
+    if (!data.children || data.children.length === 0) {
       return null
     }
   
@@ -123,6 +126,7 @@ export default class MonacoEditorContainer extends PureComponent {
     }
     return (
     <Tree
+      id={'function-tree-component'}
       treeData={modelSession._breadcrumbTree}
       switcherIcon={(nodeProps) =>
           this.renderSwitcherIcon(nodeProps)
@@ -132,6 +136,47 @@ export default class MonacoEditorContainer extends PureComponent {
       onSelect={this.handleSetPosition.bind(this)}
       />
     )
+  }
+
+  
+  renderDropDownMenuFileTree(label, breadcrumb, tree){
+    let expandKeys = []
+    for(let item of breadcrumb){
+      if (item.key === label.key) break
+      expandKeys.push(item.key)
+    }
+    return (
+    <Tree
+      id={'filretree-tree-component'}
+      treeData={tree}
+      switcherIcon={(nodeProps) =>
+          this.renderSwitcherIcon(nodeProps)
+      }
+      defaultSelectedKeys={[label.key]}
+      defaultExpandedKeys={expandKeys}
+      // onSelect={this.handleSetPosition.bind(this)}
+      />
+    )
+  }
+
+  filetreeToBreadcrumb(){
+    const logicTree = modelSessionManager?.projectManager?.project?.workspace?.current?.filetree
+    const file = logicTree?.current?.activeNode?.key
+    const logicTreeRoot = logicTree?.current?.rootNode
+    let breadcrumbFileTree = []
+    const handleChildren = (currentLogicChildren) => {
+      currentLogicChildren?.forEach(item => {
+        if (file.indexOf(item.key) === 0) breadcrumbFileTree.push({
+          title: item.name,
+          key: item.key,
+        })
+        if (item.children) {
+          handleChildren(item.children)
+        }
+      })
+    }
+    handleChildren(logicTreeRoot)
+    return {breadcrumbFileTree}
   }
 
   render () {
@@ -158,18 +203,49 @@ export default class MonacoEditorContainer extends PureComponent {
     }
 
     if (modelSession.breadcrumb) {
+      const { breadcrumbFileTree } = this.filetreeToBreadcrumb()
       const { modelSession } = this.state
       const filename = modelSession.filePath.split('/').pop()
       modelSession.breadcrumb[0].title = filename
       modelSession._breadcrumbTree[0].title = filename
+      const functionBreadcrumb = modelSession.breadcrumb.slice(1)
       breadcrumb = (
         <div className='topbar-breadcrumb-box'>
         <div className='px-2 border-bottom-black text-muted topbar-breadcrumb'>
-          { modelSession.breadcrumb.map((item, index) => 
+          { breadcrumbFileTree.map((item, index) => 
             <>
-            {index > 0 && <div className='breadcrumb-delimiter' key={`${item.key}-delimter`}>
+            {index > 0 && <div className='breadcrumb-delimiter' key={`${item.key}-file-delimter`}>
               <i className="cldr codicon codicon-chevron-right"></i>
             </div>}
+            <UncontrolledButtonDropdown direction='down' className={'scope-label'} key={`${item.key}-file-dropdown`}>
+            <DropdownToggle
+              size='sm'
+              color='default'
+              className='rounded-0 text-muted px-2 text-nowrap text-overflow-dots'
+            >
+              { item.title }
+            </DropdownToggle>
+            <DropdownMenu right className={'dropdown-menu-sm breadcrumb-dropdown'}>
+              {/* { this.renderDropDownMenuFileTree(item, breadcrumbFileTree, uiTreeRoot) }
+               */}
+               
+              <FileTree
+                ref={this.filetree}
+                projectManager={modelSessionManager?.projectManager}
+                initialPath={item.key}
+                onSelect={modelSessionManager?.projectManager?.project?.workspace.current.openFile}
+                readOnly={readOnly}
+                contextMenu={[]}
+              />
+            </DropdownMenu>
+            </UncontrolledButtonDropdown>
+            </>
+          ) }
+          { functionBreadcrumb.map((item) => 
+            <>
+            <div className='breadcrumb-delimiter' key={`${item.key}-delimter`}>
+            <i className="cldr codicon codicon-chevron-right"></i>
+            </div>
             <UncontrolledButtonDropdown direction='down' className={'scope-label'} key={`${item.key}-dropdown`}>
             <DropdownToggle
               size='sm'
