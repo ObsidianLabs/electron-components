@@ -7,14 +7,23 @@ import {
 
 import { Link } from 'react-router-dom'
 
-import platform from '@obsidians/platform'
-import fileOps from '@obsidians/file-ops'
-import { ProjectPath, actions } from '@obsidians/workspace'
-import { t } from '@obsidians/i18n'
+import { ProjectPath, ProjectManager, DeleteProjectModal } from '@obsidians/workspace'
 
 export default class ProjectList extends PureComponent {
-  removeProject = async project => {
-    await actions.removeProject(project)
+  constructor (props) {
+    super(props)
+    this.state = {
+      projectManager: null,
+      remote: false,
+    }
+    this.modal = React.createRef()
+  }
+
+  removeProject = async (project, remote) => {
+    let projectManager = null
+    if (remote) projectManager = new ProjectManager['Remote'](this, project.path)
+    await this.setState({ projectManager, project })
+    this.modal.current.openDeleteModal()
   }
 
   renderProjectRow = (project, index) => {
@@ -54,32 +63,12 @@ export default class ProjectList extends PureComponent {
   }
 
   renderRightButton = project => {
-    if (!project.remote) {
-      return (
-        <DeleteButton
-          textConfirm={t('rmClickAgain')}
-          onConfirm={() => this.removeProject(project)}
-        />
-      )
-    }
-
-    if (platform.isDesktop) {
-      return (
-        <IconButton
-          key={`open-in-browser-${project.id}`}
-          color='transparent'
-          className='text-muted'
-          icon='fas fa-external-link'
-          tooltip='Open in Browser'
-          onClick={() => fileOps.current.openLink(`${process.env.PROJECT_WEB_URL}/${project.path}`)}
-        />
-      )
-    }
-
-    return null
+    return (
+      <DeleteButton onConfirm={() => this.removeProject(project, project.remote)} />
+    )
   }
 
-  render () {
+  render() {
     const { loading, projects } = this.props
 
     if (loading && !projects) {
@@ -109,11 +98,20 @@ export default class ProjectList extends PureComponent {
     }
 
     return (
-      <table className='table table-hover table-striped'>
-        <tbody>
-          {projects.map(this.renderProjectRow)}
-        </tbody>
-      </table>
+      <>
+        <table className='table table-hover table-striped'>
+          <tbody>
+            {projects.map(this.renderProjectRow)}
+          </tbody>
+        </table>
+        <DeleteProjectModal
+          projectListUpdate={this.props.projectListUpdate}
+          ref={this.modal}
+          projectsReload={true}
+          project={this.state.project}
+          projectManager={this.state.projectManager}
+        />
+      </>
     )
   }
 }

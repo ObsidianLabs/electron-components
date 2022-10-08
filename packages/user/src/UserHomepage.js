@@ -70,6 +70,10 @@ class UserHomepage extends PureComponent {
     }
   }
 
+  projectListUpdate () {
+    this.getProjectList(this.props.match?.params?.username)
+  }
+
   getProjectList = async username => {
     if (username === 'local') {
       this.setState({ loading: false, notfound: false, user: null, projects: null })
@@ -237,6 +241,7 @@ class UserHomepage extends PureComponent {
             projects={projects}
             loading={loading}
             ListItem={ProjectListItem}
+            projectListUpdate={() => this.projectListUpdate()}
           />
         </div>
 

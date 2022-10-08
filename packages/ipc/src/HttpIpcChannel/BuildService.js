@@ -60,16 +60,16 @@ export default class BuildService {
     }
     await this.streamLogs()
 
-    // await delay(1000)
+    await delay(1000)
 
-    // const result = await this.client.queryApiPath(`build/${this.buildId}`)
-    // this.status = result.status
-
+    const result = await this.client.queryApiPath(`build/${this.buildId}`)
+    this.status = result.status
+    console.log(result, 'result')
     // try {
-    //   if (this.status === 'PENDING' || this.status === 'QUEUED') {
+    //   if (this.status === 'PENDING') {
     //     await this.checkStatus()
     //   } else if (this.status === 'BUILDING' || !this.noMoreLog) {
-    //     await this.streamLogs()
+    //     // await this.streamLogs()
     //     await this.checkStatus()
     //   }
     // } catch (e) {

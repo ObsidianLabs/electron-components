@@ -230,6 +230,21 @@ const translation = {
       copyFailureText: '请重新点击',
     }
   },
+  del: {
+    title: '删除项目',
+    delText: '您的操作将永久删除此项目，此操作',
+    canont: '不能',
+    delTextEnd: '被撤销！',
+    desktopDelText: '你即将删除这个项目，原始文件仍将保留在你的驱动器中。',
+    type: '输入',
+    toConf: '来确认',
+    tips: '项目名称不匹配',
+    others: '其他',
+    rmSuccess: '移除项目成功',
+    rmSuccessText: '项目<b>{{name}}</b>已经被移除',
+    delSuccess: '删除项目成功',
+    delSuccessText: '你已经永久地删除了项目<b>{{name}}</b>',
+  },
   component: {
     text: {
       confirm: '确认',

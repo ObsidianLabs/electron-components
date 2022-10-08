@@ -15,14 +15,26 @@ export default class AwsS3Fs {
       stat: this.stat.bind(this),
       ensureFile: this.ensureFile.bind(this)
     }
+    AWS.config.update({
+      accessKeyId: 'nCxIQHhTVQ2Tbw0BjOHkJwEsQII9LHk_vDC2EhxS',
+      secretAccessKey: '8HbVX8atYsmhvG2QgcbQwcA6lCH1grIy4W6PcBAO',
+      region,
+      s3ForcePathStyle: true,
+      endpoint: new AWS.Endpoint('http://172.17.12.10:9091')
+      // sessionToken: credential.Credentials.SessionToken
+    })
+
+    this.s3 = new S3()
   }
 
   updateCredential (credential) {
     AWS.config.update({
+      accessKeyId: 'nCxIQHhTVQ2Tbw0BjOHkJwEsQII9LHk_vDC2EhxS',
+      secretAccessKey: '8HbVX8atYsmhvG2QgcbQwcA6lCH1grIy4W6PcBAO',
       region,
-      accessKeyId: credential.Credentials.AccessKeyId,
-      secretAccessKey: credential.Credentials.SecretAccessKey,
-      sessionToken: credential.Credentials.SessionToken
+      s3ForcePathStyle: true,
+      endpoint: new AWS.Endpoint('http://172.17.12.10:9091')
+      // sessionToken: credential.Credentials.SessionToken
     })
 
     this.s3 = new S3()
@@ -212,6 +224,7 @@ export default class AwsS3Fs {
       }, []) : []
     }
 
+    console.log(this.s3)
     const { CommonPrefixes, Contents } = await this.s3.listObjectsV2({
       Bucket,
       Prefix: `${dirPath}`,

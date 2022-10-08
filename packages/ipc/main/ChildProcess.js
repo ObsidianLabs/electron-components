@@ -18,6 +18,7 @@ class ChildProcess {
       })
 
       proc.stderr.on('data', data => {
+        console.log(data, 'childProcess')
         resolve({ code: -1, logs: data.toString() })
       })
 

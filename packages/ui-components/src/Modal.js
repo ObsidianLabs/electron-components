@@ -155,7 +155,6 @@ export default class BaseModal extends PureComponent {
       <Modal
         ref={this.modal}
         isOpen={this.state.isOpen}
-        style={{ userSelect: 'none' }}
         className={classnames({
           'modal-fullscreen': fullscreen,
           'modal-dialog-scrollable': scrollable,
