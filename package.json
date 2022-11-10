@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "danger": "^11.0.2",
-    "electron": "^16.0.2",
+    "electron": "^18.3.7",
     "electron-rebuild": "^3.2.5",
     "standard": "^16.0.4",
     "standard-react": "^4.0.0"
