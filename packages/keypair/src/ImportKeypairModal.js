@@ -133,7 +133,7 @@ export default class ImportKeypairModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={`${t('keypair.import')} ${t('keypair.keypair')}`}
+        title={`${t('keypair.import')}${t('keypair.keypair')}`}
         textConfirm={t('keypair.import')}
         pending={this.state.pending && `${t('keypair.importing')}...`}
         onConfirm={this.onConfirm}
@@ -141,7 +141,7 @@ export default class ImportKeypairModal extends PureComponent {
       >
         <DebouncedFormGroup
           ref={this.input}
-          label='Name'
+          label='密钥名称'
           maxLength='200'
           placeholder={t('keypair.createPlaceholder')}
           onChange={name => this.setState({ name })}

@@ -27,7 +27,7 @@ export default class CreateKeypairModal extends PureComponent {
       pending: false,
       name: '',
       chain: defaultChain,
-      secretType: 'privkey',
+      secretType: 'ED25519',
       keypair: null,
     }
 
@@ -110,11 +110,11 @@ export default class CreateKeypairModal extends PureComponent {
           <UncontrolledButtonDropdown>
             <DropdownToggle color='success' className='pr-2 pl-1' caret />
             <DropdownMenu>
-              <DropdownItem onClick={() => this.setState({ secretType: 'privkey' }, this.regenerateKeypair)}>
-                {t('keypair.fromPrivateKey')}
+              <DropdownItem onClick={() => this.setState({ secretType: 'ED25519' }, this.regenerateKeypair)}>
+                ED25519 加密
               </DropdownItem>
-              <DropdownItem onClick={() => this.setState({ secretType: 'mnemonic' }, this.regenerateKeypair)}>
-                {t('keypair.fromMnemonic')}
+              <DropdownItem onClick={() => this.setState({ secretType: 'SM2' }, this.regenerateKeypair)}>
+                SM2 加密
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledButtonDropdown>
