@@ -13,9 +13,9 @@ class BifProvider extends BaseProvider {
 
 	get awsConfig() {
 		return {
-			region: process.env.REACT_APP_AWS_REGION,
-			roleArn: process.env.REACT_APP_AWS_ROLE_ARN,
-			roleSessionName: process.env.REACT_APP_AWS_ROLE_SESSION_NAME,
+			region: window.process.env.REACT_APP_AWS_REGION,
+			roleArn: window.process.env.REACT_APP_AWS_ROLE_ARN,
+			roleSessionName: window.process.env.REACT_APP_AWS_ROLE_SESSION_NAME,
 		}
 	}
 

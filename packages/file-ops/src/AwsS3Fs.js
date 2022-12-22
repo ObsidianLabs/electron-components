@@ -4,8 +4,11 @@ import path from 'path-browserify'
 import { AWSS3Region, AWSBucket } from './config.json'
 
 const notValid = (oldValue, newVal) => oldValue === newVal
-const region = process.env.REACT_APP_AWS_S3_REGION || AWSS3Region
-const Bucket = process.env.REACT_APP_AWS_BUCKET || AWSBucket
+const region = window.process.env.REACT_APP_AWS_REGION || AWSS3Region
+const Bucket = window.process.env.REACT_APP_AWS_BUCKET || AWSBucket
+const endpoint = window.process.env.REACT_APP_AWS_ENDPOINT
+const ak = window.process.env.REACT_APP_AWS_AK
+const sk = window.process.env.REACT_APP_AWS_SK
 
 export default class AwsS3Fs {
   constructor() {
@@ -16,11 +19,11 @@ export default class AwsS3Fs {
       ensureFile: this.ensureFile.bind(this)
     }
     AWS.config.update({
-      accessKeyId: 'nCxIQHhTVQ2Tbw0BjOHkJwEsQII9LHk_vDC2EhxS',
-      secretAccessKey: '8HbVX8atYsmhvG2QgcbQwcA6lCH1grIy4W6PcBAO',
+      accessKeyId: ak,
+      secretAccessKey: sk,
       region,
       s3ForcePathStyle: true,
-      endpoint: new AWS.Endpoint('http://172.17.12.10:9091')
+      endpoint: new AWS.Endpoint(endpoint)
       // sessionToken: credential.Credentials.SessionToken
     })
 
@@ -29,11 +32,11 @@ export default class AwsS3Fs {
 
   updateCredential (credential) {
     AWS.config.update({
-      accessKeyId: 'nCxIQHhTVQ2Tbw0BjOHkJwEsQII9LHk_vDC2EhxS',
-      secretAccessKey: '8HbVX8atYsmhvG2QgcbQwcA6lCH1grIy4W6PcBAO',
+      accessKeyId: ak,
+      secretAccessKey: sk,
       region,
       s3ForcePathStyle: true,
-      endpoint: new AWS.Endpoint('http://172.17.12.10:9091')
+      endpoint: new AWS.Endpoint(endpoint)
       // sessionToken: credential.Credentials.SessionToken
     })
 
@@ -224,7 +227,6 @@ export default class AwsS3Fs {
       }, []) : []
     }
 
-    console.log(this.s3)
     const { CommonPrefixes, Contents } = await this.s3.listObjectsV2({
       Bucket,
       Prefix: `${dirPath}`,
