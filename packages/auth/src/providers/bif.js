@@ -13,19 +13,23 @@ class BifProvider extends BaseProvider {
 
 	get awsConfig() {
 		return {
-			region: window.process.env.REACT_APP_AWS_REGION,
-			roleArn: window.process.env.REACT_APP_AWS_ROLE_ARN,
-			roleSessionName: window.process.env.REACT_APP_AWS_ROLE_SESSION_NAME,
+			region: __process.env.REACT_APP_AWS_REGION,
+			roleArn: __process.env.REACT_APP_AWS_ROLE_ARN,
+			roleSessionName: __process.env.REACT_APP_AWS_ROLE_SESSION_NAME,
 		}
 	}
 
 	async request() {
-		const { networkManager } = require('@obsidians/network')
-		if (networkManager.browserExtension) {
-			return await networkManager.browserExtension.auth();
-		} else if (networkManager.Sdk) {
-			networkManager.browserExtension = new networkManager.Sdk.BrowserExtension(networkManager, window.bifWallet)
-			return await networkManager.browserExtension.auth();
+		try {
+			const { networkManager } = require('@obsidians/network')
+			if (networkManager.browserExtension) {
+				return await networkManager.browserExtension.auth();
+			} else if (networkManager.Sdk) {
+				networkManager.browserExtension = new networkManager.Sdk.BrowserExtension(networkManager, window.bifWallet)
+				return await networkManager.browserExtension.auth();
+			}
+		} catch (error) {
+			throw new Error(error)
 		}
 	}
 
@@ -74,6 +78,7 @@ class BifProvider extends BaseProvider {
 					'Content-Type': 'application/json'
 				},
 				credentials: 'include',
+				// withCredentials: true,
 				method,
 				body,
 			})

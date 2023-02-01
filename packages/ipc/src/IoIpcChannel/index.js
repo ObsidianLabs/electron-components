@@ -34,7 +34,7 @@ export default class IoIpcChannel {
 
   async createSocket () {
     const token = await Auth.getToken()
-    const { REACT_APP_IPC_SERVER_URL } = window.process.env
+    const { REACT_APP_IPC_SERVER_URL } = __process.env
     const socketUrl = `${REACT_APP_IPC_SERVER_URL.replace('http', 'ws')}/${this.channel}`
 
     return new Promise((resolve, reject) => {

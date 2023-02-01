@@ -29,7 +29,7 @@ const TutorialModal = forwardRef(({header, description, nextPage}, ref) => {
   }
 
   const toGuidePage = () => {
-    window.open(nextPage, '_blank')
+    window.open(nextPage, '_blank', 'noopener,noreferrer,resizable')
     closeModal()
   }
 

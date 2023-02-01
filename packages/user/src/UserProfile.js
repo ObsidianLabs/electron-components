@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-
+import notification from '@obsidians/notification'
 import {
   Media,
   Button,
@@ -80,7 +80,14 @@ class UserProfile extends PureComponent {
         color='primary'
         size='sm'
         key={`user-profile-login-${provider}`}
-        onClick={() => Auth.login(this.props.history, provider)}
+        onClick={
+          async () => {
+            try {
+              await Auth.login(this.props.history, provider)
+            } catch (error) {
+              notification.error('操作失败', null, null, null, <p>请先安装星火链插件钱包，<a href='https://bitfactory.cn/download/XinghuoKey-extension.zip' target='_blank'>点击下载</a></p>)
+            }
+          }}
       >
         <i key='sign-in-${provider}' className='fas fa-sign-in mr-2' />{providers.length > 1 ? `${t('header.title.login')} ${provider}` : t('header.title.login')}
       </Button>

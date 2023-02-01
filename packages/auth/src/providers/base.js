@@ -17,7 +17,7 @@ class BaseProvider {
   }
 
   get serverUrl() {
-    return window.process.env.REACT_APP_OAUTH_SERVER_URL
+    return __process.env.REACT_APP_OAUTH_SERVER_URL
   }
 
   get providerUrl() {

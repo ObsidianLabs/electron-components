@@ -55,7 +55,7 @@ export default class WebFileOps extends FileOps {
   }
 
   openLink (href) {
-    window.open(href, '_blank')
+    window.open(href, '_blank', 'noopener,noreferrer,resizable')
   }
 
   openInTerminal (filePath) {

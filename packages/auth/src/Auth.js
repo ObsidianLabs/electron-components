@@ -18,21 +18,25 @@ export default {
   },
 
   async login(history, provider) {
-    this.history = history
-    this.provider = providers[provider] || this.provider
-    if (!this.provider) {
-      this.redirect()
-      return
+    try {
+      this.history = history
+      this.provider = providers[provider] || this.provider
+      if (!this.provider) {
+        this.redirect()
+        return
+      }
+  
+      const code = await this.provider.request()
+      if (!code) {
+        return
+      }
+  
+      await this.grant(code)
+  
+      await this.provider.done(history)
+    } catch (error) {
+      throw new Error(error)
     }
-
-    const code = await this.provider.request()
-    if (!code) {
-      return
-    }
-
-    await this.grant(code)
-
-    await this.provider.done(history)
   },
 
   async callback({ location, history, provider: providerName }) {

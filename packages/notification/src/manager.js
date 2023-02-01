@@ -1,5 +1,5 @@
 class Notification {
-  constructor (ref, { title, message, level = 'success', autoDismiss = 2, action = undefined }) {
+  constructor (ref, { title, message, level = 'success', autoDismiss = 2, action = undefined, children = null }) {
     this.ref = ref
     if (this.ref) {
       setTimeout(() => {
@@ -10,7 +10,8 @@ class Notification {
           position: 'tc',
           autoDismiss,
           dismissible: false,
-          action
+          action,
+          children
         })
       }, 0)
     }
@@ -50,8 +51,8 @@ class NotificationManager {
     return this.displayNotification({ title, message, level: 'success', autoDismiss, actions })
   }
 
-  error (title, message, autoDismiss = 4, actions = undefined) {
-    return this.displayNotification({ title, message, level: 'error', autoDismiss, actions })
+  error (title, message, autoDismiss = 4, actions = undefined, children) {
+    return this.displayNotification({ title, message, level: 'error', autoDismiss, actions, children })
   }
 
   warning (title, message, autoDismiss = 2, actions = undefined) {

@@ -17,7 +17,7 @@ class KeypairButton extends PureComponent {
     keypairManager.loadAndUpdateKeypairs()
   }
 
-  openModal = () => {
+  openModal = async () => {
     if(!window.bifSDK) {
       notification.error('请先安装星火链插件钱包')
       return
@@ -26,8 +26,16 @@ class KeypairButton extends PureComponent {
     const profile = profileState.toJS()
     const providers = process.env.LOGIN_PROVIDERS ? process.env.LOGIN_PROVIDERS.split(',') : ['github']
     if (!profile.userId && platform.isWeb) {
-      return Auth.login(this.props.history, providers[0])
+      try {
+        await Auth.login(this.props.history, providers[0])
+      } catch(error) {
+        console.log(error)
+        notification.error('操作失败', null, null, null, <p>请先安装星火链插件钱包，<a href='https://bitfactory.cn/download/XinghuoKey-extension.zip' target='_blank'>点击下载</a></p>)
+        return
+      }
     }
+    
+    await keypairManager.loadAndUpdateKeypairs()
 
     let chain
     if (this.props.chains) {

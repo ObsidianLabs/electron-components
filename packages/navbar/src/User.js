@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
+import notification from '@obsidians/notification'
 
 import {
   ButtonDropdown,
@@ -158,7 +159,13 @@ class User extends Component {
     return providers.map(provider => (
       <DropdownItem
         key={`login-${provider}`}
-        onClick={() => Auth.login(this.props.history, provider)}
+        onClick={async () => {
+          try {
+            await Auth.login(this.props.history, provider)
+          } catch(err) {
+            notification.error('操作失败', null, null, null, <p>请先安装星火链插件钱包，<a href='https://bitfactory.cn/download/XinghuoKey-extension.zip' target='_blank'>点击下载</a></p>)
+          }
+        }}
       >
         <i className='fas fa-sign-in w-3 mr-2' />{ providers.length > 1 ? `${t('header.title.login')} ${provider}` : t('header.title.login') }
       </DropdownItem>

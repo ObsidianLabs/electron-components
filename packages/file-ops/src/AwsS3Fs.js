@@ -4,11 +4,11 @@ import path from 'path-browserify'
 import { AWSS3Region, AWSBucket } from './config.json'
 
 const notValid = (oldValue, newVal) => oldValue === newVal
-const region = window.process.env.REACT_APP_AWS_REGION || AWSS3Region
-const Bucket = window.process.env.REACT_APP_AWS_BUCKET || AWSBucket
-const endpoint = window.process.env.REACT_APP_AWS_ENDPOINT
-const ak = window.process.env.REACT_APP_AWS_AK
-const sk = window.process.env.REACT_APP_AWS_SK
+const region = __process.env.REACT_APP_AWS_REGION || AWSS3Region
+const Bucket = __process.env.REACT_APP_AWS_BUCKET || AWSBucket
+const endpoint = __process.env.REACT_APP_AWS_ENDPOINT
+const ak = __process.env.REACT_APP_AWS_AK
+const sk = __process.env.REACT_APP_AWS_SK
 
 export default class AwsS3Fs {
   constructor() {

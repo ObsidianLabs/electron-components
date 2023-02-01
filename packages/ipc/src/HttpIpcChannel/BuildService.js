@@ -2,8 +2,8 @@ import AWS from 'aws-sdk/global'
 import CloudWatchLogs from 'aws-sdk/clients/cloudwatchlogs'
 import io from 'socket.io-client'
 
-const PROJECT = process.env.PROJECT
-const region =window.process.env.REACT_APP_AWS_REGION
+const PROJECT = __process.env.PROJECT
+const region = __process.env.REACT_APP_AWS_REGION
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
 export default class BuildService {
