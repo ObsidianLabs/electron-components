@@ -64,10 +64,11 @@ class User extends Component {
       ENABLE_AUTH,
       PROJECT_NAME,
       PROJECT_WEB_URL,
-      PROJECT_DESKTOP_URL,
       PROJECT_GITHUB_REPO,
       REACT_APP_HELP_PAGE
     } = process.env
+
+    const PROJECT_DESKTOP_URL = __process.env.PROJECT_DESKTOP_URL
   
     const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
     let linkToOtherPlatformItem = []
@@ -83,7 +84,7 @@ class User extends Component {
     } else if (PROJECT_DESKTOP_URL) {
       linkToOtherPlatformItem = [
         <DropdownItem key='divider2' divider />,
-        <DropdownItem key='project-desktop-url' onClick={() => fileOps.current.openLink(`${PROJECT_DESKTOP_URL}/${platform.os}`)}>
+        <DropdownItem key='project-desktop-url' onClick={() => fileOps.current.openLink(`${PROJECT_DESKTOP_URL}`)}>
           <i className='fas fa-download w-3 mr-2' />{t('header.title.desktopApp')}
         </DropdownItem>
       ]
