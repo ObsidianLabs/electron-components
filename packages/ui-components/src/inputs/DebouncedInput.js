@@ -52,7 +52,7 @@ export default class DebouncedInput extends PureComponent {
   }
 
   onChange = event => {
-    this.setState({ value: event.target.value })
+    this.setState({ value: this.props.preventWhiteSpace ? event.target.value.trim() :event.target.value })
     this.handleDebounced()
   }
 
@@ -70,7 +70,8 @@ export default class DebouncedInput extends PureComponent {
   }
 
   render () {
-    const { size, inputGroupClassName, addon, append, onClickAppend, feedback, invalid, children, height, ...props } = this.props
+    const { size, inputGroupClassName, addon, append, onClickAppend, feedback, preventWhiteSpace, invalid, children, height, ...props } = this.props
+
     return <>
       <InputGroup
         size={size}

@@ -165,7 +165,7 @@ export default class KeypairManagerModal extends PureComponent {
       if (chain) {
         chainName = this.props.chains.find(c => c.key === chain)?.text
       }
-      let placeholder = `No ${keypairText.toLowerCase()}s`
+      let placeholder = `暂无数据`
       if (chainName) {
         placeholder += ` for ${chainName.toLowerCase()}`
       }

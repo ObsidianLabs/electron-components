@@ -15,7 +15,7 @@ export default function (props) {
     subtitle = selected
   } else if (!selected) {
     iconComponent = <span key='no-selected' className={iconClassName}><i className={`w-100 h-100 ${noneIcon}`} /></span>
-    subtitle = `(${t('header.title.none')})`
+    subtitle = `(${t('header.title.noSelected')})`
   } else {
     const projectStudioName = process.env.PROJECT_NAME.replace(/\s+/g, '')
     if (projectStudioName == 'BlackIDE' && title == 'Network' && logoIcon) {

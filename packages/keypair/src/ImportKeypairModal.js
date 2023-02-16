@@ -41,8 +41,8 @@ export default class ImportKeypairModal extends PureComponent {
   }
 
   onChange = secret => {
-    this.setState({ secret })
-    this.refreshKeypair(secret, this.state.chain)
+    this.setState({ secret: secret.trim() })
+    this.refreshKeypair(secret.trim(), this.state.chain)
   }
 
   setChain = chain => {
@@ -144,13 +144,14 @@ export default class ImportKeypairModal extends PureComponent {
           label='密钥名称'
           maxLength='200'
           placeholder={t('keypair.createPlaceholder')}
-          onChange={name => this.setState({ name })}
+          onChange={name => this.setState({ name: name.trim() })}
         />
         {this.renderChainOptions()}
         <DebouncedFormGroup
           label={t('keypair.inportLabel', {secretName: this.props.secretName.toLowerCase()})}
           maxLength='300'
-          value={secret}
+          value={secret.trim()}
+          preventWhiteSpace
           onChange={this.onChange}
           feedback={feedback}
           valid={valid}

@@ -145,28 +145,20 @@ export default class CreateKeypairModal extends PureComponent {
       >
         <DebouncedFormGroup
           ref={this.input}
-          label='Name'
+          label='密钥名称'
           maxLength='200'
           placeholder={t('keypair.createPlaceholder')}
           onChange={name => this.setState({ name })}
         />
         {this.renderChainOptions()}
-        <Label>Keypair info</Label>
-        <div className='row align-items-center'>
-          <div className='col-2'>
-            <Badge pill color='info' className='ml-1'>Address</Badge>
-          </div>
-          <div className='col-10 pl-0'>
+        <Label>密钥对信息</Label>
+        <div className='align-items-center'>
+            <Badge pill color='info' className='mr-2'>地址</Badge>
             <code className='user-select small'>{address}</code>
-          </div>
         </div>
-        <div className='row align-items-center'>
-          <div className='col-2'>
-            <Badge pill color='success' className='ml-1'>{secretName}</Badge>
-          </div>
-          <div className='col-10 pl-0'>
+        <div className='align-items-center'>
+            <Badge pill color='success' className='mr-2'>私钥</Badge>
             <code className='user-select small'>{secret}</code>
-          </div>
         </div>
       </Modal>
     )

@@ -7,7 +7,7 @@ import {
 
 import { Link } from 'react-router-dom'
 
-import { ProjectPath, ProjectManager, DeleteProjectModal } from '@obsidians/workspace'
+import { ProjectPath, ProjectManager, DeleteProjectModal, actions } from '@obsidians/workspace'
 
 export default class ProjectList extends PureComponent {
   constructor (props) {
@@ -21,9 +21,13 @@ export default class ProjectList extends PureComponent {
 
   removeProject = async (project, remote) => {
     let projectManager = null
-    if (remote) projectManager = new ProjectManager['Remote'](this, project.path)
-    await this.setState({ projectManager, project })
-    this.modal.current.openDeleteModal()
+    if (remote) {
+      projectManager = new ProjectManager['Remote'](this, project.path)
+      await this.setState({ projectManager, project })
+      this.modal.current.openDeleteModal()
+    } else {
+      await actions.removeProject(project)
+    }
   }
 
   renderProjectRow = (project, index) => {
@@ -63,6 +67,7 @@ export default class ProjectList extends PureComponent {
   }
 
   renderRightButton = project => {
+    console.log(1)
     return (
       <DeleteButton onConfirm={() => this.removeProject(project, project.remote)} />
     )

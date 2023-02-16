@@ -351,7 +351,7 @@ export default class Workspace extends Component {
             <ToolbarButton
               id='new'
               icon='fas fa-plus'
-              tooltip='New File'
+              tooltip='新建文件'
               readOnly={readOnly}
               onClick={() => this.openCreateFileModal()}
             />

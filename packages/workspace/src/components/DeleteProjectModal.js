@@ -29,7 +29,7 @@ export default class DeleteProjectModal extends PureComponent {
 		console.log(projectManager)
 		if (projectManager) {
 			const projectName = project?.name ? project.name : projectManager.projectName
-			const inputPlaceholder = `Please type ${platform.isWeb ? projectManager.projectRoot : projectName} to confirm`
+			const inputPlaceholder = `请输入 ${platform.isWeb ? projectManager.projectRoot : projectName} 以确认`
 			await this.setState({ projectRoot: projectManager.projectRoot, projectName, deleting: false, inputPlaceholder, projectManager })
 			setTimeout(() => this.input.current?.focus(), 100)
 			this.modal.current?.openModal()
@@ -67,7 +67,7 @@ export default class DeleteProjectModal extends PureComponent {
 		return (
 			<Modal
 				ref={this.modal}
-				title={this.props.project?.remote ? 'Delete Project' : 'Remove Project'}
+				title={this.props.project?.remote ? '删除项目' : '移除项目'}
 				textConfirm={this.props.project?.remote ? t('delete') : t('remove')}
 				colorConfirm='danger'
 				pending={deleting && t('deleting')}

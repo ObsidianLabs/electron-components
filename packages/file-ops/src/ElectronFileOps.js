@@ -2,6 +2,8 @@
 import { IpcChannel } from '@obsidians/ipc'
 import FileOps from './FileOps'
 const path = require('path')
+const iconv = require('iconv-lite')
+const os = require('os')
 
 export default class ElectronFileOps extends FileOps {
   constructor () {
@@ -46,7 +48,9 @@ export default class ElectronFileOps extends FileOps {
     })
 
     if (result && result.filePaths && result.filePaths[0]) {
-      const filePath = result.filePaths[0]
+      let filePath = result.filePaths[0]
+      const winPath = iconv.encode(filePath, "ascii").toString("binary")
+      filePath = os.type() === 'Windows_NT' ? winPath : filePath
       return { key: filePath, path: filePath }
     } else {
       throw new Error()
@@ -64,9 +68,11 @@ export default class ElectronFileOps extends FileOps {
       properties: ['openDirectory', 'createDirectory']
     })
 
+    
     if (result && result.filePaths && result.filePaths[0]) {
       const filePath = result.filePaths[0]
-      return filePath
+      const winPath = iconv.encode(filePath, "ascii").toString("binary")
+      return os.type() === 'Windows_NT' ? winPath : filePath
     } else {
       throw new Error()
     }

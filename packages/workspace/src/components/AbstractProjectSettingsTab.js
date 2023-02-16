@@ -31,7 +31,7 @@ class DeleteButton extends PureComponent {
 
   openDeleteProjectModal = () => {
     const { projectManager } = this.props.context
-    const inputPlaceholder = `Please type ${platform.isWeb ? projectManager.projectRoot : projectManager.projectName} to confirm`
+    const inputPlaceholder = `请输入 ${platform.isWeb ? projectManager.projectRoot : projectManager.projectName} 以确认`
     this.setState({ projectRoot: projectManager.projectRoot, projectName: projectManager.projectName, deleting: false, inputPlaceholder, projectManager })
     setTimeout(() => this.input.current?.focus(), 100)
     this.modal.current.openModal()
