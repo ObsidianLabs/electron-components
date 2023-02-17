@@ -52,7 +52,7 @@ export default class DebouncedInput extends PureComponent {
   }
 
   onChange = event => {
-    this.setState({ value: this.props.preventWhiteSpace ? event.target.value.trim() :event.target.value })
+    this.setState({ value: this.props.preventWhiteSpace ? event.target.value.trim().replaceAll(' ', '') :event.target.value })
     this.handleDebounced()
   }
 
