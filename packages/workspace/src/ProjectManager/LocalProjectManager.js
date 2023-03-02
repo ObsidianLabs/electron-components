@@ -96,7 +96,7 @@ export default class LocalProjectManager extends BaseProjectManager {
 
   async checkSettings() {
     if (!this.project || !this.projectRoot) {
-      notification.error('No Project', 'Please open a project first.')
+      notification.error('无项目', '请先打开一个项目')
       return
     }
     

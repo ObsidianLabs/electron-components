@@ -216,7 +216,7 @@ export default class Tabs extends PureComponent {
     } else {
       content = (
         <Screen>
-          <h4 className='display-4'>No Opened Tab</h4>
+          <h4 className='display-4'>空标签页</h4>
           <p></p>
         </Screen>
       )

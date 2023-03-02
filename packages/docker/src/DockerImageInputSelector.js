@@ -56,17 +56,17 @@ export default class DockerImageInputSelector extends PureComponent {
   render () {
     let { versions } = this.state
 
-    let placeholder = `Select a version of ${this.props.noneName || this.imageName}`
+    let placeholder = `选择 ${this.props.noneName || this.imageName} 版本`
     if (!versions.length) {
-      placeholder = `(No ${this.props.noneName || this.imageName} installed)`
+      placeholder = `(无 ${this.props.noneName || this.imageName} 加载)`
       versions.push({ id: 'none', display: placeholder, disabled: true })
     }
 
     let group
     if (platform.isDesktop && !this.props.noManager) {
-      group = <><i className='fas fa-download mr-1' />Installed</>
+      group = <><i className='fas fa-download mr-1' />已加载</>
     } else {
-      group = <><i className='fas fa-download mr-1' />Versions</>
+      group = <><i className='fas fa-download mr-1' />版本</>
     }
     let options = [{
       group,

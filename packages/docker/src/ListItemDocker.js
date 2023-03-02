@@ -92,16 +92,16 @@ export default class ListItemDocker extends PureComponent {
             </Button>
           )
         } else {
-          return <Button color='primary' onClick={this.startDocker}>Start Docker</Button>
+          return <Button color='primary' onClick={this.startDocker}>启动 Docker</Button>
         }
       case 'STARTING':
         return (
           <Button color='primary' disabled>
-            <span><i className='fas fa-spin fa-spinner mr-1' /></span>Starting Docker
+            <span><i className='fas fa-spin fa-spinner mr-1' /></span>Docker 启动中...
           </Button>
         )
       default:
-        return <Button color='secondary'>Started</Button>
+        return <Button color='secondary'>已启动</Button>
     }
   }
   

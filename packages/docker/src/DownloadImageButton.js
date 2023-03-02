@@ -75,7 +75,7 @@ export default class DownloadImageButton extends PureComponent {
     }
 
     if (!versions.length) {
-      return <DropdownItem disabled>(None)</DropdownItem>
+      return <DropdownItem disabled>无</DropdownItem>
     }
 
     return versions.map(({ name }) => (

@@ -13,7 +13,7 @@ export default function Dropdown (props) {
 
   let dropdownItems = null
   if (!props.items || !props.items.length) {
-    dropdownItems = <DropdownItem disabled>(None)</DropdownItem>
+    dropdownItems = <DropdownItem disabled>无</DropdownItem>
   } else {
     dropdownItems = props.items.map(item => (
       <DropdownItem

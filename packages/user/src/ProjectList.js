@@ -95,7 +95,7 @@ export default class ProjectList extends PureComponent {
         <table className='table table-hover table-striped'>
           <tbody>
             <tr key='no-project'>
-              <td align='middle' className='text-muted'>(No Project)</td>
+              <td align='middle' className='text-muted'>暂无数据</td>
             </tr>
           </tbody>
         </table>

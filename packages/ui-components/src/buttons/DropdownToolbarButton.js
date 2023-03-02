@@ -29,7 +29,7 @@ export default function DropdownToolbarButton ({
       <DropdownItem key={opt.key} onClick={opt.onClick}>{opt.key}</DropdownItem>
     ))
   } else {
-    dropdownItems = <DropdownItem disabled>(None)</DropdownItem>
+    dropdownItems = <DropdownItem disabled>无</DropdownItem>
   }
 
   return (

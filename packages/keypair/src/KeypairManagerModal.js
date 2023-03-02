@@ -189,7 +189,7 @@ export default class KeypairManagerModal extends PureComponent {
         <td>
           <div className='d-flex' id={`tooltip-${validAddress}`}>
             <span className='text-truncate'>
-              {keypair.name ? keypair.name : <span className='text-muted'>(None)</span>}
+              {keypair.name ? keypair.name : <span className='text-muted'>无</span>}
             </span>
               <UncontrolledTooltip
                   target={`tooltip-${validAddress}`}

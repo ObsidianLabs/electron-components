@@ -6,7 +6,7 @@ export default class Settings extends Component {
       <div className='custom-tab bg2'>
         <div className='jumbotron bg-transparent text-body'>
           <div className='container'>
-            <h1>Project Settings</h1>
+            <h2>设置</h2>
           </div>
         </div>
       </div>

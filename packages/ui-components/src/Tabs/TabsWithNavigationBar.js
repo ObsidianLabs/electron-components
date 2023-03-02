@@ -70,7 +70,7 @@ export default class TabsWithNavigationBar extends PureComponent {
       return text
     }
     if (!value) {
-      return 'New Tab'
+      return '新标签'
     }
     return this.props.getTabText({ text, value, temp })
   }

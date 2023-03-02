@@ -121,7 +121,7 @@ export default class KeypairSelector extends PureComponent {
           style={{ maxWidth: 240 }}
         >
           <span className='d-inline-block w-3'>{iconComponent}</span>
-          {selectedName || '(none)'}
+          {selectedName || '无'}
         </DropdownToggle>
         <DropdownMenu right className={classnames({ 'dropdown-menu-sm': size === 'sm' })}>
           <DropdownItem header>

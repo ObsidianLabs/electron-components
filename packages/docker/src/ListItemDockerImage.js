@@ -79,7 +79,7 @@ export default class ListItemDockerImage extends PureComponent {
       case '':
         return null
       case 'NO_DOCKER':
-        return <Button color='secondary'>Need Docker</Button>
+        return <Button color='secondary'>未检测到 Docker</Button>
       case 'NONE':
         return (
           <DownloadImageButton
