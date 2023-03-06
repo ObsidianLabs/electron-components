@@ -11,7 +11,7 @@ import {
 import keypairManager from './keypairManager'
 import KeypairManagerModal from './KeypairManagerModal'
 export default class KeypairSelector extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       loading: true,

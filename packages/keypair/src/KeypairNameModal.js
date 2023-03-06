@@ -53,7 +53,7 @@ export default class KeypairNameModal extends PureComponent {
       >
         <DebouncedFormGroup
           ref={this.input}
-          label='Name'
+          label='密钥名称'
           maxLength='200'
           placeholder={t('keypair.createPlaceholder')}
           value={this.state.name}

@@ -194,7 +194,7 @@ export default class KeypairManagerModal extends PureComponent {
               <UncontrolledTooltip
                   target={`tooltip-${validAddress}`}
               >
-                <p>{keypair.name}</p>
+                <p>点击修改密钥名称</p>
               </UncontrolledTooltip>
             {
               !this.props.modifyNameDisabled &&
@@ -215,7 +215,7 @@ export default class KeypairManagerModal extends PureComponent {
               color='primary'
               className='ml-1 hover-show'
               icon='far fa-eye'
-              textConfirm={`Click again to reveal ${this.props.secretName.toLowerCase()}`}
+              textConfirm={`再次点击显示密钥`}
               onConfirm={() => this.revealSecret(keypair)}
             />
           </div>

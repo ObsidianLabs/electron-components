@@ -72,8 +72,8 @@ export default class CreateFileOrFolderModals extends PureComponent {
       >
         <DebouncedFormGroup
           ref={this.input}
-          label={<div>Create a new {this.state.type} in <kbd>{this.state.baseName}</kbd></div>}
-          placeholder={this.state.type === 'file' ? 'File name' : 'Folder name'}
+          label={<div>在<kbd>{this.state.baseName}</kbd>创建一个{this.state.type === 'file' ? '文件' : '文件夹'}</div>}
+          placeholder={this.state.type === 'file' ? '文件名称' : '文件夹名称'}
           maxLength='50'
           value={this.state.name}
           onChange={name => this.setState({ name })}

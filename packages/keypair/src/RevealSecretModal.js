@@ -33,7 +33,7 @@ export default class RevealSecretModal extends PureComponent {
     return (
       <Modal
         ref={this.modal}
-        title={`View ${secretName}`}
+        title={`密钥对信息`}
         textCancel='Close'
       >
         <div className='row align-items-center'>

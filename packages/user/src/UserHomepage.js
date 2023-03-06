@@ -223,7 +223,7 @@ class UserHomepage extends PureComponent {
       if (loading) {
         return <LoadingScreen />
       } else if (notfound) {
-        return <CenterScreen>User <kbd>{user}</kbd> Not Found</CenterScreen>
+        return <CenterScreen>用户 <kbd>{user}</kbd> 未找到</CenterScreen>
       }
     }
 
