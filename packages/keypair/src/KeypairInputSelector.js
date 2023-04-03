@@ -113,18 +113,18 @@ export default class KeypairInputSelector extends PureComponent {
     if (!placeholder) {
       if (options.length || extraOptions.length) {
         if (editable) {
-          placeholder = 'Select or type an address'
+          placeholder = '选择或者输入一个地址'
         } else {
-          placeholder = 'Select an address'
+          placeholder = '选择一个地址'
         }
       } else {
-        placeholder = '(No keys in keypair manager)'
+        placeholder = '无密钥'
       }
     }
 
     const onClick = () => {
       if (!editable && !options.length && !extraOptions.length) {
-        notification.error('No Available Keypiar', 'Please create or import a keypair in the keypair manager first.')
+        notification.error('无可用密钥对', '请先创建或者导入密钥对')
       }
     }
 

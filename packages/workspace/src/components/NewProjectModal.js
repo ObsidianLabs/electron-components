@@ -176,7 +176,7 @@ export default class NewProjectModal extends PureComponent {
       <DropdownInput
         label={t('project.template')}
         options={templates.filter(t => !remote || !t.local)}
-        placeholder='(Please select a template)'
+        placeholder='请选择一个模版'
         value={template}
         onChange={(template, group) => this.setState({ template, group })}
       />

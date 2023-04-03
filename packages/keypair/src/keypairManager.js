@@ -112,7 +112,7 @@ class KeypairManager {
   async getKeypair (address) {
     const keypair = await this.channel.invoke('get', address)
     if (!keypair) {
-      throw new Error(`No keypair for <b>${address}</b>`)
+      throw new Error(`未找到<b>${address}</b>的密钥对`)
     }
     return keypair
   }

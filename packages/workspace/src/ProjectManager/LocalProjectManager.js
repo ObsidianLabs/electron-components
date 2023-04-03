@@ -124,16 +124,16 @@ export default class LocalProjectManager extends BaseProjectManager {
   async createNewFile(basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isFile(filePath)) {
-      throw new Error(`File <b>${filePath}</b> already exists.`)
+      throw new Error(`文件<b>${filePath}</b>已存在`)
     }
 
     try {
       await this.ensureFile(filePath)
     } catch (e) {
       if (e.code === 'EISDIR') {
-        throw new Error(`Folder <b>${filePath}</b> already exists.`)
+        throw new Error(`文件夹<b>${filePath}</b>已存在`)
       } else {
-        throw new Error(`Fail to create the file <b>${filePath}</b>.`)
+        throw new Error(`创建<b>${filePath}</b>失败`)
       }
     }
     return filePath
@@ -142,16 +142,16 @@ export default class LocalProjectManager extends BaseProjectManager {
   async createNewFolder(basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
     if (await fileOps.current.isDirectory(folderPath)) {
-      throw new Error(`Folder <b>${folderPath}</b> already exists.`)
+      throw new Error(`文件夹<b>${folderPath}</b>已存在`)
     }
 
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
       if (e.code === 'EISDIR') {
-        throw new Error(`File <b>${folderPath}</b> already exists.`)
+        throw new Error(`文件<b>${folderPath}</b>已存在`)
       } else {
-        throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
+        throw new Error(`创建文件夹<b>${folderPath}</b>失败`)
       }
     }
   }

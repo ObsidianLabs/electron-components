@@ -70,7 +70,7 @@ export default class ListItemDocker extends PureComponent {
   renderSubtitle = () => {
     switch (this.state.docker) {
       case '':
-        return <span>Loading...</span>
+        return <span>加载中...</span>
       case 'NONE':
         return <span>Docker is required to start a local node.</span>
       default:

@@ -82,7 +82,7 @@ export default class ProjectList extends PureComponent {
           <tbody>
             <tr key='no-project'>
               <td key='loading' align='middle' className='text-muted'>
-                <i className='fas fa-spin fa-spinner mr-1' />Loading...
+                <i className='fas fa-spin fa-spinner mr-1' />加载中...
               </td>
             </tr>
           </tbody>

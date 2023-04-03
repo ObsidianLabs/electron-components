@@ -98,7 +98,7 @@ class UserProfile extends PureComponent {
     if (desc) {
       return desc
     }
-    return <span className='text-muted'>(No description)</span>
+    return null
   }
 
   render() {

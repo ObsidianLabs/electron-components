@@ -69,7 +69,7 @@ export default class DownloadImageButton extends PureComponent {
     if (loading) {
       return (
         <DropdownItem key='icon-loading-versions'>
-          <i className='fas fa-spin fa-spinner mr-1' />Loading...
+          <i className='fas fa-spin fa-spinner mr-1' />加载中...
         </DropdownItem>
       )
     }

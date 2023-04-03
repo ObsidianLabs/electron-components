@@ -64,13 +64,13 @@ export default class ListItemDockerImage extends PureComponent {
   renderSubtitle = subtitle => {
     switch (this.state.status) {
       case '':
-        return <span>Loading...</span>
+        return <span>加载中...</span>
       case 'NO_DOCKER':
       case 'NONE':
       case 'INSTALLING':
         return <span>{subtitle}</span>
       default:
-        return <span>Installed: {this.state.versions.map(v => <Badge key={v} className='mr-1'>{v}</Badge>)}</span>
+        return <span>已安装: {this.state.versions.map(v => <Badge key={v} className='mr-1'>{v}</Badge>)}</span>
     }
   }
 
@@ -97,7 +97,7 @@ export default class ListItemDockerImage extends PureComponent {
           </Button>
         )
       default:
-        return <Button color='secondary'>Installed</Button>
+        return <Button color='secondary'>已安装</Button>
     }
   }
 

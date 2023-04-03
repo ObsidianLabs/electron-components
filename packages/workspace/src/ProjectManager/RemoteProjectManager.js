@@ -173,13 +173,13 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async createNewFile (basePath, name) {
     const filePath = this.path.join(basePath, name)
     if (await fileOps.web.isFile(filePath)) {
-      throw new Error(`File <b>${this.pathInProject(filePath)}</b> already exists.`)
+      throw new Error(`文件<b>${this.pathInProject(filePath)}</b>已存在`)
     }
 
     try {
       await this.ensureFile(filePath)
     } catch (e) {
-      throw new Error(`Fail to create the file <b>${this.pathInProject(filePath)}</b>.`)
+      throw new Error(`创建文件<b>${this.pathInProject(filePath)}</b>失败`)
     }
 
     await this.refreshDirectory(basePath)

@@ -40,7 +40,7 @@ export default class DockerImageInputSelector extends PureComponent {
 
   badgeProps = selected => {
     if (this.state.loading) {
-      return { badge: <span key='loading'><i className='fas fa-spin fa-spinner mr-1' />Loading...</span> }
+      return { badge: <span key='loading'><i className='fas fa-spin fa-spinner mr-1' />加载中...</span> }
     }
     if (!selected) {
       if (this.state.versions.length) {
