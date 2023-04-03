@@ -88,9 +88,9 @@ export default class DockerImageSelector extends PureComponent {
 
     if (!HeaderDockerItems) {
       if (platform.isDesktop && !noManager) {
-        HeaderDockerItems = <><i className='far fa-desktop mr-2' />Installed</>
+        HeaderDockerItems = <><i className='far fa-desktop mr-2' />已安装</>
       } else {
-        HeaderDockerItems = <><i className='fas fa-code-merge mr-1' />Versions</>
+        HeaderDockerItems = <><i className='fas fa-code-merge mr-1' />版本</>
       }
     }
 
