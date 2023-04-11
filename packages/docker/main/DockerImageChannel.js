@@ -23,8 +23,8 @@ class DockerImageChannel extends IpcChannel {
   }
 
   async remoteVersions () {
-    const res = await this.fetch(`http://registry.hub.docker.com/v1/repositories/${this.imageName}/tags`)
-    return JSON.parse(res)
+    const res = await this.fetch(`https://registry.hub.docker.com/v2/repositories/${this.imageName}/tags`)
+    return JSON.parse(res).results
   }
 
   async any () {
