@@ -14,6 +14,11 @@
     "electron": "11.3.0",
     "electron-rebuild": "^2.3.5"
   },
+  "resolutions": {
+    "node-abi": "^3.5.0",
+    "node-sass": "npm:sass",
+    "rollup": "^2.68.0"
+  },
   "workspaces": [
     "packages/*"
   ]
