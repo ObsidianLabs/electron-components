@@ -2,17 +2,20 @@
   "name": "@obsidians/electron-components",
   "license": "GPL-3.0",
   "private": true,
+  "engines": {
+    "node": "16"
+  },
   "scripts": {
     "postinstall": "electron-rebuild",
     "build": "node init.js"
   },
   "dependencies": {
-    "keytar": "^7.4.0",
+    "keytar": "7.7.0",
     "node-pty": "0.10.0"
   },
   "devDependencies": {
-    "electron": "11.3.0",
-    "electron-rebuild": "^2.3.5"
+    "electron": "^16.0.2",
+    "electron-rebuild": "^3.2.5"
   },
   "resolutions": {
     "node-abi": "^3.5.0",
