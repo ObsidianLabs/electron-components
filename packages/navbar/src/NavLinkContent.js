@@ -2,7 +2,7 @@ import React from 'react'
 import { t } from '@obsidians/i18n'
 
 export default function (props) {
-  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-times' } = props
+  const { title, selected, icon, Icon, logoIcon, width, noneIcon = 'fas fa-file-contract' } = props
   let key = 'icon'
   if (icon) {
     key = `icon-${icon.replace(/\s/, '-')}`

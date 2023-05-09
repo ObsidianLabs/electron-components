@@ -38,19 +38,16 @@ class BifProvider extends BaseProvider {
 		if (!tokens) {
 			return {}
 		}
-		// const { token, awsToken } = tokens
 		const { token } = tokens
-		// const awsCredential = await this.fetchAwsCredential(awsToken)
-		// if (!awsCredential) {
-		// 	return {}
-		// }
-
 		const credentials = { token }
-		const profile = decode(token)
-
-		this.profile = profile
-		return {
-			credentials, profile
+		try {
+			const profile = decode(token)
+			this.profile = profile
+			return {
+				credentials, profile
+			}
+		} catch (e) {
+			return {}
 		}
 	}
 

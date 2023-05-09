@@ -60,7 +60,7 @@ export default class QueueButton extends PureComponent {
     // txsItems.push(<DropdownItem divider />)
     txsItems.unshift(
       <DropdownItem header key='header-txs'>
-        <i className='far fa-history mr-1' />{t('header.title.recent')}
+        <i className='far fa-clock mr-1' />{t('header.title.recent')}
       </DropdownItem>
     )
 
