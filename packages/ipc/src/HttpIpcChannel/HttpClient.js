@@ -91,7 +91,8 @@ export default class HttpClient {
       cmd,
       project: opt.cwd,
       image: opt.image,
-      language: opt.language
+      language: opt.language,
+      mainFile: opt.mainFile
     })
     const onData = data => this.ipc.trigger('data', data)
     const result = await this.build.start(onData)

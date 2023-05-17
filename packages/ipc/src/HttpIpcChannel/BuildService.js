@@ -9,6 +9,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms))
 export default class BuildService {
   constructor(client, opt = {}) {
     this.client = client
+    this.mainFile = opt.mainFile || ''
     this.image = opt.image || ''
     this.language = opt.language || ''
     this.cmd = opt.cmd || ''
@@ -37,7 +38,8 @@ export default class BuildService {
       const result = await this.client.queryApiPath(`${PROJECT}/project/${this.project}/build`, 'POST', {
         image: this.image,
         language: this.language,
-        cmd: this.cmd
+        cmd: this.cmd,
+        mainFile: this.mainFile
       })
       this.buildId = result._id
       this.onData = onData
