@@ -160,7 +160,7 @@ export default class NavigationBar extends PureComponent {
           className={classnames('d-flex flex-1 align-items-center navbar-input-wrapper ml-1', children ? 'mr-1' : 'mr-2')}
         >
           <div key={`address-icon-${this.state.value ? '' : 'none'}`} className='btn btn-sm text-secondary pr-1'>
-            <i className={this.state.value ? 'far fa-solid fa-location-pin ' : 'fas fa-location-dot'} />
+            <i className={this.state.value ? 'fas fa-location-pin' : 'fas fa-location-dot'} />
           </div>
           <Input
             innerRef={this.input}

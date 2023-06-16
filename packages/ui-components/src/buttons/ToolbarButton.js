@@ -21,7 +21,7 @@ export default function ToolbarButton ({
   readOnly
 }) {
   const childrenComponent = loading
-    ? <span key='loading'><i className='fas fa-spin fa-spinner' /></span>
+    ? <span key='loading'><i className='fa fa-spin fa-spinner' /></span>
     : (children || <span key='icon'><i className={icon} /></span>)
   const tooltipComponent = tooltip && (
     <UncontrolledTooltip trigger='hover' delay={0} placement={tooltipPlacement} target={`toolbar-btn-${id}`}>
