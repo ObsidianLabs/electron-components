@@ -151,7 +151,7 @@ export default {
         return
       }
   
-      await this.grant(code)
+      await this.grant(code, this.history)
     }
     // TODO: should invoke it when direct to the project page
     if (!this.provider){ 
