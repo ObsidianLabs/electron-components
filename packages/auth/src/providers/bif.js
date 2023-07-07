@@ -38,6 +38,11 @@ class BifProvider extends BaseProvider {
 
 	async grant(code, history) {
 		const tokens = await this.fetchTokens(code, history)
+
+		if (!tokens) {
+			return {}
+		}
+
 		const { token } = tokens
 		const credentials = { token }
 		try {

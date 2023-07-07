@@ -75,9 +75,8 @@ export default class CreateKeypairModal extends PureComponent {
 
     this.setState({ pending: true })
     await keypairManager.saveKeypair(name, keypair)
-    this.setState({ pending: false })
-
     this.modal.current.closeModal()
+    this.setState({ pending: false, name: '' })
     this.onResolve(true)
   }
 
