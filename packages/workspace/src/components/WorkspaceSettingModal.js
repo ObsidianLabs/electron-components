@@ -43,7 +43,6 @@ export default class WorkspaceSettingModal extends PureComponent {
       redux.dispatch('SETTING_WORKSPACE_PATH', projectRoot)
       this.setState({ projectRoot })
     } catch (e) {
-
     }
   }
 
@@ -77,7 +76,7 @@ export default class WorkspaceSettingModal extends PureComponent {
   render() {
 
     return (
-      <Modal ref={this.modal} title={t('project.setting')}>
+      <Modal ref={this.modal} title={t('project.setting')} textCancel={null}>
         {this.renderProjectPath()}
       </Modal>
     )

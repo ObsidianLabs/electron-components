@@ -91,7 +91,7 @@ export default class WorkspaceLoader extends PureComponent {
           <Button
             color='secondary'
             onClick={() => this.removeProject(projectRoot)}
-          >Remove</Button>
+          >移除项目</Button>
         </ProjectInvalid>
       )
     } else {
