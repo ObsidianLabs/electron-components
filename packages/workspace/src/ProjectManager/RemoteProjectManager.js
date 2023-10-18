@@ -207,7 +207,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
       throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
     }
 
-    // await this.refreshDirectory(basePath)
+    await this.refreshDirectory(basePath)
   }
 
   async rename (oldPath, name, options = {}) {
