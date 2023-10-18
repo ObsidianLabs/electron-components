@@ -8,6 +8,7 @@ import Auth from '@obsidians/auth'
 import { sortFile } from './helper'
 
 const projectChannel = new HttpIpcChannel('project')
+const customChannel = new HttpIpcChannel('custom')
 
 export default class RemoteProjectManager extends BaseProjectManager {
   static async createProject (options, stage = '') {
@@ -44,12 +45,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async prepareProject () {
     let project
+
     try {
       project = await projectChannel.invoke('get', this.projectRoot)
     } catch (e) {
       return { error: e.message }
     }
-
     this.prefix = project.public ? 'public' : 'private'
     this.projectName = project.name
     this.userId = project.userId
@@ -85,11 +86,13 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async listFolder (folderPath) {
-    return await fileOps.web.listFolder(folderPath)
+    return await customChannel.invoke('post', 'file/list', {dirPath: folderPath})
+    // return await fileOps.web.listFolder(folderPath)
   }
 
   async loadRootDirectory() {
-    const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
+    const fileRes = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
+    const result = fileRes.files || []
     if (this.isFirstLoad) {
       this.isFirstLoad = false
       const isHasFileREADME = result.length === 0 ? false : result.find(item => item.name === 'README.md')
@@ -112,7 +115,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async loadDirectory(node) {
     const result = await this.listFolder(node.path)
-    const rawData = result.map(item => ({
+    const rawData = result?.files?.map(item => ({
       ...item,
       pathInProject: this.pathInProject(item.path)
     }))
@@ -148,20 +151,28 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async isFile (filePath) {
-    return await fileOps.web.isFile(filePath)
+    const res = await customChannel.invoke('post', 'file/stat', {dirPath: filePath})
+    return res.isFile
+    // return await fileOps.web.isFile(filePath)
   }
 
   async ensureFile (filePath) {
-    return await fileOps.web.fs.ensureFile(filePath)
+    await customChannel.invoke('post', 'file/ensure', {filePath: filePath})
+    return true
+    // return await fileOps.web.fs.ensureFile(filePath)
   }
 
   async readFile (filePath) {
-    return await fileOps.web.readFile(filePath)
+    const res = await customChannel.invoke('post', 'file/read', {filePath: filePath})
+    return res.content
+    // return await fileOps.web.readFile(filePath)
   }
 
   async saveFile (filePath, content) {
     if (!this.userOwnProject) throw new Error('This Project Is Readonly!')
-    await fileOps.web.writeFile(filePath, content)
+    const res = await customChannel.invoke('post', 'file/save', {filePath: filePath, content: content})
+    return res
+    // await fileOps.web.writeFile(filePath, content)
   }
 
   onFileChanged() { }
@@ -172,7 +183,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async createNewFile (basePath, name) {
     const filePath = this.path.join(basePath, name)
-    if (await fileOps.web.isFile(filePath)) {
+    const isFileRes = await customChannel.invoke('post', 'file/stat', {dirPath: filePath})
+    if (isFileRes.isFile) {
       throw new Error(`文件<b>${this.pathInProject(filePath)}</b>已存在`)
     }
 
@@ -190,12 +202,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const folderPath = this.path.join(basePath, name)
 
     try {
-      await fileOps.web.fs.ensureDir(folderPath)
+      await customChannel.invoke('post', 'dir/ensure', {dirPath: folderPath})
     } catch (e) {
       throw new Error(`Fail to create the folder <b>${this.pathInProject(folderPath)}</b>.`)
     }
 
-    await this.refreshDirectory(basePath)
+    // await this.refreshDirectory(basePath)
   }
 
   async rename (oldPath, name, options = {}) {
@@ -208,7 +220,8 @@ export default class RemoteProjectManager extends BaseProjectManager {
     const oldPathWithType = isFile ? oldPath : path.join(oldPath, '/')
 
     try {
-      await fileOps.web.fs.rename(oldPathWithType, newPath)
+      await customChannel.invoke('post', 'file/rename', {oldPath: oldPath, newPath: newPath})
+      // await fileOps.web.fs.rename(oldPathWithType, newPath)
       modelSessionManager.updateEditorAfterMovedFile(oldPath, newPath)
     } catch (e) {
       console.log(e)
@@ -220,9 +233,12 @@ export default class RemoteProjectManager extends BaseProjectManager {
 
   async deleteFile (node) {
     if (node.root) return
+    // node.children
+    //     ? await fileOps.web.fs.deleteFolder(node.path)
+    //     : await fileOps.web.fs.deleteFile(node.path)
     node.children
-        ? await fileOps.web.fs.deleteFolder(node.path)
-        : await fileOps.web.fs.deleteFile(node.path)
+        ? await customChannel.invoke('delete', 'dir/delete', {filePath: node.path})
+        : await customChannel.invoke('delete', 'file/delete', {filePath: node.path})
 
     const { dir } = fileOps.web.path.parse(node.path)
     await this.refreshDirectory(dir)

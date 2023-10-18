@@ -45,6 +45,17 @@ export default class HttpClient {
       }
     } else if (channel === 'user') {
       return this.query(`${this.serverUrl}/user/${method}`, 'GET')
+    } else if (channel === 'custom') {
+      // 自定义新请求
+      if (method === 'get') {
+        return this.queryApiPath(args[0], 'GET', args[1])
+      } else if (method === 'post') {
+        return this.queryApiPath(args[0], 'POST', args[1])
+      } else if (method === 'put') {
+        return this.queryApiPath(args[0], 'PUT', args[1])
+      } else if (method === 'delete') {
+        return this.queryApiPath(args[0], 'DELETE', args[1])
+      }
     }
 
     if (method === 'fetch') {
@@ -54,7 +65,6 @@ export default class HttpClient {
     if (method === 'list') {
       return []
     }
-
     if (method === 'get') {
       const apiPath = args[0] ? `${channel}/${args[0]}` : channel
       return this.queryApiPath(`${PROJECT}/${apiPath}`, 'GET', args[1])
@@ -121,7 +131,7 @@ export default class HttpClient {
       headers.Authorization = `Bearer ${token}`
     }
     const opts = { headers, method }
-    if (method === 'POST' || method === 'PUT') {
+    if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
       opts.body = JSON.stringify(params)
     } else if (method === 'GET') {
       endpoint = endpoint + `?` + qs.stringify(params)

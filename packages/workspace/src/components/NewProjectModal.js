@@ -10,7 +10,7 @@ import {
   Input,
   Button,
   DebouncedFormGroup,
-  DropdownInput,
+  DropdownInput
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
@@ -57,7 +57,7 @@ export default class NewProjectModal extends PureComponent {
       group: defaultGroup,
       creating: false,
       showTerminal: false,
-      workspacePath,
+      workspacePath
     })
     this.forceUpdate()
     this.modal.current.openModal()
@@ -89,7 +89,6 @@ export default class NewProjectModal extends PureComponent {
         projectRoot = this.state.projectRoot
       }
     }
-
     const created = await this.createProject({ projectRoot, name, template, group })
 
     if (created) {
@@ -125,7 +124,7 @@ export default class NewProjectModal extends PureComponent {
             className='mb-3'
             options={[
               { key: 'local', text: 'Local', icon: 'far fa-desktop mr-1' },
-              { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' },
+              { key: 'cloud', text: 'Cloud', icon: 'far fa-cloud mr-1' }
             ]}
             selected={this.state.remote ? 'cloud' : 'local'}
             onSelect={key => this.setState({ remote: key === 'cloud' })}
@@ -168,6 +167,7 @@ export default class NewProjectModal extends PureComponent {
 
   renderTemplate() {
     const { noTemplate, templates } = this.props
+    console.log(this.props, 'this.props')
     const { remote, template } = this.state
     if (noTemplate) {
       return null

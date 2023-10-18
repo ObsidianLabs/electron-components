@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 
 import {
   DeleteButton,
-  IconButton,
+  IconButton
 } from '@obsidians/ui-components'
 
 import { Link } from 'react-router-dom'
@@ -14,7 +14,7 @@ export default class ProjectList extends PureComponent {
     super(props)
     this.state = {
       projectManager: null,
-      remote: false,
+      remote: false
     }
     this.modal = React.createRef()
   }

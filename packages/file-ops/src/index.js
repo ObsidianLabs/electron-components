@@ -1,11 +1,13 @@
 import ElectronFileOps from './ElectronFileOps'
 import WebFileOps from './WebFileOps'
+import WebFileOpsCustom from './WebFileOpsCustom'
 
 class FileOpsManager {
   constructor () {
     this._fsType = null
     this._fileOps
-    this.web = new WebFileOps()
+    // this.web = new WebFileOps()
+    this.web = new WebFileOpsCustom()
   }
 
   set fsType (fsType) {

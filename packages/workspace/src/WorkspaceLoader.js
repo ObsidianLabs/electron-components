@@ -61,7 +61,7 @@ export default class WorkspaceLoader extends PureComponent {
           context: {
             projectRoot,
             projectManager,
-            projectSettings: result.projectSettings,
+            projectSettings: result.projectSettings
           }
         })
         redux.dispatch('PROJECT_LOADED')
@@ -109,7 +109,7 @@ export default class WorkspaceLoader extends PureComponent {
       projectRoot,
       ProjectToolbar,
       signer,
-      CompilerTerminal,
+      CompilerTerminal
     } = this.props
     const { loading, invalid, initial, terminal, context } = this.state
 
