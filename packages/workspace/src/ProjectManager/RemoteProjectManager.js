@@ -237,7 +237,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     //     ? await fileOps.web.fs.deleteFolder(node.path)
     //     : await fileOps.web.fs.deleteFile(node.path)
     node.children
-        ? await customChannel.invoke('delete', 'dir/delete', {filePath: node.path})
+        ? await customChannel.invoke('delete', 'dir/delete', {dirPath: node.path})
         : await customChannel.invoke('delete', 'file/delete', {filePath: node.path})
 
     const { dir } = fileOps.web.path.parse(node.path)
